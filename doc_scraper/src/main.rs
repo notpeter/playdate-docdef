@@ -38,11 +38,13 @@ fn main() {
     let re_strong = Regex::new(r"</?strong>").unwrap();
     let html_tag = Regex::new(r"<[^>]*>").unwrap();
 
-    let re_operator = Regex::new(r"[\-\+\*\/]").unwrap();
+    let re_operator = Regex::new(r"(?:[\-\+\*\/]| \.\. )").unwrap();
     let re_brackets = Regex::new(r"[\[\]]").unwrap();
     let re_function = Regex::new(r"^(?:[\w][\w\d]*\.)*(?:[\w][\w\d]*)(?:[:.][\w][\w\d]*)").unwrap();
+    // let re_class = Regex::new(r"^((?:[\w][\w\d]*\.)*(?:[\w][\w\d]*))(?:[:][\w][\w\d]*)").unwrap();
 
     let mut _poop = 0;
+    let mut _last_class: String = "".to_string();
     for element in document.select(&outer) {
         for d2 in element.select(&selector1).chain(element.select(&selector2)) {
         // for d2 in element.select(&selector2) {
@@ -79,26 +81,34 @@ fn main() {
                     // println!("WARN: Function with dash in title: {}. Fixed as {}", title, title.replace("-", "_"));
                     title = title.replace("-", "_");
                 }
-            }
-            if re_operator.is_match(&title) {
-                let mut _op = "UNKNOWN";
-                if title.starts_with("-") {
-                    _op = "__unm"
-                } else if title.contains("-") {
-                    _op = "__sub";
-                } else if title.contains("*") {
-                    _op = "__mul";
-                } else if title.contains("/") {
-                    _op = "__div";
-                } else if title.contains("+") {
-                    _op = "__add";
+                if title.contains(":") {
+                    _last_class = title.split(":").next().unwrap_or("").to_string();
                 }
-                // println!("WARN: Operator in title {}. Should be SOMETHING:{}", title, op);
+            }
+            // TODO: This does not show multiple overloaded functions with different type params
+            if re_operator.is_match(&title) {
+                text.push("# {title}".to_string());
+                if title.starts_with("-") {
+                    title = format!("{_last_class}:__unm()").to_string();
+                } else if title.contains("-") {
+                    title = format!("{_last_class}:__sub(other)").to_string();
+                } else if title.contains("*") {
+                    title = format!("{_last_class}:__mul(other)").to_string();
+                } else if title.contains("/") {
+                    title = format!("{_last_class}:__div(other)").to_string();
+                } else if title.contains("+") {
+                    title = format!("{_last_class}:__add(other)").to_string();
+                } else if title.contains("..") {
+                    title = format!("{_last_class}:__concat(other)").to_string();
+                } else {
+                    panic!("Unknown operator: {}", title);
+                }
             }
             if anchor == "" {
                 // println!("WARN: No id for: {}", title);
             }
-            println!("{} {}", title, anchor);
+            // println!("-- {url}", url="https://sdk.play.date/2.0.1/Inside%20Playdate.html#".to_string() + &anchor);
+            println!("function {title} end")
             // println!("  {}\n", text.join("\n  "));
 
             // if _poop > 3 { panic!(); }
