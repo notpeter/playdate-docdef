@@ -3,6 +3,7 @@
 use std::{path::Path, fs::File, io::Read};
 use regex::Regex;
 use scraper::Selector;
+// use serde_json::{Result, Value};
 
 #[derive(Debug)]
 struct Stub {
@@ -13,13 +14,17 @@ struct Stub {
 
 impl Stub {
     fn to_stub(&self) -> String {
-        String::from(
-            format!("function {} end\n", self.title)
-        )
+        let a;
+        if self.title.ends_with(")") {
+            a = String::from(format!("function {} end", self.title))
+        }else {
+            a = String::from(format!("{} = nil", self.title))
+        }
+        a
     }
     fn to_lua(&self) -> String {
         String::from(
-            format!("{}--- https://sdk.play.date/2.0.1/Inside%20Playdate.html#{}\n{}\n", self.text2comments(), self.anchor, self.to_stub())
+            format!("\n{}--- https://sdk.play.date/2.0.1/Inside%20Playdate.html#{}\n{}\n", self.text2comments(), self.anchor, self.to_stub())
         )
     }
     fn text2comments (&self) -> String {
@@ -53,7 +58,7 @@ fn main() {
     let outer = Selector::parse("div.sect1>div.sectionbody>div.sect2").unwrap();
 
     // let selector1 = Selector::parse("div.sect1>div.sectionbody>div.sect2>div.sect3>div.item").unwrap();
-    let selector1 = Selector::parse("div.sect3>div.item").unwrap();
+    // let selector1 = Selector::parse("div.sect3>div.item").unwrap();
     let selector2 = Selector::parse("div.item").unwrap();
 
     let sel_title = Selector::parse("div.title").unwrap();
@@ -68,7 +73,7 @@ fn main() {
     let re_strong = Regex::new(r"</?strong>").unwrap();
     let html_tag = Regex::new(r"<[^>]*>").unwrap();
 
-    let re_operator = Regex::new(r"(?:[\-\+\*\/]| \.\. )").unwrap();
+    let re_operator = Regex::new(r"(?:[\#\-\+\*\/]| \.\. )").unwrap();
     let re_brackets = Regex::new(r"[\[\]]").unwrap();
     let re_function = Regex::new(r"^(?:[\w][\w\d]*\.)*(?:[\w][\w\d]*)(?:[:.][\w][\w\d]*)").unwrap();
 
@@ -78,8 +83,8 @@ fn main() {
 
 
     for element in document.select(&outer) {
-        for d2 in element.select(&selector1).chain(element.select(&selector2)) {
-        // for d2 in element.select(&selector2) {
+        // for d2 in element.select(&selector1).chain(element.select(&selector2)) {
+        for d2 in element.select(&selector2) {
             _poop = _poop + 1;
 
             let anchor = d2.value().attr("id").unwrap_or("");
@@ -122,6 +127,8 @@ fn main() {
                 text.push("# {title}".to_string());
                 if title.starts_with("-") {
                     title = format!("{_last_class}:__unm()").to_string();
+                } else if title.starts_with("#") {
+                    title = format!("{_last_class}:__len()").to_string();
                 } else if title.contains("-") {
                     title = format!("{_last_class}:__sub(other)").to_string();
                 } else if title.contains("*") {
@@ -146,14 +153,17 @@ fn main() {
                 }
             }
             else {
-                stubs.push(Stub { title: title, anchor: anchor.to_string(), text: text });
+                let stub = Stub { title: title, anchor: anchor.to_string(), text: text };
+                stubs.push(stub)
             }
         }
-        for stub in &stubs {
-            println!("{}", stub.to_lua());
-            // println!("{}", stub.to_stub());
-        }
     }
+    println!("-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
+    for stub in &stubs {
+        println!("{}", stub.to_stub());
+        // println!("{}", stub.to_lua());
+    }
+
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));
