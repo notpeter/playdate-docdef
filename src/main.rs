@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 
 mod args;
-use args::{setup, Action};
+mod stub;
+use stub::{Stub, generate};
 
 use regex::Regex;
 use scraper::Selector;
@@ -9,42 +10,9 @@ use scraper::Selector;
 // use serde_json::{Result, Value};
 
 
-// Stub Struct containing extracted signature, url anchor, list of parameters and description text
-#[derive(Debug)]
-struct Stub {
-    title: String,
-    anchor: String,
-    params: Vec<String>,
-    text: Vec<String>,
-}
-
-impl Stub {
-    fn to_stub(&self) -> String {
-        let a: String;
-        if self.title.ends_with(")") {
-            a = String::from(format!("function {} end", self.title))
-        }else {
-            a = String::from(format!("{} = nil", self.title))
-        }
-        a
-    }
-    fn to_lua(&self) -> String {
-        String::from(format!(
-            "\n{}--- https://sdk.play.date/2.0.1/Inside%20Playdate.html#{}\n{}\n",
-            self.text2comments(), self.anchor, self.to_stub()
-        ))
-    }
-    fn text2comments (&self) -> String {
-        let mut s = String::new();
-        for t in &self.text {
-            s.push_str(&format!("--- {}\n---\n", t));
-        }
-        s
-    }
-}
 
 fn main() {
-    let (args, response) = setup();
+    let (args, response) = crate::args::setup();
 
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse("div.sect1>div.sectionbody>div.sect2").unwrap();
@@ -158,20 +126,7 @@ fn main() {
             }
         }
     }
-    match args.action {
-        Action::Stub => {
-            println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-            for stub in &stubs {
-                println!("{}", stub.to_stub());
-            }
-        },
-        Action::Annotate => {
-            println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-            for stub in &stubs {
-                println!("{}", stub.to_lua());
-            }
-        },
-    }
+    generate(&stubs, args.action);
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));
