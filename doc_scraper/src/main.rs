@@ -1,9 +1,36 @@
 #![allow(dead_code)]
 
-use std::{path::Path, fs::File, io::Read};
+use std::{fs::File, io::Read};
 use regex::Regex;
 use scraper::Selector;
+use clap::{Parser, ValueEnum};
 // use serde_json::{Result, Value};
+
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(value_enum, default_value="stub")]
+    action: Action,
+
+    /// Filename to load from
+    #[arg(short, long, value_hint = clap::ValueHint::FilePath, default_value = "inside.html")]
+    path: Option<std::path::PathBuf>,
+
+    #[arg(short, long, value_hint = clap::ValueHint::Url, conflicts_with("path"))]
+    url: Option<std::string::String>,
+
+    /// Verbose logging (-v, -vv, -vvv, etc.)
+    #[arg(short, long, action = clap::ArgAction::Count)]
+    verbose: u8,
+
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum Action {
+    Stub,
+    Annotate,
+}
 
 #[derive(Debug)]
 struct Stub {
@@ -36,23 +63,30 @@ impl Stub {
     }
 }
 
-fn main() {
-    // let response = reqwest::blocking::get(
-    //     "https://sdk.play.date/2.0.1/Inside%20Playdate.html",
-    // )
-    // .unwrap()
-    // .text()
-    // .unwrap();
-
-    // open the file
-    let path = Path::new("inside.html");
-    let mut file = match File::open(&path) {
-        Err(why) => panic!("couldn't open {}: {}", path.display(), why),
-        Ok(file) => file,
-    };
+fn fetch_or_file(args: &Args) -> String {
     let mut response = String::new();
-    file.read_to_string(&mut response).unwrap();
+    if args.url.is_some() {
+        eprintln!("Fetching from {}", args.url.as_ref().unwrap());
+        response = reqwest::blocking::get(
+            args.url.as_ref().unwrap()
+        )
+        .unwrap()
+        .text()
+        .unwrap();
+    }else {
+        eprintln!("Reading from {}", args.path.as_ref().unwrap().display());
+        let mut file = match File::open(args.path.as_ref().unwrap()) {
+            Err(why) => panic!("couldn't open file: {}",  why),
+            Ok(file) => file,
+        };
+        file.read_to_string(&mut response).unwrap();
+    }
+    response
+}
 
+fn main() {
+    let args = Args::parse();
+    let response = fetch_or_file(&args);
 
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse("div.sect1>div.sectionbody>div.sect2").unwrap();
@@ -158,12 +192,17 @@ fn main() {
             }
         }
     }
-    println!("-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-    for stub in &stubs {
-        println!("{}", stub.to_stub());
-        // println!("{}", stub.to_lua());
+    if args.action == Action::Stub {
+        println!("-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
+        for stub in &stubs {
+            println!("{}", stub.to_stub());
+        }
+    } else if args.action == Action::Annotate {
+        println!("-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
+        for stub in &stubs {
+            println!("{}", stub.to_lua());
+        }
     }
-
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));
