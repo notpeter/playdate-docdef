@@ -14,7 +14,7 @@ use scraper::Selector;
 struct Stub {
     title: String,
     anchor: String,
-    // params: Vec<String>,
+    params: Vec<String>,
     text: Vec<String>,
 }
 
@@ -82,8 +82,9 @@ fn main() {
 
             let anchor: &str = d2.value().attr("id").unwrap_or("");
             let mut title: String = d2.select(&sel_title).next().unwrap().text().collect::<String>();
-
             let mut text: Vec<String> = Vec::new();
+            let mut params: Vec<String> = Vec::new();
+
             for c in d2.select(&sel_content) {
                 for div_p in c.select(&sel_paragraph) { // Paragraphs of the documentation
                     for p in div_p.select(&sel_p) {
@@ -147,12 +148,12 @@ fn main() {
             }
             if title.contains("  ") { // Functions with multiple
                 for t in title.split("  ") {
-                    let stub = Stub { title: t.to_string().trim().to_owned(), anchor: anchor.to_string(), text: text.clone() };
+                    let stub = Stub { title: t.to_string().trim().to_owned(), anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                     stubs.push(stub)
                 }
             }
             else {
-                let stub = Stub { title: title, anchor: anchor.to_string(), text: text };
+                let stub = Stub { title: title, anchor: anchor.to_string(), params: params, text: text };
                 stubs.push(stub)
             }
         }
