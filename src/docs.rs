@@ -22,7 +22,7 @@ lazy_static! {
         ("repeat", "_repeat"),
         ("end", "_end"),
         ("path.mid", "midi_path"),
-        ("…", "..."),
+        ("…", "..."), // TODO: This doesn't work
     ]);
 }
 
