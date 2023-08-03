@@ -1,11 +1,22 @@
 #![allow(dead_code)]
 
-use std::{fs::File, io::Read};
+use std::{fs::File, io::Read, path::PathBuf, env};
 use regex::Regex;
 use scraper::Selector;
 use clap::{Parser, ValueEnum};
+
 // use serde_json::{Result, Value};
 
+fn get_sdk_dir() -> PathBuf {
+    if env::var_os("PLAYDATE_SDK_PATH") != None {
+        return PathBuf::from(env::var_os("PLAYDATE_SDK_PATH").unwrap());
+    }
+    let mut path = PathBuf::new();
+    path.push(home::home_dir().unwrap());
+    path.push("Developer");
+    path.push("PlaydateSDK");
+    path
+}
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -14,7 +25,8 @@ struct Args {
     action: Action,
 
     /// Filename to load from
-    #[arg(short, long, value_hint = clap::ValueHint::FilePath, default_value = "inside.html")]
+    #[arg(short, long, value_hint = clap::ValueHint::DirPath,
+        default_value = get_sdk_dir().into_os_string())]
     path: Option<std::path::PathBuf>,
 
     #[arg(short, long, value_hint = clap::ValueHint::Url, conflicts_with("path"))]
@@ -66,17 +78,21 @@ impl Stub {
 fn fetch_or_file(args: &Args) -> String {
     let mut response = String::new();
     if args.url.is_some() {
-        eprintln!("Fetching from {}", args.url.as_ref().unwrap());
-        response = reqwest::blocking::get(
-            args.url.as_ref().unwrap()
-        )
-        .unwrap()
-        .text()
-        .unwrap();
-    }else {
-        eprintln!("Reading from {}", args.path.as_ref().unwrap().display());
-        let mut file = match File::open(args.path.as_ref().unwrap()) {
-            Err(why) => panic!("couldn't open file: {}",  why),
+        let url = args.url.as_ref().unwrap();
+        eprintln!("Fetching from {}", url);
+        let resp = reqwest::blocking::Client::new().get(url).send();
+        match resp {
+            Ok(r) if r.status().is_success() => {
+                response = r.text().unwrap();
+            }
+            _ => { panic!("Error fetching from {}", url); }
+        }
+
+    } else {
+        let filename = args.path.as_ref().unwrap().join("Inside Playdate.html");
+        eprintln!("Reading from {}", filename.display());
+        let mut file = match File::open(filename) {
+            Err(why) => panic!("couldn't open file: {}", why),
             Ok(file) => file,
         };
         file.read_to_string(&mut response).unwrap();
