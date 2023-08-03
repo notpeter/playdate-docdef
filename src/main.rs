@@ -1,14 +1,12 @@
-#![allow(dead_code)]
-
 mod args;
+mod docs;
 mod stub;
-use stub::{Stub, generate};
+use stub::Stub;
 
 use regex::Regex;
 use scraper::Selector;
 // use toml::Table;
 // use serde_json::{Result, Value};
-
 
 
 fn main() {
@@ -27,11 +25,6 @@ fn main() {
     let sel_p = Selector::parse("p").unwrap();
 
     let sel_admonition = Selector::parse("div.admonitionblock>table>tbody>tr>td.content").unwrap();
-    let re_code = Regex::new(r"</?code>").unwrap();
-    let re_em = Regex::new(r"</?em>").unwrap();
-    let re_a = Regex::new(r"</?a[^>]*>").unwrap();
-    let re_strong = Regex::new(r"</?strong>").unwrap();
-    let html_tag = Regex::new(r"<[^>]*>").unwrap();
 
     let re_operator = Regex::new(r"(?:[\#\-\+\*\/]| \.\. )").unwrap();
     let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
@@ -50,8 +43,14 @@ fn main() {
 
             let anchor: &str = d2.value().attr("id").unwrap_or("");
             let mut title: String = d2.select(&sel_title).next().unwrap().text().collect::<String>();
+
+            if anchor == "" {
+                eprintln!("WARN: No id for: {}", title);
+            } else if title == "print(string)" {
+                continue;
+            }
+
             let mut text: Vec<String> = Vec::new();
-            let mut params: Vec<String> = Vec::new();
 
             for c in d2.select(&sel_content) {
                 for div_p in c.select(&sel_paragraph) { // Paragraphs of the documentation
@@ -61,32 +60,14 @@ fn main() {
                 }
                 for td in c.select(&sel_admonition) { // Add admonitions parapgraphs
                     let adm = td.inner_html();
-                    let a1 = re_code.replace_all(&adm, "`");
-                    let a2 = re_em.replace_all(&a1, "*");
-                    let a3 = re_a.replace_all(&a2, "");
-                    let a4 = re_strong.replace_all(&a3, "**");
-                    let an = a4.trim().to_string();
-                    if html_tag.is_match(&an) {
-                        print!("WARN: Extra HTML tag in admonition: {}", an.to_string());
-                    }
-                    text.push(an.to_string());
+                    text.push(docs::clean_admonition(adm));
                 }
             }
             // This gets rid of the brackets (optional functional parameters) in the title
             if re_optional.is_match(&title) {
                 title = re_brackets.replace_all(&title, "").to_string();
             }
-
-            if re_function.is_match(&title) {
-                if title.contains("-") {
-                    eprintln!("WARN: Function with dash in title: {}. Fixed as {}", title, title.replace("-", "_"));
-                    title = title.replace("-", "_");
-                }
-                if title.contains(":") {
-                    _last_class = title.split(":").next().unwrap_or("").to_string();
-                }
-            }
-            // TODO: This does not show multiple overloaded functions with different type params
+            //TODO: Fix this to correctly capture params and duplicated type params.
             if re_operator.is_match(&title) {
                 text.push("# {title}".to_string());
                 if title.starts_with("-") {
@@ -111,22 +92,32 @@ fn main() {
                     panic!("Unhandled operator: {}", title);
                 }
             }
-            if anchor == "" {
-                // println!("WARN: No id for: {}", title);
-            }
             if title.contains("  ") { // Functions with multiple
                 for t in title.split("  ") {
-                    let stub = Stub { title: t.to_string().trim().to_owned(), anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
+                    let fname: String;
+                    let params: Vec<String>;
+                    (fname, params) = docs::params_from_title(&t.trim().to_string());
+                    let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                     stubs.push(stub)
                 }
-            }
-            else {
-                let stub = Stub { title: title, anchor: anchor.to_string(), params: params, text: text };
+            } else if title.contains("(") {
+                let fname: String;
+                let params: Vec<String>;
+                (fname, params) = docs::params_from_title(&title);
+                let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                 stubs.push(stub)
+            } else {
+                // TODO: Add this as a stub!
+                eprintln!("VARIABLE: {title}");
+            }
+
+            // _last_class is context for the next loop. So if the title is missing a name (e.g. "p + p") we can infer it.
+            if re_function.is_match(&title) && title.contains(":") {
+                _last_class = title.split(":").next().unwrap_or("").to_string();
             }
         }
     }
-    generate(&stubs, args.action);
+    stub::generate(&stubs, args.action);
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));

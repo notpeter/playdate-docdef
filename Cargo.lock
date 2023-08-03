@@ -262,10 +262,10 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "home",
+ "lazy_static",
  "regex",
  "reqwest",
  "scraper",
- "serde_json",
 ]
 
 [[package]]

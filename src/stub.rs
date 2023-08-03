@@ -11,13 +11,8 @@ pub struct Stub {
 
 impl Stub {
     fn to_stub(&self) -> String {
-        let a: String;
-        if self.title.ends_with(")") {
-            a = String::from(format!("function {} end", self.title))
-        }else {
-            a = String::from(format!("{} = nil", self.title))
-        }
-        a
+        // TODO decide how to handle variables
+        String::from(format!("function {}({}) end", self.title, self.params.join(", ")))
     }
     fn to_lua(&self) -> String {
         String::from(format!(
