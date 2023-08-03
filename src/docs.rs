@@ -61,6 +61,8 @@ fn clean_parameters(title: &String, params: &Vec<String>) -> Vec<String> {
         } else if p.contains("-") {
             eprintln!("WARN: Fixed invalid parameter name (hyphen / dash): `{title}`");
             v.push(p.replace("-", "_"));
+        } else {
+            v.push(p.to_string());
         }
     }
     v
