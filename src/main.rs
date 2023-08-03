@@ -1,5 +1,5 @@
 mod args;
-mod docs;
+mod fixes;
 mod stub;
 use stub::Stub;
 
@@ -60,7 +60,7 @@ fn main() {
                 }
                 for td in c.select(&sel_admonition) { // Add admonitions parapgraphs
                     let adm = td.inner_html();
-                    text.push(docs::clean_admonition(adm));
+                    text.push(fixes::clean_admonition(adm));
                 }
             }
             // This gets rid of the brackets (optional functional parameters) in the title
@@ -96,14 +96,14 @@ fn main() {
                 for t in title.split("  ") {
                     let fname: String;
                     let params: Vec<String>;
-                    (fname, params) = docs::params_from_title(&t.trim().to_string());
+                    (fname, params) = fixes::params_from_title(&t.trim().to_string());
                     let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                     stubs.push(stub)
                 }
             } else if title.contains("(") {
                 let fname: String;
                 let params: Vec<String>;
-                (fname, params) = docs::params_from_title(&title);
+                (fname, params) = fixes::params_from_title(&title);
                 let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                 stubs.push(stub)
             } else {
