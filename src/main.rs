@@ -124,7 +124,8 @@ fn main() {
     let html_tag = Regex::new(r"<[^>]*>").unwrap();
 
     let re_operator = Regex::new(r"(?:[\#\-\+\*\/]| \.\. )").unwrap();
-    let re_brackets = Regex::new(r"[\[\]]").unwrap();
+    let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
+    let re_brackets = Regex::new(r"[\[\]]").unwrap();  // any brackets (used with replace_all)
     let re_function = Regex::new(r"^(?:[\w][\w\d]*\.)*(?:[\w][\w\d]*)(?:[:.][\w][\w\d]*)").unwrap();
 
     let mut _poop = 0;
@@ -137,8 +138,8 @@ fn main() {
         for d2 in element.select(&selector2) {
             _poop = _poop + 1;
 
-            let anchor = d2.value().attr("id").unwrap_or("");
-            let mut title = d2.select(&sel_title).next().unwrap().text().collect::<String>();
+            let anchor: &str = d2.value().attr("id").unwrap_or("");
+            let mut title: String = d2.select(&sel_title).next().unwrap().text().collect::<String>();
 
             let mut text: Vec<String> = Vec::new();
             for c in d2.select(&sel_content) {
@@ -161,11 +162,13 @@ fn main() {
                 }
             }
             // This gets rid of the brackets (optional functional parameters) in the title
-            title = re_brackets.replace_all(&title, "").to_string();
+            if re_optional.is_match(&title) {
+                title = re_brackets.replace_all(&title, "").to_string();
+            }
 
             if re_function.is_match(&title) {
                 if title.contains("-") {
-                    // println!("WARN: Function with dash in title: {}. Fixed as {}", title, title.replace("-", "_"));
+                    eprintln!("WARN: Function with dash in title: {}. Fixed as {}", title, title.replace("-", "_"));
                     title = title.replace("-", "_");
                 }
                 if title.contains(":") {
@@ -189,8 +192,12 @@ fn main() {
                     title = format!("{_last_class}:__add(other)").to_string();
                 } else if title.contains("..") {
                     title = format!("{_last_class}:__concat(other)").to_string();
+                } else if title.contains("[") {
+                    title = format!("{_last_class}:__index(n)").to_string();
+                } else if title.ends_with("({ row1, row2, row3, row4, row5, row6, row7, row8 })") {
+                    title = format!("{}(row_tbl)", title.split("(").next().unwrap().to_string());
                 } else {
-                    panic!("Unknown operator: {}", title);
+                    panic!("Unhandled operator: {}", title);
                 }
             }
             if anchor == "" {
