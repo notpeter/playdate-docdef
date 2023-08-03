@@ -1,59 +1,26 @@
 #![allow(dead_code)]
 
-use std::{fs::File, io::Read, path::PathBuf, env};
+mod args;
+use args::{setup, Action};
+
 use regex::Regex;
 use scraper::Selector;
-use clap::{Parser, ValueEnum};
-
+// use toml::Table;
 // use serde_json::{Result, Value};
 
-fn get_sdk_dir() -> PathBuf {
-    if env::var_os("PLAYDATE_SDK_PATH") != None {
-        return PathBuf::from(env::var_os("PLAYDATE_SDK_PATH").unwrap());
-    }
-    let mut path = PathBuf::new();
-    path.push(home::home_dir().unwrap());
-    path.push("Developer");
-    path.push("PlaydateSDK");
-    path
-}
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Args {
-    #[arg(value_enum, default_value="stub")]
-    action: Action,
-
-    /// Filename to load from
-    #[arg(short, long, value_hint = clap::ValueHint::DirPath,
-        default_value = get_sdk_dir().into_os_string())]
-    path: Option<std::path::PathBuf>,
-
-    #[arg(short, long, value_hint = clap::ValueHint::Url, conflicts_with("path"))]
-    url: Option<std::string::String>,
-
-    /// Verbose logging (-v, -vv, -vvv, etc.)
-    #[arg(short, long, action = clap::ArgAction::Count)]
-    verbose: u8,
-
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-enum Action {
-    Stub,
-    Annotate,
-}
-
+// Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug)]
 struct Stub {
     title: String,
     anchor: String,
+    // params: Vec<String>,
     text: Vec<String>,
 }
 
 impl Stub {
     fn to_stub(&self) -> String {
-        let a;
+        let a: String;
         if self.title.ends_with(")") {
             a = String::from(format!("function {} end", self.title))
         }else {
@@ -62,9 +29,10 @@ impl Stub {
         a
     }
     fn to_lua(&self) -> String {
-        String::from(
-            format!("\n{}--- https://sdk.play.date/2.0.1/Inside%20Playdate.html#{}\n{}\n", self.text2comments(), self.anchor, self.to_stub())
-        )
+        String::from(format!(
+            "\n{}--- https://sdk.play.date/2.0.1/Inside%20Playdate.html#{}\n{}\n",
+            self.text2comments(), self.anchor, self.to_stub()
+        ))
     }
     fn text2comments (&self) -> String {
         let mut s = String::new();
@@ -75,34 +43,8 @@ impl Stub {
     }
 }
 
-fn fetch_or_file(args: &Args) -> String {
-    let mut response = String::new();
-    if args.url.is_some() {
-        let url = args.url.as_ref().unwrap();
-        eprintln!("Fetching from {}", url);
-        let resp = reqwest::blocking::Client::new().get(url).send();
-        match resp {
-            Ok(r) if r.status().is_success() => {
-                response = r.text().unwrap();
-            }
-            _ => { panic!("Error fetching from {}", url); }
-        }
-
-    } else {
-        let filename = args.path.as_ref().unwrap().join("Inside Playdate.html");
-        eprintln!("Reading from {}", filename.display());
-        let mut file = match File::open(filename) {
-            Err(why) => panic!("couldn't open file: {}", why),
-            Ok(file) => file,
-        };
-        file.read_to_string(&mut response).unwrap();
-    }
-    response
-}
-
 fn main() {
-    let args = Args::parse();
-    let response = fetch_or_file(&args);
+    let (args, response) = setup();
 
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse("div.sect1>div.sectionbody>div.sect2").unwrap();
@@ -215,16 +157,19 @@ fn main() {
             }
         }
     }
-    if args.action == Action::Stub {
-        println!("-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-        for stub in &stubs {
-            println!("{}", stub.to_stub());
-        }
-    } else if args.action == Action::Annotate {
-        println!("-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-        for stub in &stubs {
-            println!("{}", stub.to_lua());
-        }
+    match args.action {
+        Action::Stub => {
+            println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
+            for stub in &stubs {
+                println!("{}", stub.to_stub());
+            }
+        },
+        Action::Annotate => {
+            println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
+            for stub in &stubs {
+                println!("{}", stub.to_lua());
+            }
+        },
     }
     // titles
     //     .zip(1..101)
