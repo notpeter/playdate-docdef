@@ -1,7 +1,13 @@
 use std::collections::HashMap;
-use regex::Regex;
 
+use regex::Regex;
 use lazy_static::lazy_static;
+use toml::{Table, Value};
+use serde::Deserialize;
+
+static FIXES_STR: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/Fixes.toml"));
+static REPLACE_STR: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/Replace.toml"));
+
 
 fn lua_function_regex() -> Regex {
     let id = r"[\w_][\w\d_]*";
@@ -24,6 +30,7 @@ lazy_static! {
         ("path.mid", "midi_path"),
         ("…", "..."), // TODO: This doesn't work
     ]);
+    static ref FIXES: HashMap<String, Vec<u32>> = toml::from_str(FIXES_STR).unwrap();
 }
 
 // Takes a valid function signature and returns a function name and a vector of parameters.
@@ -66,4 +73,35 @@ fn clean_parameters(title: &String, params: &Vec<String>) -> Vec<String> {
         }
     }
     v
+}
+
+#[derive(Deserialize, Debug)]
+struct AnchorOverride {
+    fname: String,
+    parameters: Option<Vec<String>>,
+    ignore: Option<bool>
+}
+
+pub fn stuff() {
+    // eprintln!("FIXES_STR: {:?}", FIXES_STR);
+    let overrides: HashMap<String, AnchorOverride> = match toml::from_str(&FIXES_STR) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("ERROR: {:?}", e);
+            HashMap::new()
+        }
+    };
+    let replacements: HashMap<String, String> = match toml::from_str(&REPLACE_STR) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("ERROR: {:?}", e);
+            HashMap::new()
+        }
+    };
+    for (k, v) in replacements {
+        eprintln!("REPLACE: {} => {}", k, v);
+    }
+    for (k, v) in overrides {
+        eprintln!("OVERRIDE: {} => {:?}", k, v);
+    }
 }

@@ -117,7 +117,8 @@ fn main() {
             }
         }
     }
-    stub::generate(&stubs, args.action);
+    fixes::stuff();
+    // stub::generate(&stubs, args.action);
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));
