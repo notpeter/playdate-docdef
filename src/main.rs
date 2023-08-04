@@ -6,7 +6,7 @@ use fixes::{get_overrides,clean_text};
 use stub::Stub;
 
 use regex::Regex;
-use scraper::Selector;
+use scraper::{Selector, CaseSensitivity};
 // use toml::Table;
 // use serde_json::{Result, Value};
 
@@ -17,15 +17,15 @@ fn main() {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse("div.sect1>div.sectionbody>div.sect2").unwrap();
 
-    // let selector1 = Selector::parse("div.sect1>div.sectionbody>div.sect2>div.sect3>div.item").unwrap();
-    // let selector1 = Selector::parse("div.sect3>div.item").unwrap();
     let selector2 = Selector::parse("div.item").unwrap();
 
     let sel_title = Selector::parse("div.title").unwrap();
     let sel_content = Selector::parse("div.content").unwrap();
 
-    let sel_docs = Selector::parse("div.paragraph>p").unwrap();
-    let sel_admonition = Selector::parse("div.admonitionblock>table>tbody>tr>td.content").unwrap();
+    let sel_docs = Selector::parse(concat!("div.paragraph", ",", "div.ulist", ",", "div.admonitionblock")).unwrap();
+    let sel_docs_text = Selector::parse("p").unwrap();
+    let sel_docs_list = Selector::parse("ul>li").unwrap();
+    let sel_docs_admonition = Selector::parse("table>tbody>tr>td.content").unwrap();
 
     let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
     let re_brackets = Regex::new(r"[\[\]]").unwrap();  // any brackets (used with replace_all)
@@ -52,13 +52,29 @@ fn main() {
 
             for c in d2.select(&sel_content) {
                 // Main Paragraphs of text documentation
-                for p in c.select(&sel_docs) {
-                    let t = clean_text(p.text().collect::<String>());
-                    text.push(t);
-                }
-                for td in c.select(&sel_admonition) { // Add admonitions parapgraphs
-                    let adm = fixes::clean_text(td.inner_html());
-                    text.push(adm);
+                for div in c.select(&sel_docs) {
+                    let dv = div.value();
+                    if dv.has_class("paragraph", CaseSensitivity::CaseSensitive) {
+                        div.select(&sel_docs_text).for_each(|p| {
+                            let t = clean_text(p.text().collect::<String>());
+                            // println!("p: {}", t);
+                            text.push(t);
+                        });
+                    } else if dv.has_class("ulist", CaseSensitivity::CaseSensitive) {
+                        div.select(&sel_docs_list).for_each(|li| {
+                            let mut t: String = clean_text(li.text().collect::<String>());
+                            t.insert_str(0, "* ");
+                            // println!("li: {}", t);
+                            text.push(t);
+                        });
+                    } else if dv.has_class("admonitionblock", CaseSensitivity::CaseSensitive) {
+                        div.select(&sel_docs_admonition).for_each(|td| {
+                            let adm = fixes::clean_text(td.inner_html());
+                            text.push(adm);
+                        });
+                    } else {
+                        eprintln!("skipping {:?}", div.value())
+                    }
                 }
             }
             // This gets rid of the brackets (optional functional parameters) in the title

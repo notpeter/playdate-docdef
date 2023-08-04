@@ -22,8 +22,15 @@ impl Stub {
     }
     fn text2comments (&self) -> String {
         let mut s = String::new();
-        for t in &self.text {
-            s.push_str(&format!("--- {}\n---\n", t));
+        let mut i = 0;
+        while i < self.text.len() {
+            let this_line = self.text[i].clone();
+            if this_line.starts_with("*") && i < self.text.len() - 1 && self.text[i + 1].starts_with("*") {
+                s.push_str(&format!("--- {}\n", this_line));
+            } else {
+                s.push_str(&format!("--- {}\n---\n", this_line));
+            }
+            i = i + 1;
         }
         s
     }
