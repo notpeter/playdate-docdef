@@ -1,6 +1,7 @@
 mod args;
 mod fixes;
 mod stub;
+use args::Action;
 use stub::Stub;
 
 use regex::Regex;
@@ -67,31 +68,7 @@ fn main() {
             if re_optional.is_match(&title) {
                 title = re_brackets.replace_all(&title, "").to_string();
             }
-            //TODO: Fix this to correctly capture params and duplicated type params.
-            if re_operator.is_match(&title) {
-                text.push("# {title}".to_string());
-                if title.starts_with("-") {
-                    title = format!("{_last_class}:__unm()").to_string();
-                } else if title.starts_with("#") {
-                    title = format!("{_last_class}:__len()").to_string();
-                } else if title.contains("-") {
-                    title = format!("{_last_class}:__sub(other)").to_string();
-                } else if title.contains("*") {
-                    title = format!("{_last_class}:__mul(other)").to_string();
-                } else if title.contains("/") {
-                    title = format!("{_last_class}:__div(other)").to_string();
-                } else if title.contains("+") {
-                    title = format!("{_last_class}:__add(other)").to_string();
-                } else if title.contains("..") {
-                    title = format!("{_last_class}:__concat(other)").to_string();
-                } else if title.contains("[") {
-                    title = format!("{_last_class}:__index(n)").to_string();
-                } else if title.ends_with("({ row1, row2, row3, row4, row5, row6, row7, row8 })") {
-                    title = format!("{}(row_tbl)", title.split("(").next().unwrap().to_string());
-                } else {
-                    panic!("Unhandled operator: {}", title);
-                }
-            }
+
             if title.contains("  ") { // Functions with multiple
                 for t in title.split("  ") {
                     let fname: String;
@@ -108,7 +85,7 @@ fn main() {
                 stubs.push(stub)
             } else {
                 // TODO: Add this as a stub!
-                eprintln!("VARIABLE: {title}");
+                // eprintln!("VARIABLE: {title}");
             }
 
             // _last_class is context for the next loop. So if the title is missing a name (e.g. "p + p") we can infer it.
@@ -117,8 +94,8 @@ fn main() {
             }
         }
     }
-    fixes::stuff();
     // stub::generate(&stubs, args.action);
+    stub::generate(&stubs, Action::Annotate)
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));

@@ -22,15 +22,9 @@ lazy_static! {
     static ref RE_STRONG: Regex = Regex::new(r"</?strong>").unwrap();
     static ref HTML_TAG: Regex = Regex::new(r"<[^>]*>").unwrap();
     static ref LUA_FUNC: Regex = lua_function_regex();
-
-    static ref CLEAN: HashMap<&'static str,&'static str> = HashMap::from([
-        ("function", "func"),
-        ("repeat", "_repeat"),
-        ("end", "_end"),
-        ("path.mid", "midi_path"),
-        ("…", "..."), // TODO: This doesn't work
-    ]);
-    static ref FIXES: HashMap<String, Vec<u32>> = toml::from_str(FIXES_STR).unwrap();
+    //TODO: Check to ensure "…" gets cleaned too.
+    static ref FIXES: HashMap<String, AnchorOverride> = load_fixes(&FIXES_STR);
+    static ref REPLACEMENTS: HashMap<String, String> = load_replacements(&REPLACE_STR);
 }
 
 // Takes a valid function signature and returns a function name and a vector of parameters.
@@ -62,12 +56,10 @@ pub fn clean_admonition(adm: String) -> String {
 fn clean_parameters(title: &String, params: &Vec<String>) -> Vec<String> {
     let mut v = Vec::new();
     for p in params {
-        if CLEAN.contains_key(p.as_str()) {
-            eprintln!("WARN: Fixed invalid parameter name (reserved word): `{title}`");
-            v.push(CLEAN.get(p.as_str()).unwrap_or(&p.as_str()).to_string());
-        } else if p.contains("-") {
-            eprintln!("WARN: Fixed invalid parameter name (hyphen / dash): `{title}`");
-            v.push(p.replace("-", "_"));
+        if REPLACEMENTS.contains_key(p.as_str()) {
+            let fixed_param = REPLACEMENTS.get(p.as_str()).unwrap().to_string();
+            eprintln!("WARN: Fixed invalid parameter name: {p} -> {fixed_param} (in `{title}`)");
+            v.push(fixed_param);
         } else {
             v.push(p.to_string());
         }
@@ -82,26 +74,24 @@ struct AnchorOverride {
     ignore: Option<bool>
 }
 
-pub fn stuff() {
-    // eprintln!("FIXES_STR: {:?}", FIXES_STR);
-    let overrides: HashMap<String, AnchorOverride> = match toml::from_str(&FIXES_STR) {
+fn load_fixes(fixes_toml: &str) -> HashMap<String, AnchorOverride> {
+    let overrides: HashMap<String, AnchorOverride> = match toml::from_str(fixes_toml) {
         Ok(v) => v,
         Err(e) => {
             eprintln!("ERROR: {:?}", e);
             HashMap::new()
         }
     };
-    let replacements: HashMap<String, String> = match toml::from_str(&REPLACE_STR) {
+    overrides
+}
+
+fn load_replacements(replace_toml: &str) -> HashMap<String, String> {
+    let replacements: HashMap<String, String> = match toml::from_str(replace_toml) {
         Ok(v) => v,
         Err(e) => {
             eprintln!("ERROR: {:?}", e);
             HashMap::new()
         }
     };
-    for (k, v) in replacements {
-        eprintln!("REPLACE: {} => {}", k, v);
-    }
-    for (k, v) in overrides {
-        eprintln!("OVERRIDE: {} => {:?}", k, v);
-    }
+    replacements
 }
