@@ -2,6 +2,7 @@ mod args;
 mod fixes;
 mod stub;
 use args::Action;
+use fixes::get_overrides;
 use stub::Stub;
 
 use regex::Regex;
@@ -46,7 +47,7 @@ fn main() {
             let mut title: String = d2.select(&sel_title).next().unwrap().text().collect::<String>();
 
             if anchor == "" {
-                eprintln!("WARN: No id for: {}", title);
+                eprintln!("WARN: Docs missing anchor for: {}", title);
             } else if title == "print(string)" {
                 continue;
             }
@@ -73,14 +74,20 @@ fn main() {
                 for t in title.split("  ") {
                     let fname: String;
                     let params: Vec<String>;
-                    (fname, params) = fixes::params_from_title(&t.trim().to_string());
+                    (fname, params) = match get_overrides(anchor) {
+                        Some((fname, params)) => (fname, params),
+                        None => fixes::params_from_title(&t.trim().to_string())
+                    };
                     let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                     stubs.push(stub)
                 }
             } else if title.contains("(") {
                 let fname: String;
                 let params: Vec<String>;
-                (fname, params) = fixes::params_from_title(&title);
+                (fname, params) = match get_overrides(anchor) {
+                    Some((fname, params)) => (fname, params),
+                    None => fixes::params_from_title(&title)
+                };
                 let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                 stubs.push(stub)
             } else {
