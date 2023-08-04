@@ -2,7 +2,6 @@ use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 use lazy_static::lazy_static;
-use toml::{Table, Value};
 use serde::Deserialize;
 
 
@@ -10,7 +9,6 @@ use serde::Deserialize;
 struct AnchorOverride {
     fname: String,
     parameters: Vec<String>, // You must include a parameters=[] if there are no params.
-    ignore: Option<bool>
 }
 
 impl fmt::Display for AnchorOverride {
@@ -36,7 +34,6 @@ lazy_static! {
     static ref RE_STRONG: Regex = Regex::new(r"</?strong>").unwrap();
     static ref HTML_TAG: Regex = Regex::new(r"<[^>]*>").unwrap();
     static ref LUA_FUNC: Regex = lua_function_regex();
-    //TODO: Check to ensure "…" gets cleaned too.
     static ref FIXES: HashMap<String, AnchorOverride> = load_fixes(&FIXES_STR);
     static ref REPLACEMENTS: HashMap<String, String> = load_replacements(&REPLACE_STR);
 }
@@ -63,16 +60,22 @@ pub fn params_from_title(title: &String) -> (String, Vec<String>) {
     (fname.to_string(), clean_parameters(&title, &params))
 }
 
-pub fn clean_admonition(adm: String) -> String {
-    let a1 = RE_CODE.replace_all(&adm, "`");
-    let a2 = RE_EM.replace_all(&a1, "*");
-    let a3 = RE_A.replace_all(&a2, "");
-    let a4 = RE_STRONG.replace_all(&a3, "**");
-    let an = a4.trim().to_string();
-    if HTML_TAG.is_match(&an) {
-        eprintln!("WARN: Extra HTML tag in admonition: {}", an.to_string());
+pub fn clean_text(text: String) -> String {
+    let t0 = text
+        .replace("<code>", "`")
+        .replace("</code>", "`")
+        .replace("<em>", "*")
+        .replace("</em>", "*")
+        .replace("<strong>", "**")
+        .replace("</strong>", "**")
+        .replace("\n", " ")
+        .trim()
+        .to_string();
+    let tn = RE_A.replace_all(&t0, "");
+    if HTML_TAG.is_match(&tn) {
+        eprintln!("WARN: Extra HTML tag in description text: {}", tn.to_string());
     }
-    an.to_string()
+    tn.to_string()
 }
 
 

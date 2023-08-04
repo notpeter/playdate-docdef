@@ -2,7 +2,7 @@ mod args;
 mod fixes;
 mod stub;
 use args::Action;
-use fixes::get_overrides;
+use fixes::{get_overrides,clean_text};
 use stub::Stub;
 
 use regex::Regex;
@@ -28,7 +28,6 @@ fn main() {
 
     let sel_admonition = Selector::parse("div.admonitionblock>table>tbody>tr>td.content").unwrap();
 
-    let re_operator = Regex::new(r"(?:[\#\-\+\*\/]| \.\. )").unwrap();
     let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
     let re_brackets = Regex::new(r"[\[\]]").unwrap();  // any brackets (used with replace_all)
     let re_function = Regex::new(r"^(?:[\w][\w\d]*\.)*(?:[\w][\w\d]*)(?:[:.][\w][\w\d]*)").unwrap();
@@ -48,8 +47,8 @@ fn main() {
 
             if anchor == "" {
                 eprintln!("WARN: Docs missing anchor for: {}", title);
-            } else if title == "print(string)" {
-                continue;
+            } else if anchor == "m-graphics.imagetable.__index" {
+                eprintln!("POOP: {}", title)
             }
 
             let mut text: Vec<String> = Vec::new();
@@ -57,12 +56,13 @@ fn main() {
             for c in d2.select(&sel_content) {
                 for div_p in c.select(&sel_paragraph) { // Paragraphs of the documentation
                     for p in div_p.select(&sel_p) {
-                        text.push(p.text().collect::<String>());
+                        let t = clean_text(p.text().collect::<String>());
+                        text.push(t);
                     }
                 }
                 for td in c.select(&sel_admonition) { // Add admonitions parapgraphs
-                    let adm = td.inner_html();
-                    text.push(fixes::clean_admonition(adm));
+                    let adm = fixes::clean_text(td.inner_html());
+                    text.push(adm);
                 }
             }
             // This gets rid of the brackets (optional functional parameters) in the title
@@ -81,7 +81,8 @@ fn main() {
                     let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
                     stubs.push(stub)
                 }
-            } else if title.contains("(") {
+            } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") {
+                // EX: function(), imagetable[n], "p + p", "-v"
                 let fname: String;
                 let params: Vec<String>;
                 (fname, params) = match get_overrides(anchor) {

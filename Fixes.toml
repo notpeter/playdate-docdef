@@ -6,15 +6,8 @@
 fname = "print"
 parameters = ["..."]
 
-# playdate.graphics.setStencilPattern -> playdate.graphics.sprite:setStencilPattern
-["m-graphics.sprite.setStencilPattern"]
-fname = "playdate.graphics.sprite:setStencilPattern"
-parameters = ["pattern"]
-
-# playdate.graphics.setStencilPattern({ row1, row2, row3, row4, row5, row6, row7, row8 })
-["f-graphics.setStencilPattern"]
-fname = "playdate.graphics.setStencilPattern"
-parameters = ["pattern"]
+##########################################################
+# Overrides for methods with incorrect signatures/names
 
 # missing extend parameter
 ["m-geometry.arc.pointOnArc"]
@@ -25,6 +18,16 @@ parameters = ["distance", "extend"]
 ["m-graphics.sprite.setBounds"]
 fname = "playdate.graphics.sprite:setBounds"
 parameters = ["x", "y", "width", "height"]
+
+# playdate.graphics.setStencilPattern -> playdate.graphics.sprite:setStencilPattern
+["m-graphics.sprite.setStencilPattern"]
+fname = "playdate.graphics.sprite:setStencilPattern"
+parameters = ["pattern"]
+
+# playdate.graphics.setStencilPattern({ row1, row2, row3, row4, row5, row6, row7, row8 })
+["f-graphics.setStencilPattern"]
+fname = "playdate.graphics.setStencilPattern"
+parameters = ["pattern"]
 
 # missing curvature parameter
 ["m-sound.synth.setADSR"]
