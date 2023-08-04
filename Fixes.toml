@@ -1,0 +1,121 @@
+# These are overrides for typos in the Playdate SDK documention
+# It is expected that over time these will go away as things are fixed.
+
+# Print takes a variable number of arguments
+["#f-print"]
+fname = "print"
+parameters = ["..."]
+
+# playdate.graphics.setStencilPattern -> playdate.graphics.sprite:setStencilPattern
+["#m-graphics.sprite.setStencilPattern"]
+fname = "playdate.graphics.sprite:setStencilPattern"
+parameters = ["pattern"]
+
+# playdate.graphics.setStencilPattern({ row1, row2, row3, row4, row5, row6, row7, row8 })
+["#f-graphics.setStencilPattern"]
+fname = "playdate.graphics.setStencilPattern"
+parameters = ["pattern"]
+
+# missing extend parameter
+["#m-geometry.arc.pointOnArc"]
+fname = "playdate.geometry.arc:pointOnArc"
+parameters = ["distance", "extend"]
+
+# instance method not classmethod
+["#m-graphics.sprite.setBounds"]
+fname = "playdate.graphics.sprite:setBounds"
+parameters = ["x", "y", "width", "height"]
+
+# missing curvature parameter
+["#m-sound.synth.setADSR"]
+fname = "playdate.sound.synth:setADSR"
+parameters = ["attack", "decay", "sustain", "release", "curvature"]
+
+# unicode "…​" instead of "..."
+["#m-gridview.setNumberOfRows"]
+fname = "playdate.ui.gridview:setNumberOfRows"
+parameters = ["..."]
+
+##########################################
+# Overrides for metamethods and operators
+##########################################
+
+# playdate.graphics.imagetable[n]
+["#m-graphics.imagetable.__index"]
+fname = "playdate.graphics.imagetable.__index"
+parameters = ["n"] # integer
+
+# t * t
+["#m-geometry.affineTransform.mul_t"]
+fname = "playdate.geometry.affineTransform:__mul"
+parameters = ["t"] # affineTransform
+
+# t * v
+["#m-geometry.affineTransform.mul_v"]
+fname = "playdate.geometry.affineTransform:__mul"
+parameters = ["v"] # vector2D
+
+# t * p
+["#m-geometry.affineTransform.mul_p"]
+fname = "playdate.geometry.affineTransform:__mul"
+parameters = ["p"] # point2D
+
+# p + v
+["#m-geometry.point.add"]
+fname = "playdate.geometry.point:__add"
+parameters = ["v"] # vector2D
+
+# p1 - p2
+["#m-geometry.point.sub"]
+fname = "playdate.geometry.point:__sub"
+parameters = ["p2"] # point2D
+
+# p * t
+["#m-geometry.point.mul"]
+fname = "playdate.geometry.point:__mul"
+parameters = ["t"] # affineTransform
+
+# p1 .. p2
+["#m-geometry.point.concat"]
+fname = "playdate.geometry.point:__concat"
+parameters = ["p2"] # point2D
+
+# p * t
+["#m-geometry.polygon.mul"]
+fname = "playdate.geometry.polygon:__mul"
+parameters = ["t"] # affineTransform
+
+# -v
+["#m-geometry.vector2D.unm"]
+fname = "playdate.geometry.vector2D:__unm"
+parameters = []
+
+# v1 + v2
+["#m-geometry.vector2D.add"]
+fname = "playdate.geometry.vector2D:__add"
+parameters = ["v2"] # vector2D
+
+# v1 - v2
+["#m-geometry.vector2D.sub"]
+fname = "playdate.geometry.vector2D:__sub"
+parameters = ["v2"] # vector2D
+
+# v1 * s
+["#m-geometry.vector2D.mul_s"]
+fname = "playdate.geometry.vector2D:__mul"
+parameters = ["s"] # number
+
+# v1 * v2
+["#m-geometry.vector2D.mul_v"]
+fname = "playdate.geometry.vector2D:__mul"
+parameters = ["v2"] # vector2D
+
+# v1 * t
+["#m-geometry.vector2D.mul_t"]
+fname = "playdate.geometry.vector2D:__mul"
+parameters = ["t"] # affineTransform
+
+# v1 / s
+["#m-geometry.vector2D.div"]
+fname = "playdate.geometry.vector2D:__div"
+parameters = ["s"] # number

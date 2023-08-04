@@ -1,0 +1,6 @@
+[parameter_replacements]
+function = "func"
+repeat = "_repeat"
+end = "_end"
+"path.mid" = "midi_path"
+"pretty-print" = "pretty"
