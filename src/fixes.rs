@@ -55,7 +55,11 @@ pub fn params_from_title(title: &String) -> (String, Vec<String>) {
     let params_str = caps.name("params").unwrap().as_str();
     let fname = caps.name("fname").unwrap().as_str();
     for p in params_str.split(",") {
+        let p_clean = p.trim().to_string();
         params.push(p.trim().to_string());
+        if p_clean == "..." {
+            break;
+        }
     }
     (fname.to_string(), clean_parameters(&title, &params))
 }
