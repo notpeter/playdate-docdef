@@ -47,8 +47,6 @@ fn main() {
 
             if anchor == "" {
                 eprintln!("WARN: Docs missing anchor for: {}", title);
-            } else if anchor == "m-graphics.imagetable.__index" {
-                eprintln!("POOP: {}", title)
             }
 
             let mut text: Vec<String> = Vec::new();
@@ -102,8 +100,8 @@ fn main() {
             }
         }
     }
-    // stub::generate(&stubs, args.action);
-    stub::generate(&stubs, Action::Annotate)
+    stub::generate(&stubs, args.action);
+    // stub::generate(&stubs, Action::Annotate)
     // titles
     //     .zip(1..101)
     //     .for_each(|(item, number)| println!("{}. {}", number, item));
