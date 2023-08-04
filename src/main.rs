@@ -23,9 +23,8 @@ fn main() {
 
     let sel_title = Selector::parse("div.title").unwrap();
     let sel_content = Selector::parse("div.content").unwrap();
-    let sel_paragraph = Selector::parse("div.paragraph").unwrap();
-    let sel_p = Selector::parse("p").unwrap();
 
+    let sel_docs = Selector::parse("div.paragraph>p").unwrap();
     let sel_admonition = Selector::parse("div.admonitionblock>table>tbody>tr>td.content").unwrap();
 
     let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
@@ -52,11 +51,10 @@ fn main() {
             let mut text: Vec<String> = Vec::new();
 
             for c in d2.select(&sel_content) {
-                for div_p in c.select(&sel_paragraph) { // Paragraphs of the documentation
-                    for p in div_p.select(&sel_p) {
-                        let t = clean_text(p.text().collect::<String>());
-                        text.push(t);
-                    }
+                // Main Paragraphs of text documentation
+                for p in c.select(&sel_docs) {
+                    let t = clean_text(p.text().collect::<String>());
+                    text.push(t);
                 }
                 for td in c.select(&sel_admonition) { // Add admonitions parapgraphs
                     let adm = fixes::clean_text(td.inner_html());
