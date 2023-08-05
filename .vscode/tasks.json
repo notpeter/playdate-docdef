@@ -4,19 +4,11 @@
 		{
 			"type": "cargo",
 			"command": "run",
-			"problemMatcher": [
-				"$rustc"
-			],
-			"label": "rust: cargo run",
-			"group": "build",
-			"options": {
-				"cwd": "${workspaceFolder}/doc_scraper"
-			}
-		},
-		{
-			"type": "cargo",
-			"command": "run",
-			"problemMatcher": [
+            "args": [
+                "annotate",
+                // "--help"
+            ],
+            "problemMatcher": [
 				"$rustc"
 			],
 			"label": "rust: cargo run",
@@ -25,7 +17,12 @@
 				"isDefault": true
 			},
 			"options": {
-				"cwd": "${workspaceFolder}/doc_scraper"
+				"cwd": "${workspaceFolder}",
+                ""
+                "env": {
+                    // "RUST_BACKTRACE": "1"
+                }
+
 			}
 		}
 	]

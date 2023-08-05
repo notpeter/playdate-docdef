@@ -20,7 +20,7 @@
                 }
             },
             "args": [
-                // "user_arg1",
+                "annotate",
                 // "user_arg2"
             ],
             "cwd": "${workspaceFolder}/"
