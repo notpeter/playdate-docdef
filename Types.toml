@@ -1,21 +1,27 @@
-[global]
-types = [
-    "nil",
-    "table",
-    "integer",
-    "number",
-    "string",
-    "boolean",
-    "playdate.graphics.image",
-    "playdate.graphics.sprite",
-    "playdate.geometry.point",
-    "playdate.geometry.lineSegment",
-    "playdate.geometry.rect",
-    "playdate.geometry.polygon",
-    "playdate.geometry.size",
-    "playdate.geometry.vector2D",
-    "playdate.graphics.font",
-]
+# Maps our types to the core 8 lua types (nil,boolean,number,string,function,userdata,thread,table)
+# Mostly helps catch typos. Value side isn't used at all.
+# TODO: Alternatively figure out how to generate a HashSet from TOML.
+[types]
+nil = "nil"
+boolean = "bolean"
+number = "number"
+string = "string"
+function = "function"
+userdata = "userdata" # unused so far
+thread = "thread" # unused so far
+table = "table"
+integer = "number" # subtype of number
+float = "number" # subtype of number
+"playdate.graphics.image" = "table"
+"playdate.graphics.sprite" = "table"
+"playdate.geometry.point" = "table"
+"playdate.geometry.lineSegment" = "table"
+"playdate.geometry.rect" = "table"
+"playdate.geometry.polygon" = "table"
+"playdate.geometry.size" = "table"
+"playdate.geometry.vector2D" = "table"
+"playdate.graphics.font" = "table"
+"playdate.geometry.affineTransform" = "table"
 
 [by_name]
 x = "integer"

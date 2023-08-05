@@ -1,5 +1,9 @@
+# These are keyed by anchor, the "id" attribute in the
+# SDK documentation HTML. As such, these overrides cannot
+# be used with multi-signature functions that share an id.
+
 # These are overrides for typos in the Playdate SDK documention
-# It is expected that over time these will go away as things are fixed.
+# It is expected these will go away as things are fixed upstream.
 
 # Print takes a variable number of arguments
 ["f-print"]
