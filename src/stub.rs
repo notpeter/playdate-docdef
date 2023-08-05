@@ -16,8 +16,11 @@ impl Stub {
     }
     fn to_lua(&self) -> String {
         String::from(format!(
-            "\n{}--- https://sdk.play.date/Inside%20Playdate.html#{}\n{}\n",
-            self.text2comments(), self.anchor, self.to_stub()
+            "{}--- https://sdk.play.date/Inside%20Playdate.html#{}\n{}\n{}\n",
+            self.text2comments(),
+            self.anchor,
+            self.params2comments(),
+            self.to_stub()
         ))
     }
     fn text2comments (&self) -> String {
@@ -25,12 +28,20 @@ impl Stub {
         let mut i = 0;
         while i < self.text.len() {
             let this_line = self.text[i].clone();
+            // Bulleted list get fewer newlines. Everything else needs empty lines for proper markdown rendering.
             if this_line.starts_with("*") && i < self.text.len() - 1 && self.text[i + 1].starts_with("*") {
                 s.push_str(&format!("--- {}\n", this_line));
             } else {
                 s.push_str(&format!("--- {}\n---\n", this_line));
             }
             i = i + 1;
+        }
+        s
+    }
+    fn params2comments (&self) -> String {
+        let mut s = String::new();
+        for p in &self.params {
+            s.push_str(&format!("---@param {} any\n", p));
         }
         s
     }
