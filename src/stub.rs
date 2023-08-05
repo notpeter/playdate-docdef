@@ -16,7 +16,7 @@ impl Stub {
     }
     fn to_lua(&self) -> String {
         String::from(format!(
-            "{}--- https://sdk.play.date/Inside%20Playdate.html#{}\n{}\n{}\n",
+            "{}--- https://sdk.play.date/Inside%20Playdate.html#{}\n{}{}\n",
             self.text2comments(),
             self.anchor,
             self.params2comments(),
