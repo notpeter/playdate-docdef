@@ -60,6 +60,7 @@ pub fn generate(stubs: &Vec<Stub>, action: Action) {
             for stub in stubs {
                 println!("{}", stub.to_lua());
             }
+            println!("--- End of LuaCATS stubs.")
         },
     }
 }

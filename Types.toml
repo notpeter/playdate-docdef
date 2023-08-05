@@ -1,0 +1,87 @@
+[global]
+types = [
+    "nil",
+    "table",
+    "integer",
+    "number",
+    "string",
+    "boolean",
+    "playdate.graphics.image",
+    "playdate.graphics.sprite",
+    "playdate.geometry.point",
+    "playdate.geometry.lineSegment",
+    "playdate.geometry.rect",
+    "playdate.geometry.polygon",
+    "playdate.geometry.size",
+    "playdate.geometry.vector2D",
+    "playdate.graphics.font",
+]
+
+[by_name]
+x = "integer"
+y = "integer"
+z = "integer"
+x1 = "integer"
+y1 = "integer"
+x2 = "integer"
+y2 = "integer"
+h1 = "integer"
+h2 = "integer"
+w1 = "integer"
+w2 = "integer"
+dx = "integer"
+dy = "integer"
+length = "number"
+distance = "integer"
+width = "integer"
+height = "integer"
+scale = "integer"
+yscale = "integer"
+yScale = "integer"
+angle = "number"
+radius = "number"
+numPasses = "integer"
+padEdges = "boolean"
+xPhase = "integer"
+yPhase = "integer"
+xOffset = "integer"
+ax = "number" # 0.0 - 1.0
+ay = "number" # 0.0 - 1.0
+startAngle = "number" # in degrees
+endAngle = "number" # in degrees
+sx = "number" # skew in degrees
+sy = "number" # skew in degrees
+tiltAngle = "number" # tilt in degrees
+direction = "boolean"
+point = "playdate.geometry.point"
+# p = sometimes point sometimes polygon
+image = "playdate.graphics.image"
+image1 = "playdate.graphics.image"
+image2 = "playdate.graphics.image"
+maskImage = "playdate.graphics.image"
+ls = "playdate.geometry.lineSegment"
+r = "playdate.geometry.rect"
+r2 = "playdate.geometry.rect"
+rect = "playdate.geometry.rect"
+sourceRect = "playdate.geometry.rect"
+v = "playdate.geometry.vector2D"
+v2 = "playdate.geometry.vector2D"
+xform = "playdate.geometry.affineTransform"
+flag = "boolean"
+repeat_n = "integer"
+filename = "string"
+path = "string"
+pretty = "boolean"
+sprite = "playdate.graphics.sprite"
+opaque = "boolean"
+alpha = "number" # 0.0 - 1.0
+# seconds = "integer" -- sometimes number
+# rate = "integer" -- sometimes number
+milliseconds = "integer"
+
+## Figure out something for these
+ditherType = "integer"
+flip = "integer" # playdate.geometry.{kFlippedXY, kFlippedY, kFlippedX, kUnflipped}
+bgcolor = "integer" # playdate.graphics.kColor{Black,White,Clear,XOR}
+color = "integer" # playdate.graphics.kColor{Black,White,Clear,XOR}
+button = "integer"
