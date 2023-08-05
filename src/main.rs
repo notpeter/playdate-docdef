@@ -1,7 +1,8 @@
 mod args;
 mod fixes;
 mod stub;
-use fixes::{get_overrides,clean_text};
+
+use fixes::{clean_text, annotate_function};
 use stub::Stub;
 
 use regex::Regex;
@@ -77,25 +78,13 @@ fn main() {
 
         if title.contains("  ") { // Functions with multiple
             for t in title.split("  ") {
-                let fname: String;
-                let params: Vec<String>;
-                (fname, params) = match get_overrides(anchor) {
-                    Some((fname, params)) => (fname, params),
-                    None => fixes::params_from_title(&t.trim().to_string())
-                };
-                let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
+                let stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
                 stubs.push(stub)
             }
         } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") {
-            // EX: function(), imagetable[n], "p + p", "-v"
-            let fname: String;
-            let params: Vec<String>;
-            (fname, params) = match get_overrides(anchor) {
-                Some((fname, params)) => (fname, params),
-                None => fixes::params_from_title(&title)
-            };
-            let stub = Stub { title: fname, anchor: anchor.to_string(), params: params.clone(), text: text.clone() };
-            stubs.push(stub)
+            // function(), imagetable[n], "p + p", "-v", etc
+            let stub = annotate_function(&anchor.to_string(), &title, &text);
+            stubs.push(stub);
         } else {
             // TODO: Add this as a stub!
             // eprintln!("VARIABLE: {title}");

@@ -5,14 +5,16 @@ use crate::args::Action;
 pub struct Stub {
     pub title: String,
     pub anchor: String,
-    pub params: Vec<String>,
+    pub params: Vec<(String, String)>, // parameter_name=type_name
     pub text: Vec<String>,
 }
 
 impl Stub {
     fn to_stub(&self) -> String {
         // TODO decide how to handle variables
-        String::from(format!("function {}({}) end", self.title, self.params.join(", ")))
+        // extract the first element in the tuple contained in the params vec
+        let param_names : Vec<String> = self.params.iter().map(|(name, _)| name.clone()).collect::<Vec<String>>();
+        String::from(format!("function {}({}) end", self.title, param_names.join(", ")))
     }
     fn to_lua(&self) -> String {
         String::from(format!(
@@ -40,8 +42,8 @@ impl Stub {
     }
     fn params2comments (&self) -> String {
         let mut s = String::new();
-        for p in &self.params {
-            s.push_str(&format!("---@param {} any\n", p));
+        for (p_name, p_type) in &self.params {
+            s.push_str(&format!("---@param {} {}\n", p_name, p_type));
         }
         s
     }

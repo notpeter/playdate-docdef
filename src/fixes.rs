@@ -4,6 +4,8 @@ use regex::Regex;
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
+use crate::stub::Stub;
+
 
 static TOML_FIXES_STR: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/Fixes.toml"));
 static TOML_REPLACE_STR: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/Replace.toml"));
@@ -41,29 +43,49 @@ struct TypesTOML {
     by_name: HashMap<String, String>, // parameter_name=type_name
 }
 
-pub fn get_overrides(anchor: &str) -> Option<(String, Vec<String>)> {
+// Given a function return a stub with overrides and paramer types applied
+pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
+    let fname: String;
+    let mut params: Vec<(String, String)>;
+
+    // Apply overrides
     if FIXES.contains_key(anchor) {
         let fixed = FIXES.get(anchor).unwrap();
+        params = fixed.parameters.iter().map(|p| (p.clone(), "any".to_string())).collect();
         eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
-        return Some((fixed.fname.clone(), fixed.parameters.clone()));
+        fname = fixed.fname.clone();
+    } else {
+        (fname, params) = params_from_title(title);
     }
-    None
+    // Apply types from Types.toml
+    for (p, t) in params.iter_mut() {
+        if TYPES.by_name.contains_key(p) {
+            *t = TYPES.by_name.get(p).unwrap().to_string();
+        }
+    }
+
+    Stub {
+        title: fname,
+        anchor: anchor.to_string(),
+        text: text.clone(),
+        params: params,
+    }
 }
 
 // Takes a valid function signature and returns a function name and a vector of parameters.
-pub fn params_from_title(title: &String) -> (String, Vec<String>) {
-    let param_types = &TYPES.by_name;
-    let mut params = Vec::new();
+pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
+    let mut params: Vec<(String, String)> = Vec::new();
     let caps = LUA_FUNC.captures(title).unwrap();
 
     let params_str = caps.name("params").unwrap().as_str();
     let fname = caps.name("fname").unwrap().as_str();
     if params_str.trim() != "" {
         for p in params_str.split(",") {
-            let p_clean = p.trim().to_string();
-            params.push(p.trim().to_string());
+            let param_name = p.trim().to_string();
+
+            params.push((p.trim().to_string(), "any".to_string()));
             // Ignore parameters shown in docs after the ...
-            if p_clean == "..." {
+            if param_name == "..." {
                 break;
             }
         }
@@ -90,15 +112,15 @@ pub fn clean_text(text: String) -> String {
 }
 
 
-fn clean_parameters(title: &String, params: &Vec<String>) -> Vec<String> {
-    let mut v = Vec::new();
-    for p in params {
-        if REPLACEMENTS.contains_key(p.as_str()) {
-            let fixed_param = REPLACEMENTS.get(p.as_str()).unwrap().to_string();
-            eprintln!("WARN: Fixed invalid parameter: {p} -> {fixed_param} (in `{title}`)");
-            v.push(fixed_param);
+fn clean_parameters(title: &String, params: &Vec<(String, String)>) -> Vec<(String, String)> {
+    let mut v: Vec<(String, String)> = Vec::new();
+    for (p_name, lua_type) in params {
+        if REPLACEMENTS.contains_key(p_name.as_str()) {
+            let fixed_name = REPLACEMENTS.get(p_name.as_str()).unwrap().to_string();
+            eprintln!("WARN: Fixed invalid parameter: {p_name} -> {fixed_name} (in `{title}`)");
+            v.push((fixed_name, lua_type.to_string()));
         } else {
-            v.push(p.to_string());
+            v.push((p_name.to_string(), lua_type.to_string()));
         }
     }
     v
@@ -110,7 +132,7 @@ fn load_fixes(fixes_toml: &str) -> HashMap<String, AnchorOverride> {
     let overrides: HashMap<String, AnchorOverride> = match toml::from_str(fixes_toml) {
         Ok(v) => v,
         Err(e) => {
-            println!("ERROR: Loading Fixes.toml failed.");
+            eprintln!("ERROR: Loading Fixes.toml failed.");
             panic!("ERROR: {:?}", e);
         }
     };
@@ -121,7 +143,7 @@ fn load_replacements(replace_toml: &str) -> HashMap<String, String> {
     let replacements: HashMap<String, String> = match toml::from_str(replace_toml) {
         Ok(v) => v,
         Err(e) => {
-            println!("ERROR: Loading Replace.toml failed.");
+            eprintln!("ERROR: Loading Replace.toml failed.");
             panic!("ERROR: {:?}", e);
         }
     };
@@ -132,7 +154,7 @@ fn load_types(types_toml: &str) -> TypesTOML {
     let tt: TypesTOML = match toml::from_str(types_toml) {
         Ok(v) => v,
         Err(e) => {
-            println!("ERROR: Loading Types.toml failed.");
+            eprintln!("ERROR: Loading Types.toml failed.");
             panic!("ERROR: {:?}", e);
         }
     };
