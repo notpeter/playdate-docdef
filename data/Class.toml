@@ -136,12 +136,6 @@ pdxcompatversion = "integer"
 pdxversion = "integer"
 
 
-
-["PowerStatus"]
-charging = "boolean"
-USB = "boolean"
-screws = "boolean"
-
 ["CollisionInfo"] # returned from playdate.graphics.sprite.querySpriteInfoAlongLine
 sprite = "playdate.graphics.sprite"
 entryPoint = "playdate.geometry.point"
@@ -176,10 +170,20 @@ upButtonDown = "fun()|nil"
 upButtonUp = "fun()|nil"
 cranked = "fun(change:number, acceleratedChange:number)|nil"
 
-["Object"] # TODO: Document Object and `class()` global function
+[Object] # TODO: Document Object and `class()` global function
 #class(ClassName, ["properties], [namespace"]).extends(ParentClass)
 
-["Time"] # second level accuracy time.  Used by playdate.file.modtime
+[PowerStatus]
+charging = "boolean"
+USB = "boolean"
+screws = "boolean"
+
+[SystemStats] # Returned from playdate.getStats(); Note the leding spaces on keys. Device only.
+" kernel" = "number"
+" game" = "number"
+" audio" = "number"
+
+[ModTime] # second level accuracy time.  Used by playdate.file.modtime
 year = "integer" # 4-digit year
 month = "integer" # month of the year 1-12
 day = "integer" # day of the month 1-31
