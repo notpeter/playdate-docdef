@@ -1,4 +1,6 @@
 # A simple list of key value replacements for parameter names
+# Hopefully these will be fixed upstream
+
 function = "_function"
 repeat = "_repeat"
 end = "_end"

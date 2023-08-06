@@ -12,16 +12,6 @@ thread = "thread" # unused so far
 table = "table"
 integer = "number" # subtype of number
 float = "number" # subtype of number
-"playdate.graphics.image" = "table"
-"playdate.graphics.sprite" = "table"
-"playdate.geometry.point" = "table"
-"playdate.geometry.lineSegment" = "table"
-"playdate.geometry.rect" = "table"
-"playdate.geometry.polygon" = "table"
-"playdate.geometry.size" = "table"
-"playdate.geometry.vector2D" = "table"
-"playdate.graphics.font" = "table"
-"playdate.geometry.affineTransform" = "table"
 
 [by_name]
 x = "integer"
