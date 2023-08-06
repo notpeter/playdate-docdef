@@ -8,6 +8,7 @@ static TOML_STR_TYPO: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/
 static TOML_STR_INVALID: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 static TOML_STR_TYPES: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Type.toml"));
 static TOML_STR_CLASS: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Class.toml"));
+static TOML_STR_RETURN: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Return.toml"));
 
 lazy_static! {
     pub static ref TYPO: HashMap<String, TypoReplacement> = match toml::from_str(TOML_STR_TYPO) {
@@ -21,6 +22,8 @@ lazy_static! {
 
     pub static ref CLASS: IndexMap<String, IndexMap<String, String>> = match toml::from_str(TOML_STR_CLASS) {
         Ok(v) => v, Err(e) => { panic!("ERROR: Loading Class.toml failed. {:?}", e); } };
+
+    pub static ref RETURN: IndexMap<String, IndexMap<String, String>> = load_return(TOML_STR_RETURN);
 }
 
 #[derive(Deserialize)]
@@ -33,4 +36,21 @@ impl fmt::Display for TypoReplacement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}({})", self.fname, self.parameters.join(", "))
     }
+}
+
+fn load_return(tom_return: &str) -> IndexMap<String, IndexMap<String, String>> {
+    let r : IndexMap<String, IndexMap<String, IndexMap<String, String>>> = match toml::from_str(tom_return) {
+        Ok(v) => v, Err(e) => { panic!("ERROR: Loading Return.toml failed. {:?}", e); }
+    };
+    let mut out: IndexMap<String, IndexMap<String, String>> = IndexMap::new();
+    for (namespace, funcs) in r {
+        for (fname, returns) in funcs {
+            let mut r: IndexMap<String, String> = IndexMap::new();
+            for (ret_name, ret_type) in returns {
+                r.insert(ret_name, ret_type);
+            }
+            out.insert(format!("{namespace}{fname}"), r);
+        }
+    }
+    out
 }

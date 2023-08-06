@@ -1,0 +1,410 @@
+# The SDK documentation does not define these in a machine readable way.
+# These return types have been created by hand by Peter Tripp
+# and subsequent contributors to this repository.
+#
+# Note: This TOML file requires a parser which preserves order of HashMaps.
+#       features = ["preserve_order"] for Rust `toml` crate
+#       will generate IndexMap instead of HashMap.
+#
+# Note: Sections containing "." (nearly all) must be quoted to avoid
+#      being interpreted as nested structures.
+#
+# Note: `= {"x"="integer"}` generates `---@return integer x
+# Note: `= {""="integer"} ` generates `---@return integer
+# Note: `= {}`              generates `---@return nil`
+
+["playdate"]
+".AButtonDown()" = {}
+".AButtonHeld()" = {}
+".AButtonUp()" = {}
+".BButtonDown()" = {}
+".BButtonHeld()" = {}
+".BButtonUp()" = {}
+".GMTTimeFromEpoch(seconds, milliseconds)" = {dt_table="table|DateTime"}
+".accelerometerIsRunning()" = {""="boolean"}
+".apiVersion()" = {"api_version"="integer", "runtime_minimum_api_version"="integer"}
+".buttonIsPressed(button)" = {""="boolean"}
+".buttonJustPressed(button)" = {""="boolean"}
+".buttonJustReleased(button)" = {""="boolean"}
+".cranked(change, acceleratedChange)" = {}
+".crankDocked()" = {}
+".crankUndocked()" = {}
+".deviceDidUnlock()" = {}
+".deviceWillSleep()" = {}
+".deviceWillLock()" = {}
+".downButtonDown()" = {}
+".downButtonUp()" = {}
+".drawFPS(x, y)" = {}
+".epochFromGMTTime(time)" = {seconds="integer", milliseconds="integer"}
+".epochFromTime(time)" = {seconds="integer", milliseconds="integer"}
+".gameWillPause()" = {}
+".gameWillResume()" = {}
+".gameWillTerminate()" = {}
+".getButtonState()" = {current="integer", pressed="integer", released="integer"}
+".getCrankChange()" = {"degrees"="number"}
+".getCrankPosition()" = {"degrees"="number"}
+".getCrankTicks(ticksPerRevolution)" = {"ticks"="number"}
+".getCurrentTimeMilliseconds()" = {milliseconds_active="integer"}
+".getElapsedTime()" = {seconds="number"}
+".getFPS()" = {fps="number"}
+".getFlipped()" = {"flipped"="boolean"}
+".getGMTTime()" = {dt_table="table|DateTime"}
+".getReduceFlashing()" = {"reduceFlashing"="boolean"}
+".getSecondsSinceEpoch()" = {seconds="integer", milliseconds="integer"}
+".getSystemLanguage()" = {"language"="integer"} # 0=en|1=ja
+".getSystemMenu()" = {menu="playdate.menu"}
+".getTime()" = {dt_table="table|DateTime"}
+".inputHandlers.pop()" = {} # TODO: Check if this returns the input handled
+".inputHandlers.push(handler, masksPreviousHandlers)" = {}
+".isCrankDocked()" = {""="boolean"}
+".leftButtonDown()" = {}
+".leftButtonUp()" = {}
+".readAccelerometer()" = {x="number", y="number", z="number"}
+".resetElapsedTime()" = {}
+".rightButtonDown()" = {}
+".rightButtonUp()" = {}
+".setAutoLockDisabled(disable)" = {}
+".setCollectsGarbage(flag)" = {}
+".setCrankSoundsDisabled(disable)" = {}
+".setGCScaling(min, max)" = {}
+".setMenuImage(image, xOffset)" = {}
+".setMinimumGCTime(ms)" = {}
+".setNewlinePrinted(flag)" = {}
+".setStatsInterval(seconds)" = {}
+".shouldDisplay24HourTime()" = {""="boolean"}
+".startAccelerometer()" = {}
+".start()" = {}
+".stopAccelerometer()" = {}
+".stop()" = {}
+".timeFromEpoch(seconds, milliseconds)" = {dt_table="table|DateTime"}
+".upButtonDown()" = {}
+".upButtonUp()" = {}
+".update()" = {}
+".wait(milliseconds)" = {}
+".getStats()" = {stats_table="table|SystemStats"}
+
+["playdate.datastore"]
+".delete(filename)" = {success="boolean"}
+".read(filename)" = {""="table|nil"}
+".readImage(path)" = {""="playdate.graphics.image|nil"}
+".write(tbl, filename, pretty)" = {} # TODO: Check if returns on failure.
+".writeImage(image, path)" = {} # TODO: Check if returns on failure.
+
+["playdate.display"]
+".flush()" = {}
+".getHeight()" = {pixels="integer"}
+".getInverted()" = {inverted="boolean"}
+".getMosaic()" = {x="integer", y="integer"}
+".getOffset()" = {x="integer", y="integer"}
+".getRect()" = {rect="playdate.geometry.rect"}
+".getRefreshRate()" = {fps="integer"}
+".getScale()" = {scale="integer"}
+".getSize()" = {width="integer", height="integer"}
+".getWidth()" = {pixels="integer"}
+".loadImage(path)" = {}
+".setFlipped(x, y)" = {}
+".setInverted(flag)" = {}
+".setMosaic(x, y)" = {}
+".setOffset(x, y)" = {}
+".setRefreshRate(rate)" = {}
+".setScale(scale)" = {}
+
+["playdate.easingFunctions"]
+".linear fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
+".outElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
+".inOutElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
+".outInElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
+".inBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
+".outBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
+".inOutBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
+".outInBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
+".outBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".inOutBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".outInBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
+
+["playdate.file"]
+".delete(path, recursive)" = {success="boolean"}
+".exists(path)" = {""="boolean"}
+".isdir(path)" = {""="boolean"}
+".listFiles(path, showhidden)" = {files="string[]"}
+".load(path, env)" = {""="function"}
+".mkdir(path)" = {} # TODO: Check if this returns. C has returns.
+".getSize(path)" = {"bytes"="integer"}
+".getType(path)" = {""="string"} # TODO: Confirm this.
+".modtime(path)" = {""="ModTime|table"}
+".open(path, mode)" = {"file"="playdate.file.file|nil", "error"="nil|string"}
+".rename(path, newPath)" = {success="boolean"}
+".run(path, env)" = {}
+
+["playdate.file.file"]
+":close()" = {} # TODO: Check if this returns. C has returns.
+":write(string)" = {bytes_written="integer", error="nil|string"}
+":flush()" = {} # TODO: Check if this returns. C has returns.
+":readline()" = {line="string"}
+":read(numberOfBytes)" = {numberOfBytes="integer|nil", error="string"}
+":seek(offset)" = {} # TODO: Check if this returns. C has returns.
+":tell()" = {offset="integer"}
+
+["playdate.geometry.affineTransform"]
+".new" = {transform="playdate.geometry.affineTransform"}
+".new(m11, m12, m21, m22, tx, ty)" = {transform="playdate.geometry.affineTransform"}
+":copy()" = {transform="playdate.geometry.affineTransform"}
+":invert()" = {}
+":reset()" = {}
+":concat(af)" = {}
+":translate(dx, dy)" = {}
+":translatedBy(dx, dy)" = {affineTransform="playdate.geometry.affineTransform"}
+":scale(sx, sy)" = {}
+":scaledBy(sx, sy)" = {affineTransform="playdate.geometry.affineTransform"}
+":rotate(angle, x, y)" = {}
+":rotate(angle, point)" = {}
+":rotatedBy(angle, x, y)" = {affineTransform="playdate.geometry.affineTransform"}
+":rotatedBy(angle, point)" = {affineTransform="playdate.geometry.affineTransform"}
+":skew(sx, sy)" = {}
+":skewedBy(sx, sy)" = {affineTransform="playdate.geometry.affineTransform"}
+":transformPoint(p)" = {}
+":transformedPoint(p)" = {point="playdate.geometry.point"}
+":transformXY(x, y)" = {x="number", y="number"}
+":transformLineSegment(ls)" = {}
+":transformedLineSegment(ls)" = {lineSegment="playdate.geometry.lineSegment"}
+":transformAABB(r)" = {}
+":transformedAABB(r)" = {rect="playdate.geometry.rect"}
+":transformPolygon(p)" = {}
+":transformedPolygon(p)" = {polygon="playdate.geometry.polygon"}
+":__mul(other)" = {affineTransform="playdate.geometry.affineTransform"}
+":__mul(vector)" = {vector="playdate.geometry.vector"}
+":__mul(point)" = {point="playdate.geometry.point"}
+
+["playdate.geometry"]
+".squaredDistanceToPoint(x1, y1, x2, y2)" = {distanceSquared="number"}
+".distanceToPoint(x1, y1, x2, y2)" = {distance="number"}
+
+["playdate.geometry.arc"]
+".new(x, y, radius, startAngle, endAngle, direction)" = {arc="playdate.geometry.arc"}
+":copy()" = {arc="playdate.geometry.arc"}
+":length()" = {""="number"}
+":isClockwise()" = {""="boolean"}
+":setIsClockwise(flag)" = {}
+":pointOnArc(distance, extend)" = {""="playdate.geometry.point"}
+
+["playdate.geometry.lineSegment"]
+".fast_intersection(x1, y1, x2, y2, x3, y3, x4, y4)" = {intersects="boolean", x="number?", y="number?"}
+".new(x1, y1, x2, y2)" = {lineSegment="playdate.geometry.lineSegment"}
+":copy()" = {lineSegment="playdate.geometry.lineSegment"}
+":unpack()" = {x1="number", y1="number", x2="number", y2="number"}
+":length()" = {length="number"}
+":offset(dx, dy)" = {}
+":offsetBy(dx, dy)" = {lineSegment="playdate.geometry.lineSegment"}
+":midPoint()" = {point="playdate.geometry.point"}
+":pointOnLine(distance, extend)" = {point="playdate.geometry.point"}
+":segmentVector()" = {vector="playdate.geometry.vector2D"}
+":closestPointOnLineToPoint(p)" = {point="playdate.geometry.point"}
+":intersectsLineSegment(ls)" = {intersects="boolean", intersection="playdate.geometry.point?"}
+":intersectsPolygon(poly)" = {intersects="boolean", intersectionPoints="playdate.geometry.point[]?"}
+":intersectsRect(rect)" = {intersects="boolean", intersectionPoints="playdate.geometry.point[]?"}
+
+["playdate.geometry.point"]
+"playdate.geometry.point.new(x, y)" = {point="playdate.geometry.point"}
+"playdate.geometry.point:copy()" = {point="playdate.geometry.point"}
+"playdate.geometry.point:unpack()" = {x="number", y="number"}
+"playdate.geometry.point:offset(dx, dy)" = {}
+"playdate.geometry.point:offsetBy(dx, dy)" = {point="playdate.geometry.point"}
+"playdate.geometry.point:squaredDistanceToPoint(p)" = {distanceSquared="number"}
+"playdate.geometry.point:distanceToPoint(p)" = {distance="number"}
+"playdate.geometry.point:__add(v)" = {point="playdate.geometry.point"}
+"playdate.geometry.point:__sub(p2)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.point:__mul(t)" = {point="playdate.geometry.point"}
+"playdate.geometry.point:__concat(p2)" = {lineSegment="playdate.geometry.lineSegment"}
+
+["playdate.geometry.polygon"]
+"playdate.geometry.polygon.new(x1, y1, x2, y2, ...)" = {polygon="playdate.geometry.polygon"}
+"playdate.geometry.polygon.new(p1, p2, ...)" = {polygon="playdate.geometry.polygon"}
+"playdate.geometry.polygon.new(numberOfVertices)" = {polygon="playdate.geometry.polygon"}
+"playdate.geometry.polygon:copy()" = {polygon="playdate.geometry.polygon"}
+"playdate.geometry.polygon:close()" = {}
+"playdate.geometry.polygon:isClosed()" = {""="boolean"}
+"playdate.geometry.polygon:containsPoint(p, fillRule)" = {""="boolean"}
+"playdate.geometry.polygon:containsPoint(x, y, fillRule)" = {""="boolean"}
+"playdate.geometry.polygon:getBounds()" = {x="number", y="number", width="number", height="number"}
+"playdate.geometry.polygon:getBoundsRect()" = {rect="playdate.geometry.rect"}
+"playdate.geometry.polygon:count()" = {""="integer"}
+"playdate.geometry.polygon:length()" = {""="number"}
+"playdate.geometry.polygon:setPointAt(n, x, y)" = {}
+"playdate.geometry.polygon:getPointAt(n)" = {point="playdate.geometry.point"}
+"playdate.geometry.polygon:intersects(p)" = {""="boolean"}
+"playdate.geometry.polygon:pointOnPolygon(distance, extend)" = {point="playdate.geometry.point"}
+"playdate.geometry.polygon:translate(dx, dy)" = {}
+"playdate.geometry.polygon:__mul(t)" = {polygon="playdate.geometry.polygon"}
+
+["playdate.geometry.rect"]
+"playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
+"playdate.geometry.rect.fast_union(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
+"playdate.geometry.rect.new(x, y, width, height)" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect:copy()" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect:toPolygon()" = {polygon="playdate.geometry.polygon"}
+"playdate.geometry.rect:unpack()" = {x="number", y="number", width="number", height="number"}
+"playdate.geometry.rect:isEmpty()" = {""="boolean"}
+"playdate.geometry.rect:isEqual(r2)" = {""="boolean"}
+"playdate.geometry.rect:intersects(r2)" = {""="boolean"}
+"playdate.geometry.rect:intersection(r2)" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect:union(r2)" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect:inset(dx, dy)" = {}
+"playdate.geometry.rect:insetBy(dx, dy)" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect:offset(dx, dy)" = {}
+"playdate.geometry.rect:offsetBy(dx, dy)" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect:containsRect(r2)" = {""="boolean"}
+"playdate.geometry.rect:containsRect(x, y, width, height)" = {""="boolean"}
+"playdate.geometry.rect:containsPoint(p)" = {""="boolean"}
+"playdate.geometry.rect:containsPoint(x, y)" = {""="boolean"}
+"playdate.geometry.rect:centerPoint()" = {"point"="playdate.geometry.point"}
+"playdate.geometry.rect:flipRelativeToRect(r2, flip)" = {}
+
+["playdate.geometry.size"]
+"playdate.geometry.size.new(width, height)" = {size="playdate.geometry.size"}
+"playdate.geometry.size:copy()" = {size="playdate.geometry.size"}
+"playdate.geometry.size:unpack()" = {width="number", height="number"}
+
+["playdate.geometry.vector2D"]
+"playdate.geometry.vector2D.new(x, y)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D.newPolar(length, angle)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:copy()" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:unpack()" = {x="number", y="number"}
+"playdate.geometry.vector2D:addVector(v)" = {}
+"playdate.geometry.vector2D:scale(s)" = {}
+"playdate.geometry.vector2D:scaledBy(s)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:normalize()" = {}
+"playdate.geometry.vector2D:normalized()" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:dotProduct(v)" = {"dotProduct"="number"}
+"playdate.geometry.vector2D:magnitude()" = {"magnitude"="number"}
+"playdate.geometry.vector2D:magnitudeSquared()" = {"magnitudeSquared"="number"}
+"playdate.geometry.vector2D:projectAlong(v)" = {}
+"playdate.geometry.vector2D:projectedAlong(v)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:angleBetween(v)" = {degrees="number"}
+"playdate.geometry.vector2D:leftNormal()" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:rightNormal()" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__unm()" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__add(v2)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__sub(v2)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__mul(s)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__mul(v2)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__mul(t)" = {vector="playdate.geometry.vector2D"}
+"playdate.geometry.vector2D:__div(s)" = {vector="playdate.geometry.vector2D"}
+
+["playdate.graphics"]
+".clear(color)" = {}
+".imageSizeAtPath(path)" = {width="integer", height="integer"} # TODO: Check what happens on failure
+".popContext()" = {}
+".pushContext(image)" = {}
+
+
+["playdate.graphics.animator"]
+".new(duration, startValue, endValue, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
+".new(duration, lineSegment, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
+".new(duration, arc, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
+".new(duration, polygon, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
+".new(durations, parts, easingFunctions, startTimeOffset)" = {animator="playdate.graphics.animator"}
+":currentValue()" = {""="number|playdate.geometry.point"}
+":valueAtTime(time)" = {""="number|playdate.geometry.point"}
+":progress()" = {progress="number"}
+":reset(duration)" = {}
+":ended()" = {""="boolean"}
+
+["playdate.graphics.image"]
+".new(width, height, bgcolor)" = {image="playdate.graphics.image"}
+".new(path)" = {image="playdate.graphics.image|nil", error="string?"}
+":load(path)" = {success="boolean", error="string?"}
+":copy()" = {image="playdate.graphics.image"}
+":getSize()" = {width="integer", height="integer"}
+":draw(x, y, flip, sourceRect)" = {}
+":draw(p, flip, sourceRect)" = {}
+":drawAnchored(x, y, ax, ay, flip)" = {}
+":drawCentered(x, y, flip)" = {}
+":drawIgnoringOffset(x, y, flip)" = {}
+":drawIgnoringOffset(p, flip)" = {}
+":clear(color)" = {}
+":sample(x, y)" = {color="integer"}
+":drawRotated(x, y, angle, scale, yscale)" = {}
+":rotatedImage(angle, scale, yscale)" = {image="playdate.graphics.image"}
+":drawScaled(x, y, scale, yscale)" = {}
+":scaledImage(scale, yscale)" = {image="playdate.graphics.image"}
+":drawWithTransform(xform, x, y)" = {}
+":transformedImage(xform)" = {image="playdate.graphics.image"}
+":drawSampled(x, y, width, height, centerx, centery, dxx, dyx, dxy, dyy, dx, dy, z, tiltAngle, tile)" = {}
+":setMaskImage(maskImage)" = {}
+":getMaskImage()" = {image="playdate.graphics.image"}
+":addMask(opaque)" = {}
+":removeMask()" = {}
+":hasMask()" = {""="boolean"}
+":clearMask(opaque)" = {}
+":drawTiled(x, y, width, height, flip)" = {}
+":drawTiled(rect, flip)" = {}
+":drawBlurred(x, y, radius, numPasses, ditherType, flip, xPhase, yPhase)" = {}
+":drawFaded(x, y, alpha, ditherType)" = {}
+":setInverted(flag)" = {}
+":invertedImage()" = {image="playdate.graphics.image"}
+":blendWithImage(image, alpha, ditherType)" = {image="playdate.graphics.image"}
+":blurredImage(radius, numPasses, ditherType, padEdges, xPhase, yPhase)" = {image="playdate.graphics.image"}
+":fadedImage(alpha, ditherType)" = {image="playdate.graphics.image"}
+":vcrPauseFilterImage()" = {image="playdate.graphics.image"}
+
+["playdate.menu"]
+":addMenuItem(title, callback)" = {}
+":addCheckmarkMenuItem(title, initialValue, callback)" = {}
+":addOptionsMenuItem(title, options, initalValue, callback)" = {}
+":getMenuItems()" = {"menuItems"="playdate.menu.item[]"}
+":removeMenuItem(menuItem)" = {}
+":removeAllMenuItems()" = {}
+
+["playdate.menu.item"]
+":setCallback(callback)" = {}
+":setTitle(newTitle)" = {}
+":getTitle()" = {title="string"}
+":setValue(newValue)" = {}
+":getValue()" = {value="integer|boolean|string"}
+
+["playdate.ui.crankIndicator"]
+".update()" = {}
+".start()" = {}
+
+["table"]
+".indexOfElement(table, element)" = {index="integer|nil"}
+".getsize(table)" = {arrayCount="integer", hashCount="integer"}
+".create(arrayCount, hashCount)" = {""="table"}
+".shallowcopy(source, destination)" = {""="table"} # TODO: Check if destination is returned if provided
+".deepcopy(source)" = {""="table"}
+
+["global"] # TODO: Make sure this gets special handling
+"print(...)" = {}
+"printTable(table)" = {}
+"where()" = {traceback="string"}
+"sample(name, _function)" = {}

@@ -1,7 +1,8 @@
+use indexmap::IndexMap;
 use regex::Regex;
 use lazy_static::lazy_static;
 
-use crate::config::{TYPO, INVALID, PARAM_TYPES};
+use crate::config::{TYPO, INVALID, PARAM_TYPES, RETURN};
 use crate::stub::Stub;
 
 lazy_static! {
@@ -15,10 +16,12 @@ lazy_static! {
     ).unwrap();
 }
 
-// Given a function return a stub with overrides and paramer types applied
+// Given a function return a stub with overrides, parameter types and return types applied
 pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
     let fname: String;
     let mut params: Vec<(String, String)>;
+    // TODO: Fix this. It's a hack to get around borrowing issues.
+    let text = text.clone();
 
     // Apply overrides
     if TYPO.contains_key(anchor) {
@@ -36,11 +39,15 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
         }
     }
 
+    let f = crate::stub::func_signature(&fname, &params);
+    let returns: IndexMap<String, String> = RETURN.get(&f).unwrap_or(&IndexMap::new()).clone();
+
     Stub {
         title: fname,
         anchor: anchor.to_string(),
         text: text.clone(),
         params: params,
+        returns: returns,
     }
 }
 
