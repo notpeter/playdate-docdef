@@ -1,0 +1,188 @@
+[playdate]
+argv = "string[]" # If the simulator is launched from the command line, any extra arguments passed there are available in the playdate.argv array.
+isSimulator = "boolean"
+
+[playdate.easingFunctions]
+
+[playdate.file]
+
+[playdate.file.file] # TODO: Check for fields
+
+[playdate.geometry]
+
+[playdate.geometry.arc]
+x = "integer"
+y = "integer"
+radius = "integer"
+startAngle = "number"
+endAngle = "number"
+direction = "boolean"
+
+[playdate.geometry.lineSegment]
+x1 = "integer"
+y1 = "integer"
+x2 = "integer"
+y2 = "integer"
+
+[playdate.geometry.point]
+x = "number"
+y = "number"
+
+[playdate.geometry.rect]
+x = "number"
+y = "number"
+width = "number"
+height = "number"
+top = "number" # Read-only
+bottom = "number" # Read-only
+left = "number" # Read-only
+right = "number" # Read-only
+size = "playdate.geometry.size" # Read-only
+
+[playdate.geometry.size]
+width = "number"
+height = "number"
+
+[playdate.geometry.vector2D]
+dx = "number"
+dy = "number"
+
+[playdate.graphics]
+
+[playdate.graphics.animation.loop]
+delay = "number"
+startFrame = "integer"
+endFrame = "integer"
+frame = "integer"
+step = "integer"
+shouldLoop = "boolean"
+paused = "boolean"
+
+[playdate.graphics.animation.blinker]
+onDuration = "integer"
+offDuration = "integer"
+loop = "boolean"
+cycles = "integer"
+default = "boolean"
+counter = "integer"
+on = "boolean"
+running = "boolean"
+
+[playdate.graphics.animator]
+repeatCount = "integer"
+reverses = "integer"
+easingAmplitude = "number"
+easingPeriod = "number"
+s = "number|nil"
+a = "number|nil"
+p = "number|nil"
+
+[playdate.graphics.font]
+
+[playdate.graphics.image]
+x = "integer"
+y = "integer"
+width = "integer"
+height = "integer"
+
+[playdate.graphics.imagetable] # TODO: Check for fields
+
+[playdate.graphics.nineSlice]
+innerRect = "playdate.geometry.rect" # Read-only: The inner rectangle of the nine slice.
+minWidth = "integer" # Read-only: The minimum width of the nine slice.
+minHeight = "integer" # Read-only: The minimum height of the nine slice.
+
+[playdate.graphics.sprite]
+x = "integer"
+y = "integer"
+width = "integer"
+height = "integer"
+
+[playdate.graphics.tilemap]
+
+[playdate.graphics.video]
+
+[playdate.inputHandlers]
+
+[playdate.keyboard]
+text = "string"
+
+[playdate.metadata]
+name = "string"
+author = "string"
+description = "string"
+bundleID = "string"
+version = "string"
+buildNumber = "integer"
+imagePath = "string|nil"
+launchSoundPath = "string|nil"
+pdxversion = "integer" # 20000
+contentWarning = "string|nil"
+contentWarning2 = "string|nil"
+
+[playdate.menu]
+
+[playdate.menu.item]
+title = "string"
+value = "integer|boolean|string"
+
+[playdate.ui.crankIndicator]
+clockwise = "boolean"
+
+[playdate.systeminfo]
+buildtime = "string"
+commit = "string"
+pdxcompatversion = "integer"
+pdxversion = "integer"
+
+
+
+[PowerStatus]
+charging = "boolean"
+USB = "boolean"
+screws = "boolean"
+
+[CollisionInfo] # returned from playdate.graphics.sprite.querySpriteInfoAlongLine
+sprite = "playdate.graphics.sprite"
+entryPoint = "playdate.geometry.point"
+exitPoint = "playdate.geometry.point"
+t1 = "number"
+t2 = "number"
+
+[DateTime] # returned by playdate.getTime() and playdate.getGMTTime()
+year = "integer" # 4-digit year
+month = "integer" # month of the year 1-12
+day = "integer" # day of the month 1-31
+weekday = "integer" # day of the week, where 1 is Monday and 7 is Sunday
+hour = "integer" # hour 0-23
+minute = "integer" # minute 0-59
+second = "integer" # second 0-59 (or 60 on a leap second)
+millisecond = "integer" # millisecond 0-999
+
+[InputHandler]
+AButtonDown = "fun()|nil"
+AButtonHeld = "fun()|nil"
+AButtonUp = "fun()|nil"
+BButtonDown = "fun()|nil"
+BButtonHeld = "fun()|nil"
+BButtonUp = "fun()|nil"
+downButtonDown = "fun()|nil"
+downButtonUp = "fun()|nil"
+leftButtonDown = "fun()|nil"
+leftButtonUp = "fun()|nil"
+rightButtonDown = "fun()|nil"
+rightButtonUp = "fun()|nil"
+upButtonDown = "fun()|nil"
+upButtonUp = "fun()|nil"
+cranked = "fun(change:number, acceleratedChange:number)|nil"
+
+[Object] # TODO: Document Object and `class()` global function
+#class(ClassName, [properties], [namespace]).extends(ParentClass)
+
+[Time] # second level accuracy time.  Used by playdate.file.modtime
+year = "integer" # 4-digit year
+month = "integer" # month of the year 1-12
+day = "integer" # day of the month 1-31
+hour = "integer" # hour 0-23
+minute = "integer" # minute 0-59
+second = "integer" # second 0-59 (or 60 on a leap second)

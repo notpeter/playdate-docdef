@@ -6,6 +6,7 @@ use serde::Deserialize;
 static TOML_STR_TYPO: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Typo.toml"));
 static TOML_STR_INVALID: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 static TOML_STR_TYPES: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Type.toml"));
+static TOML_STR_CLASS: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Class.toml"));
 
 lazy_static! {
     pub static ref TYPO: HashMap<String, TypoReplacement> = match toml::from_str(TOML_STR_TYPO) {
@@ -16,6 +17,9 @@ lazy_static! {
 
     pub static ref TYPE: TypesTOML = match toml::from_str(TOML_STR_TYPES) {
         Ok(v) => v, Err(e) => { panic!("ERROR: Loading Type.toml failed. {:?}", e); } };
+
+    pub static ref CLASS: HashMap<String, HashMap<String, String>> = match toml::from_str(TOML_STR_CLASS) {
+        Ok(v) => v, Err(e) => { panic!("ERROR: Loading Class.toml failed. {:?}", e); } };
 }
 
 #[derive(Deserialize)]

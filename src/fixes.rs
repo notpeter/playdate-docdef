@@ -1,9 +1,7 @@
-use std::fmt;
-
 use regex::Regex;
 use lazy_static::lazy_static;
 
-use crate::config::{TYPO, INVALID, TYPE};
+use crate::config::{TYPO, INVALID, TYPE, CLASS};
 use crate::stub::Stub;
 
 lazy_static! {
