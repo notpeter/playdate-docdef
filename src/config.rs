@@ -1,5 +1,6 @@
 use std::{collections::HashMap, fmt};
 
+use indexmap::IndexMap;
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
@@ -15,10 +16,10 @@ lazy_static! {
     pub static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
         Ok(v) => v, Err(e) => { panic!("ERROR: Loading Invalid.toml failed. {:?}", e); } };
 
-    pub static ref TYPE: TypesTOML = match toml::from_str(TOML_STR_TYPES) {
+    pub static ref PARAM_TYPES: HashMap<String, String> = match toml::from_str(TOML_STR_TYPES) {
         Ok(v) => v, Err(e) => { panic!("ERROR: Loading Type.toml failed. {:?}", e); } };
 
-    pub static ref CLASS: HashMap<String, HashMap<String, String>> = match toml::from_str(TOML_STR_CLASS) {
+    pub static ref CLASS: IndexMap<String, IndexMap<String, String>> = match toml::from_str(TOML_STR_CLASS) {
         Ok(v) => v, Err(e) => { panic!("ERROR: Loading Class.toml failed. {:?}", e); } };
 }
 
@@ -32,11 +33,4 @@ impl fmt::Display for TypoReplacement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}({})", self.fname, self.parameters.join(", "))
     }
-}
-
-
-#[derive(Deserialize)]
-pub struct TypesTOML {
-    pub types: HashMap<String, String>, // Array of valid types
-    pub by_name: HashMap<String, String>, // parameter_name=type_name
 }

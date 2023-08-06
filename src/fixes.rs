@@ -1,7 +1,7 @@
 use regex::Regex;
 use lazy_static::lazy_static;
 
-use crate::config::{TYPO, INVALID, TYPE, CLASS};
+use crate::config::{TYPO, INVALID, PARAM_TYPES};
 use crate::stub::Stub;
 
 lazy_static! {
@@ -31,8 +31,8 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     }
     // Apply types from Types.toml
     for (p, t) in params.iter_mut() {
-        if TYPE.by_name.contains_key(p) {
-            *t = TYPE.by_name.get(p).unwrap().to_string();
+        if PARAM_TYPES.contains_key(p) {
+            *t = PARAM_TYPES.get(p).unwrap().to_string();
         }
     }
 

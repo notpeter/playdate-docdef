@@ -1,13 +1,17 @@
+use regex::Regex;
+use scraper::{Selector, CaseSensitivity};
+
 mod args;
+mod class;
 mod config;
 mod fixes;
 mod stub;
 
+use args::Action;
+use class::print_class_defs;
 use fixes::{clean_text, annotate_function};
 use stub::Stub;
 
-use regex::Regex;
-use scraper::{Selector, CaseSensitivity};
 
 
 fn main() {
@@ -96,5 +100,17 @@ fn main() {
             _last_class = title.split(":").next().unwrap_or("").to_string();
         }
     }
-    stub::generate(&stubs, args.action);
+
+    println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
+    if args.action == Action::Annotate {
+        print_class_defs();
+        for stub in stubs {
+            println!("{}", stub.to_lua());
+        }
+    } else if args.action == Action::Stub {
+        for stub in stubs {
+            println!("{}", stub.to_stub());
+        }
+    }
+    println!("--- End of LuaCATS stubs.")
 }

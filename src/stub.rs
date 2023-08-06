@@ -1,5 +1,3 @@
-use crate::args::Action;
-
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug)]
 pub struct Stub {
@@ -10,13 +8,13 @@ pub struct Stub {
 }
 
 impl Stub {
-    fn to_stub(&self) -> String {
+    pub fn to_stub(&self) -> String {
         // TODO decide how to handle variables
         // extract the first element in the tuple contained in the params vec
         let param_names : Vec<String> = self.params.iter().map(|(name, _)| name.clone()).collect::<Vec<String>>();
         String::from(format!("function {}({}) end", self.title, param_names.join(", ")))
     }
-    fn to_lua(&self) -> String {
+    pub fn to_lua(&self) -> String {
         String::from(format!(
             "{}--- https://sdk.play.date/Inside%20Playdate.html#{}\n{}{}\n",
             self.text2comments(),
@@ -46,23 +44,5 @@ impl Stub {
             s.push_str(&format!("---@param {} {}\n", p_name, p_type));
         }
         s
-    }
-}
-
-pub fn generate(stubs: &Vec<Stub>, action: Action) {
-    match action {
-        Action::Stub => {
-            println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-            for stub in stubs {
-                println!("{}", stub.to_stub());
-            }
-        },
-        Action::Annotate => {
-            println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-            for stub in stubs {
-                println!("{}", stub.to_lua());
-            }
-            println!("--- End of LuaCATS stubs.")
-        },
     }
 }

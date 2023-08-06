@@ -1,16 +1,16 @@
-[playdate]
+["playdate"]
 argv = "string[]" # If the simulator is launched from the command line, any extra arguments passed there are available in the playdate.argv array.
 isSimulator = "boolean"
 
-[playdate.easingFunctions]
+["playdate.easingFunctions"]
 
-[playdate.file]
+["playdate.file"]
 
-[playdate.file.file] # TODO: Check for fields
+["playdate.file.file"] # TODO: Check for fields
 
-[playdate.geometry]
+["playdate.geometry"]
 
-[playdate.geometry.arc]
+["playdate.geometry.arc"]
 x = "integer"
 y = "integer"
 radius = "integer"
@@ -18,17 +18,17 @@ startAngle = "number"
 endAngle = "number"
 direction = "boolean"
 
-[playdate.geometry.lineSegment]
+["playdate.geometry.lineSegment"]
 x1 = "integer"
 y1 = "integer"
 x2 = "integer"
 y2 = "integer"
 
-[playdate.geometry.point]
+["playdate.geometry.point"]
 x = "number"
 y = "number"
 
-[playdate.geometry.rect]
+["playdate.geometry.rect"]
 x = "number"
 y = "number"
 width = "number"
@@ -39,17 +39,17 @@ left = "number" # Read-only
 right = "number" # Read-only
 size = "playdate.geometry.size" # Read-only
 
-[playdate.geometry.size]
+["playdate.geometry.size"]
 width = "number"
 height = "number"
 
-[playdate.geometry.vector2D]
+["playdate.geometry.vector2D"]
 dx = "number"
 dy = "number"
 
-[playdate.graphics]
+["playdate.graphics"]
 
-[playdate.graphics.animation.loop]
+["playdate.graphics.animation.loop"]
 delay = "number"
 startFrame = "integer"
 endFrame = "integer"
@@ -58,7 +58,7 @@ step = "integer"
 shouldLoop = "boolean"
 paused = "boolean"
 
-[playdate.graphics.animation.blinker]
+["playdate.graphics.animation.blinker"]
 onDuration = "integer"
 offDuration = "integer"
 loop = "boolean"
@@ -68,7 +68,7 @@ counter = "integer"
 on = "boolean"
 running = "boolean"
 
-[playdate.graphics.animator]
+["playdate.graphics.animator"]
 repeatCount = "integer"
 reverses = "integer"
 easingAmplitude = "number"
@@ -77,37 +77,37 @@ s = "number|nil"
 a = "number|nil"
 p = "number|nil"
 
-[playdate.graphics.font]
+["playdate.graphics.font"]
 
-[playdate.graphics.image]
+["playdate.graphics.image"]
 x = "integer"
 y = "integer"
 width = "integer"
 height = "integer"
 
-[playdate.graphics.imagetable] # TODO: Check for fields
+["playdate.graphics.imagetable"] # TODO: Check for fields
 
-[playdate.graphics.nineSlice]
+["playdate.graphics.nineSlice"]
 innerRect = "playdate.geometry.rect" # Read-only: The inner rectangle of the nine slice.
 minWidth = "integer" # Read-only: The minimum width of the nine slice.
 minHeight = "integer" # Read-only: The minimum height of the nine slice.
 
-[playdate.graphics.sprite]
+["playdate.graphics.sprite"]
 x = "integer"
 y = "integer"
 width = "integer"
 height = "integer"
 
-[playdate.graphics.tilemap]
+["playdate.graphics.tilemap"]
 
-[playdate.graphics.video]
+["playdate.graphics.video"]
 
-[playdate.inputHandlers]
+["playdate.inputHandlers"]
 
-[playdate.keyboard]
+["playdate.keyboard"]
 text = "string"
 
-[playdate.metadata]
+["playdate.metadata"]
 name = "string"
 author = "string"
 description = "string"
@@ -120,16 +120,16 @@ pdxversion = "integer" # 20000
 contentWarning = "string|nil"
 contentWarning2 = "string|nil"
 
-[playdate.menu]
+["playdate.menu"]
 
-[playdate.menu.item]
+["playdate.menu.item"]
 title = "string"
 value = "integer|boolean|string"
 
-[playdate.ui.crankIndicator]
+["playdate.ui.crankIndicator"]
 clockwise = "boolean"
 
-[playdate.systeminfo]
+["playdate.systeminfo"]
 buildtime = "string"
 commit = "string"
 pdxcompatversion = "integer"
@@ -137,19 +137,19 @@ pdxversion = "integer"
 
 
 
-[PowerStatus]
+["PowerStatus"]
 charging = "boolean"
 USB = "boolean"
 screws = "boolean"
 
-[CollisionInfo] # returned from playdate.graphics.sprite.querySpriteInfoAlongLine
+["CollisionInfo"] # returned from playdate.graphics.sprite.querySpriteInfoAlongLine
 sprite = "playdate.graphics.sprite"
 entryPoint = "playdate.geometry.point"
 exitPoint = "playdate.geometry.point"
 t1 = "number"
 t2 = "number"
 
-[DateTime] # returned by playdate.getTime() and playdate.getGMTTime()
+["DateTime"] # returned by playdate.getTime() and playdate.getGMTTime()
 year = "integer" # 4-digit year
 month = "integer" # month of the year 1-12
 day = "integer" # day of the month 1-31
@@ -159,7 +159,7 @@ minute = "integer" # minute 0-59
 second = "integer" # second 0-59 (or 60 on a leap second)
 millisecond = "integer" # millisecond 0-999
 
-[InputHandler]
+["InputHandler"]
 AButtonDown = "fun()|nil"
 AButtonHeld = "fun()|nil"
 AButtonUp = "fun()|nil"
@@ -176,10 +176,10 @@ upButtonDown = "fun()|nil"
 upButtonUp = "fun()|nil"
 cranked = "fun(change:number, acceleratedChange:number)|nil"
 
-[Object] # TODO: Document Object and `class()` global function
-#class(ClassName, [properties], [namespace]).extends(ParentClass)
+["Object"] # TODO: Document Object and `class()` global function
+#class(ClassName, ["properties], [namespace"]).extends(ParentClass)
 
-[Time] # second level accuracy time.  Used by playdate.file.modtime
+["Time"] # second level accuracy time.  Used by playdate.file.modtime
 year = "integer" # 4-digit year
 month = "integer" # month of the year 1-12
 day = "integer" # day of the month 1-31
