@@ -12,6 +12,8 @@ use class::print_class_defs;
 use fixes::{clean_text, annotate_function};
 use stub::Stub;
 
+use crate::fixes::clean_code;
+
 
 
 fn main() {
@@ -27,9 +29,18 @@ fn main() {
     let sel_title = Selector::parse("div.title").unwrap();
     let sel_content = Selector::parse("div.content").unwrap();
 
-    let sel_docs = Selector::parse(concat!("div.paragraph", ",", "div.ulist", ",", "div.admonitionblock", ",", "div.literalblock")).unwrap();
+    let sel_docs = Selector::parse(
+        concat!(
+            "div.paragraph", ",",
+            "div.ulist", ",",
+            "div.admonitionblock", ",",
+            "div.literalblock", ",",
+            "div.listingblock"
+        )
+    ).unwrap();
     let sel_docs_text = Selector::parse("p").unwrap();
     let sel_docs_list = Selector::parse("ul>li").unwrap();
+    let sel_docs_coderay = Selector::parse("code").unwrap();
     let sel_docs_admonition = Selector::parse("table>tbody>tr>td.content").unwrap();
 
     let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
@@ -59,6 +70,15 @@ fn main() {
                         // println!("p: {}", t);
                         text.push(t);
                     });
+                } else if dv.has_class("listingblock", CaseSensitivity::CaseSensitive) {
+                    text.push("```".to_string());
+                    div.select(&sel_docs_coderay).for_each(|d| {
+                        let lines = clean_code(d.text().collect::<String>());
+                        for l in lines {
+                            text.push(l);
+                        }
+                    });
+                    text.push("```".to_string());
                 } else if dv.has_class("ulist", CaseSensitivity::CaseSensitive) {
                     div.select(&sel_docs_list).for_each(|li| {
                         let mut t: String = clean_text(li.text().collect::<String>());

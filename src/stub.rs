@@ -33,13 +33,18 @@ impl Stub {
     fn text2comments(&self) -> String {
         let mut s = String::new();
         let mut i = 0;
+        let mut in_code = false;
         while i < self.text.len() {
-            let this_line = self.text[i].clone();
-            // Bulleted list get fewer newlines. Everything else needs empty lines for proper markdown rendering.
-            if this_line.starts_with("*") && i < self.text.len() - 1 && self.text[i + 1].starts_with("*") {
-                s.push_str(&format!("--- {}\n", this_line));
+            let line = self.text[i].clone();
+            // Bulleted list and code get fewer newlines. Everything else needs empty lines for proper markdown rendering.
+            if in_code || line.starts_with("```") || (line.starts_with("*") && i < self.text.len() - 1 && self.text[i + 1].starts_with("*")) {
+                s.push_str(&format!("--- {}\n", line));
             } else {
-                s.push_str(&format!("--- {}\n---\n", this_line));
+                s.push_str(&format!("--- {}\n---\n", line));
+            }
+            // this is hacky as hell
+            if line == "```" {
+                in_code = !in_code;
             }
             i = i + 1;
         }

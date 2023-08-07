@@ -94,6 +94,15 @@ pub fn clean_text(text: String) -> String {
     tn.to_string()
 }
 
+pub fn clean_code(text: String) -> Vec<String> {
+    let mut lines: Vec<String> = Vec::new();
+    for line in text.lines() {
+        if line.trim() != "" { // remove empty lines in middle of code blocks
+            lines.push(line.to_string());
+        }
+    }
+    lines
+}
 
 fn clean_parameters(title: &String, params: &Vec<(String, String)>) -> Vec<(String, String)> {
     let mut v: Vec<(String, String)> = Vec::new();
