@@ -390,11 +390,11 @@
 ".getDrawOffset()" = {x="integer", y="integer"}
 ".getFont(variant)" = {""="playdate.graphics.font"}
 ".getFontTracking()" = {""="integer"}
-".getImageDrawMode()" = {mode="integer|DrawMode"}
+".getImageDrawMode()" = {draw_mode="integer"} # TODO: DrawMode
 ".getLineWidth()" = {width="integer"}
 ".getLocalizedText(key, language)" = {""="string"}
 ".getScreenClipRect()" = {x="integer", y="integer", width="integer", height="integer"}
-".getStrokeLocation()" = {strokeLocation="integer|StrokeLocation"}
+".getStrokeLocation()" = {strokeLocation="integer"} # TODO: StrokeLocation
 ".getSystemFont(variant)" = {""="playdate.graphics.font"}
 ".getTextSize(str, fontFamily, leadingAdjustment)" = {width="integer", height="integer"}
 ".getTextSizeForMaxWidth(text, maxWidth, leadingAdjustment, font)" = {width="integer", height="integer"}
@@ -569,20 +569,20 @@
 ":clearClipRect()" = {}
 ":clearCollideRect()" = {}
 ":clearStencil()" = {}
-":collisionResponse(other)" = {""="integer|CollisionType"}
+":collisionResponse(other)" = {"collision_type"="integer"} # TODO: CollisionType
 ":collisionsEnabled()" = {""="boolean"}
 ":copy()" = {""="playdate.graphics.sprite"}
 ":draw(x, y, width, height)" = {}
 ":getBounds()" = {x="integer", y="integer", width="integer", height="integer"}
-":getBoundsRect()" = {r="playdate.graphics.rect"}
+":getBoundsRect()" = {r="playdate.geometry.rect"}
 ":getCenter()" = {x="number", y="number"} # each 0.0 to 1.0
-":getCenterPoint()" = {""="playdate.graphics.point"}
+":getCenterPoint()" = {""="playdate.geometry.point"}
 ":getCollideBounds()" = {x="integer", y="integer", width="integer", height="integer"}
-":getCollideRect()" = {r="playdate.graphics.rect"}
+":getCollideRect()" = {r="playdate.geometry.rect"}
 ":getCollidesWithGroupsMask()" = {bitmask="integer"}
 ":getGroupMask()" = {bitmask="integer"}
 ":getImage()" = {""="playdate.graphics.image"}
-":getImageFlip()" = {flip="integer|Flip"}
+":getImageFlip()" = {flip="integer"} # TODO: Flip
 ":getPosition()" = {x="integer", y="integer"}
 ":getRotation()" = {degrees="number"}
 ":getScale()" = {xScale="integer", yScale="integer"}
@@ -774,8 +774,8 @@
 
 ["playdate.sound.sample"]
 ".new(path)" = {""="playdate.sound.sample"}
-".new(seconds, [format])" = {""="playdate.sound.sample"} # TODO: This is incorrectly formatted in source docs.
-":getFormat()" = {""="integer|SoundFormat"}
+".new(seconds, format)" = {""="playdate.sound.sample"} # TODO: This is incorrectly formatted in source docs.
+":getFormat()" = {""="integer"} # TODO: SoundFormat
 ":getLength()" = {"sample_seconds"="number", "buffer_size_seconds"="number"}
 ":getSampleRate()" = {""="integer"} # ex: 44100/22050
 ":getSubsample(startOffset, endOffset)" = {""="playdate.sound.sample"}
@@ -963,8 +963,8 @@
 ":setTranspose(halfsteps)" = {}
 ":setVolume(left, right)" = {}
 
-["playdate.sound.conrolsignal"]
-".new()" = {""="playdate.sound.conrolsignal"}
+["playdate.sound.controlsignal"]
+".new()" = {""="playdate.sound.controlsignal"}
 ":addEvent(step, value, interpolate)" = {}
 ":addEvent(event)" = {}
 ":clearEvents()" = {}
