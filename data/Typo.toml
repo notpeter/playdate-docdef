@@ -173,3 +173,8 @@ parameters = ["..."]
 ["c-frameTimer.updateCallback"]
 fname = "playdate.frameTimer.updateCallback"
 parameters = ["..."]
+
+# instance method not classmethod
+["m-gridview.getSectionHeaderHeight"]
+fname = "playdate.ui.gridview:getSectionHeaderHeight"
+parameters = []

@@ -8,6 +8,15 @@ isSimulator = "boolean"
 
 ["playdate.file.file"] # TODO: Check for fields
 
+["playdate.frameTimer"]
+delay = "integer"
+discardOnCompletion = "boolean"
+duration = "integer"
+frame = "integer"
+repeats = "boolean"
+reverses = "boolean"
+timerEndedArgs = "any[]"
+
 ["playdate.geometry"]
 
 ["playdate.geometry.arc"]
@@ -128,14 +137,74 @@ contentWarning2 = "string|nil"
 title = "string"
 value = "integer|boolean|string"
 
+["playdate.pathfinder"]
+
+["playdate.pathfinder.graph"]
+
+["playdate.pathfinder.node"]
+
+["playdate.simulator"]
+
+["playdate.sound.fileplayer: playdate.sound.source"]
+
+["playdate.sound.source"]
+
+["playdate.sound.sample"]
+
+["playdate.sound.sampleplayer: playdate.sound.source"]
+
+["playdate.sound.synth: playdate.sound.source"]
+
+["playdate.sound.instrument: playdate.sound.source"]
+
+["playdate.sound.effect"]
+["playdate.sound.bitcrusher: playdate.sound.effect"]
+["playdate.sound.twopolefilter: playdate.sound.effect"]
+["playdate.sound.onepolefilter: playdate.sound.effect"]
+["playdate.sound.ringmod: playdate.sound.effect"]
+["playdate.sound.overdrive: playdate.sound.effect"]
+["playdate.sound.delayline: playdate.sound.effect"]
+
+["playdate.sound.delaylinetap: playdate.sound.source"]
+
+["playdate.sound.track"]
+["playdate.sound.instrument"]
+
+["playdate.sound.conrolsignal"]
+events = "ControlSignalEvent[]" # TODO: Fix upstream: should be instance variable (is class)
+
+["playdate.sound.micinput"]
+
+["playdate.string"]
+
+["playdate.systeminfo"] # Undocumented. Observed values listed below
+buildtime = "string" # "20230706_121810"
+commit = "string" # "f5a85fc69f11-2.0.1-release.156292-buildbot"
+pdxcompatversion = "integer" # 10000
+pdxversion = "integer" # 20000
+
+["playdate.timer"]
+currentTime = "integer" # read-only
+delay = "integer"
+discardOnCompletion = "boolean"
+duration = "integer"
+timeLeft = "integer" # read-only
+repeats = "boolean"
+reverses = "boolean"
+timerEndedArgs = "any[]"
+
 ["playdate.ui.crankIndicator"]
 clockwise = "boolean"
 
-["playdate.systeminfo"]
-buildtime = "string"
-commit = "string"
-pdxcompatversion = "integer"
-pdxversion = "integer"
+["playdate.ui.gridview"]
+needsDisplay = "boolean" # read-only
+backgroundImage = "playdate.graphics.image|playdate.graphics.nineSlice"
+isScrolling = "boolean" # read-only
+scrollEasingFunction = "fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number"
+easingAmplitude = "number|nil"
+easingPeriod = "number|nil"
+changeRowOnColumnWrap = "boolean"
+scrollCellsToCenter = "boolean"
 
 ###########################################################################
 # These exists no where in the playdate.* namespace but are the shapes of
@@ -209,3 +278,20 @@ day = "integer" # day of the month 1-31
 hour = "integer" # hour 0-23
 minute = "integer" # minute 0-59
 second = "integer" # second 0-59 (or 60 on a leap second)
+
+[SoundTrackNoteIn] # This can be used for playdate.sound.track:addNote
+step = "integer"
+note = "number|string" # midi note number or note name like "Db3"
+length = "integer"
+velocity = "number"
+
+[SoundTrackNoteOut] # This is what comes back from playdate.sound.track:getNote
+step = "integer"
+note = "number" # always midi note number
+length = "integer"
+velocity = "number"
+
+[ControlSignalEvent]
+step = "integer"
+value = "number"
+interpolate = "boolean|nil" # TODO: Get this documented upstream

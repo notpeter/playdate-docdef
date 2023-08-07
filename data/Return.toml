@@ -682,34 +682,34 @@
 ["playdate.pathfinder"]
 
 ["playdate.pathfinder.graph"]
-# ".new(nodeCount, coordinates)" = {}
-# ".new2DGrid(width, height, allowDiagonals, includedNodes)" = {}
-# ":addNewNode(id, x, y, connectedNodes, weights, addReciprocalConnections)" = {}
-# ":addNewNodes(count)" = {}
-# ":addNode(node, connectedNodes, weights, addReciprocalConnections)" = {}
-# ":addNodes(nodes)" = {}
-# ":allNodes()" = {}
-# ":removeNode(node)" = {}
-# ":removeNodeWithXY(x, y)" = {}
-# ":removeNodeWithID(id)" = {}
-# ":nodeWithID(id)" = {}
-# ":nodeWithXY(x, y)" = {}
-# ":addConnections(connections)" = {}
-# ":addConnectionToNodeWithID(fromNodeID, toNodeID, weight, addReciprocalConnection)" = {}
-# ":removeAllConnections()" = {}
-# ":removeAllConnectionsFromNodeWithID(id, removeIncoming)" = {}
-# ":findPath(startNode, goalNode, heuristicFunction, findPathToGoalAdjacentNodes)" = {}
-# ":findPathWithIDs(startNodeID, goalNodeID, heuristicFunction, findPathToGoalAdjacentNodes)" = {}
-# ":setXYForNodeWithID(id, x, y)" = {}
+".new(nodeCount, coordinates)" = {""="playdate.pathfinder.graph"}
+".new2DGrid(width, height, allowDiagonals, includedNodes)" = {""="playdate.pathfinder.graph"}
+":addConnectionToNodeWithID(fromNodeID, toNodeID, weight, addReciprocalConnection)" = {}
+":addConnections(connections)" = {}
+":addNewNode(id, x, y, connectedNodes, weights, addReciprocalConnections)" = {}
+":addNewNodes(count)" = {}
+":addNode(node, connectedNodes, weights, addReciprocalConnections)" = {}
+":addNodes(nodes)" = {}
+":allNodes()" = {nodes="playdate.pathfinder.node[]"}
+":findPath(startNode, goalNode, heuristicFunction, findPathToGoalAdjacentNodes)" = {nodes="playdate.pathfinder.node[]"}
+":findPathWithIDs(startNodeID, goalNodeID, heuristicFunction, findPathToGoalAdjacentNodes)" = {"node_ids"="integer[]"}
+":nodeWithID(id)" = {node="playdate.pathfinder.node|nil"}
+":nodeWithXY(x, y)" = {node="playdate.pathfinder.node|nil"}
+":removeAllConnections()" = {}
+":removeAllConnectionsFromNodeWithID(id, removeIncoming)" = {}
+":removeNode(node)" = {}
+":removeNodeWithID(id)" = {}
+":removeNodeWithXY(x, y)" = {}
+":setXYForNodeWithID(id, x, y)" = {}
 
 ["playdate.pathfinder.node"]
-# ".node:addConnection(node, weight, addReciprocalConnection)" = {}
-# ".node:addConnections(nodes, weights, addReciprocalConnections)" = {}
-# ".node:addConnectionToNodeWithXY(x, y, weight, addReciprocalConnection)" = {}
-# ".node:connectedNodes()" = {}
-# ".node:removeConnection(node, removeReciprocal)" = {}
-# ".node:removeAllConnections(removeIncoming)" = {}
-# ".node:setXY(x, y)" = {}
+".node:addConnection(node, weight, addReciprocalConnection)" = {}
+".node:addConnections(nodes, weights, addReciprocalConnections)" = {}
+".node:addConnectionToNodeWithXY(x, y, weight, addReciprocalConnection)" = {}
+".node:connectedNodes()" = {nodes="playdate.pathfinder.node[]"}
+".node:removeConnection(node, removeReciprocal)" = {}
+".node:removeAllConnections(removeIncoming)" = {}
+".node:setXY(x, y)" = {}
 
 ["playdate.simulator"]
 ".getURL(url)" = {url_contents="string"} # TODO: check if it returns nil on failure.
@@ -727,329 +727,333 @@
 ".setOutputsActive(headphones, speaker)" = {}
 
 ["playdate.sound.sampleplayer"]
-# ".new(path)" = {}
-# ".new(sample)" = {}
-# ":copy()" = {}
-# ":play(repeatCount, rate)" = {}
-# ":playAt(when, vol, rightvol, rate)" = {}
-# ":setVolume(left, right)" = {}
-# ":getVolume()" = {}
-# ":setLoopCallback(callback, arg)" = {}
-# ":setPlayRange(start, _end)" = {}
-# ":setPaused(flag)" = {}
-# ":isPlaying()" = {}
-# ":stop()" = {}
-# ":setFinishCallback(func, arg)" = {}
-# ":setSample(sample)" = {}
-# ":getSample()" = {}
-# ":getLength()" = {}
-# ":setRate(rate)" = {}
-# ":getRate()" = {}
-# ":setRateMod(signal)" = {}
-# ":setOffset(seconds)" = {}
-# ":getOffset()" = {}
+".new(path)" = {""="playdate.sound.sampleplayer"}
+".new(sample)" = {""="playdate.sound.sampleplayer"}
+":copy()" = {""="playdate.sound.sampleplayer"}
+":play(repeatCount, rate)" = {}
+":playAt(when, vol, rightvol, rate)" = {}
+":setVolume(left, right)" = {}
+":getVolume()" = {left_or_mono="number", right="number|nil"}
+":setLoopCallback(callback, arg)" = {}
+":setPlayRange(start, _end)" = {}
+":setPaused(flag)" = {}
+":isPlaying()" = {""="boolean"}
+":stop()" = {}
+":setFinishCallback(func, arg)" = {}
+":setSample(sample)" = {}
+":getSample()" = {""="playdate.sound.sample"}
+":getLength()" = {seconds="number"}
+":setRate(rate)" = {}
+":getRate()" = {rate="number"}
+":setRateMod(signal)" = {}
+":setOffset(seconds)" = {}
+":getOffset()" = {seconds="number"}
 
 ["playdate.sound.fileplayer"]
-# ".new(buffersize)" = {}
-# ".new(path, buffersize)" = {}
-# ":load(path)" = {}
-# ":play(repeatCount)" = {}
-# ":stop()" = {}
-# ":pause()" = {}
-# ":isPlaying()" = {}
-# ":getLength()" = {}
-# ":setFinishCallback(func, arg)" = {}
-# ":didUnderrun()" = {}
-# ":setStopOnUnderrun(flag)" = {}
-# ":setLoopRange(start, _end, loopCallback, arg)" = {}
-# ":setLoopCallback(callback, arg)" = {}
-# ":setBufferSize(seconds)" = {}
-# ":setRate(rate)" = {}
-# ":getRate()" = {}
-# ":setRateMod(signal)" = {}
-# ":setVolume(left, right, fadeSeconds, fadeCallback, arg)" = {}
-# ":getVolume()" = {}
-# ":setOffset(seconds)" = {}
-# ":getOffset()" = {}
+".new(buffersize)" = {""="playdate.sound.fileplayer"}
+".new(path, buffersize)" = {""="playdate.sound.fileplayer"}
+":didUnderrun()" = {""="boolean"}
+":getLength()" = {"seconds"="number"}
+":getOffset()" = {seconds="number"}
+":getRate()" = {"rate"="number"}
+":getVolume()" = {left_or_mono="number", right="number|nil"}
+":isPlaying()" = {""="boolean"}
+":load(path)" = {} # TODO: Check if returns success/failure
+":pause()" = {}
+":play(repeatCount)" = {success="boolean", error="string|nil"}
+":setBufferSize(seconds)" = {}
+":setFinishCallback(func, arg)" = {}
+":setLoopCallback(callback, arg)" = {}
+":setLoopRange(start, _end, loopCallback, arg)" = {}
+":setOffset(seconds)" = {}
+":setRate(rate)" = {}
+":setRateMod(signal)" = {}
+":setStopOnUnderrun(flag)" = {}
+":setVolume(left, right, fadeSeconds, fadeCallback, arg)" = {}
+":stop()" = {}
 
 ["playdate.sound.sample"]
-# ".new(path)" = {}
-# ":getSubsample(startOffset, endOffset)" = {}
-# ":load(path)" = {}
-# ":getSampleRate()" = {}
-# ":getFormat()" = {}
-# ":getLength()" = {}
-# ":play(repeatCount, rate)" = {}
-# ":playAt(when, vol, rightvol, rate)" = {}
-# ":save(filename)" = {}
+".new(path)" = {""="playdate.sound.sample"}
+".new(seconds, [format])" = {""="playdate.sound.sample"} # TODO: This is incorrectly formatted in source docs.
+":getFormat()" = {""="integer|SoundFormat"}
+":getLength()" = {"sample_seconds"="number", "buffer_size_seconds"="number"}
+":getSampleRate()" = {""="integer"} # ex: 44100/22050
+":getSubsample(startOffset, endOffset)" = {""="playdate.sound.sample"}
+":load(path)" = {""="boolean|nil"} # TODO: Validate what happens when sample correctly loads. (boolean?) nil=fail
+":play(repeatCount, rate)" = {}
+":playAt(when, vol, rightvol, rate)" = {}
+":save(filename)" = {} # TODO: Validate what happens if this fails
 
 ["playdate.sound.channel"]
-# ".new()" = {}
-# ":remove()" = {}
-# ":addEffect(effect)" = {}
-# ":removeEffect(effect)" = {}
-# ":addSource(source)" = {}
-# ":removeSource(source)" = {}
-# ":setVolume(volume)" = {}
-# ":getVolume()" = {}
-# ":setPan(pan)" = {}
-# ":setPanMod(signal)" = {}
-# ":setVolumeMod(signal)" = {}
+".new()" = {""="playdate.sound.channel"}
+":remove()" = {}
+":addEffect(effect)" = {}
+":removeEffect(effect)" = {}
+":addSource(source)" = {}
+":removeSource(source)" = {}
+":setVolume(volume)" = {}
+":getVolume()" = {"volume"="number"}
+":setPan(pan)" = {"pan"="number"}
+":setPanMod(signal)" = {}
+":setVolumeMod(signal)" = {}
 
 ["playdate.sound.source"] # parent class to fileplayer,sampleplayer,synth,instrumnet
 
 ["playdate.sound.synth"]
-# ".new(waveform)" = {}
-# ".new(sample, sustainStart, sustainEnd)" = {}
-# ":copy()" = {}
-# ":playNote(pitch, volume, length, when)" = {}
-# ":playMIDINote(note, volume, length, when)" = {}
-# ":noteOff()" = {}
-# ":stop()" = {}
-# ":isPlaying()" = {}
-# ":setAmplitudeMod(signal)" = {}
-# ":setADSR(attack, decay, sustain, release, curvature)" = {}
-# ":setAttack(time)" = {}
-# ":setDecay(time)" = {}
-# ":setSustain(level)" = {}
-# ":setRelease(time)" = {}
-# ":setEnvelopeCurvature(amount)" = {}
-# ":getEnvelope()" = {}
-# ":setFinishCallback(_function)" = {}
-# ":setFrequencyMod(signal)" = {}
-# ":setLegato(flag)" = {}
-# ":setParameter(parameter, value)" = {}
-# ":setParameterMod(parameter, signal)" = {}
-# ":setVolume(left, right)" = {}
-# ":getVolume()" = {}
-# ":setWaveform(waveform)" = {}
+".new(sample, sustainStart, sustainEnd)" = {""="playdate.sound.synth"}
+".new(waveform)" = {""="playdate.sound.synth"}
+":copy()" = {""="playdate.sound.synth"}
+":getEnvelope()" = {""="playdate.sound.envelope"}
+":getVolume()" = {left_or_mono="number", right="number|nil"}
+":isPlaying()" = {""="boolean"}
+":noteOff()" = {}
+":playMIDINote(note, volume, length, when)" = {success="boolean"}
+":playNote(pitch, volume, length, when)" = {success="boolean"}
+":setADSR(attack, decay, sustain, release, curvature)" = {}
+":setAmplitudeMod(signal)" = {}
+":setAttack(time)" = {}
+":setDecay(time)" = {}
+":setEnvelopeCurvature(amount)" = {}
+":setFinishCallback(_function)" = {}
+":setFrequencyMod(signal)" = {}
+":setLegato(flag)" = {}
+":setParameter(parameter, value)" = {}
+":setParameterMod(parameter, signal)" = {}
+":setRelease(time)" = {}
+":setSustain(level)" = {}
+":setVolume(left, right)" = {}
+":setWaveform(waveform)" = {}
+":stop()" = {}
 
 ["playdate.sound.signal"]
 ".signal:setOffset(offset)" = {}
 ".signal:setScale(scale)" = {}
 
 ["playdate.sound.lfo"]
-# ".new(type)" = {}
-# ":setType(type)" = {}
-# ":setArpeggio(note1, ...)" = {}
-# ":setCenter(center)" = {}
-# ":setDepth(depth)" = {}
-# ":setRate(rate)" = {}
-# ":setPhase(phase)" = {}
-# ":setGlobal(flag)" = {}
-# ":setRetrigger(flag)" = {}
-# ":setDelay(holdoff, ramp)" = {}
+".new(type)" = {""="playdate.sound.lfo"}
+":setArpeggio(note1, ...)" = {}
+":setCenter(center)" = {}
+":setDelay(holdoff, ramp)" = {}
+":setDepth(depth)" = {}
+":setGlobal(flag)" = {}
+":setPhase(phase)" = {}
+":setRate(rate)" = {}
+":setRetrigger(flag)" = {}
+":setType(type)" = {}
 
 ["playdate.sound.envelope"]
-# ".new(attack, decay, sustain, release)" = {}
-# ":setAttack(attack)" = {}
-# ":setDecay(decay)" = {}
-# ":setSustain(sustain)" = {}
-# ":setRelease(release)" = {}
-# ":setCurvature(amount)" = {}
-# ":setVelocitySensitivity(amount)" = {}
-# ":setRateScaling(scaling, start, _end)" = {}
-# ":setScale(scale)" = {}
-# ":setOffset(offset)" = {}
-# ":setLegato(flag)" = {}
-# ":setRetrigger(flag)" = {}
-# ":trigger(velocity, length)" = {}
-# ":setGlobal(flag)" = {}
+".new(attack, decay, sustain, release)" = {""="playdate.sound.envelope"}
+":setAttack(attack)" = {}
+":setDecay(decay)" = {}
+":setSustain(sustain)" = {}
+":setRelease(release)" = {}
+":setCurvature(amount)" = {}
+":setVelocitySensitivity(amount)" = {}
+":setRateScaling(scaling, start, _end)" = {}
+":setScale(scale)" = {}
+":setOffset(offset)" = {}
+":setLegato(flag)" = {}
+":setRetrigger(flag)" = {}
+":trigger(velocity, length)" = {}
+":setGlobal(flag)" = {}
+
+["playdate.sound.effect"]
 
 ["playdate.sound.bitcrusher"]
-# ".new()" = {}
-# ":setMix(level)" = {}
-# ":setMixMod(signal)" = {}
-# ":setAmount(amt)" = {}
-# ":setAmountMod(signal)" = {}
-# ":setUndersampling(amt)" = {}
-# ":setUndersamplingMod(signal)" = {}
+".new()" = {""="playdate.sound.bitcrusher"}
+":setMix(level)" = {}
+":setMixMod(signal)" = {}
+":setAmount(amt)" = {}
+":setAmountMod(signal)" = {}
+":setUndersampling(amt)" = {}
+":setUndersamplingMod(signal)" = {}
 
 ["playdate.sound.ringmod"]
-# ".new()" = {}
-# ":setMix(level)" = {}
-# ":setMixMod(signal)" = {}
-# ":setFrequency(f)" = {}
-# ":setFrequencyMod(signal)" = {}
+".new()" = {""="playdate.sound.ringmod"}
+":setFrequency(f)" = {}
+":setFrequencyMod(signal)" = {}
+":setMix(level)" = {}
+":setMixMod(signal)" = {}
 
 ["playdate.sound.onepolefilter"]
-# ".new()" = {}
-# ":setMix(level)" = {}
-# ":setMixMod(signal)" = {}
-# ":setParameter(p)" = {}
-# ":setParameterMod(m)" = {}
+".new()" = {""="playdate.sound.onepolefilter"}
+":setMix(level)" = {}
+":setMixMod(signal)" = {}
+":setParameter(p)" = {}
+":setParameterMod(m)" = {}
 
 ["playdate.sound.twopolefilter"]
-# ".new(type)" = {}
-# ":setMix(level)" = {}
-# ":setMixMod(signal)" = {}
-# ":setFrequency(f)" = {}
-# ":setFrequencyMod(signal)" = {}
-# ":setResonance(r)" = {}
-# ":setResonanceMod(signal)" = {}
-# ":setGain(g)" = {}
-# ":setType(type)" = {}
+".new(type)" = {""="playdate.sound.twopolefilter"}
+":setMix(level)" = {}
+":setMixMod(signal)" = {}
+":setFrequency(f)" = {}
+":setFrequencyMod(signal)" = {}
+":setResonance(r)" = {}
+":setResonanceMod(signal)" = {}
+":setGain(g)" = {}
+":setType(type)" = {}
 
 ["playdate.sound.overdrive"]
-# ".new()" = {}
-# ":setMix(level)" = {}
-# ":setMixMod(signal)" = {}
-# ":setGain(level)" = {}
-# ":setLimit(level)" = {}
-# ":setLimitMod(signal)" = {}
-# ":setOffset(level)" = {}
-# ":setOffsetMod(signal)" = {}
+".new()" = {""="playdate.sound.overdrive"}
+":setGain(level)" = {}
+":setLimit(level)" = {}
+":setLimitMod(signal)" = {}
+":setMix(level)" = {}
+":setMixMod(signal)" = {}
+":setOffset(level)" = {}
+":setOffsetMod(signal)" = {}
 
 ["playdate.sound.delayline"]
-# ".new(length)" = {}
-# ":setMix(level)" = {}
-# ":setMixMod(signal)" = {}
-# ":addTap(delay)" = {}
-# ":setFeedback(level)" = {}
-# ":setDelay(time)" = {}
-# ":setDelayMod(signal)" = {}
-# ":setVolume(level)" = {}
-# ":getVolume()" = {}
-# ":setFlipChannels(flag)" = {}
+".new(length)" = {""="playdate.sound.delayline"}
+":addTap(delay)" = {}
+":setFeedback(level)" = {}
+":setMix(level)" = {}
+":setMixMod(signal)" = {}
+
+["playdate.sound.delaylinetap"]
+":getVolume()" = {volume="number"}
+":setDelay(time)" = {}
+":setDelayMod(signal)" = {}
+":setFlipChannels(flag)" = {}
+":setVolume(level)" = {}
 
 ["playdate.sound.sequence"]
-# ".new(midi_path)" = {}
-# ":play(finishCallback)" = {}
-# ":stop()" = {}
-# ":isPlaying()" = {}
-# ":getLength()" = {}
-# ":goToStep(step, play)" = {}
-# ":getCurrentStep()" = {}
-# ":setTempo(stepsPerSecond)" = {}
-# ":getTempo()" = {}
-# ":setLoops(startStep, endStep, loopCount)" = {}
-# ":setLoops(loopCount)" = {}
-# ":getTrackCount()" = {}
-# ":addTrack(track)" = {}
-# ":setTrackAtIndex(n, track)" = {}
-# ":getTrackAtIndex(n)" = {}
-# ":allNotesOff()" = {}
+".new(midi_path)" = {""="playdate.sound.sequence"}
+":play(finishCallback)" = {}
+":stop()" = {}
+":isPlaying()" = {""="boolean"}
+":getLength()" = {steps="number"}
+":goToStep(step, play)" = {}
+":getCurrentStep()" = {step="number"}
+":setTempo(stepsPerSecond)" = {}
+":getTempo()" = {steps_per_second="number"}
+":setLoops(startStep, endStep, loopCount)" = {}
+":setLoops(loopCount)" = {}
+":getTrackCount()" = {tracks="integer"}
+":addTrack(track)" = {}
+":setTrackAtIndex(n, track)" = {}
+":getTrackAtIndex(n)" = {""="playdate.sound.track"}
+":allNotesOff()" = {}
 
 ["playdate.sound.track"]
-# ".new()" = {}
-# ":addNote(step, note, length, velocity)" = {}
-# ":addNote(table)" = {}
-# ":setNotes(list)" = {}
-# ":getNotes(step, endstep)" = {}
-# ":removeNote(step, note)" = {}
-# ":clearNotes()" = {}
-# ":getLength()" = {}
-# ":getNotesActive()" = {}
-# ":getPolyphony()" = {}
-# ":setInstrument(inst)" = {}
-# ":getInstrument()" = {}
-# ":setMuted(flag)" = {}
-# ":addControlSignal(s)" = {}
-# ":getControlSignals()" = {}
+".new()" = {""="playdate.sound.track"}
+":addControlSignal(s)" = {}
+":addNote(step, note, length, velocity)" = {}
+":addNote(table)" = {}
+":clearNotes()" = {}
+":getControlSignals()" = {""="playdate.sound.controlsignal[]"}
+":getInstrument()" = {""="playdate.sound.instrument"}
+":getLength()" = {steps="integer"}
+":getNotes(step, endstep)" = {notes="SoundTrackNoteOut[]"}
+":getNotesActive()" = {active_notes="integer"}
+":getPolyphony()" = {max_active_notes="integer"}
+":removeNote(step, note)" = {}
+":setInstrument(inst)" = {}
+":setMuted(flag)" = {}
+":setNotes(list)" = {}
 
 ["playdate.sound.instrument"]
-# ".new(synth)" = {}
-# ":addVoice(v, note, rangeend, transpose)" = {}
-# ":setTranspose(halfsteps)" = {}
-# ":playNote(frequency, vel, length, when)" = {}
-# ":playMIDINote(note, vel, length, when)" = {}
-# ":noteOff(note, when)" = {}
-# ":allNotesOff()" = {}
-# ":setVolume(left, right)" = {}
-# ":getVolume()" = {}
+".new(synth)" = {""="playdate.sound.instrument"}
+":addVoice(v, note, rangeend, transpose)" = {}
+":allNotesOff()" = {}
+":getVolume()" = {left_or_mono="number", right="number|nil"}
+":noteOff(note, when)" = {}
+":playMIDINote(note, vel, length, when)" = {}
+":playNote(frequency, vel, length, when)" = {}
+":setTranspose(halfsteps)" = {}
+":setVolume(left, right)" = {}
 
 ["playdate.sound.conrolsignal"]
-# ".new()" = {}
-# ":addEvent(step, value, interpolate)" = {}
-# ":addEvent(event)" = {}
-# ":clearEvents()" = {}
-# ":setControllerType(number)" = {}
-# ":getControllerType()" = {}
+".new()" = {""="playdate.sound.conrolsignal"}
+":addEvent(step, value, interpolate)" = {}
+":addEvent(event)" = {}
+":clearEvents()" = {}
+":setControllerType(number)" = {}
+":getControllerType()" = {controller_type="integer"}
 
 ["playdate.sound.micinput"]
-# ".recordToSample(buffer, completionCallback)" = {}
-# ".stopRecording()" = {}
-# ".startListening()" = {}
-# ".stopListening()" = {}
-# ".getLevel()" = {}
-# ".getSource()" = {}
+".getLevel()" = {""="number"} # 0.0-1.0
+".getSource()" = {"headset_or_device"="string"} # "headset" or "device"
+".recordToSample(buffer, completionCallback)" = {}
+".startListening()" = {}
+".stopListening()" = {}
+".stopRecording()" = {}
 
 ["playdate.string"]
-# ".UUID(length)" = {}
-# ".trimWhitespace(string)" = {}
-# ".trimLeadingWhitespace(string)" = {}
-# ".trimTrailingWhitespace(string)" = {}
+".UUID(length)" = {"uppercase_letters"="string"}
+".trimWhitespace(string)" = {""="string"}
+".trimLeadingWhitespace(string)" = {""="string"}
+".trimTrailingWhitespace(string)" = {""="string"}
 
 ["playdate.timer"]
-# ".updateTimers()" = {}
-# ".new(duration, callback, ...)" = {}
-# ".performAfterDelay(delay, callback, ...)" = {}
-# ".new(duration, startValue, endValue, easingFunction)" = {}
-# ".keyRepeatTimer(callback, ...)" = {}
-# ".keyRepeatTimerWithDelay(delayAfterInitialFiring, delayAfterSecondFiring, callback, ...)" = {}
-# ":pause()" = {}
-# ":start()" = {}
-# ":remove()" = {}
-# ":reset()" = {}
-# ".allTimers()" = {}
+".allTimers()" = {}
+".keyRepeatTimer(callback, ...)" = {}
+".keyRepeatTimerWithDelay(delayAfterInitialFiring, delayAfterSecondFiring, callback, ...)" = {}
+".new(duration, callback, ...)" = {""="playdate.timer"}
+".new(duration, startValue, endValue, easingFunction)" = {}
+".performAfterDelay(delay, callback, ...)" = {}
+".updateTimers()" = {}
+":pause()" = {}
+":remove()" = {}
+":reset()" = {}
+":start()" = {}
 
 ["playdate.frameTimer"]
-# ".updateTimers()" = {}
-# ".new(duration, callback, ...)" = {}
-# ".performAfterDelay(delay, callback, ...)" = {}
-# ".new(duration, startValue, endValue, easingFunction)" = {}
-# ":pause()" = {}
-# ":start()" = {}
-# ":remove()" = {}
-# ":reset()" = {}
-# ".allTimers()" = {}
+".allTimers()" = {""="playdate.frameTimer[]"}
+".new(duration, callback, ...)" = {""="playdate.frameTimer"}
+".new(duration, startValue, endValue, easingFunction)" = {""="playdate.frameTimer"}
+".performAfterDelay(delay, callback, ...)" = {}
+".updateTimers()" = {}
+":pause()" = {}
+":remove()" = {}
+":reset()" = {}
+":start()" = {}
 
 ["playdate.ui"]
-
-["playdate.ui.gridview"]
-# ".new(cellWidth, cellHeight)" = {}
-# ":drawCell(section, row, column, selected, x, y, width, height)" = {}
-# ":drawSectionHeader(section, x, y, width, height)" = {}
-# ":drawHorizontalDivider(x, y, width, height)" = {}
-# ":drawInRect(x, y, width, height)" = {}
-# ":setNumberOfSections(num)" = {}
-# ":getNumberOfSections()" = {}
-# ":setNumberOfRowsInSection(section, num)" = {}
-# ":getNumberOfRowsInSection(section)" = {}
-# ":setNumberOfColumns(num)" = {}
-# ":getNumberOfColumns()" = {}
-# ":setNumberOfRows(...)" = {}
-# ":setCellSize(cellWidth, cellHeight)" = {}
-# ":setCellPadding(left, right, top, bottom)" = {}
-# ":setContentInset(left, right, top, bottom)" = {}
-# ":getCellBounds(section, row, column, gridWidth)" = {}
-# ":setSectionHeaderHeight(height)" = {}
-# ".getSectionHeaderHeight()" = {}
-# ":setSectionHeaderPadding(left, right, top, bottom)" = {}
-# ":setHorizontalDividerHeight(height)" = {}
-# ":getHorizontalDividerHeight()" = {}
-# ":addHorizontalDividerAbove(section, row)" = {}
-# ":removeHorizontalDividers()" = {}
-# ":setScrollDuration(ms)" = {}
-# ":setScrollPosition(x, y, animated)" = {}
-# ":getScrollPosition()" = {}
-# ":scrollToCell(section, row, column, animated)" = {}
-# ":scrollCellToCenter(section, row, column, animated)" = {}
-# ":scrollToRow(row, animated)" = {}
-# ":scrollToTop(animated)" = {}
-# ":setSelection(section, row, column)" = {}
-# ":getSelection()" = {}
-# ":setSelectedRow(row)" = {}
-# ":getSelectedRow()" = {}
-# ":selectNextRow(wrapSelection, scrollToSelection, animate)" = {}
-# ":selectPreviousRow(wrapSelection, scrollToSelection, animate)" = {}
-# ":selectNextColumn(wrapSelection, scrollToSelection, animate)" = {}
-# ":selectPreviousColumn(wrapSelection, scrollToSelection, animate)" = {}
-
 
 ["playdate.ui.crankIndicator"]
 ".update()" = {}
 ".start()" = {}
+
+["playdate.ui.gridview"]
+".new(cellWidth, cellHeight)" = {""="playdate.ui.gridview"}
+":addHorizontalDividerAbove(section, row)" = {}
+":drawCell(section, row, column, selected, x, y, width, height)" = {}
+":drawHorizontalDivider(x, y, width, height)" = {}
+":drawInRect(x, y, width, height)" = {}
+":drawSectionHeader(section, x, y, width, height)" = {}
+":getCellBounds(section, row, column, gridWidth)" = {x="integer", y="integer", width="integer", height="integer"}
+":getHorizontalDividerHeight()" = {height="integer"}
+":getNumberOfColumns()" = {columns="integer"}
+":getNumberOfRowsInSection(section)" = {rows="integer"}
+":getNumberOfSections()" = {sections="integer"}
+":getScrollPosition()" = {x="integer", y="integer"}
+":getSectionHeaderHeight()" = {""="integer"}
+":getSelectedRow()" = {row="integer"}
+":getSelection()" = {section="integer", row="integer", column="integer"}
+":removeHorizontalDividers()" = {}
+":scrollCellToCenter(section, row, column, animated)" = {}
+":scrollToCell(section, row, column, animated)" = {}
+":scrollToRow(row, animated)" = {}
+":scrollToTop(animated)" = {}
+":selectNextColumn(wrapSelection, scrollToSelection, animate)" = {}
+":selectNextRow(wrapSelection, scrollToSelection, animate)" = {}
+":selectPreviousColumn(wrapSelection, scrollToSelection, animate)" = {}
+":selectPreviousRow(wrapSelection, scrollToSelection, animate)" = {}
+":setCellPadding(left, right, top, bottom)" = {}
+":setCellSize(cellWidth, cellHeight)" = {}
+":setContentInset(left, right, top, bottom)" = {}
+":setHorizontalDividerHeight(height)" = {}
+":setNumberOfColumns(num)" = {}
+":setNumberOfRows(...)" = {}
+":setNumberOfRowsInSection(section, num)" = {}
+":setNumberOfSections(num)" = {}
+":setScrollDuration(ms)" = {}
+":setScrollPosition(x, y, animated)" = {}
+":setSectionHeaderHeight(height)" = {}
+":setSectionHeaderPadding(left, right, top, bottom)" = {}
+":setSelectedRow(row)" = {}
+":setSelection(section, row, column)" = {}
 
 ["table"]
 ".indexOfElement(table, element)" = {index="integer|nil"}
