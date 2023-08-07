@@ -64,16 +64,23 @@ pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
 
     let params_str = caps.name("params").unwrap().as_str();
     let fname = caps.name("fname").unwrap().as_str();
+    let mut optional = false;
     if params_str.trim() != "" {
         for p in params_str.split(",") {
             let mut param_name = p.trim().to_string();
-            //For parameters with brackets, change the type to be optional "any?"
-            if param_name.contains("]") || param_name.contains("[") {
+            // once with hit an open bracket every param afterwards is optional
+            // TODO: technically there's like one func(a, [b], callback) but let's ignore that.
+            if param_name.contains("[") {
+                optional = true;
+            }
+            if optional {
+                // strip the brackets
                 param_name = param_name.clone().replace("[", "").replace("]", "").trim().to_string();
+                // add the optional ? to param name
                 param_name = format!("{}?", param_name);
             }
             params.push((param_name.clone(), "any".to_string()));
-            // Ignore parameters shown in docs after the ...
+            // Ignore parameters shown in docs after the ... like: fun(a1, a2, ..., aN)
             if param_name == "..." || param_name == "...?" {
                 break;
             }
