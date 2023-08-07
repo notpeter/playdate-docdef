@@ -102,8 +102,8 @@
 
 ["playdate.datastore"]
 ".delete(filename)" = {success="boolean"}
-".read(filename)" = {""="table|nil"}
-".readImage(path)" = {""="playdate.graphics.image|nil"}
+".read(filename)" = {""="table?"}
+".readImage(path)" = {""="playdate.graphics.image?"}
 ".write(tbl, filename, pretty)" = {} # TODO: Check if returns on failure.
 ".writeImage(image, path)" = {} # TODO: Check if returns on failure.
 
@@ -179,16 +179,16 @@
 ".getSize(path)" = {"bytes"="integer"}
 ".getType(path)" = {""="string"} # TODO: Confirm this.
 ".modtime(path)" = {""="ModTime|table"}
-".open(path, mode)" = {"file"="playdate.file.file|nil", "error"="nil|string"}
+".open(path, mode)" = {"file"="playdate.file.file?", "error"="string?"}
 ".rename(path, newPath)" = {success="boolean"}
 ".run(path, env)" = {}
 
 ["playdate.file.file"]
 ":close()" = {} # TODO: Check if this returns. C has returns.
-":write(string)" = {bytes_written="integer", error="nil|string"}
+":write(string)" = {bytes_written="integer", error="string?"}
 ":flush()" = {} # TODO: Check if this returns. C has returns.
 ":readline()" = {line="string"}
-":read(numberOfBytes)" = {numberOfBytes="integer|nil", error="string"}
+":read(numberOfBytes)" = {numberOfBytes="integer", error="string"}
 ":seek(offset)" = {} # TODO: Check if this returns. C has returns.
 ":tell()" = {offset="integer"}
 
@@ -286,7 +286,7 @@
 ["playdate.geometry.rect"]
 "playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
 "playdate.geometry.rect.fast_union(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
-"playdate.geometry.rect.new(x, y, width, height)" = {rect="playdate.geometry.rect"}
+"playdate.geometry.rect.new(x, y, width, height)" = {""="playdate.geometry.rect"}
 "playdate.geometry.rect:copy()" = {rect="playdate.geometry.rect"}
 "playdate.geometry.rect:toPolygon()" = {polygon="playdate.geometry.polygon"}
 "playdate.geometry.rect:unpack()" = {x="number", y="number", width="number", height="number"}
@@ -483,7 +483,7 @@
 
 ["playdate.graphics.image"]
 ".new(width, height, bgcolor)" = {image="playdate.graphics.image"}
-".new(path)" = {image="playdate.graphics.image|nil", error="string?"}
+".new(path)" = {image="playdate.graphics.image?", error="string?"}
 ":load(path)" = {success="boolean", error="string?"}
 ":copy()" = {image="playdate.graphics.image"}
 ":getSize()" = {width="integer", height="integer"}
@@ -520,16 +520,16 @@
 ":vcrPauseFilterImage()" = {image="playdate.graphics.image"}
 
 ["playdate.graphics.imagetable"]
-".imagetable.new(path)" = {""="playdate.graphics.imagetable"}
-".imagetable.new(count, cellsWide, cellSize)" = {""="playdate.graphics.imagetable"}
-".imagetable:drawImage(n, x, y, flip)" = {}
-".imagetable:getImage(n)" = {image="playdate.graphics.image"}
-".imagetable:getImage(x, y)" = {image="playdate.graphics.image"}
-".imagetable:setImage(n, image)" = {}
-".imagetable:load(path)" = {success="boolean", error="string?"}
-".imagetable:getLength()" = {""="integer"}
-".imagetable:getSize()" = {cellsWide="integer", cellsHigh="integer"}
-".imagetable:__index(n)" = {}
+".new(path)" = {""="playdate.graphics.imagetable"}
+".new(count, cellsWide, cellSize)" = {""="playdate.graphics.imagetable"}
+":drawImage(n, x, y, flip)" = {}
+":getImage(n)" = {image="playdate.graphics.image"}
+":getImage(x, y)" = {image="playdate.graphics.image"}
+":setImage(n, image)" = {}
+":load(path)" = {success="boolean", error="string?"}
+":getLength()" = {""="integer"}
+":getSize()" = {cellsWide="integer", cellsHigh="integer"}
+":__index(n)" = {}
 
 ["playdate.graphics.sprite"]
 ".addDirtyRect(x, y, width, height)" = {}
@@ -693,8 +693,8 @@
 ":allNodes()" = {nodes="playdate.pathfinder.node[]"}
 ":findPath(startNode, goalNode, heuristicFunction, findPathToGoalAdjacentNodes)" = {nodes="playdate.pathfinder.node[]"}
 ":findPathWithIDs(startNodeID, goalNodeID, heuristicFunction, findPathToGoalAdjacentNodes)" = {"node_ids"="integer[]"}
-":nodeWithID(id)" = {node="playdate.pathfinder.node|nil"}
-":nodeWithXY(x, y)" = {node="playdate.pathfinder.node|nil"}
+":nodeWithID(id)" = {node="playdate.pathfinder.node?"}
+":nodeWithXY(x, y)" = {node="playdate.pathfinder.node?"}
 ":removeAllConnections()" = {}
 ":removeAllConnectionsFromNodeWithID(id, removeIncoming)" = {}
 ":removeNode(node)" = {}
@@ -719,7 +719,7 @@
 ["playdate.sound"]
 ".addEffect(effect)" = {}
 ".getCurrentTime()" = {seconds="number"}
-".getHeadphoneState(changeCallback)" = {headphone="boolean", mic="boolean|nil"}
+".getHeadphoneState(changeCallback)" = {headphone="boolean", mic="boolean?"}
 ".getSampleRate()" = {sampleRate="integer"} # 44100.0
 ".playingSources()" = {sources="playdate.sound.source[]"} # parent class to fileplayer,sampleplayer,synth,instrumnet
 ".removeEffect(effect)" = {}
@@ -733,7 +733,7 @@
 ":play(repeatCount, rate)" = {}
 ":playAt(when, vol, rightvol, rate)" = {}
 ":setVolume(left, right)" = {}
-":getVolume()" = {left_or_mono="number", right="number|nil"}
+":getVolume()" = {left_or_mono="number", right="number?"}
 ":setLoopCallback(callback, arg)" = {}
 ":setPlayRange(start, _end)" = {}
 ":setPaused(flag)" = {}
@@ -756,11 +756,11 @@
 ":getLength()" = {"seconds"="number"}
 ":getOffset()" = {seconds="number"}
 ":getRate()" = {"rate"="number"}
-":getVolume()" = {left_or_mono="number", right="number|nil"}
+":getVolume()" = {left_or_mono="number", right="number?"}
 ":isPlaying()" = {""="boolean"}
 ":load(path)" = {} # TODO: Check if returns success/failure
 ":pause()" = {}
-":play(repeatCount)" = {success="boolean", error="string|nil"}
+":play(repeatCount)" = {success="boolean", error="string?"}
 ":setBufferSize(seconds)" = {}
 ":setFinishCallback(func, arg)" = {}
 ":setLoopCallback(callback, arg)" = {}
@@ -779,7 +779,7 @@
 ":getLength()" = {"sample_seconds"="number", "buffer_size_seconds"="number"}
 ":getSampleRate()" = {""="integer"} # ex: 44100/22050
 ":getSubsample(startOffset, endOffset)" = {""="playdate.sound.sample"}
-":load(path)" = {""="boolean|nil"} # TODO: Validate what happens when sample correctly loads. (boolean?) nil=fail
+":load(path)" = {""="boolean"} # TODO: Validate what happens when sample correctly loads. (boolean?) nil=fail?
 ":play(repeatCount, rate)" = {}
 ":playAt(when, vol, rightvol, rate)" = {}
 ":save(filename)" = {} # TODO: Validate what happens if this fails
@@ -804,7 +804,7 @@
 ".new(waveform)" = {""="playdate.sound.synth"}
 ":copy()" = {""="playdate.sound.synth"}
 ":getEnvelope()" = {""="playdate.sound.envelope"}
-":getVolume()" = {left_or_mono="number", right="number|nil"}
+":getVolume()" = {left_or_mono="number", right="number?"}
 ":isPlaying()" = {""="boolean"}
 ":noteOff()" = {}
 ":playMIDINote(note, volume, length, when)" = {success="boolean"}
@@ -956,7 +956,7 @@
 ".new(synth)" = {""="playdate.sound.instrument"}
 ":addVoice(v, note, rangeend, transpose)" = {}
 ":allNotesOff()" = {}
-":getVolume()" = {left_or_mono="number", right="number|nil"}
+":getVolume()" = {left_or_mono="number", right="number?"}
 ":noteOff(note, when)" = {}
 ":playMIDINote(note, vel, length, when)" = {}
 ":playNote(frequency, vel, length, when)" = {}
@@ -1056,7 +1056,7 @@
 ":setSelection(section, row, column)" = {}
 
 ["table"]
-".indexOfElement(table, element)" = {index="integer|nil"}
+".indexOfElement(table, element)" = {index="integer?"}
 ".getsize(table)" = {arrayCount="integer", hashCount="integer"}
 ".create(arrayCount, hashCount)" = {""="table"}
 ".shallowcopy(source, destination)" = {""="table"} # TODO: Check if destination is returned if provided
