@@ -27,7 +27,7 @@ fn main() {
     let sel_title = Selector::parse("div.title").unwrap();
     let sel_content = Selector::parse("div.content").unwrap();
 
-    let sel_docs = Selector::parse(concat!("div.paragraph", ",", "div.ulist", ",", "div.admonitionblock")).unwrap();
+    let sel_docs = Selector::parse(concat!("div.paragraph", ",", "div.ulist", ",", "div.admonitionblock", ",", "div.literalblock")).unwrap();
     let sel_docs_text = Selector::parse("p").unwrap();
     let sel_docs_list = Selector::parse("ul>li").unwrap();
     let sel_docs_admonition = Selector::parse("table>tbody>tr>td.content").unwrap();
@@ -63,13 +63,18 @@ fn main() {
                     div.select(&sel_docs_list).for_each(|li| {
                         let mut t: String = clean_text(li.text().collect::<String>());
                         t.insert_str(0, "* ");
-                        // println!("li: {}", t);
                         text.push(t);
                     });
                 } else if dv.has_class("admonitionblock", CaseSensitivity::CaseSensitive) {
                     div.select(&sel_docs_admonition).for_each(|td| {
                         let adm = fixes::clean_text(td.inner_html());
                         text.push(adm);
+                    });
+                } else if dv.has_class("literalblock", CaseSensitivity::CaseSensitive) {
+                    div.select(&sel_content).for_each(|d| {
+                        // TODO: This clobbers line breaks. pre should get ``` fencing.
+                        let litb = fixes::clean_text(d.inner_html());
+                        text.push(litb);
                     });
                 } else {
                     eprintln!("skipping {:?}", div.value())

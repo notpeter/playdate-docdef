@@ -78,6 +78,8 @@ pub fn clean_text(text: String) -> String {
     let t0 = text
         .replace("<code>", "`")
         .replace("</code>", "`")
+        .replace("<pre>", "`")
+        .replace("</pre>", "`")
         .replace("<em>", "*")
         .replace("</em>", "*")
         .replace("<strong>", "**")

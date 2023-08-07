@@ -19,8 +19,8 @@ animated = "boolean"
 arrayCount = "integer"
 ax = "number" # 0.0 - 1.0
 ay = "number" # 0.0 - 1.0
-# callback = "fun()" # TODO: Do better here
-callback = "function"
+func = "function" # TODO: Do better here
+callback = "function" # TODO: Do better here
 cellWidth = "integer"
 cellHeight = "integer"
 centerx = "number"
@@ -179,10 +179,21 @@ fill = "integer" # playdate.graphics.kPolygonFillRule{EvenOdd,NonZero}
 volume = "number"
 vol = "number"
 rightvol = "number"
+innerX = "integer"
+innerY = "integer"
+startX = "integer"
+startY = "integer"
+endX = "integer"
+endY = "integer"
+goalX = "integer"
+goalY = "integer"
+spriteArray = "playdate.graphics.sprite[]"
+
 #TODO:
 # p = sometimes point sometimes polygon
 # rate = "integer" -- sometimes number
 # seconds = "integer" -- sometimes number
+# fontFamily = "string[]|playdate.graphics.font[]" # sometimes path sometimes font
 
 # ["playdate.geometry.polygon"]
 # p = "playdate.geometry.polygon"
