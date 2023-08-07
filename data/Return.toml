@@ -13,6 +13,15 @@
 # Note: `= {""="integer"} ` generates `---@return integer
 # Note: `= {}`              generates `---@return nil`
 
+["json"] # TODO: What happens if these fail? Return nil?
+".decode(string)" = {json_object="table"}
+".decodeFile(file)" = {json_object="table"}
+".decodeFile(path)" = {json_object="table"}
+".encode(table)" = {json_string="string"}
+".encodePretty(table)" = {json_string="string"}
+".encodeToFile(file, pretty, table)" = {}
+".encodeToFile(path, pretty, table)" = {}
+
 ["playdate"]
 ".AButtonDown()" = {}
 ".AButtonHeld()" = {}
@@ -321,14 +330,99 @@
 "playdate.geometry.vector2D:__div(s)" = {vector="playdate.geometry.vector2D"}
 
 ["playdate.graphics"]
+".checkAlphaCollision(image1, x1, y1, flip1, image2, x2, y2, flip2)" = {""="boolean"}
 ".clear(color)" = {}
+".clearClipRect()" = {}
+".clearStencil()" = {}
+".clearStencilImage()" = {}
+".drawArc(arc)" = {}
+".drawArc(x, y, radius, startAngle, endAngle)" = {}
+".drawCircleAtPoint(p, radius)" = {}
+".drawCircleAtPoint(x, y, radius)" = {}
+".drawCircleInRect(r)" = {}
+".drawCircleInRect(x, y, width, height)" = {}
+".drawEllipseInRect(rect, startAngle, endAngle)" = {}
+".drawEllipseInRect(x, y, width, height, startAngle, endAngle)" = {}
+".drawLine(x1, y1, x2, y2)" = {}
+".drawLocalizedText(key, x, y, language, leadingAdjustment)" = {}
+".drawLocalizedTextAligned(text, x, y, alignment, language, leadingAdjustment)" = {}
+".drawLocalizedTextInRect(text, rect, leadingAdjustment, truncationString, alignment, font, language)" = {}
+".drawLocalizedTextInRect(text, x, y, width, height, leadingAdjustment, truncationString, alignment, font, language)" = {}
+".drawPixel(x, y)" = {}
+".drawPolygon(p)" = {}
+".drawPolygon(x1, y1, x2, y2, ...)" = {}
+".drawRect(r)" = {}
+".drawRect(x, y, w, h)" = {}
+".drawRoundRect(r, radius)" = {}
+".drawRoundRect(x, y, w, h, radius)" = {}
+".drawSineWave(startX, startY, endX, endY, startAmplitude, endAmplitude, period, phaseShift)" = {}
+".drawText(text, x, y, fontFamily, leadingAdjustment)" = {}
+".drawTextAligned(text, x, y, alignment, leadingAdjustment)" = {}
+".drawTextInRect(text, rect, leadingAdjustment, truncationString, alignment, font)" = {}
+".drawTextInRect(text, x, y, width, height, leadingAdjustment, truncationString, alignment, font)" = {}
+".drawTriangle(x1, y1, x2, y2, x3, y3)" = {}
+".fillCircleAtPoint(p, radius)" = {}
+".fillCircleAtPoint(x, y, radius)" = {}
+".fillCircleInRect(r)" = {}
+".fillCircleInRect(x, y, width, height)" = {}
+".fillEllipseInRect(rect, startAngle, endAngle)" = {}
+".fillEllipseInRect(x, y, width, height, startAngle, endAngle)" = {}
+".fillPolygon(p)" = {}
+".fillPolygon(x1, y1, x2, y2, ...)" = {}
+".fillRect(r)" = {}
+".fillRect(x, y, width, height)" = {}
+".fillRoundRect(r, radius)" = {}
+".fillRoundRect(x, y, w, h, radius)" = {}
+".fillTriangle(x1, y1, x2, y2, x3, y3)" = {}
+".generateQRCode(stringToEncode, desiredEdgeDimension, callback)" = {}
+".getBackgroundColor()" = {color="integer"}
+".getClipRect()" = {x="integer", y="integer", width="integer", height="integer"}
+".getColor()" = {color="integer"}
+".getDisplayImage()" = {image="playdate.graphics.image"}
+".getDrawOffset()" = {x="integer", y="integer"}
+".getFont(variant)" = {""="playdate.graphics.font"}
+".getFontTracking()" = {""="integer"}
+".getImageDrawMode()" = {mode="integer|DrawMode"}
+".getLineWidth()" = {width="integer"}
+".getLocalizedText(key, language)" = {""="string"}
+".getScreenClipRect()" = {x="integer", y="integer", width="integer", height="integer"}
+".getStrokeLocation()" = {strokeLocation="integer|StrokeLocation"}
+".getSystemFont(variant)" = {""="playdate.graphics.font"}
+".getTextSize(str, fontFamily, leadingAdjustment)" = {width="integer", height="integer"}
+".getTextSizeForMaxWidth(text, maxWidth, leadingAdjustment, font)" = {width="integer", height="integer"}
+".getWorkingImage()" = {image="playdate.graphics.image"}
 ".imageSizeAtPath(path)" = {width="integer", height="integer"} # TODO: Check what happens on failure
+".imageWithText(text, maxWidth, maxHeight, backgroundColor, leadingAdjustment, truncationString, alignment, font)" = {image="playdate.graphics.image", textWasTruncated="boolean"}
+".lockFocus(image)" = {}
+".perlin(x, y, z, _repeat, octaves, persistence)" = {perlin_value="number"}
+".perlinArray(count, x, dx, y, dy, z, dz, _repeat, octaves, persistence)" = {perlin_values="number[]"}
 ".popContext()" = {}
 ".pushContext(image)" = {}
-
+".setBackgroundColor(color)" = {}
+".setClipRect(rect)" = {}
+".setClipRect(x, y, width, height)" = {}
+".setColor(color)" = {}
+".setDitherPattern(alpha, ditherType)" = {}
+".setDrawOffset(x, y)" = {}
+".setFont(font, variant)" = {}
+".setFontFamily(fontFamily)" = {}
+".setFontTracking(pixels)" = {}
+".setImageDrawMode(mode)" = {}
+".setLineCapStyle(style)" = {}
+".setLineWidth(width)" = {}
+".setPattern(pattern)" = {}
+".setPolygonFillRule(rule)" = {}
+".setScreenClipRect(rect)" = {}
+".setScreenClipRect(x, y, width, height)" = {}
+".setStencilImage(image, tile)" = {}
+".setStencilPattern(level, ditherType)" = {}
+".setStencilPattern(pattern)" = {}
+".setStencilPattern(row1, row2, row3, row4, row5, row6, row7, row8)" = {}
+".setStrokeLocation(location)" = {}
+".unlockFocus()" = {}
 
 ["playdate.graphics.animator"]
-".new(duration, startValue, endValue, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
+".new(duration, startValue, endValue, easingFunction, startTimeOffset)" = {""="playdate.graphics.animator"}
 ".new(duration, lineSegment, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
 ".new(duration, arc, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
 ".new(duration, polygon, easingFunction, startTimeOffset)" = {animator="playdate.graphics.animator"}
@@ -338,6 +432,46 @@
 ":progress()" = {progress="number"}
 ":reset(duration)" = {}
 ":ended()" = {""="boolean"}
+
+["playdate.graphics.animation.loop"]
+".new(delay, imageTable, shouldLoop)" = {""="playdate.graphics.animation.loop"}
+":draw(x, y, flip)" = {}
+":image()" = {image="playdate.graphics.image"}
+":isValid()" = {""="boolean"}
+":setImageTable(imageTable)" = {}
+
+["playdate.graphics.animation.blinker"]
+".blinker.new(onDuration, offDuration, loop, cycles, default)" = {""="playdate.graphics.animation.blinker"}
+".blinker.stopAll()" = {}
+".blinker.updateAll()" = {}
+".blinker:remove()" = {}
+".blinker:start(onDuration, offDuration, loop, cycles, default)" = {}
+".blinker:startLoop()" = {}
+".blinker:stop()" = {}
+".blinker:update()" = {}
+
+["playdate.graphics.font"]
+".font.new(path)" = {""="playdate.graphics.font"}
+".font.newFamily(fontPaths)" = {""="playdate.graphics.font[]"} # array of length 3 (regular, bold, italic)
+".font:drawText(text, x, y, leadingAdjustment)" = {}
+".font:drawTextAligned(text, x, y, alignment, leadingAdjustment)" = {}
+".font:getGlyph(character)" = {""="playdate.graphics.image"}
+".font:getHeight()" = {pixel_height="integer"}
+".font:getLeading()" = {""="integer"}
+".font:getTextWidth(text)" = {""="integer"}
+".font:getTracking()" = {""="integer"}
+".font:setLeading(pixels)" = {}
+".font:setTracking(pixels)" = {}
+
+["playdate.graphics.video"]
+".new(path)" = {""="playdate.graphics.video"}
+":getContext()" = {""="playdate.graphics.image"}
+":getFrameCount()" = {""="integer"}
+":getFrameRate()" = {""="number"}
+":getSize()" = {x="integer", y="integer"}
+":renderFrame(number)" = {}
+":setContext(image)" = {}
+":useScreenContext()" = {}
 
 ["playdate.graphics.image"]
 ".new(width, height, bgcolor)" = {image="playdate.graphics.image"}
@@ -376,6 +510,149 @@
 ":blurredImage(radius, numPasses, ditherType, padEdges, xPhase, yPhase)" = {image="playdate.graphics.image"}
 ":fadedImage(alpha, ditherType)" = {image="playdate.graphics.image"}
 ":vcrPauseFilterImage()" = {image="playdate.graphics.image"}
+
+["playdate.graphics.imagetable"]
+".imagetable.new(path)" = {""="playdate.graphics.imagetable"}
+".imagetable.new(count, cellsWide, cellSize)" = {""="playdate.graphics.imagetable"}
+".imagetable:drawImage(n, x, y, flip)" = {}
+".imagetable:getImage(n)" = {image="playdate.graphics.image"}
+".imagetable:getImage(x, y)" = {image="playdate.graphics.image"}
+".imagetable:setImage(n, image)" = {}
+".imagetable:load(path)" = {success="boolean", error="string?"}
+".imagetable:getLength()" = {""="integer"}
+".imagetable:getSize()" = {cellsWide="integer", cellsHigh="integer"}
+".imagetable:__index(n)" = {}
+
+["playdate.graphics.sprite"]
+".addDirtyRect(x, y, width, height)" = {}
+".addEmptyCollisionSprite(r)" = {}
+".addEmptyCollisionSprite(x, y, w, h)" = {}
+".addSprite(sprite)" = {}
+".addWallSprites(tilemap, emptyIDs, xOffset, yOffset)" = {}
+".allOverlappingSprites()" = {""="playdate.graphics.sprite[][]"} # TODO: Double check whether this is correct typing.
+".clearClipRectsInRange(startz, endz)" = {}
+".getAllSprites()" = {""="playdate.graphics.sprite[]"}
+".getAlwaysRedraw()" = {""="boolean"}
+".new(image_or_tilemap)" = {""="playdate.graphics.sprite"}
+".performOnAllSprites(f)" = {}
+".querySpriteInfoAlongLine(lineSegment)" = {""="CollisionInfo[]"}
+".querySpriteInfoAlongLine(x1, y1, x2, y2)" = {""="CollisionInfo[]"}
+".querySpritesAlongLine(lineSegment)" = {""="playdate.graphics.sprite[]"}
+".querySpritesAlongLine(x1, y1, x2, y2)" = {""="playdate.graphics.sprite[]"}
+".querySpritesAtPoint(p)" = {""="playdate.graphics.sprite[]"}
+".querySpritesAtPoint(x, y)" = {""="playdate.graphics.sprite[]"}
+".querySpritesInRect(rect)" = {""="playdate.graphics.sprite[]"}
+".querySpritesInRect(x, y, width, height)" = {""="playdate.graphics.sprite[]"}
+".redrawBackground()" = {}
+".removeAll()" = {}
+".removeSprite(sprite)" = {}
+".removeSprites(spriteArray)" = {}
+".setAlwaysRedraw(flag)" = {}
+".setBackgroundDrawingCallback(drawCallback)" = {}
+".setClipRectsInRange(rect, startz, endz)" = {}
+".setClipRectsInRange(x, y, width, height, startz, endz)" = {}
+".spriteCount()" = {""="integer"}
+".spriteWithText(text, maxWidth, maxHeight, backgroundColor, leadingAdjustment, truncationString, alignment, font)" = {""="playdate.graphics.sprite"}
+".update()" = {}
+":add()" = {}
+":alphaCollision(anotherSprite)" = {""="boolean"}
+":checkCollisions(point)" = {actualX="integer", actualY="integer", collisions="table|CollisionData[]", length="integer"}
+":checkCollisions(x, y)" = {actualX="integer", actualY="integer", collisions="table|CollisionData[]", length="integer"}
+":clearClipRect()" = {}
+":clearCollideRect()" = {}
+":clearStencil()" = {}
+":collisionResponse(other)" = {""="integer|CollisionType"}
+":collisionsEnabled()" = {""="boolean"}
+":copy()" = {""="playdate.graphics.sprite"}
+":draw(x, y, width, height)" = {}
+":getBounds()" = {x="integer", y="integer", width="integer", height="integer"}
+":getBoundsRect()" = {r="playdate.graphics.rect"}
+":getCenter()" = {x="number", y="number"} # each 0.0 to 1.0
+":getCenterPoint()" = {""="playdate.graphics.point"}
+":getCollideBounds()" = {x="integer", y="integer", width="integer", height="integer"}
+":getCollideRect()" = {r="playdate.graphics.rect"}
+":getCollidesWithGroupsMask()" = {bitmask="integer"}
+":getGroupMask()" = {bitmask="integer"}
+":getImage()" = {""="playdate.graphics.image"}
+":getImageFlip()" = {flip="integer|Flip"}
+":getPosition()" = {x="integer", y="integer"}
+":getRotation()" = {degrees="number"}
+":getScale()" = {xScale="integer", yScale="integer"}
+":getSize()" = {width="integer", height="integer"}
+":getTag()" = {tag="integer"}
+":getZIndex()" = {""="integer"}
+":isOpaque()" = {""="boolean"}
+":isVisible()" = {""="boolean"}
+":markDirty()" = {}
+":moveBy(x, y)" = {}
+":moveTo(x, y)" = {}
+":moveWithCollisions(goalPoint)" = {actualX="integer", actualY="integer", collisions="table|CollisionData[]", length="integer"}
+":moveWithCollisions(goalX, goalY)" = {actualX="integer", actualY="integer", collisions="table|CollisionData[]", length="integer"}
+":overlappingSprites()" = {""="playdate.graphics.sprite[]"}
+":remove()" = {}
+":removeAnimator()" = {}
+":resetCollidesWithGroupsMask()" = {}
+":resetGroupMask()" = {}
+":setAnimator(animator, moveWithCollisions, removeOnCollision)" = {}
+":setBounds(rect)" = {}
+":setBounds(x, y, width, height)" = {}
+":setCenter(x, y)" = {}
+":setClipRect(rect)" = {}
+":setClipRect(x, y, width, height)" = {}
+":setCollideRect(rect)" = {}
+":setCollideRect(x, y, width, height)" = {}
+":setCollidesWithGroups(groups)" = {}
+":setCollidesWithGroupsMask(mask)" = {}
+":setCollisionsEnabled(flag)" = {}
+":setGroupMask(mask)" = {}
+":setGroups(groups)" = {}
+":setIgnoresDrawOffset(flag)" = {}
+":setImage(image, flip, scale, yscale)" = {}
+":setImageDrawMode(mode)" = {}
+":setImageFlip(flip, flipCollideRect)" = {}
+":setOpaque(flag)" = {}
+":setRedrawsOnImageChange(flag)" = {}
+":setRotation(angle, scale, yScale)" = {}
+":setScale(scale, yScale)" = {}
+":setSize(width, height)" = {}
+":setStencilImage(stencil, tile)" = {}
+":setStencilPattern(level, ditherType)" = {}
+":setStencilPattern(pattern)" = {}
+":setTag(tag)" = {}
+":setTilemap(tilemap)" = {}
+":setUpdatesEnabled(flag)" = {}
+":setVisible(flag)" = {}
+":setZIndex(z)" = {}
+":update()" = {}
+":updatesEnabled()" = {""="boolean"}
+
+["playdate.graphics.tilemap"]
+".tilemap.new()" = {""="playdate.graphics.tilemap"}
+".tilemap:draw(x, y, sourceRect)" = {}
+".tilemap:drawIgnoringOffset(x, y, sourceRect)" = {}
+".tilemap:getCollisionRects(emptyIDs)" = {rects="playdate.geometry.rect[]"}
+".tilemap:getTileAtPosition(x, y)" = {index="integer"}
+".tilemap:getTiles()" = {data="integer[]", width="integer"}
+".tilemap:getSize()" = {width="integer", height="integer"}
+".tilemap:getPixelSize()" = {width="integer", height="integer"}
+".tilemap:getTileSize()" = {width="integer", height="integer"}
+".tilemap:setImageTable(table)" = {}
+".tilemap:setTileAtPosition(x, y, index)" = {}
+".tilemap:setTiles(data, width)" = {}
+".tilemap:setSize(width, height)" = {}
+
+["playdate.keyboard"]
+".show(text)" = {}
+".hide()" = {}
+".setCapitalizationBehavior(behavior)" = {}
+".left()" = {}
+".width()" = {}
+".isVisible()" = {}
+"keyboardDidHideCallback()" = {}
+"keyboardWillHideCallback()" = {}
+"keyboardAnimatingCallback()" = {}
+"textChangedCallback(ok)" = {}
+
 
 ["playdate.menu"]
 ":addMenuItem(title, callback)" = {}

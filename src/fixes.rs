@@ -27,7 +27,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     if TYPO.contains_key(anchor) {
         let fixed = TYPO.get(anchor).unwrap();
         params = fixed.parameters.iter().map(|p| (p.clone(), "any".to_string())).collect();
-        eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
+        // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
     } else {
         (fname, params) = params_from_title(title);
@@ -54,7 +54,9 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
 // Takes a valid function signature and returns a function name and a vector of parameters.
 pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
-    let caps = LUA_FUNC.captures(title).unwrap();
+    let caps = match LUA_FUNC.captures(title) {
+        Some(c) => c, None => { panic!("ERROR: Could not parse function signature (typo?): {}", title); }
+    };
 
     let params_str = caps.name("params").unwrap().as_str();
     let fname = caps.name("fname").unwrap().as_str();
@@ -84,7 +86,7 @@ pub fn clean_text(text: String) -> String {
         .trim()
         .to_string();
     let tn = RE_A.replace_all(&t0, "");
-    if HTML_TAG.is_match(&tn) {
+    if HTML_TAG.is_match(&tn) && !&tn.contains("/Data/<bundleid>"){
         eprintln!("WARN: Extra HTML tag in description text: {}", tn.to_string());
     }
     tn.to_string()

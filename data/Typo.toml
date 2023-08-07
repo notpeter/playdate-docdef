@@ -2,6 +2,8 @@
 # SDK documentation HTML. As such, these overrides cannot
 # be used with multi-signature functions that share an id.
 
+# Don't work with variables, only functions/callbacks/methods.
+
 # These are overrides for typos in the Playdate SDK documention
 # It is expected these will go away as things are fixed upstream.
 
@@ -49,7 +51,7 @@ parameters = ["..."]
 
 # playdate.graphics.imagetable[n]
 ["m-graphics.imagetable.__index"]
-fname = "playdate.graphics.imagetable.__index"
+fname = "playdate.graphics.imagetable:__index"
 parameters = ["n"] # integer
 
 # t * t
@@ -126,3 +128,48 @@ parameters = ["t"] # affineTransform
 ["m-geometry.vector2D.div"]
 fname = "playdate.geometry.vector2D:__div"
 parameters = ["s"] # number
+
+# missing parens ()
+["c-keyboard.keyboardDidShowCallback"]
+fname = "playdate.keyboard.keyboardDidShowCallback"
+parameters = []
+
+# missing parens ()
+["c-keyboard.keyboardDidHideCallback"]
+fname = "playdate.keyboard.keyboardDidHideCallback"
+parameters = []
+
+# missing parens ()
+["c-keyboard.keyboardWillHideCallback"]
+fname = "playdate.keyboard.keyboardWillHideCallback"
+parameters = []
+
+# missing parens ()
+["c-keyboard.keyboardAnimatingCallback"]
+fname = "playdate.keyboard.keyboardAnimatingCallback"
+parameters = []
+
+# missing parens ()
+["c-keyboard.textChangedCallback"]
+fname = "playdate.keyboard.textChangedCallback"
+parameters = ["ok"] # boolean
+
+# missing parens ()
+["c-timer.timerEndedCallback"]
+fname = "playdate.timer.timerEndedCallback"
+parameters = ["..."]
+
+# missing parens ()
+["c-timer.updateCallback"]
+fname = "playdate.timer.updateCallback"
+parameters = ["..."]
+
+# missing parens ()
+["c-frameTimer.timerEndedCallback"]
+fname = "playdate.frameTimer.timerEndedCallback"
+parameters = ["..."]
+
+# missing parens ()
+["c-frameTimer.updateCallback"]
+fname = "playdate.frameTimer.updateCallback"
+parameters = ["..."]

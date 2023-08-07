@@ -97,6 +97,8 @@ x = "integer"
 y = "integer"
 width = "integer"
 height = "integer"
+collisionResponse = "integer|collisionType|fun(other: playdate.graphics.sprite): collisionType|nil"
+update = "fun()|nil"
 
 ["playdate.graphics.tilemap"]
 
@@ -135,6 +137,23 @@ commit = "string"
 pdxcompatversion = "integer"
 pdxversion = "integer"
 
+###########################################################################
+# These exists no where in the playdate.* namespace but are the shapes of
+# classes/objects/tables passed as parameters to functions and return values
+
+["CollisionData"] # returned from sprite:moveWithCollisions and sprite:checkCollisions
+sprite = "playdtae.graphics.sprite"
+other = "playdate.graphics.sprite"
+type = "integer|CollisionType"
+overlaps = "boolean"
+ti = "number" # 0.0-1.0
+move = "playdate.geometry.vector2D"
+normal = "playdate.geometry.vector2D"
+touch = "playdate.geometry.point"
+spriteRect = "playdate.geometry.rect"
+otherRect = "playdate.geometry.rect"
+bounce = "playdate.geometry.point|nil"
+slide = "playdate.geometry.point|nil"
 
 ["CollisionInfo"] # returned from playdate.graphics.sprite.querySpriteInfoAlongLine
 sprite = "playdate.graphics.sprite"

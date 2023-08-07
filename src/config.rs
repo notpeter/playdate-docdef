@@ -46,8 +46,12 @@ fn load_return(tom_return: &str) -> IndexMap<String, IndexMap<String, String>> {
     for (namespace, funcs) in r {
         for (fname, returns) in funcs {
             let mut r: IndexMap<String, String> = IndexMap::new();
-            for (ret_name, ret_type) in returns {
-                r.insert(ret_name, ret_type);
+            if returns.is_empty() {
+                r.insert("".to_string(), "nil".to_string());
+            } else {
+                for (ret_name, ret_type) in returns {
+                    r.insert(ret_name, ret_type);
+                }
             }
             out.insert(format!("{namespace}{fname}"), r);
         }

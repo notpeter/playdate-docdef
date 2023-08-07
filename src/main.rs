@@ -86,7 +86,8 @@ fn main() {
                 let stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
                 stubs.push(stub)
             }
-        } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") {
+        // title.contains("Callback") is workaround for keyboard callbacks.
+        } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") || title.contains("Callback") { //
             // function(), imagetable[n], "p + p", "-v", etc
             let stub = annotate_function(&anchor.to_string(), &title, &text);
             stubs.push(stub);
