@@ -926,7 +926,7 @@
 ":goToStep(step, play)" = {}
 ":getCurrentStep()" = {step="number"}
 ":setTempo(stepsPerSecond)" = {}
-":getTempo()" = {steps_per_second="number"}
+":getTempo()" = {stepsPerSecond="number"}
 ":setLoops(startStep, endStep, loopCount)" = {}
 ":setLoops(loopCount)" = {}
 ":getTrackCount()" = {tracks="integer"}

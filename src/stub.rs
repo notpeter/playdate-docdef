@@ -48,7 +48,9 @@ impl Stub {
     fn params2comments(&self) -> String {
         let mut s = String::new();
         for (p_name, p_type) in &self.params {
-            s.push_str(&format!("---@param {} {}\n", p_name, p_type));
+            if p_name != "..." {
+                s.push_str(&format!("---@param {} {}\n", p_name, p_type));
+            }
         }
         s
     }

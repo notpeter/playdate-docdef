@@ -1,67 +1,210 @@
-x = "integer"
-y = "integer"
-z = "integer"
-x1 = "integer"
-y1 = "integer"
-x2 = "integer"
-y2 = "integer"
-h1 = "integer"
-h2 = "integer"
-w1 = "integer"
-w2 = "integer"
-dx = "integer"
-dy = "integer"
-length = "number"
-distance = "integer"
-width = "integer"
-height = "integer"
-scale = "integer"
-yscale = "integer"
-yScale = "integer"
+# This is a very dumb way to do types.
+# I can't believe it was enough to quickly get nearly all of the API
+#
+# We assign a type by name in the [global] section.
+# Any namespace that needs a different type can override in
+# its own section. e.g. ["playdate.sound"]
+#
+# Don't forget to use quotes around section names that have dots
+# because TOML will die trying to create nested structures.
+
+
+# [global]
+_function = "function"
+allowDiagonals = "boolean"
+alpha = "number" # 0.0 - 1.0
+alignment = "integer" # kTextAlignment.{left,center,right}
 angle = "number"
-radius = "number"
-numPasses = "integer"
-padEdges = "boolean"
-xPhase = "integer"
-yPhase = "integer"
-xOffset = "integer"
+animated = "boolean"
+arrayCount = "integer"
 ax = "number" # 0.0 - 1.0
 ay = "number" # 0.0 - 1.0
-startAngle = "number" # in degrees
-endAngle = "number" # in degrees
-sx = "number" # skew in degrees
-sy = "number" # skew in degrees
-tiltAngle = "number" # tilt in degrees
+# callback = "fun()" # TODO: Do better here
+callback = "function"
+cellWidth = "integer"
+cellHeight = "integer"
+centerx = "number"
+centery = "number"
+change = "number"
+column = "integer"
 direction = "boolean"
-point = "playdate.geometry.point"
-# p = sometimes point sometimes polygon
+distance = "integer"
+disable = "boolean"
+dx = "integer"
+dxx = "number"
+dxy = "number"
+dy = "integer"
+dyx = "number"
+dyy = "number"
+element = "any"
+env = "table"
+endAngle = "number" # in degrees
+filename = "string"
+flag = "boolean"
+fromNodeID = "integer"
+toNodeID = "integer"
+startNodeID = "integer"
+goalNodeID = "integer"
+h1 = "integer"
+h2 = "integer"
+halfsteps = "number"
+hashCount = "integer"
+height = "integer"
 image = "playdate.graphics.image"
 image1 = "playdate.graphics.image"
 image2 = "playdate.graphics.image"
-maskImage = "playdate.graphics.image"
+interpolation = "boolean"
+inst = "playdate.sound.instrument"
+leadingAdjustment = "integer"
+length = "number"
+loop = "boolean"
+loopCount = "integer"
 ls = "playdate.geometry.lineSegment"
+maskImage = "playdate.graphics.image"
+menuItem = "playdate.menu.item"
+milliseconds = "integer"
+name = "string"
+newTitle = "string"
+newValue = "integer|boolean|string"
+nodeCount = "integer"
+numPasses = "integer"
+num = "integer"
+number = "integer"
+numberOfVertices = "integer"
+numberOfBytes = "integer"
+ok = "boolean"
+opaque = "boolean"
+options = "string[]"
+p1 = "playdate.geometry.point"
+p2 = "playdate.geometry.point"
+padEdges = "boolean"
+path = "string"
+pixels = "integer"
+point = "playdate.geometry.point"
+poly = "playdate.geometry.polygon"
+pretty = "boolean"
 r = "playdate.geometry.rect"
 r2 = "playdate.geometry.rect"
+radius = "number"
 rect = "playdate.geometry.rect"
+repeat_n = "integer"
+repeatCount = "integer"
+row = "integer"
+scale = "integer"
+section = "integer"
+selected = "boolean"
+shouldLoop = "boolean"
 sourceRect = "playdate.geometry.rect"
+sprite = "playdate.graphics.sprite"
+startAngle = "number" # in degrees
+step = "integer"
+string = "string"
+sx = "number" # skew in degrees
+sy = "number" # skew in degrees
+synth = "playdate.sound.synth"
+table = "table"
+tile = "boolean"
+ticksPerRevolution = "number"
+title = "string"
+tiltAngle = "number" # tilt in degrees
+truncationString = "string"
 v = "playdate.geometry.vector2D"
 v2 = "playdate.geometry.vector2D"
+w1 = "integer"
+w2 = "integer"
+weight = "number"
+weights = "number[]"
+width = "integer"
+x = "integer"
+x1 = "integer"
+x2 = "integer"
+x3 = "integer"
+x4 = "integer"
+xOffset = "integer"
+xPhase = "integer"
 xform = "playdate.geometry.affineTransform"
-flag = "boolean"
-repeat_n = "integer"
-filename = "string"
-path = "string"
-pretty = "boolean"
-sprite = "playdate.graphics.sprite"
-opaque = "boolean"
-alpha = "number" # 0.0 - 1.0
-# seconds = "integer" -- sometimes number
-# rate = "integer" -- sometimes number
-milliseconds = "integer"
-
+y = "integer"
+y1 = "integer"
+y2 = "integer"
+y3 = "integer"
+y4 = "integer"
+yPhase = "integer"
+yScale = "integer"
+yOffset = "integer"
+yscale = "integer"
+z = "integer"
+top = "integer"
+right = "integer"
+bottom = "integer"
+left = "integer"
+goalNode = "playdate.pathfinder.node"
+startNode = "playdate.pathfinder.node"
+node = "playdate.pathfinder.node"
+nodes = "playdate.pathfinder.node[]"
+findPathToGoalAdjacentNodes = "boolean"
+heuristicFunction = "fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node) -> integer"
+fadeCallback = "fun(self: playdate.sound.fileplayer, arg: any|nil)"
+addReciprocalConnections = "boolean"
+masksPreviousHandlers = "boolean"
+emptyIDs = "integer[]"
+groups = "integer|integer[]"
+onDuration = "integer"
+offDuration = "integer"
+cycles = "integer"
+default = "boolean"
+connectedNodes = "playdate.pathfinder.node[]"
+ms = "integer"
+startTimeOffset = "integer"
+endOffset = "integer"
+startOffset = "integer"
+new_path = "string"
+imagePath = "string"
+midi_path = "string"
+easingFunction = "fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number"
+polygon = "playdate.geometry.polygon"
+m11 = "number"
+m12 = "number"
+m21 = "number"
+m22 = "number"
+tx = "number"
+ty = "number"
 ## Figure out something for these
 ditherType = "integer"
 flip = 'integer|string' # playdate.geometry.{kFlippedXY, kFlippedY, kFlippedX, kUnflipped}'
 bgcolor = "integer" # playdate.graphics.kColor{Black,White,Clear,XOR}
 color = "integer" # playdate.graphics.kColor{Black,White,Clear,XOR}
 button = "integer"
+fillRule = "integer" # playdate.graphics.kPolygonFillRule{EvenOdd,NonZero}
+fill = "integer" # playdate.graphics.kPolygonFillRule{EvenOdd,NonZero}
+volume = "number"
+vol = "number"
+rightvol = "number"
+#TODO:
+# p = sometimes point sometimes polygon
+# rate = "integer" -- sometimes number
+# seconds = "integer" -- sometimes number
+
+# ["playdate.geometry.polygon"]
+# p = "playdate.geometry.polygon"
+
+# ["playdate.geometry.point"]
+# p = "playdate.geometry.point"
+
+# [p]
+# "playdate.geometry.point.new" = ""
+# "playdate.geometry.affineTransform:transformPoint" = "playdate.geometry.point"
+# "playdate.geometry.affineTransform:transformedPoint" = "playdate.geometry.point"
+
+#Future overrides
+# ["playdate.menu:addCheckmarkMenuItem"]
+# initialValue = "boolean"
+
+# ["playdate.menu:addOptionsMenuItem"]
+# initialValue = "string"
+
+# ["playdate.sound.channel"]
+# source = "playdate.sound.source"
+
+# ["table"]
+# source = "table"
+# destination = "table"
