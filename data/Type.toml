@@ -171,6 +171,8 @@ ty = "number"
 ## Figure out something for these
 ditherType = "integer"
 flip = 'integer|string' # playdate.geometry.{kFlippedXY, kFlippedY, kFlippedX, kUnflipped}'
+flip1 = 'integer' # playdate.geometry.{kFlippedXY, kFlippedY, kFlippedX, kUnflipped}'
+flip2 = 'integer' # playdate.geometry.{kFlippedXY, kFlippedY, kFlippedX, kUnflipped}'
 bgcolor = "integer" # playdate.graphics.kColor{Black,White,Clear,XOR}
 color = "integer" # playdate.graphics.kColor{Black,White,Clear,XOR}
 button = "integer"
@@ -181,13 +183,42 @@ vol = "number"
 rightvol = "number"
 innerX = "integer"
 innerY = "integer"
+innerHeight = "integer"
+innerWidth = "integer"
+index = "integer"
+count = "integer"
 startX = "integer"
 startY = "integer"
+startz = "integer"
+endz = "integer"
 endX = "integer"
 endY = "integer"
 goalX = "integer"
 goalY = "integer"
 spriteArray = "playdate.graphics.sprite[]"
+font = "playdate.graphics.font"
+text = "string"
+maxWidth = "integer"
+wrapSelection = "boolean"
+scrollToSelection = "boolean"
+animate = "boolean"
+extend = "boolean"
+arc = "playdate.geometry.arc"
+rule = "integer" # playdate.graphics.kPolygonFill{EvenOdd,NonZero}
+headphones = "boolean"
+speaker = "boolean"
+
+drawCallback = "fun(x: integer, y: integer, width: integer, height: integer): nil"
+loopCallback = "fun(arg: any|nil): nil"
+finishCallback = "fun(self: playdate.sound.sequence): nil"
+completionCallback = "fun(sample: playdate.sound.sample): nil"
+changeCallback = "function" # TODO: check if it has params
+
+
+# Note: these are tables with integer keys starting at 0. So 1,2 or on the array half and 0 is on the table half.
+fontFamily = "table<integer, playdate.graphics.font>" # {1=normal_font_path, 2=bold_font_path, 3=italic_font_path}  playdate.graphics.kFontFamily{Normal,Bold,Italic}
+fontPaths = "table<integer, string>" # {1=normal_font_path, 2=bold_font_path, 3=italic_font_path}  playdate.graphics.kFontFamily{Normal,Bold,Italic}
+variant = "integer|string" # 0|1|2|"normal"|"bold"|"italic" playdate.graphics.kFontVariant{Normal,Bold,Italic}
 
 #TODO:
 # p = sometimes point sometimes polygon

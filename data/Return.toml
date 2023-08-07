@@ -719,7 +719,7 @@
 ["playdate.sound"]
 ".addEffect(effect)" = {}
 ".getCurrentTime()" = {seconds="number"}
-".getHeadphoneState(changeCallback)" = {headphone="boolean", mic="boolean"}
+".getHeadphoneState(changeCallback)" = {headphone="boolean", mic="boolean|nil"}
 ".getSampleRate()" = {sampleRate="integer"} # 44100.0
 ".playingSources()" = {sources="playdate.sound.source[]"} # parent class to fileplayer,sampleplayer,synth,instrumnet
 ".removeEffect(effect)" = {}
