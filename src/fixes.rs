@@ -11,9 +11,12 @@ lazy_static! {
     static ref RE_A: Regex = Regex::new(r"</?a[^>]*>").unwrap();
     static ref RE_STRONG: Regex = Regex::new(r"</?strong>").unwrap();
     static ref HTML_TAG: Regex = Regex::new(r"<[^>]*>").unwrap();
-    static ref LUA_FUNC: Regex = Regex::new(
+    static ref LUA_FUNC: Regex = Regex::new(// Lua function signatures: function(a,b,c)
         &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
     ).unwrap();
+    // static ref LUA_FUNC_OPT: Regex = Regex::new(
+    //     &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
+    // ).unwrap();
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
@@ -34,8 +37,9 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     }
     // Apply types from Types.toml
     for (p, t) in params.iter_mut() {
-        if PARAM_TYPES.contains_key(p) {
-            *t = PARAM_TYPES.get(p).unwrap().to_string();
+        let p_an = p.replace("?", ""); // without "?" at the the end for optional
+        if PARAM_TYPES.contains_key(p_an.as_str()) {
+            *t = PARAM_TYPES.get(p_an.as_str()).unwrap().to_string();
         }
     }
 
@@ -62,11 +66,15 @@ pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
     let fname = caps.name("fname").unwrap().as_str();
     if params_str.trim() != "" {
         for p in params_str.split(",") {
-            let param_name = p.trim().to_string();
-
-            params.push((p.trim().to_string(), "any".to_string()));
+            let mut param_name = p.trim().to_string();
+            //For parameters with brackets, change the type to be optional "any?"
+            if param_name.contains("]") || param_name.contains("[") {
+                param_name = param_name.clone().replace("[", "").replace("]", "").trim().to_string();
+                param_name = format!("{}?", param_name);
+            }
+            params.push((param_name.clone(), "any".to_string()));
             // Ignore parameters shown in docs after the ...
-            if param_name == "..." {
+            if param_name == "..." || param_name == "...?" {
                 break;
             }
         }
@@ -107,9 +115,10 @@ pub fn clean_code(text: String) -> Vec<String> {
 fn clean_parameters(title: &String, params: &Vec<(String, String)>) -> Vec<(String, String)> {
     let mut v: Vec<(String, String)> = Vec::new();
     for (p_name, lua_type) in params {
-        if INVALID.contains_key(p_name.as_str()) {
-            let fixed_name = INVALID.get(p_name.as_str()).unwrap().to_string();
-            eprintln!("WARN: Fixed invalid parameter: {p_name} -> {fixed_name} (in `{title}`)");
+        let p_an = p_name.replace("?", ""); // without "?" at the the end for optional
+        if INVALID.contains_key(p_an.as_str()) {
+            let fixed_name = INVALID.get(p_an.as_str()).unwrap().to_string();
+            eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
             v.push((fixed_name, lua_type.to_string()));
         } else {
             v.push((p_name.to_string(), lua_type.to_string()));

@@ -11,7 +11,7 @@ pub struct Stub {
 }
 
 pub fn func_signature(name: &String, params: &Vec<(String, String)>) -> String {
-    let param_names : Vec<String> = params.iter().map(|(name, _)| name.clone()).collect::<Vec<String>>();
+    let param_names : Vec<String> = params.iter().map(|(name, _)| name.clone().replace("?", "")).collect::<Vec<String>>();
     String::from(format!("{}({})", name, param_names.join(", ")))
 }
 
@@ -53,7 +53,7 @@ impl Stub {
     fn params2comments(&self) -> String {
         let mut s = String::new();
         for (p_name, p_type) in &self.params {
-            if p_name != "..." {
+            if p_name != "..." && p_name != "...?" {
                 s.push_str(&format!("---@param {} {}\n", p_name, p_type));
             }
         }

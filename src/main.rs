@@ -43,8 +43,6 @@ fn main() {
     let sel_docs_coderay = Selector::parse("code").unwrap();
     let sel_docs_admonition = Selector::parse("table>tbody>tr>td.content").unwrap();
 
-    let re_optional = Regex::new(r"\(.*\[.*\)").unwrap();  // function signature with brackets (optional params)
-    let re_brackets = Regex::new(r"[\[\]]").unwrap();  // any brackets (used with replace_all)
     let re_function = Regex::new(r"^(?:[\w][\w\d]*\.)*(?:[\w][\w\d]*)(?:[:.][\w][\w\d]*)").unwrap();
 
     let mut _poop = 0;
@@ -56,7 +54,7 @@ fn main() {
         _poop = _poop + 1;
 
         let anchor: &str = element.value().attr("id").unwrap_or("");
-        let mut title: String = element.select(&sel_title).next().unwrap().text().collect::<String>();
+        let title: String = element.select(&sel_title).next().unwrap().text().collect::<String>();
         // if anchor == "" { eprintln!("WARN: Docs missing anchor for: {}", title); }
 
         let mut text: Vec<String> = Vec::new();
@@ -101,10 +99,10 @@ fn main() {
                 }
             }
         }
-        // This gets rid of the brackets (optional functional parameters) in the title
-        if re_optional.is_match(&title) {
-            title = re_brackets.replace_all(&title, "").to_string();
-        }
+        // // This gets rid of the brackets (optional functional parameters) in the title
+        // if re_optional.is_match(&title) {
+        //     title = re_brackets.replace_all(&title, "").to_string();
+        // }
 
         if title.contains("  ") { // Functions with multiple
             for t in title.split("  ") {
