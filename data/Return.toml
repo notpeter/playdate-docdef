@@ -251,91 +251,91 @@
 ":intersectsRect(rect)" = {intersects="boolean", intersectionPoints="playdate.geometry.point[]?"}
 
 ["playdate.geometry.point"]
-"playdate.geometry.point.new(x, y)" = {point="playdate.geometry.point"}
-"playdate.geometry.point:copy()" = {point="playdate.geometry.point"}
-"playdate.geometry.point:unpack()" = {x="number", y="number"}
-"playdate.geometry.point:offset(dx, dy)" = {}
-"playdate.geometry.point:offsetBy(dx, dy)" = {point="playdate.geometry.point"}
-"playdate.geometry.point:squaredDistanceToPoint(p)" = {distanceSquared="number"}
-"playdate.geometry.point:distanceToPoint(p)" = {distance="number"}
-"playdate.geometry.point:__add(v)" = {point="playdate.geometry.point"}
-"playdate.geometry.point:__sub(p2)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.point:__mul(t)" = {point="playdate.geometry.point"}
-"playdate.geometry.point:__concat(p2)" = {lineSegment="playdate.geometry.lineSegment"}
+".new(x, y)" = {point="playdate.geometry.point"}
+":copy()" = {point="playdate.geometry.point"}
+":unpack()" = {x="number", y="number"}
+":offset(dx, dy)" = {}
+":offsetBy(dx, dy)" = {point="playdate.geometry.point"}
+":squaredDistanceToPoint(p)" = {distanceSquared="number"}
+":distanceToPoint(p)" = {distance="number"}
+":__add(v)" = {point="playdate.geometry.point"}
+":__sub(p2)" = {vector="playdate.geometry.vector2D"}
+":__mul(t)" = {point="playdate.geometry.point"}
+":__concat(p2)" = {lineSegment="playdate.geometry.lineSegment"}
 
 ["playdate.geometry.polygon"]
-"playdate.geometry.polygon.new(x1, y1, x2, y2, ...)" = {polygon="playdate.geometry.polygon"}
-"playdate.geometry.polygon.new(p1, p2, ...)" = {polygon="playdate.geometry.polygon"}
-"playdate.geometry.polygon.new(numberOfVertices)" = {polygon="playdate.geometry.polygon"}
-"playdate.geometry.polygon:copy()" = {polygon="playdate.geometry.polygon"}
-"playdate.geometry.polygon:close()" = {}
-"playdate.geometry.polygon:isClosed()" = {""="boolean"}
-"playdate.geometry.polygon:containsPoint(p, fillRule)" = {""="boolean"}
-"playdate.geometry.polygon:containsPoint(x, y, fillRule)" = {""="boolean"}
-"playdate.geometry.polygon:getBounds()" = {x="number", y="number", width="number", height="number"}
-"playdate.geometry.polygon:getBoundsRect()" = {rect="playdate.geometry.rect"}
-"playdate.geometry.polygon:count()" = {""="integer"}
-"playdate.geometry.polygon:length()" = {""="number"}
-"playdate.geometry.polygon:setPointAt(n, x, y)" = {}
-"playdate.geometry.polygon:getPointAt(n)" = {point="playdate.geometry.point"}
-"playdate.geometry.polygon:intersects(p)" = {""="boolean"}
-"playdate.geometry.polygon:pointOnPolygon(distance, extend)" = {point="playdate.geometry.point"}
-"playdate.geometry.polygon:translate(dx, dy)" = {}
-"playdate.geometry.polygon:__mul(t)" = {polygon="playdate.geometry.polygon"}
+".new(x1, y1, x2, y2, ...)" = {polygon="playdate.geometry.polygon"}
+".new(p1, p2, ...)" = {polygon="playdate.geometry.polygon"}
+".new(numberOfVertices)" = {polygon="playdate.geometry.polygon"}
+":copy()" = {polygon="playdate.geometry.polygon"}
+":close()" = {}
+":isClosed()" = {""="boolean"}
+":containsPoint(p, fillRule)" = {""="boolean"}
+":containsPoint(x, y, fillRule)" = {""="boolean"}
+":getBounds()" = {x="number", y="number", width="number", height="number"}
+":getBoundsRect()" = {rect="playdate.geometry.rect"}
+":count()" = {""="integer"}
+":length()" = {""="number"}
+":setPointAt(n, x, y)" = {}
+":getPointAt(n)" = {point="playdate.geometry.point"}
+":intersects(p)" = {""="boolean"}
+":pointOnPolygon(distance, extend)" = {point="playdate.geometry.point"}
+":translate(dx, dy)" = {}
+":__mul(t)" = {polygon="playdate.geometry.polygon"}
 
 ["playdate.geometry.rect"]
-"playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
-"playdate.geometry.rect.fast_union(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
-"playdate.geometry.rect.new(x, y, width, height)" = {""="playdate.geometry.rect"}
-"playdate.geometry.rect:copy()" = {rect="playdate.geometry.rect"}
-"playdate.geometry.rect:toPolygon()" = {polygon="playdate.geometry.polygon"}
-"playdate.geometry.rect:unpack()" = {x="number", y="number", width="number", height="number"}
-"playdate.geometry.rect:isEmpty()" = {""="boolean"}
-"playdate.geometry.rect:isEqual(r2)" = {""="boolean"}
-"playdate.geometry.rect:intersects(r2)" = {""="boolean"}
-"playdate.geometry.rect:intersection(r2)" = {rect="playdate.geometry.rect"}
-"playdate.geometry.rect:union(r2)" = {rect="playdate.geometry.rect"}
-"playdate.geometry.rect:inset(dx, dy)" = {}
-"playdate.geometry.rect:insetBy(dx, dy)" = {rect="playdate.geometry.rect"}
-"playdate.geometry.rect:offset(dx, dy)" = {}
-"playdate.geometry.rect:offsetBy(dx, dy)" = {rect="playdate.geometry.rect"}
-"playdate.geometry.rect:containsRect(r2)" = {""="boolean"}
-"playdate.geometry.rect:containsRect(x, y, width, height)" = {""="boolean"}
-"playdate.geometry.rect:containsPoint(p)" = {""="boolean"}
-"playdate.geometry.rect:containsPoint(x, y)" = {""="boolean"}
-"playdate.geometry.rect:centerPoint()" = {"point"="playdate.geometry.point"}
-"playdate.geometry.rect:flipRelativeToRect(r2, flip)" = {}
+".fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
+".fast_union(x1, y1, w1, h1, x2, y2, w2, h2)" = {x="number", y="number", width="number", height="number"}
+".new(x, y, width, height)" = {""="playdate.geometry.rect"}
+":copy()" = {rect="playdate.geometry.rect"}
+":toPolygon()" = {polygon="playdate.geometry.polygon"}
+":unpack()" = {x="number", y="number", width="number", height="number"}
+":isEmpty()" = {""="boolean"}
+":isEqual(r2)" = {""="boolean"}
+":intersects(r2)" = {""="boolean"}
+":intersection(r2)" = {rect="playdate.geometry.rect"}
+":union(r2)" = {rect="playdate.geometry.rect"}
+":inset(dx, dy)" = {}
+":insetBy(dx, dy)" = {rect="playdate.geometry.rect"}
+":offset(dx, dy)" = {}
+":offsetBy(dx, dy)" = {rect="playdate.geometry.rect"}
+":containsRect(r2)" = {""="boolean"}
+":containsRect(x, y, width, height)" = {""="boolean"}
+":containsPoint(p)" = {""="boolean"}
+":containsPoint(x, y)" = {""="boolean"}
+":centerPoint()" = {"point"="playdate.geometry.point"}
+":flipRelativeToRect(r2, flip)" = {}
 
 ["playdate.geometry.size"]
-"playdate.geometry.size.new(width, height)" = {size="playdate.geometry.size"}
-"playdate.geometry.size:copy()" = {size="playdate.geometry.size"}
-"playdate.geometry.size:unpack()" = {width="number", height="number"}
+".new(width, height)" = {size="playdate.geometry.size"}
+":copy()" = {size="playdate.geometry.size"}
+":unpack()" = {width="number", height="number"}
 
 ["playdate.geometry.vector2D"]
-"playdate.geometry.vector2D.new(x, y)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D.newPolar(length, angle)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:copy()" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:unpack()" = {x="number", y="number"}
-"playdate.geometry.vector2D:addVector(v)" = {}
-"playdate.geometry.vector2D:scale(s)" = {}
-"playdate.geometry.vector2D:scaledBy(s)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:normalize()" = {}
-"playdate.geometry.vector2D:normalized()" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:dotProduct(v)" = {"dotProduct"="number"}
-"playdate.geometry.vector2D:magnitude()" = {"magnitude"="number"}
-"playdate.geometry.vector2D:magnitudeSquared()" = {"magnitudeSquared"="number"}
-"playdate.geometry.vector2D:projectAlong(v)" = {}
-"playdate.geometry.vector2D:projectedAlong(v)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:angleBetween(v)" = {degrees="number"}
-"playdate.geometry.vector2D:leftNormal()" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:rightNormal()" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__unm()" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__add(v2)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__sub(v2)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__mul(s)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__mul(v2)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__mul(t)" = {vector="playdate.geometry.vector2D"}
-"playdate.geometry.vector2D:__div(s)" = {vector="playdate.geometry.vector2D"}
+".new(x, y)" = {vector="playdate.geometry.vector2D"}
+".newPolar(length, angle)" = {vector="playdate.geometry.vector2D"}
+":copy()" = {vector="playdate.geometry.vector2D"}
+":unpack()" = {x="number", y="number"}
+":addVector(v)" = {}
+":scale(s)" = {}
+":scaledBy(s)" = {vector="playdate.geometry.vector2D"}
+":normalize()" = {}
+":normalized()" = {vector="playdate.geometry.vector2D"}
+":dotProduct(v)" = {"dotProduct"="number"}
+":magnitude()" = {"magnitude"="number"}
+":magnitudeSquared()" = {"magnitudeSquared"="number"}
+":projectAlong(v)" = {}
+":projectedAlong(v)" = {vector="playdate.geometry.vector2D"}
+":angleBetween(v)" = {degrees="number"}
+":leftNormal()" = {vector="playdate.geometry.vector2D"}
+":rightNormal()" = {vector="playdate.geometry.vector2D"}
+":__unm()" = {vector="playdate.geometry.vector2D"}
+":__add(v2)" = {vector="playdate.geometry.vector2D"}
+":__sub(v2)" = {vector="playdate.geometry.vector2D"}
+":__mul(s)" = {vector="playdate.geometry.vector2D"}
+":__mul(v2)" = {vector="playdate.geometry.vector2D"}
+":__mul(t)" = {vector="playdate.geometry.vector2D"}
+":__div(s)" = {vector="playdate.geometry.vector2D"}
 
 ["playdate.graphics"]
 ".checkAlphaCollision(image1, x1, y1, flip1, image2, x2, y2, flip2)" = {""="boolean"}
