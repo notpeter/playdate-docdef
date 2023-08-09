@@ -1,0 +1,320 @@
+# Constants.
+#
+# If we define them as aliases we get to see what type they are
+# and the underlying values when hovering in an IDE.
+#
+# ---@alias playdate.graphics.font.kLanguageEnglish 0
+
+[[alias]]
+name = "playdate.graphics.font.kLanguageEnglish"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.font.kLanguageJapanese"
+type = "1"
+
+
+[[alias]]
+name = "playdate.kButtonLeft"
+type = "1"
+
+[[alias]]
+name = "playdate.kButtonRight"
+type = "2"
+
+[[alias]]
+name = "playdate.kButtonUp"
+type = "4"
+
+[[alias]]
+name = "playdate.kButtonDown"
+type = "8"
+
+[[alias]]
+name = "playdate.kButtonB"
+type = "16"
+
+[[alias]]
+name = "playdate.kButtonA"
+type = "32"
+
+
+[[alias]]
+name = "playdate.file.kFileRead"
+type = "3"
+
+[[alias]]
+name = "playdate.file.kFileWrite"
+type = "4"
+
+[[alias]]
+name = "playdate.file.kFileAppend"
+type = "8"
+
+[[alias]]
+name = "playdate.graphics.kStrokeCentered"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.kStrokeInside"
+type = "1"
+
+[[alias]]
+name = "playdate.graphics.kStrokeOutside"
+type = "2"
+
+[[alias]]
+name = "playdate.graphics.kPolygonFillNonZero"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.kPolygonFillEvenOdd"
+type = "1"
+
+[[alias]]
+name = "playdate.geometry.kUnflipped"
+type = "0"
+
+[[alias]]
+name = "playdate.geometry.kFlippedX"
+type = "1"
+
+[[alias]]
+name = "playdate.geometry.kFlippedY"
+type = "2"
+
+[[alias]]
+name = "playdate.geometry.kFlippedXY"
+type = "3"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeNone"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeDiagonalLine"
+type = "1"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeVerticalLine"
+type = "2"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeHorizontalLine"
+type = "3"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeScreen"
+type = "4"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeBayer2x2"
+type = "5"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeBayer4x4"
+type = "6"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeBayer8x8"
+type = "7"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeFloydSteinberg"
+type = "8"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeBurkes"
+type = "9"
+
+[[alias]]
+name = "playdate.graphics.image.kDitherTypeAtkinson"
+type = "10"
+
+[[alias]]
+name = "playdate.graphics.kImageUnflipped"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.kImageFlippedX"
+type = "1"
+
+[[alias]]
+name = "playdate.graphics.kImageFlippedY"
+type = "2"
+
+[[alias]]
+name = "playdate.graphics.kImageFlippedXY"
+type = "3"
+
+[[alias]]
+name = "playdate.graphics.kColorBlack"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.kColorWhite"
+type = "1"
+
+[[alias]]
+name = "playdate.graphics.kColorClear"
+type = "2"
+
+[[alias]]
+name = "playdate.graphics.kColorXOR"
+type = "3"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeCopy"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeWhiteTransparent"
+type = "1"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeBlackTransparent"
+type = "2"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeFillWhite"
+type = "3"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeFillBlack"
+type = "4"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeXOR"
+type = "5"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeNXOR"
+type = "6"
+
+[[alias]]
+name = "playdate.graphics.kDrawModeInverted"
+type = "7"
+
+[[alias]]
+name = "playdate.graphics.sprite.kCollisionTypeSlide"
+type = "0"
+
+[[alias]]
+name = "playdate.graphics.sprite.kCollisionTypeFreeze"
+type = "1"
+
+[[alias]]
+name = "playdate.graphics.sprite.kCollisionTypeOverlap"
+type = "2"
+
+[[alias]]
+name = "playdate.graphics.sprite.kCollisionTypeBounce"
+type = "3"
+
+[[alias]]
+name = "playdate.sound.kFormat8bitMono"
+type = "0"
+
+[[alias]]
+name = "playdate.sound.kFormat8bitStereo"
+type = "1"
+
+[[alias]]
+name = "playdate.sound.kFormat16bitMono"
+type = "2"
+
+[[alias]]
+name = "playdate.sound.kFormat16bitStereo"
+type = "3"
+
+[[alias]]
+name = "playdate.sound.kLFOSquare"
+type = "0"
+
+[[alias]]
+name = "playdate.sound.kLFOTriangle"
+type = "1"
+
+[[alias]]
+name = "playdate.sound.kLFOSine"
+type = "2"
+
+[[alias]]
+name = "playdate.sound.kLFOSampleAndHold"
+type = "3"
+
+[[alias]]
+name = "playdate.sound.kLFOSawtoothUp"
+type = "4"
+
+[[alias]]
+name = "playdate.sound.kLFOSawtoothDown"
+type = "5"
+
+[[alias]]
+name = "playdate.sound.kWaveSquare"
+type = "0"
+
+[[alias]]
+name = "playdate.sound.kWaveTriangle"
+type = "1"
+
+[[alias]]
+name = "playdate.sound.kWaveSine"
+type = "2"
+
+[[alias]]
+name = "playdate.sound.kWaveNoise"
+type = "3"
+
+[[alias]]
+name = "playdate.sound.kWaveSawtooth"
+type = "4"
+
+[[alias]]
+name = "playdate.sound.kWavePOPhase"
+type = "5"
+
+[[alias]]
+name = "playdate.sound.kWavePODigital"
+type = "6"
+
+[[alias]]
+name = "playdate.sound.kWavePOVosim"
+type = "7"
+
+[[alias]]
+name = "playdate.keyboard.kCapitalizationNormal"
+type = "1"
+
+[[alias]]
+name = "playdate.keyboard.kCapitalizationWords"
+type = "2"
+
+[[alias]]
+name = "playdate.keyboard.kCapitalizationSentences"
+type = "3"
+
+[[alias]]
+name = "_DrawMode"
+type = "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | \"copy\" | \"whiteTransparent\" | \"blackTransparent\" | \"fillWhite\" | \"fillBlack\" | \"xor\" | \"nxor\" | \"inverted\""
+
+[[alias]]
+name = "_FlipMode"
+type = "0 | 1 | 2 | 3 | \"flipX\" | \"flipY\" | \"flipXY\""
+
+[[alias]]
+name = "_DitherType"
+type = "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | playdate.graphics.image.kDitherTypeNone | playdate.graphics.image.kDitherTypeOrdered2x2 | playdate.graphics.image.kDitherTypeOrdered3x3 | playdate.graphics.image.kDitherTypeOrdered4x4 | playdate.graphics.image.kDitherTypeOrdered8x8 | playdate.graphics.image.kDitherTypeBayer2x2 | playdate.graphics.image.kDitherTypeBayer4x4 | playdate.graphics.image.kDitherTypeBayer8x8 | playdate.graphics.image.kDitherTypeFloydSteinberg | playdate.graphics.image.kDitherTypeBurkes | playdate.graphics.image.kDitherTypeAtkinson"
+
+[[alias]]
+name = "_StrokeLocation"
+type = '0 | 1 | 2 | "centered" | "outside" | "inside" | playdate.graphics.kStrokeLocationCentered | playdate.graphics.kStrokeLocationOutside | playdate.graphics.kStrokeLocationInside'
+
+[[alias]]
+name = "_CollisionType"
+type = 'integer|string 0 | 1 |2 | 3 | "slide" | "freeze" | "overlap" | "bounce"'
+
+[[alias]]
+name = "_EasingFunction"
+type = "fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number"

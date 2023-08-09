@@ -1,5 +1,6 @@
-# Contains five arrays: table, method, function, property of the following shapes:
+# Contains five arrays: alias, table, method, function, property of the following shapes:
 #
+#    alias.{name:str, type:str}
 #    class.{name:str, type:str}
 # property.{name:str, type:str, optional:bool}
 # function.{name:str, args:[{name:str, type:str, optional:bool}], rets:[{name:str, type:str, optional:bool}]}
