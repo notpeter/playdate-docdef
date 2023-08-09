@@ -1,0 +1,373 @@
+# Contains five arrays: table, method, function, property of the following shapes:
+#
+#    class.{name:str, type:str}
+# property.{name:str, type:str, optional:bool}
+# function.{name:str, args:[{name:str, type:str, optional:bool}], rets:[{name:str, type:str, optional:bool}]}
+#   method.{name:str, args:[{name:str, type:str, optional:bool}], rets:[{name:str, type:str, optional:bool}]}
+#
+# Classes are any table (e.g. playdate, playdate.graphics, playdate.graphics.image)
+# Properties are fields attached to a class instance (e.g. playdate.graphics.image.x)
+# Methods are functions attached to a class instance (e.g. playdate.graphics.image:draw()))
+# Functions are functions not atatched to a class instance (e.g. playdate.graphics.drawCircle())
+#
+# `class.type` is a string:
+#     * "table" when they cannot be instantiated (e.g. playdate, playdate.display)
+#     * "class" when they can be instantiated (e.g. playdate.graphics.image)
+#     * "Object" or "ParentClassName" for CoreLibs/object classes (none in SDK)
+#
+# While other `.type` are lua types consisting of:
+#     * 10 built-in types (nil, boolean, string, number, table, function, thread, userdata) + (integer, float)
+#     * A custom class name from a `class.name` (e.g. playdate.graphics.image)
+#     * "any" (meaning unknown typing)
+#     * LuaCATS type: "number|string", "string|nil", "string[]", "number[]" "table<string, integer>",
+#
+# `args` is an array of {name:str, type:str, optional:bool} objects for function arguments;
+# `rets` is an array of {name:str, type:str, optional:bool} objects for function return values;
+# `args = []` means function takes no arguments and `rets = []` means no return values (returns nil)
+# All fields shown above are mandatory. With the exception of optional which is optional.
+#
+# Each object may also contain one or more optional fields
+#     * docs: text taken from the official documentation (str)
+#     * link: link to the official documentation #anchor (str)
+#     * note: text added by me (str)
+#
+# We rely on TOMLs support for Array notation to build up our objects.
+# Parsed it will be {class: [], property: [], function: [], method: []}
+#
+# This has a number of benefits:
+# 1. Nearly flat structure (no arbitrary nesting)
+# 2. Single file containing everything
+# 3. Multiple function/methods with the same name, but different signatures
+# can be handled individually: drawRect(r) and drawRect(x, y, w, h)
+# 4. Searching for a fully qualified name will always return all relevant results.
+# 5. Avoids some TOML pitfalls (sections/keys containing periods, but not quoted, generate nesting)
+
+
+###########
+# classes #
+###########
+[[class]]
+name = "json"
+type = "table"
+
+[[class]]
+name = "playdate"
+type = "table"
+
+[[class]]
+name = "playdate.datastore"
+type = "table"
+
+[[class]]
+name = "playdate.display"
+type = "table"
+
+[[class]]
+name = "playdate.easingFunctions"
+type = "table"
+
+[[class]]
+name = "playdate.file"
+type = "table"
+
+[[class]]
+name = "playdate.file.file"
+type = "class"
+
+[[class]]
+name = "playdate.frameTimer"
+type = "class"
+
+[[class]]
+name = "playdate.geometry"
+type = "table"
+
+[[class]]
+name = "playdate.geometry.affineTransform"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.arc"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.lineSegment"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.point"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.polygon"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.rect"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.size"
+type = "class"
+
+[[class]]
+name = "playdate.geometry.vector2D"
+type = "class"
+
+[[class]]
+name = "playdate.graphics"
+type = "table"
+
+[[class]]
+name = "playdate.graphics.animation.blinker"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.animation.loop"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.animator"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.font"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.image"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.imagetable"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.nineSlice"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.sprite"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.tilemap"
+type = "class"
+
+[[class]]
+name = "playdate.graphics.video"
+type = "class"
+
+[[class]]
+name = "playdate.inputHandlers"
+type = "table"
+
+[[class]]
+name = "playdate.keyboard"
+type = "table"
+
+[[class]]
+name = "playdate.menu"
+type = "table"
+
+[[class]]
+name = "playdate.menu.item"
+type = "class"
+
+[[class]]
+name = "playdate.metadata"
+type = "table"
+
+[[class]]
+name = "playdate.pathfinder"
+type = "table"
+
+[[class]]
+name = "playdate.pathfinder.graph"
+type = "class"
+
+[[class]]
+name = "playdate.pathfinder.node"
+type = "class"
+
+[[class]]
+name = "playdate.simulator"
+type = "table"
+
+[[class]]
+name = "playdate.sound"
+type = "table"
+
+[[class]]
+name = "playdate.sound.bitcrusher"
+type = "playdate.sound.effect"
+
+[[class]]
+name = "playdate.sound.channel"
+type = "class"
+
+[[class]]
+name = "playdate.sound.controlsignal"
+type = "playdate.sound.signal"
+
+[[class]]
+name = "playdate.sound.delayline"
+type = "playdate.sound.effect"
+
+[[class]]
+name = "playdate.sound.delaylinetap"
+type = "playdate.sound.source"
+
+[[class]]
+name = "playdate.sound.effect"
+type = "table"
+
+[[class]]
+name = "playdate.sound.envelope"
+type = "playdate.sound.signal"
+
+[[class]]
+name = "playdate.sound.fileplayer"
+type = "playdate.sound.source"
+
+[[class]]
+name = "playdate.sound.instrument"
+type = "playdate.sound.source"
+
+[[class]]
+name = "playdate.sound.lfo"
+type = "playdate.sound.signal"
+
+[[class]]
+name = "playdate.sound.micinput"
+type = "table"
+
+[[class]]
+name = "playdate.sound.onepolefilter"
+type = "playdate.sound.effect"
+
+[[class]]
+name = "playdate.sound.overdrive"
+type = "playdate.sound.effect"
+
+[[class]]
+name = "playdate.sound.ringmod"
+type = "playdate.sound.effect"
+
+[[class]]
+name = "playdate.sound.sample"
+type = "class"
+
+[[class]]
+name = "playdate.sound.sampleplayer"
+type = "playdate.sound.source"
+
+[[class]]
+name = "playdate.sound.sequence"
+type = "class"
+
+[[class]]
+name = "playdate.sound.source"
+type = "class"
+link = "https://sdk.play.date/inside-playdate/#C-sound.source"
+
+[[class]]
+name = "playdate.sound.synth"
+type = "playdate.sound.source"
+
+[[class]]
+name = "playdate.sound.track"
+type = "class"
+
+[[class]]
+name = "playdate.sound.twopolefilter"
+type = "playdate.sound.effect"
+
+[[class]]
+name = "playdate.string"
+type = "table"
+
+[[class]]
+name = "playdate.systeminfo"
+type = "table"
+
+[[class]]
+name = "playdate.timer"
+type = "class"
+
+[[class]]
+name = "playdate.ui"
+type = "table"
+
+[[class]]
+name = "playdate.ui.crankIndicator"
+type = "table"
+
+[[class]]
+name = "playdate.ui.gridview"
+type = "class"
+
+[[class]]
+name = "table"
+type = "table"
+
+[[class]]
+name = "Object"
+type = "table"
+link = "https://sdk.play.date/inside-playdate/#_object_oriented_programming_in_lua"
+
+[[class]]
+name = "playdate.systeminfo"
+type = "table"
+note = "Undocumented."
+
+##################################################################
+# interfaces: tables with known keys used as for args|rets types #
+##################################################################
+
+[[class]]
+name = "_CollisionData"
+type = "table"
+note = "returned from sprite:moveWithCollisions and sprite:checkCollisions"
+
+[[class]]
+name = "_CollisionInfo"
+type = "table"
+note = "returned from playdate.graphics.sprite.querySpriteInfoAlongLine"
+
+[[class]]
+name = "_ControlSignalEvent"
+type = "table"
+
+[[class]]
+name = "_DateTime"
+type = "table"
+note = "returned by playdate.getTime() and playdate.getGMTTime()"
+
+
+[[class]]
+name = "_InputHandler"
+
+[[class]]
+name = "_ModTime"
+type = "table"
+note = "# second level accuracy time.  Used by playdate.file.modtime"
+
+[[class]]
+name = "_PowerStatus"
+type = "table"
+
+[[class]]
+name = "_SoundTrackNoteIn"
+type = "table"
+note = "Used by playdate.sound.track:addNote and others"
+
+[[class]]
+name = "_SoundTrackNoteOut"
+type = "table"
+note = "Used by playdate.sound.track:getNote"
+
+[[class]]
+name = "_SystemStats"
+type = "table"
+note = "Returned from playdate.getStats(); Device only; Note the leding spaces on keys."
