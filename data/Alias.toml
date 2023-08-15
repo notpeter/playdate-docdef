@@ -13,7 +13,6 @@ type = "0"
 name = "playdate.graphics.font.kLanguageJapanese"
 type = "1"
 
-
 [[alias]]
 name = "playdate.kButtonLeft"
 type = "1"

@@ -37,11 +37,13 @@
 #
 # This has a number of benefits:
 # 1. Nearly flat structure (no arbitrary nesting)
-# 2. Single file containing everything
+# 2. Single schema for everything
 # 3. Multiple function/methods with the same name, but different signatures
-# can be handled individually: drawRect(r) and drawRect(x, y, w, h)
-# 4. Searching for a fully qualified name will always return all relevant results.
-# 5. Avoids some TOML pitfalls (sections/keys containing periods, but not quoted, generate nesting)
+#    can be handled individually: drawRect(r) and drawRect(x, y, w, h)
+# 4. It is more verbose than earlier schema revisions, but now grepping
+#    for a fully qualified name always return all relevant results.
+# 5. Avoids some TOML pitfalls (unquoted sections/keys containing periods,
+#    but not quoted, generate nesting)
 
 
 ###########
