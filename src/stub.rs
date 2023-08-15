@@ -16,6 +16,49 @@ pub fn func_signature(name: &String, params: &Vec<(String, String)>) -> String {
 }
 
 impl Stub {
+    pub fn to_toml(&self) -> String {
+        let mut s = String::new();
+        s.push_str(
+            &format!(
+                "[[function]]\n\
+                name = \"{}\"\n\
+                anchor = \"{}\"\n",
+                self.title,
+                self.anchor
+            )
+        );
+        if self.params.is_empty() {
+            s.push_str(
+                "args = []\n"
+            );
+        } else if self.params.len() == 1 {
+            for (p_name, p_type) in &self.params {
+                s.push_str(&format!("args = [ {{ name = \"{}\", type = \"{}\" }}, ]\n", p_name, p_type));
+            }
+        } else {
+            s.push_str("args = [\n");
+            for (p_name, p_type) in &self.params {
+                s.push_str(&format!("    {{ name = \"{}\", type = \"{}\" }},\n", p_name, p_type));
+            }
+            s.push_str("]\n");
+        }
+
+        if self.returns.len() == 0 {
+            s.push_str("returns = []\n");
+        } else if self.returns.len() == 1 {
+            for (r_name, r_type) in &self.returns {
+                s.push_str(&format!("returns = [ {{ name = \"{}\", type = \"{}\" }}, ]\n", r_name, r_type));
+            }
+        } else {
+            s.push_str("returns = [\n");
+            for (r_name, r_type) in &self.returns {
+                s.push_str(&format!("    {{ name = \"{}\", type = \"{}\" }},\n", r_name, r_type));
+            }
+            s.push_str("]\n");
+        }
+        s.push_str("\n");
+        s
+    }
     pub fn to_stub(&self) -> String {
         // TODO decide how to handle variables
         String::from(format!("function {} end", func_signature(&self.title, &self.params)))

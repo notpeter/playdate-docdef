@@ -124,17 +124,26 @@ fn main() {
             _last_class = title.split(":").next().unwrap_or("").to_string();
         }
     }
+    let prefix = "---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n";
+    let suffix = "--- End of LuaCATS stubs.";
 
-    println!("---@meta\n-- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-    if args.action == Action::Annotate {
+    if true {
+        for stub in stubs {
+            println!("{}", stub.to_toml());
+        }
+    }
+    else if args.action == Action::Annotate {
         print_class_defs();
         for stub in stubs {
+            println!("{prefix}");
             println!("{}", stub.to_lua());
+            println!("{suffix}")
         }
     } else if args.action == Action::Stub {
         for stub in stubs {
+            println!("{prefix}");
             println!("{}", stub.to_stub());
+            println!("{suffix}")
         }
     }
-    println!("--- End of LuaCATS stubs.")
 }
