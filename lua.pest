@@ -1,0 +1,27 @@
+lua_function = {
+    lua_table ~ W ~ "(" ~ lua_parameters? ~ W ~ ")"
+    ~ ":" ~ W ~ lua_rets ~ W
+}
+lua_parameters = { W ~ lua_parameter ~ W ~("," ~ W ~ lua_parameter)* }
+lua_parameter = { lua_identifier ~ ":" ~ lua_type | "..." }
+lua_rets = {
+    ("{" ~ W ~ lua_identifier ~ W ~ "=" ~ W ~ lua_type ~ W ~ ("," ~ W ~ lua_identifier ~ W ~ "=" ~ W ~ lua_type ~ W)+ ~ "}") // table format
+    | lua_type // single value
+}
+lua_identifier = @{ "_" | ASCII_ALPHA ~ ( "_" | ASCII_DIGIT | ASCII_ALPHA )* }
+lua_table = @{
+	(lua_identifier ~ ("." ~ lua_identifier)*)?
+    ~ class_or_instance
+    ~ lua_identifier
+}
+class_or_instance = { (":" | ".") }
+
+lua_type = @{
+    ( lua_types ~ "?" ) |
+    ( lua_types ~ "[]" ) |
+    ( lua_types ~ ( "|" ~ lua_types )*)
+}
+
+lua_types = @{ "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
+// lua_types_non_nil = @{ "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
+W = _{ " "* }
