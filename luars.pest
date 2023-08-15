@@ -1,0 +1,41 @@
+Function = {
+    "fn" ~ " " ~ W
+    ~ lua_table ~ W
+    ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
+    ~ "->" ~ W ~ FunctionReturnType ~ W
+}
+FunctionalParameters = {
+    "..." |
+    (FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)* ) ~ ("," ~ W ~ "...")? ~ ","?
+}
+FunctionalParameter = { IDENTIFIER ~ W ~ ":" ~ W ~ ( LuaType | FunctionType ) }
+
+FunctionReturnType = {
+    ("(" ~ W ~ IDENTIFIER ~ W ~ ":" ~ W ~ LuaType ~ W ~ ("," ~ W ~ IDENTIFIER ~ W ~ ":" ~ W ~ LuaType ~ W)+ ~ ")") // (a: type, b: type)
+    | "(" ~ W ~ LuaType ~ W ~ ("," ~ W ~ LuaType ~ W)+ ~ ")" // (type, type)
+    | LuaType // single type
+}
+IDENTIFIER = @{ "_" | ASCII_ALPHA ~ ( "_" | ASCII_DIGIT | ASCII_ALPHA )* }
+
+FunctionType = {
+    "fn" ~
+    "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
+    ~ "->" ~ W ~ FunctionReturnType ~ W
+}
+
+lua_table = @{
+	(IDENTIFIER ~ ("." ~ IDENTIFIER)*)?
+    ~ class_or_instance
+    ~ IDENTIFIER
+}
+class_or_instance = { (":" | ".") }
+
+LuaType = @{
+    ( LuaCatsBuiltIn ~ "?" ) |
+    ( LuaCatsBuiltIn ~ "[]" ) |
+    ( LuaCatsBuiltIn ~ ( "|" ~ LuaCatsBuiltIn )*)
+}
+
+LuaCatsBuiltIn = @{ "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
+// LuaTypes_non_nil = @{ "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
+W = _{ " "* }
