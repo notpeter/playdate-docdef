@@ -127,47 +127,47 @@
 ".setScale(scale)" = {}
 
 ["playdate.easingFunctions"]
-".linear fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInQuad fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInCubic fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInQuart fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInQuint fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInSine fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInExpo fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInCirc fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
-".outElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
-".inOutElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
-".outInElastic fun(t:number, b:number, c:number, d:number, a?:number, p?:number)" = {""="number"}
-".inBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
-".outBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
-".inOutBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
-".outInBack fun(t:number, b:number, c:number, d:number, s?:number)" = {""="number"}
-".outBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".inOutBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
-".outInBounce fun(t:number, b:number, c:number, d:number)" = {""="number"}
+".linear fun(t, b, c, d)" = {""="number"}
+".inQuad fun(t, b, c, d)" = {""="number"}
+".outQuad fun(t, b, c, d)" = {""="number"}
+".inOutQuad fun(t, b, c, d)" = {""="number"}
+".outInQuad fun(t, b, c, d)" = {""="number"}
+".inCubic fun(t, b, c, d)" = {""="number"}
+".outCubic fun(t, b, c, d)" = {""="number"}
+".inOutCubic fun(t, b, c, d)" = {""="number"}
+".outInCubic fun(t, b, c, d)" = {""="number"}
+".inQuart fun(t, b, c, d)" = {""="number"}
+".outQuart fun(t, b, c, d)" = {""="number"}
+".inOutQuart fun(t, b, c, d)" = {""="number"}
+".outInQuart fun(t, b, c, d)" = {""="number"}
+".inQuint fun(t, b, c, d)" = {""="number"}
+".outQuint fun(t, b, c, d)" = {""="number"}
+".inOutQuint fun(t, b, c, d)" = {""="number"}
+".outInQuint fun(t, b, c, d)" = {""="number"}
+".inSine fun(t, b, c, d)" = {""="number"}
+".outSine fun(t, b, c, d)" = {""="number"}
+".inOutSine fun(t, b, c, d)" = {""="number"}
+".outInSine fun(t, b, c, d)" = {""="number"}
+".inExpo fun(t, b, c, d)" = {""="number"}
+".outExpo fun(t, b, c, d)" = {""="number"}
+".inOutExpo fun(t, b, c, d)" = {""="number"}
+".outInExpo fun(t, b, c, d)" = {""="number"}
+".inCirc fun(t, b, c, d)" = {""="number"}
+".outCirc fun(t, b, c, d)" = {""="number"}
+".inOutCirc fun(t, b, c, d)" = {""="number"}
+".outInCirc fun(t, b, c, d)" = {""="number"}
+".inElastic fun(t, b, c, d, a?, p?)" = {""="number"}
+".outElastic fun(t, b, c, d, a?, p?)" = {""="number"}
+".inOutElastic fun(t, b, c, d, a?, p?)" = {""="number"}
+".outInElastic fun(t, b, c, d, a?, p?)" = {""="number"}
+".inBack fun(t, b, c, d, s?)" = {""="number"}
+".outBack fun(t, b, c, d, s?)" = {""="number"}
+".inOutBack fun(t, b, c, d, s?)" = {""="number"}
+".outInBack fun(t, b, c, d, s?)" = {""="number"}
+".outBounce fun(t, b, c, d)" = {""="number"}
+".inBounce fun(t, b, c, d)" = {""="number"}
+".inOutBounce fun(t, b, c, d)" = {""="number"}
+".outInBounce fun(t, b, c, d)" = {""="number"}
 
 ["playdate.file"]
 ".delete(path, recursive)" = {success="boolean"}
