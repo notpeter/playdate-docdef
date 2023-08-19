@@ -608,67 +608,67 @@ fn playdate.keyboard.keyboardWillHideCallback() -> nil
 fn playdate.keyboard.keyboardAnimatingCallback() -> nil
 fn playdate.keyboard.textChangedCallback(ok: boolean) -> nil
 fn playdate.math.lerp(min: number, max: number, t: number) -> number
-fn playdate.pathfinder.graph.new(nodeCount?: integer, coordinates?: any) -> playdate.pathfinder.graph
-fn playdate.pathfinder.graph.new2DGrid(width: integer, height: integer, allowDiagonals?: boolean, includedNodes?: any) -> playdate.pathfinder.graph
-fn playdate.pathfinder.graph:addNewNode(id: any, x?: integer, y?: integer, connectedNodes?: playdate.pathfinder.node[], weights?: number[], addReciprocalConnections?: boolean) -> nil
+fn playdate.pathfinder.graph.new(nodeCount?: integer, coordinates?: integer[][]) -> playdate.pathfinder.graph
+fn playdate.pathfinder.graph.new2DGrid(width: integer, height: integer, allowDiagonals?: boolean, includedNodes?: integer[]) -> playdate.pathfinder.graph
+fn playdate.pathfinder.graph:addNewNode(id: integer, x?: integer, y?: integer, connectedNodes?: playdate.pathfinder.node[], weights?: number[], addReciprocalConnections?: boolean) -> nil
 fn playdate.pathfinder.graph:addNewNodes(count: integer) -> nil
 fn playdate.pathfinder.graph:addNode(node: playdate.pathfinder.node, connectedNodes?: playdate.pathfinder.node[], weights?: number[], addReciprocalConnections?: boolean) -> nil
 fn playdate.pathfinder.graph:addNodes(nodes: playdate.pathfinder.node[]) -> nil
 fn playdate.pathfinder.graph:allNodes() -> playdate.pathfinder.node[]
 fn playdate.pathfinder.graph:removeNode(node: playdate.pathfinder.node) -> nil
 fn playdate.pathfinder.graph:removeNodeWithXY(x: integer, y: integer) -> nil
-fn playdate.pathfinder.graph:removeNodeWithID(id: any) -> nil
-fn playdate.pathfinder.graph:nodeWithID(id: any) -> playdate.pathfinder.node?
+fn playdate.pathfinder.graph:removeNodeWithID(id: integer) -> nil
+fn playdate.pathfinder.graph:nodeWithID(id: integer) -> playdate.pathfinder.node?
 fn playdate.pathfinder.graph:nodeWithXY(x: integer, y: integer) -> playdate.pathfinder.node?
-fn playdate.pathfinder.graph:addConnections(connections: any) -> nil
-fn playdate.pathfinder.graph:addConnectionToNodeWithID(fromNodeID: integer, toNodeID: integer, weight: number, addReciprocalConnection: any) -> nil
+fn playdate.pathfinder.graph:addConnections(connections: integer[][]) -> nil
+fn playdate.pathfinder.graph:addConnectionToNodeWithID(fromNodeID: integer, toNodeID: integer, weight: number, addReciprocalConnection: boolean) -> nil
 fn playdate.pathfinder.graph:removeAllConnections() -> nil
-fn playdate.pathfinder.graph:removeAllConnectionsFromNodeWithID(id: any, removeIncoming?: any) -> nil
+fn playdate.pathfinder.graph:removeAllConnectionsFromNodeWithID(id: integer, removeIncoming?: boolean) -> nil
 fn playdate.pathfinder.graph:findPath(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node, heuristicFunction?: fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node) -> integer, findPathToGoalAdjacentNodes?: boolean) -> playdate.pathfinder.node[]
 fn playdate.pathfinder.graph:findPathWithIDs(startNodeID: integer, goalNodeID: integer, heuristicFunction?: fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node) -> integer, findPathToGoalAdjacentNodes?: boolean) -> integer[]
-fn playdate.pathfinder.graph:setXYForNodeWithID(id: any, x: integer, y: integer) -> nil
-fn playdate.pathfinder.node:addConnection(node: playdate.pathfinder.node, weight: number, addReciprocalConnection: any) -> nil
+fn playdate.pathfinder.graph:setXYForNodeWithID(id: integer, x: integer, y: integer) -> nil
+fn playdate.pathfinder.node:addConnection(node: playdate.pathfinder.node, weight: number, addReciprocalConnection: boolean) -> nil
 fn playdate.pathfinder.node:addConnections(nodes: playdate.pathfinder.node[], weights: number[], addReciprocalConnections: boolean) -> nil
-fn playdate.pathfinder.node:addConnectionToNodeWithXY(x: integer, y: integer, weight: number, addReciprocalConnection: any) -> nil
+fn playdate.pathfinder.node:addConnectionToNodeWithXY(x: integer, y: integer, weight: number, addReciprocalConnection: boolean) -> nil
 fn playdate.pathfinder.node:connectedNodes() -> playdate.pathfinder.node[]
-fn playdate.pathfinder.node:removeConnection(node: playdate.pathfinder.node, removeReciprocal?: any) -> nil
-fn playdate.pathfinder.node:removeAllConnections(removeIncoming?: any) -> nil
+fn playdate.pathfinder.node:removeConnection(node: playdate.pathfinder.node, removeReciprocal?: boolean) -> nil
+fn playdate.pathfinder.node:removeAllConnections(removeIncoming?: boolean) -> nil
 fn playdate.pathfinder.node:setXY(x: integer, y: integer) -> nil
 fn playdate.getPowerStatus() -> table|PowerStatus
 fn playdate.getBatteryPercentage() -> integer
 fn playdate.getBatteryVoltage() -> number
 fn playdate.simulator.writeToFile(image: playdate.graphics.image, path: string) -> nil
 fn playdate.simulator.exit() -> nil
-fn playdate.simulator.getURL(url: any) -> string
+fn playdate.simulator.getURL(url: string) -> string
 fn playdate.clearConsole() -> nil
-fn playdate.setDebugDrawColor(r: playdate.geometry.rect, g: any, b: any, a: any) -> nil
-fn playdate.keyPressed(key: any) -> nil
-fn playdate.keyReleased(key: any) -> nil
+fn playdate.setDebugDrawColor(r: number, g: number, b: number, a: number) -> nil
+fn playdate.keyPressed(key: string) -> nil
+fn playdate.keyReleased(key: string) -> nil
 fn playdate.debugDraw() -> nil
 fn playdate.sound.getSampleRate() -> integer
 fn playdate.sound.sampleplayer.new(path: string) -> playdate.sound.sampleplayer
-fn playdate.sound.sampleplayer.new(sample: any) -> playdate.sound.sampleplayer
+fn playdate.sound.sampleplayer.new(sample: playdate.sound.sample) -> playdate.sound.sampleplayer
 fn playdate.sound.sampleplayer:copy() -> playdate.sound.sampleplayer
-fn playdate.sound.sampleplayer:play(repeatCount?: integer, rate?: any) -> nil
-fn playdate.sound.sampleplayer:playAt(when: any, vol?: number, rightvol?: number, rate?: any) -> nil
+fn playdate.sound.sampleplayer:play(repeatCount?: integer, rate?: integer) -> nil
+fn playdate.sound.sampleplayer:playAt(when: number, vol?: number, rightvol?: number, rate?: integer) -> nil
 fn playdate.sound.sampleplayer:setVolume(left: integer, right?: integer) -> nil
 fn playdate.sound.sampleplayer:getVolume() -> (left_or_mono: number, right: number?)
 fn playdate.sound.sampleplayer:setLoopCallback(callback: function, arg?: any) -> nil
-fn playdate.sound.sampleplayer:setPlayRange(start: any, _end: any) -> nil
+fn playdate.sound.sampleplayer:setPlayRange(start: integer, _end: integer) -> nil
 fn playdate.sound.sampleplayer:setPaused(flag: boolean) -> nil
 fn playdate.sound.sampleplayer:isPlaying() -> boolean
 fn playdate.sound.sampleplayer:stop() -> nil
 fn playdate.sound.sampleplayer:setFinishCallback(func: function, arg?: any) -> nil
-fn playdate.sound.sampleplayer:setSample(sample: any) -> nil
+fn playdate.sound.sampleplayer:setSample(sample: playdate.sound.sample) -> nil
 fn playdate.sound.sampleplayer:getSample() -> playdate.sound.sample
 fn playdate.sound.sampleplayer:getLength() -> number
-fn playdate.sound.sampleplayer:setRate(rate: any) -> nil
+fn playdate.sound.sampleplayer:setRate(rate: integer) -> nil
 fn playdate.sound.sampleplayer:getRate() -> number
-fn playdate.sound.sampleplayer:setRateMod(signal: any) -> nil
-fn playdate.sound.sampleplayer:setOffset(seconds: any) -> nil
+fn playdate.sound.sampleplayer:setRateMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.sampleplayer:setOffset(seconds: number) -> nil
 fn playdate.sound.sampleplayer:getOffset() -> number
-fn playdate.sound.fileplayer.new(buffersize?: any) -> playdate.sound.fileplayer
-fn playdate.sound.fileplayer.new(path: string, buffersize?: any) -> playdate.sound.fileplayer
+fn playdate.sound.fileplayer.new(buffersize?: number) -> playdate.sound.fileplayer
+fn playdate.sound.fileplayer.new(path: string, buffersize?: number) -> playdate.sound.fileplayer
 fn playdate.sound.fileplayer:load(path: string) -> nil
 fn playdate.sound.fileplayer:play(repeatCount?: integer) -> (success: boolean, error: string?)
 fn playdate.sound.fileplayer:stop() -> nil
