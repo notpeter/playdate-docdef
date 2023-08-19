@@ -678,15 +678,15 @@ fn playdate.sound.fileplayer:getLength() -> number
 fn playdate.sound.fileplayer:setFinishCallback(func: function, arg?: any) -> nil
 fn playdate.sound.fileplayer:didUnderrun() -> boolean
 fn playdate.sound.fileplayer:setStopOnUnderrun(flag: boolean) -> nil
-fn playdate.sound.fileplayer:setLoopRange(start: any, _end: any, loopCallback?: fun(arg: any|nil): nil, arg?: any) -> nil
+fn playdate.sound.fileplayer:setLoopRange(start: number, _end: number, loopCallback?: fun(arg?: any): nil, arg?: any) -> nil
 fn playdate.sound.fileplayer:setLoopCallback(callback: function, arg?: any) -> nil
-fn playdate.sound.fileplayer:setBufferSize(seconds: any) -> nil
-fn playdate.sound.fileplayer:setRate(rate: any) -> nil
+fn playdate.sound.fileplayer:setBufferSize(seconds: number) -> nil
+fn playdate.sound.fileplayer:setRate(rate: integer) -> nil
 fn playdate.sound.fileplayer:getRate() -> number
-fn playdate.sound.fileplayer:setRateMod(signal: any) -> nil
-fn playdate.sound.fileplayer:setVolume(left: integer, right?: integer, fadeSeconds?: any, fadeCallback?: fun(self: playdate.sound.fileplayer, arg: any|nil), arg?: any) -> nil
+fn playdate.sound.fileplayer:setRateMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.fileplayer:setVolume(left: number, right?: number, fadeSeconds?: number, fadeCallback?: fun(self: playdate.sound.fileplayer, arg?: any), arg?: any) -> nil
 fn playdate.sound.fileplayer:getVolume() -> (left_or_mono: number, right: number?)
-fn playdate.sound.fileplayer:setOffset(seconds: any) -> nil
+fn playdate.sound.fileplayer:setOffset(seconds: number) -> nil
 fn playdate.sound.fileplayer:getOffset() -> number
 fn playdate.sound.sample.new(path: string) -> playdate.sound.sample
 fn playdate.sound.sample:getSubsample(startOffset: integer, endOffset: integer) -> playdate.sound.sample
@@ -694,115 +694,115 @@ fn playdate.sound.sample:load(path: string) -> boolean
 fn playdate.sound.sample:getSampleRate() -> integer
 fn playdate.sound.sample:getFormat() -> integer
 fn playdate.sound.sample:getLength() -> (sample_seconds: number, buffer_size_seconds: number)
-fn playdate.sound.sample:play(repeatCount?: integer, rate?: any) -> nil
-fn playdate.sound.sample:playAt(when: any, vol?: number, rightvol?: number, rate?: any) -> nil
+fn playdate.sound.sample:play(repeatCount?: integer, rate?: integer) -> nil
+fn playdate.sound.sample:playAt(when: number, vol?: number, rightvol?: number, rate?: integer) -> nil
 fn playdate.sound.sample:save(filename: string) -> nil
 fn playdate.sound.channel.new() -> playdate.sound.channel
 fn playdate.sound.channel:remove() -> nil
-fn playdate.sound.channel:addEffect(effect: any) -> nil
-fn playdate.sound.channel:removeEffect(effect: any) -> nil
-fn playdate.sound.channel:addSource(source: any) -> nil
-fn playdate.sound.channel:removeSource(source: any) -> nil
+fn playdate.sound.channel:addEffect(effect: playdate.sound.effect) -> nil
+fn playdate.sound.channel:removeEffect(effect: playdate.sound.effect) -> nil
+fn playdate.sound.channel:addSource(source: playdate.sound.source) -> nil
+fn playdate.sound.channel:removeSource(source: playdate.sound.source) -> nil
 fn playdate.sound.channel:setVolume(volume: number) -> nil
 fn playdate.sound.channel:getVolume() -> number
-fn playdate.sound.channel:setPan(pan: any) -> number
-fn playdate.sound.channel:setPanMod(signal: any) -> nil
-fn playdate.sound.channel:setVolumeMod(signal: any) -> nil
+fn playdate.sound.channel:setPan(pan: number) -> number
+fn playdate.sound.channel:setPanMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.channel:setVolumeMod(signal: playdate.sound.signal) -> nil
 fn playdate.sound.playingSources() -> playdate.sound.source[]
-fn playdate.sound.synth.new(waveform?: any) -> playdate.sound.synth
-fn playdate.sound.synth.new(sample: any, sustainStart?: any, sustainEnd?: any) -> playdate.sound.synth
+fn playdate.sound.synth.new(waveform?: integer) -> playdate.sound.synth
+fn playdate.sound.synth.new(sample: playdate.sound.sample, sustainStart?: number, sustainEnd?: number) -> playdate.sound.synth
 fn playdate.sound.synth:copy() -> playdate.sound.synth
-fn playdate.sound.synth:playNote(pitch: any, volume?: number, length?: number, when?: any) -> boolean
-fn playdate.sound.synth:playMIDINote(note: any, volume?: number, length?: number, when?: any) -> boolean
+fn playdate.sound.synth:playNote(pitch: number|string, volume?: number, length?: number, when?: number) -> boolean
+fn playdate.sound.synth:playMIDINote(note: number|string, volume?: number, length?: number, when?: number) -> boolean
 fn playdate.sound.synth:noteOff() -> nil
 fn playdate.sound.synth:stop() -> nil
 fn playdate.sound.synth:isPlaying() -> boolean
-fn playdate.sound.synth:setAmplitudeMod(signal: any) -> nil
-fn playdate.sound.synth:setADSR(attack: any, decay: any, sustain: any, release: any, curvature: any) -> nil
-fn playdate.sound.synth:setAttack(time: any) -> nil
-fn playdate.sound.synth:setDecay(time: any) -> nil
-fn playdate.sound.synth:setSustain(level: any) -> nil
-fn playdate.sound.synth:setRelease(time: any) -> nil
-fn playdate.sound.synth:setEnvelopeCurvature(amount: any) -> nil
+fn playdate.sound.synth:setAmplitudeMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.synth:setADSR(attack: number, decay: number, sustain: number, release: number, curvature: number) -> nil
+fn playdate.sound.synth:setAttack(time: number) -> nil
+fn playdate.sound.synth:setDecay(time: number) -> nil
+fn playdate.sound.synth:setSustain(level: number) -> nil
+fn playdate.sound.synth:setRelease(time: number) -> nil
+fn playdate.sound.synth:setEnvelopeCurvature(amount: number) -> nil
 fn playdate.sound.synth:getEnvelope() -> playdate.sound.envelope
 fn playdate.sound.synth:setFinishCallback(_function: function) -> nil
-fn playdate.sound.synth:setFrequencyMod(signal: any) -> nil
+fn playdate.sound.synth:setFrequencyMod(signal: playdate.sound.signal) -> nil
 fn playdate.sound.synth:setLegato(flag: boolean) -> nil
-fn playdate.sound.synth:setParameter(parameter: any, value: any) -> nil
-fn playdate.sound.synth:setParameterMod(parameter: any, signal: any) -> nil
+fn playdate.sound.synth:setParameter(parameter: integer, value: number) -> nil
+fn playdate.sound.synth:setParameterMod(parameter: integer, signal: playdate.sound.signal) -> nil
 fn playdate.sound.synth:setVolume(left: integer, right?: integer) -> nil
 fn playdate.sound.synth:getVolume() -> (left_or_mono: number, right: number?)
-fn playdate.sound.synth:setWaveform(waveform: any) -> nil
-fn playdate.sound.signal:setOffset(offset: any) -> nil
+fn playdate.sound.synth:setWaveform(waveform: integer) -> nil
+fn playdate.sound.signal:setOffset(offset: number) -> nil
 fn playdate.sound.signal:setScale(scale: integer) -> nil
-fn playdate.sound.lfo.new(type?: any) -> playdate.sound.lfo
-fn playdate.sound.lfo:setType(type: any) -> nil
-fn playdate.sound.lfo:setArpeggio(note1: any, ...: any) -> nil
-fn playdate.sound.lfo:setCenter(center: any) -> nil
-fn playdate.sound.lfo:setDepth(depth: any) -> nil
-fn playdate.sound.lfo:setRate(rate: any) -> nil
-fn playdate.sound.lfo:setPhase(phase: any) -> nil
+fn playdate.sound.lfo.new(type?: integer) -> playdate.sound.lfo
+fn playdate.sound.lfo:setType(type: integer) -> nil
+fn playdate.sound.lfo:setArpeggio(note1: number, ...: number) -> nil
+fn playdate.sound.lfo:setCenter(center: number) -> nil
+fn playdate.sound.lfo:setDepth(depth: number) -> nil
+fn playdate.sound.lfo:setRate(rate: number) -> nil
+fn playdate.sound.lfo:setPhase(phase: number) -> nil
 fn playdate.sound.lfo:setGlobal(flag: boolean) -> nil
 fn playdate.sound.lfo:setRetrigger(flag: boolean) -> nil
-fn playdate.sound.lfo:setDelay(holdoff: any, ramp: any) -> nil
-fn playdate.sound.envelope.new(attack?: any, decay?: any, sustain?: any, release?: any) -> playdate.sound.envelope
-fn playdate.sound.envelope:setAttack(attack: any) -> nil
-fn playdate.sound.envelope:setDecay(decay: any) -> nil
-fn playdate.sound.envelope:setSustain(sustain: any) -> nil
-fn playdate.sound.envelope:setRelease(release: any) -> nil
-fn playdate.sound.envelope:setCurvature(amount: any) -> nil
-fn playdate.sound.envelope:setVelocitySensitivity(amount: any) -> nil
-fn playdate.sound.envelope:setRateScaling(scaling: any, start?: any, _end: any) -> nil
+fn playdate.sound.lfo:setDelay(holdoff: number, ramp: number) -> nil
+fn playdate.sound.envelope.new(attack?: number, decay?: number, sustain?: number, release?: number) -> playdate.sound.envelope
+fn playdate.sound.envelope:setAttack(attack: number) -> nil
+fn playdate.sound.envelope:setDecay(decay: number) -> nil
+fn playdate.sound.envelope:setSustain(sustain: number) -> nil
+fn playdate.sound.envelope:setRelease(release: number) -> nil
+fn playdate.sound.envelope:setCurvature(amount: number) -> nil
+fn playdate.sound.envelope:setVelocitySensitivity(amount: number) -> nil
+fn playdate.sound.envelope:setRateScaling(scaling: number, start?: number, _end: number) -> nil
 fn playdate.sound.envelope:setScale(scale: integer) -> nil
-fn playdate.sound.envelope:setOffset(offset: any) -> nil
+fn playdate.sound.envelope:setOffset(offset: number) -> nil
 fn playdate.sound.envelope:setLegato(flag: boolean) -> nil
 fn playdate.sound.envelope:setRetrigger(flag: boolean) -> nil
-fn playdate.sound.envelope:trigger(velocity: any, length?: number) -> nil
+fn playdate.sound.envelope:trigger(velocity: number, length?: number) -> nil
 fn playdate.sound.envelope:setGlobal(flag: boolean) -> nil
-fn playdate.sound.addEffect(effect: any) -> nil
-fn playdate.sound.removeEffect(effect: any) -> nil
+fn playdate.sound.addEffect(effect: playdate.sound.effect) -> nil
+fn playdate.sound.removeEffect(effect: playdate.sound.effect) -> nil
 fn playdate.sound.bitcrusher.new() -> playdate.sound.bitcrusher
-fn playdate.sound.bitcrusher:setMix(level: any) -> nil
-fn playdate.sound.bitcrusher:setMixMod(signal: any) -> nil
-fn playdate.sound.bitcrusher:setAmount(amt: any) -> nil
-fn playdate.sound.bitcrusher:setAmountMod(signal: any) -> nil
-fn playdate.sound.bitcrusher:setUndersampling(amt: any) -> nil
-fn playdate.sound.bitcrusher:setUndersamplingMod(signal: any) -> nil
+fn playdate.sound.bitcrusher:setMix(level: number) -> nil
+fn playdate.sound.bitcrusher:setMixMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.bitcrusher:setAmount(amt: number) -> nil
+fn playdate.sound.bitcrusher:setAmountMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.bitcrusher:setUndersampling(amt: number) -> nil
+fn playdate.sound.bitcrusher:setUndersamplingMod(signal: playdate.sound.signal) -> nil
 fn playdate.sound.ringmod.new() -> playdate.sound.ringmod
-fn playdate.sound.ringmod:setMix(level: any) -> nil
-fn playdate.sound.ringmod:setMixMod(signal: any) -> nil
-fn playdate.sound.ringmod:setFrequency(f: any) -> nil
-fn playdate.sound.ringmod:setFrequencyMod(signal: any) -> nil
+fn playdate.sound.ringmod:setMix(level: number) -> nil
+fn playdate.sound.ringmod:setMixMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.ringmod:setFrequency(f: number) -> nil
+fn playdate.sound.ringmod:setFrequencyMod(signal: playdate.sound.signal) -> nil
 fn playdate.sound.onepolefilter.new() -> playdate.sound.onepolefilter
-fn playdate.sound.onepolefilter:setMix(level: any) -> nil
-fn playdate.sound.onepolefilter:setMixMod(signal: any) -> nil
-fn playdate.sound.onepolefilter:setParameter(p: any) -> nil
-fn playdate.sound.onepolefilter:setParameterMod(m: any) -> nil
-fn playdate.sound.twopolefilter.new(type: any) -> playdate.sound.twopolefilter
-fn playdate.sound.twopolefilter:setMix(level: any) -> nil
-fn playdate.sound.twopolefilter:setMixMod(signal: any) -> nil
-fn playdate.sound.twopolefilter:setFrequency(f: any) -> nil
-fn playdate.sound.twopolefilter:setFrequencyMod(signal: any) -> nil
+fn playdate.sound.onepolefilter:setMix(level: number) -> nil
+fn playdate.sound.onepolefilter:setMixMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.onepolefilter:setParameter(p: number) -> nil
+fn playdate.sound.onepolefilter:setParameterMod(m: playdate.sound.signal) -> nil
+fn playdate.sound.twopolefilter.new(type: integer) -> playdate.sound.twopolefilter
+fn playdate.sound.twopolefilter:setMix(level: number) -> nil
+fn playdate.sound.twopolefilter:setMixMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.twopolefilter:setFrequency(f: number) -> nil
+fn playdate.sound.twopolefilter:setFrequencyMod(signal: playdate.sound.signal) -> nil
 fn playdate.sound.twopolefilter:setResonance(r: playdate.geometry.rect) -> nil
-fn playdate.sound.twopolefilter:setResonanceMod(signal: any) -> nil
-fn playdate.sound.twopolefilter:setGain(g: any) -> nil
-fn playdate.sound.twopolefilter:setType(type: any) -> nil
+fn playdate.sound.twopolefilter:setResonanceMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.twopolefilter:setGain(g: number) -> nil
+fn playdate.sound.twopolefilter:setType(type: integer) -> nil
 fn playdate.sound.overdrive.new() -> playdate.sound.overdrive
-fn playdate.sound.overdrive:setMix(level: any) -> nil
-fn playdate.sound.overdrive:setMixMod(signal: any) -> nil
-fn playdate.sound.overdrive:setGain(level: any) -> nil
-fn playdate.sound.overdrive:setLimit(level: any) -> nil
-fn playdate.sound.overdrive:setLimitMod(signal: any) -> nil
-fn playdate.sound.overdrive:setOffset(level: any) -> nil
-fn playdate.sound.overdrive:setOffsetMod(signal: any) -> nil
+fn playdate.sound.overdrive:setMix(level: number) -> nil
+fn playdate.sound.overdrive:setMixMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.overdrive:setGain(level: number) -> nil
+fn playdate.sound.overdrive:setLimit(level: number) -> nil
+fn playdate.sound.overdrive:setLimitMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.overdrive:setOffset(level: number) -> nil
+fn playdate.sound.overdrive:setOffsetMod(signal: playdate.sound.signaly) -> nil
 fn playdate.sound.delayline.new(length: number) -> playdate.sound.delayline
-fn playdate.sound.delayline:setMix(level: any) -> nil
-fn playdate.sound.delayline:setMixMod(signal: any) -> nil
-fn playdate.sound.delayline:addTap(delay: any) -> nil
-fn playdate.sound.delayline:setFeedback(level: any) -> nil
-fn playdate.sound.delaylinetap:setDelay(time: any) -> nil
-fn playdate.sound.delaylinetap:setDelayMod(signal: any) -> nil
-fn playdate.sound.delaylinetap:setVolume(level: any) -> nil
+fn playdate.sound.delayline:setMix(level: number) -> nil
+fn playdate.sound.delayline:setMixMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.delayline:addTap(delay: number) -> nil
+fn playdate.sound.delayline:setFeedback(level: number) -> nil
+fn playdate.sound.delaylinetap:setDelay(time: number) -> nil
+fn playdate.sound.delaylinetap:setDelayMod(signal: playdate.sound.signal) -> nil
+fn playdate.sound.delaylinetap:setVolume(level: number) -> nil
 fn playdate.sound.delaylinetap:getVolume() -> number
 fn playdate.sound.delaylinetap:setFlipChannels(flag: boolean) -> nil
 fn playdate.sound.sequence.new(midi_path: string) -> playdate.sound.sequence
@@ -810,14 +810,14 @@ fn playdate.sound.sequence:play(finishCallback?: fun(self: playdate.sound.sequen
 fn playdate.sound.sequence:stop() -> nil
 fn playdate.sound.sequence:isPlaying() -> boolean
 fn playdate.sound.sequence:getLength() -> number
-fn playdate.sound.sequence:goToStep(step: integer, play?: any) -> nil
+fn playdate.sound.sequence:goToStep(step: integer, play?: boolean) -> nil
 fn playdate.sound.sequence:getCurrentStep() -> number
-fn playdate.sound.sequence:setTempo(stepsPerSecond: any) -> nil
+fn playdate.sound.sequence:setTempo(stepsPerSecond: number) -> nil
 fn playdate.sound.sequence:getTempo() -> number
-fn playdate.sound.sequence:setLoops(startStep: any, endStep: any, loopCount?: integer) -> nil
+fn playdate.sound.sequence:setLoops(startStep: integer, endStep: integer, loopCount?: integer) -> nil
 fn playdate.sound.sequence:setLoops(loopCount: integer) -> nil
 fn playdate.sound.sequence:getTrackCount() -> integer
-fn playdate.sound.sequence:addTrack(track?: any) -> nil
+fn playdate.sound.sequence:addTrack(track?: playdate.sound.track) -> nil
 fn playdate.sound.sequence:setTrackAtIndex(n: any, track: any) -> nil
 fn playdate.sound.sequence:getTrackAtIndex(n: any) -> playdate.sound.track
 fn playdate.sound.sequence:allNotesOff() -> nil
