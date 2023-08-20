@@ -1,12 +1,12 @@
 mod json;
 
 mod playdate;
-con playdate.kButtonLeft: integer = 1
-con playdate.kButtonRight: integer = 2
-con playdate.kButtonUp: integer = 4
-con playdate.kButtonDown: integer = 8
-con playdate.kButtonB: integer = 16
-con playdate.kButtonA: integer = 32
+con playdate.kButtonLeft: integer = 1;
+con playdate.kButtonRight: integer = 2;
+con playdate.kButtonUp: integer = 4;
+con playdate.kButtonDown: integer = 8;
+con playdate.kButtonB: integer = 16;
+con playdate.kButtonA: integer = 32;
 cat playdate._Button: integer (
     | playdate.kButtonLeft
     | playdate.kButtonRight
@@ -189,8 +189,8 @@ mod playdate.graphics;
 con playdate.graphics.kStrokeCentered: integer = 0;
 con playdate.graphics.kStrokeInside: integer = 1;
 con playdate.graphics.kStrokeOutside: integer = 2;
-con playdate.graphics.kPolygonFillNonZero: integer = 0
-con playdate.graphics.kPolygonFillEvenOdd: integer = 1
+con playdate.graphics.kPolygonFillNonZero: integer = 0;
+con playdate.graphics.kPolygonFillEvenOdd: integer = 1;
 con playdate.graphics.kImageUnflipped: integer = 0;
 con playdate.graphics.kImageFlippedX: integer = 1;
 con playdate.graphics.kImageFlippedY: integer = 2;
@@ -303,8 +303,8 @@ obj playdate.graphics.nineSlice {
 mod playdate.graphics.sprite;
 con playdate.graphics.sprite.kCollisionTypeSlide = 0;
 con playdate.graphics.sprite.kCollisionTypeFreeze = 1;
-con playdate.graphics.sprite.kCollisionTypeOverlap = 2
-con playdate.graphics.sprite.kCollisionTypeBounce = 3
+con playdate.graphics.sprite.kCollisionTypeOverlap = 2;
+con playdate.graphics.sprite.kCollisionTypeBounce = 3;
 obj playdate.graphics.sprite {
     x: integer,
     y: integer,
