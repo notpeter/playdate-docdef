@@ -25,8 +25,8 @@ fn playdate.setMenuImage(image: playdate.graphics.image, xOffset?: integer) -> n
 fn playdate.menu.item:setCallback(callback: function) -> nil
 fn playdate.menu.item:setTitle(newTitle: string) -> nil
 fn playdate.menu.item:getTitle() -> string
-fn playdate.menu.item:setValue(newValue: integer|boolean|string) -> nil
-fn playdate.menu.item:getValue() -> integer|boolean|string
+fn playdate.menu.item:setValue(newValue: (integer|boolean|string)) -> nil
+fn playdate.menu.item:getValue() -> (integer|boolean|string)
 fn playdate.getSystemLanguage() -> integer
 fn playdate.getReduceFlashing() -> boolean
 fn playdate.getFlipped() -> boolean
@@ -67,12 +67,12 @@ fn playdate.getCurrentTimeMilliseconds() -> integer
 fn playdate.resetElapsedTime() -> nil
 fn playdate.getElapsedTime() -> number
 fn playdate.getSecondsSinceEpoch() -> (seconds: integer, milliseconds: integer)
-fn playdate.getTime() -> table|DateTime
-fn playdate.getGMTTime() -> table|DateTime
+fn playdate.getTime() -> playdate._DateTime
+fn playdate.getGMTTime() -> playdate._DateTime
 fn playdate.epochFromTime(time: table) -> (seconds: integer, milliseconds: integer)
-fn playdate.epochFromGMTTime(time: table|DateTime) -> (seconds: integer, milliseconds: integer)
-fn playdate.timeFromEpoch(seconds: integer, milliseconds: integer) -> table|DateTime
-fn playdate.GMTTimeFromEpoch(seconds: integer, milliseconds: integer) -> table|DateTime
+fn playdate.epochFromGMTTime(time: playdate._DateTime) -> (seconds: integer, milliseconds: integer)
+fn playdate.timeFromEpoch(seconds: integer, milliseconds: integer) -> playdate._DateTime
+fn playdate.GMTTimeFromEpoch(seconds: integer, milliseconds: integer) -> playdate._DateTime
 fn playdate.shouldDisplay24HourTime() -> boolean
 fn print(...: any) -> nil
 fn printTable(table: table) -> nil
@@ -81,7 +81,7 @@ fn playdate.drawFPS(x: integer, y: integer) -> nil
 fn playdate.getFPS() -> number
 fn where() -> string
 fn sample(name: string, _function: function) -> nil
-fn playdate.getStats() -> table|SystemStats
+fn playdate.getStats() -> playdate._SystemStats
 fn playdate.setStatsInterval(seconds: number) -> nil
 fn playdate.display.setRefreshRate(rate: number) -> nil
 fn playdate.display.getRefreshRate() -> integer
@@ -161,7 +161,7 @@ fn playdate.file.mkdir(path: string) -> nil
 fn playdate.file.delete(path: string, recursive?: boolean) -> boolean
 fn playdate.file.getSize(path: string) -> integer
 fn playdate.file.getType(path: string) -> string
-fn playdate.file.modtime(path: string) -> ModTime|table
+fn playdate.file.modtime(path: string) -> playdate.file._ModTime
 fn playdate.file.rename(path: string, newPath: string) -> boolean
 fn playdate.file.load(path: string, env?: table) -> function
 fn playdate.file.run(path: string, env?: table) -> nil
@@ -262,7 +262,7 @@ fn playdate.geometry.rect:containsRect(x: integer, y: integer, width: integer, h
 fn playdate.geometry.rect:containsPoint(p: playdate.geometry.point) -> boolean
 fn playdate.geometry.rect:containsPoint(x: integer, y: integer) -> boolean
 fn playdate.geometry.rect:centerPoint() -> playdate.geometry.point
-fn playdate.geometry.rect:flipRelativeToRect(r2: playdate.geometry.rect, flip: integer|string) -> nil
+fn playdate.geometry.rect:flipRelativeToRect(r2: playdate.geometry.rect, flip: playdate.geometry._FlipType) -> nil
 fn playdate.geometry.size.new(width: integer, height: integer) -> playdate.geometry.size
 fn playdate.geometry.size:copy() -> playdate.geometry.size
 fn playdate.geometry.size:unpack() -> (width: number, height: number)
@@ -301,12 +301,12 @@ fn playdate.graphics.image:load(path: string) -> (success: boolean, error: strin
 fn playdate.graphics.image:copy() -> playdate.graphics.image
 fn playdate.graphics.image:getSize() -> (width: integer, height: integer)
 fn playdate.graphics.imageSizeAtPath(path: string) -> (width: integer, height: integer)
-fn playdate.graphics.image:draw(x: integer, y: integer, flip?: integer|string, sourceRect?: playdate.geometry.rect) -> nil
-fn playdate.graphics.image:draw(p: playdate.geometry.point, flip?: integer|string, sourceRect?: playdate.geometry.rect) -> nil
-fn playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: integer|string) -> nil
-fn playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: integer|string) -> nil
-fn playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: integer|string) -> nil
-fn playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: integer|string) -> nil
+fn playdate.graphics.image:draw(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil
+fn playdate.graphics.image:draw(p: playdate.geometry.point, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil
+fn playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fn playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fn playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fn playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
 fn playdate.graphics.image:clear(color: integer) -> nil
 fn playdate.graphics.image:sample(x: integer, y: integer) -> integer
 fn playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: integer, yscale?: integer) -> nil
@@ -322,9 +322,9 @@ fn playdate.graphics.image:addMask(opaque?: boolean) -> nil
 fn playdate.graphics.image:removeMask() -> nil
 fn playdate.graphics.image:hasMask() -> boolean
 fn playdate.graphics.image:clearMask(opaque?: boolean) -> nil
-fn playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: integer|string) -> nil
-fn playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: integer|string) -> nil
-fn playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: integer|string, xPhase?: integer, yPhase?: integer) -> nil
+fn playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fn playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fn playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), xPhase?: integer, yPhase?: integer) -> nil
 fn playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer) -> nil
 fn playdate.graphics.image:setInverted(flag: boolean) -> nil
 fn playdate.graphics.image:invertedImage() -> playdate.graphics.image
@@ -402,7 +402,7 @@ fn playdate.graphics.getStrokeLocation() -> integer
 fn playdate.graphics.lockFocus(image: playdate.graphics.image) -> nil
 fn playdate.graphics.unlockFocus() -> nil
 fn playdate.graphics.animation.loop.new(delay?: number, imageTable?: playdate.graphics.imagetable, shouldLoop?: boolean) -> playdate.graphics.animation.loop
-fn playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: integer|string) -> nil
+fn playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
 fn playdate.graphics.animation.loop:image() -> playdate.graphics.image
 fn playdate.graphics.animation.loop:isValid() -> boolean
 fn playdate.graphics.animation.loop:setImageTable(imageTable: playdate.graphics.imagetable) -> nil
@@ -436,7 +436,7 @@ fn playdate.graphics.imagetable:setImage(n: integer, image: playdate.graphics.im
 fn playdate.graphics.imagetable:load(path: string) -> (success: boolean, error: string?)
 fn playdate.graphics.imagetable:getLength() -> integer
 fn playdate.graphics.imagetable:getSize() -> (cellsWide: integer, cellsHigh: integer)
-fn playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: integer|string) -> nil
+fn playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
 fn playdate.graphics.imagetable:__index(n: integer) -> nil
 fn playdate.graphics.tilemap.new() -> playdate.graphics.tilemap
 fn playdate.graphics.tilemap:setImageTable(table: table) -> nil
@@ -454,7 +454,7 @@ fn playdate.graphics.tilemap:getCollisionRects(emptyIDs: integer[]) -> playdate.
 fn playdate.graphics.sprite.new(image_or_tilemap?: playdate.graphics.image|playdate.graphics.tilemap) -> playdate.graphics.sprite
 fn playdate.graphics.sprite.spriteWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> playdate.graphics.sprite
 fn playdate.graphics.sprite.update() -> nil
-fn playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: integer|string, scale?: integer, yscale?: integer) -> nil
+fn playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), scale?: integer, yscale?: integer) -> nil
 fn playdate.graphics.sprite:getImage() -> playdate.graphics.image
 fn playdate.graphics.sprite:add() -> nil
 fn playdate.graphics.sprite.addSprite(sprite: playdate.graphics.sprite) -> nil
@@ -482,7 +482,7 @@ fn playdate.graphics.sprite:updatesEnabled() -> boolean
 fn playdate.graphics.sprite:setTag(tag: integer) -> nil
 fn playdate.graphics.sprite:getTag() -> integer
 fn playdate.graphics.sprite:setImageDrawMode(mode: integer) -> nil
-fn playdate.graphics.sprite:setImageFlip(flip: integer|string, flipCollideRect?: integer) -> nil
+fn playdate.graphics.sprite:setImageFlip(flip: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), flipCollideRect?: integer) -> nil
 fn playdate.graphics.sprite:getImageFlip() -> integer
 fn playdate.graphics.sprite:setIgnoresDrawOffset(flag: boolean) -> nil
 fn playdate.graphics.sprite:setBounds(x: integer, y: integer, width: integer, height: integer) -> nil
@@ -536,10 +536,10 @@ fn playdate.graphics.sprite:setCollidesWithGroupsMask(mask: integer) -> nil
 fn playdate.graphics.sprite:getCollidesWithGroupsMask() -> integer
 fn playdate.graphics.sprite:resetGroupMask() -> nil
 fn playdate.graphics.sprite:resetCollidesWithGroupsMask() -> nil
-fn playdate.graphics.sprite:moveWithCollisions(goalX: integer, goalY: integer) -> (actualX: integer, actualY: integer, collisions: table|CollisionData[], length: integer)
-fn playdate.graphics.sprite:moveWithCollisions(goalPoint: playdate.geometry.point) -> (actualX: integer, actualY: integer, collisions: table|CollisionData[], length: integer)
-fn playdate.graphics.sprite:checkCollisions(x: integer, y: integer) -> (actualX: integer, actualY: integer, collisions: table|CollisionData[], length: integer)
-fn playdate.graphics.sprite:checkCollisions(point: playdate.geometry.point) -> (actualX: integer, actualY: integer, collisions: table|CollisionData[], length: integer)
+fn playdate.graphics.sprite:moveWithCollisions(goalX: integer, goalY: integer) -> (actualX: integer, actualY: integer, collisions: playdate.graphics.sprite._CollisionData, length: integer)
+fn playdate.graphics.sprite:moveWithCollisions(goalPoint: playdate.geometry.point) -> (actualX: integer, actualY: integer, collisions: playdate.graphics.sprite._CollisionData, length: integer)
+fn playdate.graphics.sprite:checkCollisions(x: integer, y: integer) -> (actualX: integer, actualY: integer, collisions: playdate.graphics.sprite._CollisionData, length: integer)
+fn playdate.graphics.sprite:checkCollisions(point: playdate.geometry.point) -> (actualX: integer, actualY: integer, collisions: playdate.graphics.sprite._CollisionData, length: integer)
 fn playdate.graphics.sprite:collisionResponse(other: playdate.graphics.sprite) -> integer
 fn playdate.graphics.sprite.querySpritesAtPoint(x: integer, y: integer) -> playdate.graphics.sprite[]
 fn playdate.graphics.sprite.querySpritesAtPoint(p: playdate.geometry.point) -> playdate.graphics.sprite[]
@@ -554,12 +554,12 @@ fn playdate.graphics.sprite.addEmptyCollisionSprite(x: integer, y: integer, w: i
 fn playdate.graphics.sprite.addWallSprites(tilemap: playdate.graphics.tilemap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer) -> nil
 fn playdate.graphics.font.new(path: string) -> playdate.graphics.font
 fn playdate.graphics.font.newFamily(fontPaths: table<integer, string>) -> playdate.graphics.font[]
-fn playdate.graphics.setFont(font: playdate.graphics.font, variant?: integer|string) -> nil
-fn playdate.graphics.getFont(variant?: integer|string) -> playdate.graphics.font
+fn playdate.graphics.setFont(font: playdate.graphics.font, variant?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr)) -> nil
+fn playdate.graphics.getFont(variant?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr)) -> playdate.graphics.font
 fn playdate.graphics.setFontFamily(fontFamily: table<integer, playdate.graphics.font>) -> nil
 fn playdate.graphics.setFontTracking(pixels: integer) -> nil
 fn playdate.graphics.getFontTracking() -> integer
-fn playdate.graphics.getSystemFont(variant?: integer|string) -> playdate.graphics.font
+fn playdate.graphics.getSystemFont(variant?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr)) -> playdate.graphics.font
 fn playdate.graphics.font:drawText(text: string, x: integer, y: integer, leadingAdjustment?: integer) -> nil
 fn playdate.graphics.font:drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer) -> nil
 fn playdate.graphics.font:getHeight() -> integer
@@ -570,15 +570,15 @@ fn playdate.graphics.font:setLeading(pixels: integer) -> nil
 fn playdate.graphics.font:getLeading() -> integer
 fn playdate.graphics.font:getGlyph(character: string) -> playdate.graphics.image
 fn playdate.graphics.drawText(text: string, x: integer, y: integer, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer) -> nil
-fn playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: integer|string, leadingAdjustment?: integer) -> nil
-fn playdate.graphics.getLocalizedText(key: string, language?: integer|string) -> string
+fn playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr, leadingAdjustment?: integer) -> nil
+fn playdate.graphics.getLocalizedText(key: string, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr) -> string
 fn playdate.graphics.getTextSize(str: string, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer) -> (width: integer, height: integer)
 fn playdate.graphics.drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer) -> nil
 fn playdate.graphics.drawTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> nil
 fn playdate.graphics.drawTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> nil
-fn playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: integer|string, leadingAdjustment?: integer) -> nil
-fn playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: integer|string) -> nil
-fn playdate.graphics.drawLocalizedTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: integer|string) -> nil
+fn playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr, leadingAdjustment?: integer) -> nil
+fn playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr) -> nil
+fn playdate.graphics.drawLocalizedTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr) -> nil
 fn playdate.graphics.getTextSizeForMaxWidth(text: string, maxWidth: integer, leadingAdjustment?: integer, font?: playdate.graphics.font) -> (width: integer, height: integer)
 fn playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> (image: playdate.graphics.image, textWasTruncated: boolean)
 fn playdate.graphics.video.new(path: string) -> playdate.graphics.video
@@ -634,7 +634,7 @@ fn playdate.pathfinder.node:connectedNodes() -> playdate.pathfinder.node[]
 fn playdate.pathfinder.node:removeConnection(node: playdate.pathfinder.node, removeReciprocal?: boolean) -> nil
 fn playdate.pathfinder.node:removeAllConnections(removeIncoming?: boolean) -> nil
 fn playdate.pathfinder.node:setXY(x: integer, y: integer) -> nil
-fn playdate.getPowerStatus() -> table|PowerStatus
+fn playdate.getPowerStatus() -> playdate._PowerStatus
 fn playdate.getBatteryPercentage() -> integer
 fn playdate.getBatteryVoltage() -> number
 fn playdate.simulator.writeToFile(image: playdate.graphics.image, path: string) -> nil
@@ -823,9 +823,9 @@ fn playdate.sound.sequence:getTrackAtIndex(n: integer) -> playdate.sound.track
 fn playdate.sound.sequence:allNotesOff() -> nil
 fn playdate.sound.track.new() -> playdate.sound.track
 fn playdate.sound.track:addNote(step: integer, note: string|integer, length: number, velocity?: number) -> nil
-fn playdate.sound.track:addNote(table: table) -> nil
+fn playdate.sound.track:addNote(table: (playdate.sound.track._SoundTrackNoteIn|playdate.sound.track._SoundTrackNote)) -> nil
 fn playdate.sound.track:setNotes(list: table[]) -> nil
-fn playdate.sound.track:getNotes(step?: integer, endstep?: integer) -> SoundTrackNoteOut[]
+fn playdate.sound.track:getNotes(step?: integer, endstep?: integer) -> playdate.sound.track._SoundTrackNote[]
 fn playdate.sound.track:removeNote(step: integer, note: integer) -> nil
 fn playdate.sound.track:clearNotes() -> nil
 fn playdate.sound.track:getLength() -> integer
@@ -846,7 +846,7 @@ fn playdate.sound.instrument:allNotesOff() -> nil
 fn playdate.sound.instrument:setVolume(left: integer, right?: integer) -> nil
 fn playdate.sound.instrument:getVolume() -> (left_or_mono: number, right: number?)
 fn playdate.sound.controlsignal.new() -> playdate.sound.controlsignal
-fn playdate.sound.controlsignal:addEvent(step: integer, value: number, interpolate?: any) -> nil
+fn playdate.sound.controlsignal:addEvent(step: integer, value: number, interpolate?: boolean) -> nil
 fn playdate.sound.controlsignal:addEvent(event: table) -> nil
 fn playdate.sound.controlsignal:clearEvents() -> nil
 fn playdate.sound.controlsignal:setControllerType(number: integer) -> nil

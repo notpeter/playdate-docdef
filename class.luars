@@ -96,6 +96,23 @@ mod playdate.file.file;
 obj playdate.file.file;
 
 mod playdate.geometry;
+con playdate.geometry.kUnflipped: integer = 0;
+con playdate.geometry.kFlippedX: integer = 1;
+con playdate.geometry.kFlippedY: integer = 2;
+con playdate.geometry.kFlippedXY: integer = 3;
+cat playdate.geometry._FlipType (
+    | playdate.geometry.kUnflipped
+    | playdate.geometry.kFlippedX
+    | playdate.geometry.kFlippedY
+    | playdate.geometry.kFlippedXY
+);
+cat playdate.geometry._FlipTypeStr (
+    | "flipX"
+    | "flipY"
+    | "filpXY"
+)
+
+
 
 mod playdate.geometry.affineTransform;
 obj playdate.geometry.affineTransform;
@@ -191,6 +208,29 @@ obj playdate.graphics.animator {
 };
 
 mod playdate.graphics.font;
+con playdate.graphics.font.kLanguageEnglish: integer = 0;
+con playdate.graphics.font.kLanguageJapanese: integer = 1;
+con playdate.graphics.font.kVariantNormal: integer = 0;
+con playdate.graphics.font.kVariantBold: integer = 1;
+con playdate.graphics.font.kVariantItalic: integer = 2;
+cat playdate.graphics.font._FontVariant: integer (
+    | playdate.graphics.font.kVariantNormal
+    | playdate.graphics.font.kVariantBold
+    | playdate.graphics.font.kVariantItalic
+);
+cat playdate.graphics.font.FontVariantStr: string (
+    | "normal"
+    | "bold"
+    | "italic"
+)
+cat playdate.graphics.font._Language: integer (
+    | playdate.graphics.font.kLanguageEnglish
+    | playdate.graphics.font.kLanguageJapanese
+)
+cat playdate.graphics.font._LanguageStr: string (
+    | "en"
+    | "jp"
+)
 obj playdate.graphics.font;
 
 mod playdate.graphics.image;
