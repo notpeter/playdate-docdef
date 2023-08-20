@@ -1,5 +1,4 @@
 mod json;
-
 mod playdate;
 con playdate.kButtonLeft: integer = 1;
 con playdate.kButtonRight: integer = 2;
@@ -7,184 +6,50 @@ con playdate.kButtonUp: integer = 4;
 con playdate.kButtonDown: integer = 8;
 con playdate.kButtonB: integer = 16;
 con playdate.kButtonA: integer = 32;
-cat playdate._Button: integer (
-    | playdate.kButtonLeft
-    | playdate.kButtonRight
-    | playdate.kButtonUp
-    | playdate.kButtonDown
-    | playdate.kButtonB
-    | playdate.kButtonA
-);
-obj playdate._metadata {
-    name: string,
-    author: string,
-    description: string,
-    bundleID: string,
-    version: string,
-    buildNumber: integer,
-    pdxversion: integer, // 2000,
-    imagePath?: string,
-    launchSoundPath?: string,
-    contentWarning?: string,
-    contentWarning2?: string,
-    ...: string,
-};
-obj playdate._PowerStatus {
-    charging: boolean;
-    USB: boolean;
-    screws: boolean;
-};
-obj playdate._systeminfo {       // Undocumented. Observed values:
-    buildtime: string,          // "20230706_121810;
-    commit: string,             // "f5a85fc69f11-2.0.1-release.156292-buildbot;
-    pdxcompatversion: integer;  // 10000
-    pdxversion: integer,        // 20000
-};
-obj playdate._DateTime { // returned by playdate.getTime() and playdate.getGMTTime()
-    year: integer,          // 4-digit year
-    month: integer,         // month of the year 1-12
-    day: integer,           // day of the month 1-31
-    weekday: integer,       // day of the week, where 1 is Monday and 7 is Sunday
-    hour: integer,          // hour 0-23
-    minute: integer,        // minute 0-59
-    second: integer,        // second 0-59 (or 60 on a leap second)
-    millisecond: integer,   // millisecond 0-999
-};
-obj playdate._SystemStats { // Returned from playdate.getStats(); Note the leding spaces on keys. Device only.
-    " kernel": number,
-    " game": number,
-    " audio": number,
-}
+obj playdate._metadata = { name: string, author: string, description: string, bundleID: string, version: string, buildNumber: integer, pdxversion: integer, imagePath?: string, launchSoundPath?: string, contentWarning?: string, contentWarning2?: string, ...: string, };
+obj playdate._PowerStatus = { charging: boolean, USB: boolean, screws: boolean, };
+obj playdate._systeminfo = { buildtime: string, commit: string, pdxcompatversion: integer; pdxversion: integer, };
+obj playdate._DateTime = { year: integer, month: integer, day: integer, weekday: integer, hour: integer, minute: integer, second: integer, millisecond: integer, };
+obj playdate._SystemStats = { " kernel": number, " game": number, " audio": number, };
 let playdate.argv: string[];
 let playdate.isSimulator: boolean;
 let playdate.metadata: playdate._metadata;
 let playdate.systeminfo: playdate._systeminfo;
-
 mod playdate.datastore;
-
 mod playdate.display;
-
 mod playdate.easingFunctions;
-
 mod playdate.frameTimer;
-obj playdate.frameTimer {
-    delay: integer,
-    discardOnCompletion: boolean,
-    duration: integer,
-    frame: integer,
-    repeats: boolean,
-    reverses: boolean,
-    timerEndedArgs: any,
-};
-
+obj playdate.frameTimer = { delay: integer, discardOnCompletion: boolean, duration: integer, frame: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any, };
 mod playdate.inputHandlers;
-obj playdate.inputHandlers._InputHandler {
-    AButtonDown?: fun(),
-    AButtonHeld?: fun(),
-    AButtonUp?: fun(),
-    BButtonDown?: fun(),
-    BButtonHeld?: fun(),
-    BButtonUp?: fun(),
-    downButtonDown?: fun(),
-    downButtonUp?: fun(),
-    leftButtonDown?: fun(),
-    leftButtonUp?: fun(),
-    rightButtonDown?: fun(),
-    rightButtonUp?: fun(),
-    upButtonDown?: fun(),
-    upButtonUp?: fun(),
-    cranked?: fun(change:number, acceleratedChange:number),
-};
-
+obj playdate.inputHandlers._InputHandler = { AButtonDown?: fun(), AButtonHeld?: fun(), AButtonUp?: fun(), BButtonDown?: fun(), BButtonHeld?: fun(), BButtonUp?: fun(), downButtonDown?: fun(), downButtonUp?: fun(), leftButtonDown?: fun(), leftButtonUp?: fun(), rightButtonDown?: fun(), rightButtonUp?: fun(), upButtonDown?: fun(), upButtonUp?: fun(), cranked?: fun(change:number, acceleratedChange:number)};
 mod playdate.file;
 con playdate.file.kFileRead: integer = 3;
 con playdate.file.kFileWrite: integer = 4;
 con playdate.file.kFileAppend: integer = 8;
-cat playdate.file._FileMode: integer (
-    | playdate.file.kFileRead
-    | playdate.file.kFileWrite
-    | playdate.file.kFileAppend
-);
-
-
-obj playdate.file._ModTime {// second level accuracy time.  Used by playdate.file.modtime
-    year: integer,          // 4-digit year
-    month: integer,         // month of the year 1-12
-    day: integer,           // day of the month 1-31
-    hour: integer,          // hour 0-23
-    minute: integer,        // minute 0-59
-    second: integer,        // second 0-59 (or 60 on a leap second)
-}
-
+obj playdate.file._ModTime = { year: integer, month: integer, day: integer, hour: integer, minute: integer, second: integer, };
 mod playdate.file.file;
 obj playdate.file.file;
-
 mod playdate.geometry;
 con playdate.geometry.kUnflipped: integer = 0;
 con playdate.geometry.kFlippedX: integer = 1;
 con playdate.geometry.kFlippedY: integer = 2;
 con playdate.geometry.kFlippedXY: integer = 3;
-cat playdate.geometry._FlipTypeStr: string (
-    | "flipX"
-    | "flipY"
-    | "filpXY"
-)
-
 mod playdate.geometry.affineTransform;
 obj playdate.geometry.affineTransform;
-
 mod playdate.geometry.arc;
-obj playdate.geometry.arc {
-    x: integer,
-    y: integer,
-    radius: integer,
-    startAngle: number,
-    endAngle: number,
-    direction: boolean,
-};
-
+obj playdate.geometry.arc = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
 mod playdate.geometry.lineSegment;
-obj playdate.geometry.lineSegment {
-    x1: integer,
-    y1: integer,
-    x2: integer,
-    y2: integer,
-};
-
+obj playdate.geometry.lineSegment = { x1: integer, y1: integer, x2: integer, y2: integer, };
 mod playdate.geometry.point;
-obj playdate.geometry.point {
-    x: number;
-    y: number;
-};
-
+obj playdate.geometry.point = { x: number, y: number, };
 mod playdate.geometry.polygon;
 obj playdate.geometry.polygon;
-
 mod playdate.geometry.rect;
-obj playdate.geometry.rect {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    top: number,
-    bottom: number,
-    left: number,
-    right: number,
-    size: playdate.geometry.size,
-}
-
+obj playdate.geometry.rect = { x: number, y: number, width: number, height: number, top: number, bottom: number, left: number, right: number, size: playdate.geometry.size, };
 mod playdate.geometry.size;
-obj playdate.geometry.size {
-    width: number,
-    height: number,
-};
-
+obj playdate.geometry.size = { width: number, height: number, };
 mod playdate.geometry.vector2D;
-obj playdate.geometry.vector2D {
-    dx: number,
-    dy: number,
-};
-
+obj playdate.geometry.vector2D = { dx: number, dy: number, };
 mod playdate.graphics;
 con playdate.graphics.kStrokeCentered: integer = 0;
 con playdate.graphics.kStrokeInside: integer = 1;
@@ -207,69 +72,20 @@ con playdate.graphics.kDrawModeFillBlack: integer = 4;
 con playdate.graphics.kDrawModeXOR: integer = 5;
 con playdate.graphics.kDrawModeNXOR: integer = 6;
 con playdate.graphics.kDrawModeInverted: integer = 7;
-
 mod playdate.graphics.animation;
-
 mod playdate.graphics.animation.loop;
-obj playdate.graphics.animation.loop {
-    delay: number,
-    startFrame: integer,
-    endFrame: integer,
-    frame: integer,
-    step: integer,
-    shouldLoop: boolean,
-    paused: boolean,
-};
-
+obj playdate.graphics.animation.loop = { delay: number, startFrame: integer, endFrame: integer, frame: integer, step: integer, shouldLoop: boolean, paused: boolean, };
 mod playdate.graphics.animation.blinker;
-obj playdate.graphics.animation.blinker {
-    onDuration: integer,
-    offDuration: integer,
-    loop: boolean,
-    cycles: integer,
-    default: boolean,
-    counter: integer,
-    on: boolean,
-    running: boolean,
-};
-
+obj playdate.graphics.animation.blinker = { onDuration: integer, offDuration: integer, loop: boolean, cycles: integer, default: boolean, counter: integer, on: boolean, running: boolean, };
 mod playdate.graphics.animator;
-obj playdate.graphics.animator {
-    repeatCount: integer,
-    reverses: integer,
-    easingAmplitude: number,
-    easingPeriod: number,
-    s?: number,
-    a?: number,
-    p?: number,
-};
-
+obj playdate.graphics.animator = { repeatCount: integer, reverses: integer, easingAmplitude: number, easingPeriod: number, s?: number, a?: number, p?: number, };
 mod playdate.graphics.font;
 con playdate.graphics.font.kLanguageEnglish: integer = 0;
 con playdate.graphics.font.kLanguageJapanese: integer = 1;
 con playdate.graphics.font.kVariantNormal: integer = 0;
 con playdate.graphics.font.kVariantBold: integer = 1;
 con playdate.graphics.font.kVariantItalic: integer = 2;
-cat playdate.graphics.font._FontVariant: integer (
-    | playdate.graphics.font.kVariantNormal
-    | playdate.graphics.font.kVariantBold
-    | playdate.graphics.font.kVariantItalic
-);
-cat playdate.graphics.font.FontVariantStr: string (
-    | "normal"
-    | "bold"
-    | "italic"
-);
-cat playdate.graphics.font._Language: integer (
-    | playdate.graphics.font.kLanguageEnglish
-    | playdate.graphics.font.kLanguageJapanese
-);
-cat playdate.graphics.font._LanguageStr: string (
-    | "en"
-    | "jp"
-);
 obj playdate.graphics.font;
-
 mod playdate.graphics.image;
 con playdate.graphics.image.kDitherTypeNone: integer = 0;
 con playdate.graphics.image.kDitherTypeDiagonalLine: integer = 1;
@@ -282,99 +98,39 @@ con playdate.graphics.image.kDitherTypeBayer8x8: integer = 7;
 con playdate.graphics.image.kDitherTypeFloydSteinberg: integer = 8;
 con playdate.graphics.image.kDitherTypeBurkes: integer = 9;
 con playdate.graphics.image.kDitherTypeAtkinson: integer = 10;
-
-obj playdate.graphics.image {
-    x: integer,
-    y: integer,
-    width: integer,
-    height: integer,
-};
-
+obj playdate.graphics.image = { x: integer, y: integer, width: integer, height: integer, };
 mod playdate.graphics.imagetable;
 obj playdate.graphics.imagetable;
-
 mod playdate.graphics.nineSlice;
-obj playdate.graphics.nineSlice {
-    innerRect: playdate.geometry.rect,
-    minWidth: integer,
-    minHeight: integer,
-};
-
+obj playdate.graphics.nineSlice = { innerRect: playdate.geometry.rect, minWidth: integer, minHeight: integer, };
 mod playdate.graphics.sprite;
-con playdate.graphics.sprite.kCollisionTypeSlide = 0;
-con playdate.graphics.sprite.kCollisionTypeFreeze = 1;
-con playdate.graphics.sprite.kCollisionTypeOverlap = 2;
-con playdate.graphics.sprite.kCollisionTypeBounce = 3;
-obj playdate.graphics.sprite {
-    x: integer,
-    y: integer,
-    width: integer,
-    height: integer,
-    collisionResponse?: (playdate.graphics.sprite._CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite) -> playdate.graphics.sprite._CollisionType),
-    update?: fun()->nil,
-};
-obj playdate.graphics.sprite._CollisionData { // returned from sprite:moveWithCollisions and sprite:checkCollisions
-    sprite: playdate.graphics.sprite,
-    other: playdate.graphics.sprite,
-    type: playdate.graphics.sprite._CollisionType,
-    overlaps: boolean,
-    ti: number, // 0.0-1.0
-    move: playdate.geometry.vector2D,
-    normal: playdate.geometry.vector2D,
-    touch: playdate.geometry.point,
-    spriteRect: playdate.geometry.rect,
-    otherRect: playdate.geometry.rect,
-    bounce?: playdate.geometry.point,
-    slide?: playdate.geometry.point,
-};
-obj playdate.graphics.sprite._CollisionInfo { // returned from playdate.graphics.sprite.querySpriteInfoAlongLine
-    sprite: playdate.graphics.sprite,
-    entryPoint: playdate.geometry.point,
-    exitPoint: playdate.geometry.point,
-    t1: number,
-    t2: number,
-};
-
+con playdate.graphics.sprite.kCollisionTypeSlide: integer = 0;
+con playdate.graphics.sprite.kCollisionTypeFreeze: integer = 1;
+con playdate.graphics.sprite.kCollisionTypeOverlap: integer = 2;
+con playdate.graphics.sprite.kCollisionTypeBounce: integer = 3;
+obj playdate.graphics.sprite = { x: integer, y: integer, width: integer, height: integer, collisionResponse?: (playdate.graphics.sprite._CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite) -> playdate.graphics.sprite._CollisionType), update?: fun()->nil, };
+obj playdate.graphics.sprite._CollisionData = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: playdate.graphics.sprite._CollisionType, overlaps: boolean, ti: number, move: playdate.geometry.vector2D, normal: playdate.geometry.vector2D, touch: playdate.geometry.point, spriteRect: playdate.geometry.rect, otherRect: playdate.geometry.rect, bounce?: playdate.geometry.point, slide?: playdate.geometry.point, };
+obj playdate.graphics.sprite._CollisionInfo = { sprite: playdate.graphics.sprite, entryPoint: playdate.geometry.point, exitPoint: playdate.geometry.point, t1: number, t2: number, };
 mod playdate.graphics.tilemap;
 obj playdate.graphics.tilemap;
-
 mod playdate.graphics.video;
 obj playdate.graphics.video;
-
 mod playdate.inputHandlers;
-
 mod playdate.keyboard;
 con playdate.keyboard.kCapitalizationNormal: integer = 1;
 con playdate.keyboard.kCapitalizationWords: integer = 2;
 con playdate.keyboard.kCapitalizationSentences: integer = 3;
-obj playdate.keyboard {
-    text: string,
-};
-
+obj playdate.keyboard = { text: string, };
 mod playdate.math;
-
 mod playdate.menu;
-
 mod playdate.menu.item;
-obj playdate.menu.item {
-    title: string,
-    value: (integer|boolean|string),
-};
-
+obj playdate.menu.item = { title: string, value: (integer|boolean|string)};
 mod playdate.pathfinder;
-
 mod playdate.pathfinder.graph;
 obj playdate.pathfinder.graph;
-
 mod playdate.pathfinder.node;
-obj playdate.pathfinder.node {
-    x: integer,
-    y: integer,
-    id: integer,
-};
-
+obj playdate.pathfinder.node = { x: integer, y: integer, id: integer, };
 mod playdate.simulator;
-
 mod playdate.sound;
 con playdate.sound.kFormat8bitMono: integer = 0;
 con playdate.sound.kFormat8bitStereo: integer = 1;
@@ -394,128 +150,63 @@ con playdate.sound.kWaveSawtooth: integer = 4;
 con playdate.sound.kWavePOPhase: integer = 5;
 con playdate.sound.kWavePODigital: integer = 6;
 con playdate.sound.kWavePOVosim: integer = 7;
-
-
 mod playdate.sound.effect;
 obj playdate.sound.effect;
-
 mod playdate.sound.bitcrusher;
 obj playdate.sound.bitcrusher: playdate.sound.effect;
-
 mod playdate.sound.channel;
 obj playdate.sound.channel;
-
 mod playdate.sound.controlsignal;
-obj playdate.sound.controlsignal._ControlSignalEvent {
-    step: integer,
-    value: number,
-    interpolate?: boolean,
-};
-obj playdate.sound.controlsignal: playdate.sound.signal {
-    events: playdate.sound.controlsignal._ControlSignalEvent;
-};
-
+obj playdate.sound.controlsignal._ControlSignalEvent = { step: integer, value: number, interpolate?: boolean, };
+obj playdate.sound.controlsignal: playdate.sound.signal = { events: playdate.sound.controlsignal._ControlSignalEvent };
 mod playdate.sound.delayline;
 obj playdate.sound.delayline: playdate.sound.effect;
-
 mod playdate.sound.delaylinetap;
 obj playdate.sound.delaylinetap: playdate.sound.source;
-
 mod playdate.sound.effect;
 obj playdate.sound.effect;
-
 mod playdate.sound.envelope;
 obj playdate.sound.envelope: playdate.sound.signal;
-
 mod playdate.sound.fileplayer;
 obj playdate.sound.fileplayer: playdate.sound.source;
-
 mod playdate.sound.instrument;
 obj playdate.sound.instrument: playdate.sound.source;
-
 mod playdate.sound.lfo;
 obj playdate.sound.lfo: playdate.sound.signal;
-
 mod playdate.sound.onepolefilter;
 obj playdate.sound.onepolefilter: playdate.sound.effect;
-
 mod playdate.sound.overdrive;
 obj playdate.sound.overdrive: playdate.sound.effect;
-
 mod playdate.sound.ringmod;
 obj playdate.sound.ringmod: playdate.sound.effect;
-
 mod playdate.sound.sample;
 obj playdate.sound.sample;
-
 mod playdate.sound.sampleplayer;
 obj playdate.sound.sampleplayer: playdate.sound.source;
-
 mod playdate.sound.sequence;
 obj playdate.sound.sequence;
-
 mod playdate.sound.signal;
 obj playdate.sound.signal;
-
 mod playdate.sound.source;
 obj playdate.sound.source;
-
 mod playdate.sound.synth;
 obj playdate.sound.synth: playdate.sound.source;
-
 mod playdate.sound.track;
 obj playdate.sound.track;
-obj playdate.sound.track._SoundTrackNoteIn { // This can be used for playdate.sound.track:addNote
-    step: integer,
-    note: number|string, // midi note number or note name like "Db3
-    length: integer,
-    velocity: number,
-}
-obj playdate.sound.track._SoundTrackNote { // This is what comes back from playdate.sound.track:getNote
-    step: integer,
-    note: number,
-    length: integer,
-    velocity: number,
-};
-
+obj playdate.sound.track._SoundTrackNoteIn = { step: integer, note: number|string, length: integer, velocity: number,};
+obj playdate.sound.track._SoundTrackNote = { step: integer, note: number, length: integer, velocity: number, };
 mod playdate.sound.twopolefilter;
 obj playdate.sound.twopolefilter: playdate.sound.effect;
-
 mod playdate.sound.micinput;
-
 mod playdate.string;
-
 mod playdate.timer;
-obj playdate.timer {
-    currentTime: integer, // read-only
-    delay: integer,
-    discardOnCompletion: boolean,
-    duration: integer,
-    timeLeft: integer, // read-only
-    repeats: boolean,
-    reverses: boolean,
-    timerEndedArgs: any[],
-};
-
+obj playdate.timer = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
 mod playdate.ui;
-
 mod playdate.ui.crankIndicator;
 let playdate.ui.crankIndicator.clockwise: boolean;
-
 mod playdate.ui.gridview;
-obj playdate.ui.gridview {
-    needsDisplay:boolean, // read-only
-    backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice),
-    isScrolling:boolean, // read-only
-    scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number,
-    easingAmplitude?: number,
-    easingPeriod?: number,
-    changeRowOnColumnWrap: boolean,
-    scrollCellsToCenter: boolean,
-};
-
+obj playdate.ui.gridview = { needsDisplay:boolean, backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice), isScrolling:boolean, scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, easingAmplitude?: number, easingPeriod?: number, changeRowOnColumnWrap: boolean, scrollCellsToCenter: boolean, };
 mod table;
-
 fun table.indexOfElement(table: table, element: any) -> integer?;
 fun table.getsize(table: table) -> (arrayCount: integer, hashCount: integer);
 fun table.create(arrayCount: integer, hashCount: integer) -> table;
@@ -552,9 +243,9 @@ fun playdate.startAccelerometer() -> nil;
 fun playdate.stopAccelerometer() -> nil;
 fun playdate.readAccelerometer() -> (x: number, y: number, z: number);
 fun playdate.accelerometerIsRunning() -> boolean;
-fun playdate.buttonIsPressed(button: playdate._Button) -> boolean;
-fun playdate.buttonJustPressed(button: playdate._Button) -> boolean;
-fun playdate.buttonJustReleased(button: playdate._Button) -> boolean;
+fun playdate.buttonIsPressed(button: integer) -> boolean;
+fun playdate.buttonJustPressed(button: integer) -> boolean;
+fun playdate.buttonJustReleased(button: integer) -> boolean;
 fun playdate.getButtonState() -> (current: integer, pressed: integer, released: integer);
 fun playdate.AButtonDown() -> nil;
 fun playdate.AButtonHeld() -> nil;
@@ -664,7 +355,7 @@ fun playdate.datastore.read(filename?: string) -> table?;
 fun playdate.datastore.delete(filename?: string) -> boolean;
 fun playdate.datastore.writeImage(image: playdate.graphics.image, path: string) -> nil;
 fun playdate.datastore.readImage(path: string) -> playdate.graphics.image?;
-fun playdate.file.open(path: string, mode?: playdate.file._FileMode) -> (file: playdate.file.file?, error: string?);
+fun playdate.file.open(path: string, mode?: integer) -> (file: playdate.file.file?, error: string?);
 fun playdate.file.file:close() -> nil;
 fun playdate.file.file:write(string: string) -> (bytes_written: integer, error: string?);
 fun playdate.file.file:flush() -> nil;
@@ -819,12 +510,12 @@ fun playdate.graphics.image:load(path: string) -> (success: boolean, error: stri
 fun playdate.graphics.image:copy() -> playdate.graphics.image;
 fun playdate.graphics.image:getSize() -> (width: integer, height: integer);
 fun playdate.graphics.imageSizeAtPath(path: string) -> (width: integer, height: integer);
-fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil;
-fun playdate.graphics.image:draw(p: playdate.geometry.point, flip?: (integer|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil;
-fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
-fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
-fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
-fun playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
+fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|string), sourceRect?: playdate.geometry.rect) -> nil;
+fun playdate.graphics.image:draw(p: playdate.geometry.point, flip?: (integer|string), sourceRect?: playdate.geometry.rect) -> nil;
+fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (integer|string)) -> nil;
+fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (integer|string)) -> nil;
+fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (integer|string)) -> nil;
+fun playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: (integer|string)) -> nil;
 fun playdate.graphics.image:clear(color: integer) -> nil;
 fun playdate.graphics.image:sample(x: integer, y: integer) -> integer;
 fun playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: integer, yscale?: integer) -> nil;
@@ -840,9 +531,9 @@ fun playdate.graphics.image:addMask(opaque?: boolean) -> nil;
 fun playdate.graphics.image:removeMask() -> nil;
 fun playdate.graphics.image:hasMask() -> boolean;
 fun playdate.graphics.image:clearMask(opaque?: boolean) -> nil;
-fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
-fun playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
-fun playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (integer|playdate.geometry._FlipTypeStr), xPhase?: integer, yPhase?: integer) -> nil;
+fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (integer|string)) -> nil;
+fun playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: (integer|string)) -> nil;
+fun playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (integer|string), xPhase?: integer, yPhase?: integer) -> nil;
 fun playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer) -> nil;
 fun playdate.graphics.image:setInverted(flag: boolean) -> nil;
 fun playdate.graphics.image:invertedImage() -> playdate.graphics.image;
@@ -920,7 +611,7 @@ fun playdate.graphics.getStrokeLocation() -> integer;
 fun playdate.graphics.lockFocus(image: playdate.graphics.image) -> nil;
 fun playdate.graphics.unlockFocus() -> nil;
 fun playdate.graphics.animation.loop.new(delay?: number, imageTable?: playdate.graphics.imagetable, shouldLoop?: boolean) -> playdate.graphics.animation.loop;
-fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
+fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (integer|string)) -> nil;
 fun playdate.graphics.animation.loop:image() -> playdate.graphics.image;
 fun playdate.graphics.animation.loop:isValid() -> boolean;
 fun playdate.graphics.animation.loop:setImageTable(imageTable: playdate.graphics.imagetable) -> nil;
@@ -954,7 +645,7 @@ fun playdate.graphics.imagetable:setImage(n: integer, image: playdate.graphics.i
 fun playdate.graphics.imagetable:load(path: string) -> (success: boolean, error: string?);
 fun playdate.graphics.imagetable:getLength() -> integer;
 fun playdate.graphics.imagetable:getSize() -> (cellsWide: integer, cellsHigh: integer);
-fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil;
+fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|string)) -> nil;
 fun playdate.graphics.imagetable:__index(n: integer) -> nil;
 fun playdate.graphics.tilemap.new() -> playdate.graphics.tilemap;
 fun playdate.graphics.tilemap:setImageTable(table: table) -> nil;
@@ -972,7 +663,7 @@ fun playdate.graphics.tilemap:getCollisionRects(emptyIDs: integer[]) -> playdate
 fun playdate.graphics.sprite.new(image_or_tilemap?: playdate.graphics.image|playdate.graphics.tilemap) -> playdate.graphics.sprite;
 fun playdate.graphics.sprite.spriteWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> playdate.graphics.sprite;
 fun playdate.graphics.sprite.update() -> nil;
-fun playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: (integer|playdate.geometry._FlipTypeStr), scale?: integer, yscale?: integer) -> nil;
+fun playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: (integer|string), scale?: integer, yscale?: integer) -> nil;
 fun playdate.graphics.sprite:getImage() -> playdate.graphics.image;
 fun playdate.graphics.sprite:add() -> nil;
 fun playdate.graphics.sprite.addSprite(sprite: playdate.graphics.sprite) -> nil;
@@ -1000,7 +691,7 @@ fun playdate.graphics.sprite:updatesEnabled() -> boolean;
 fun playdate.graphics.sprite:setTag(tag: integer) -> nil;
 fun playdate.graphics.sprite:getTag() -> integer;
 fun playdate.graphics.sprite:setImageDrawMode(mode: integer) -> nil;
-fun playdate.graphics.sprite:setImageFlip(flip: (integer|playdate.geometry._FlipTypeStr), flipCollideRect?: integer) -> nil;
+fun playdate.graphics.sprite:setImageFlip(flip: (integer|string), flipCollideRect?: integer) -> nil;
 fun playdate.graphics.sprite:getImageFlip() -> integer;
 fun playdate.graphics.sprite:setIgnoresDrawOffset(flag: boolean) -> nil;
 fun playdate.graphics.sprite:setBounds(x: integer, y: integer, width: integer, height: integer) -> nil;
@@ -1072,12 +763,12 @@ fun playdate.graphics.sprite.addEmptyCollisionSprite(x: integer, y: integer, w: 
 fun playdate.graphics.sprite.addWallSprites(tilemap: playdate.graphics.tilemap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer) -> nil;
 fun playdate.graphics.font.new(path: string) -> playdate.graphics.font;
 fun playdate.graphics.font.newFamily(fontPaths: table<integer, string>) -> playdate.graphics.font[];
-fun playdate.graphics.setFont(font: playdate.graphics.font, variant?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr)) -> nil;
-fun playdate.graphics.getFont(variant?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr)) -> playdate.graphics.font;
+fun playdate.graphics.setFont(font: playdate.graphics.font, variant?: (integer|string) -> nil;
+fun playdate.graphics.getFont(variant?: (integer|string) -> playdate.graphics.font;
 fun playdate.graphics.setFontFamily(fontFamily: table<integer, playdate.graphics.font>) -> nil;
 fun playdate.graphics.setFontTracking(pixels: integer) -> nil;
 fun playdate.graphics.getFontTracking() -> integer;
-fun playdate.graphics.getSystemFont(variant?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr)) -> playdate.graphics.font;
+fun playdate.graphics.getSystemFont(variant?: (integer|string) -> playdate.graphics.font;
 fun playdate.graphics.font:drawText(text: string, x: integer, y: integer, leadingAdjustment?: integer) -> nil;
 fun playdate.graphics.font:drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer) -> nil;
 fun playdate.graphics.font:getHeight() -> integer;
@@ -1088,15 +779,15 @@ fun playdate.graphics.font:setLeading(pixels: integer) -> nil;
 fun playdate.graphics.font:getLeading() -> integer;
 fun playdate.graphics.font:getGlyph(character: string) -> playdate.graphics.image;
 fun playdate.graphics.drawText(text: string, x: integer, y: integer, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer) -> nil;
-fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr, leadingAdjustment?: integer) -> nil;
-fun playdate.graphics.getLocalizedText(key: string, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr) -> string;
+fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (integer|string), leadingAdjustment?: integer) -> nil;
+fun playdate.graphics.getLocalizedText(key: string, language?: (integer|string) -> string;
 fun playdate.graphics.getTextSize(str: string, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer) -> (width: integer, height: integer);
 fun playdate.graphics.drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer) -> nil;
 fun playdate.graphics.drawTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> nil;
 fun playdate.graphics.drawTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> nil;
-fun playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr, leadingAdjustment?: integer) -> nil;
-fun playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr) -> nil;
-fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (playdate.graphics.font._FontVariant|playdate.graphics.font.FontVariantStr) -> nil;
+fun playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (integer|string), leadingAdjustment?: integer) -> nil;
+fun playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string) -> nil;
+fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string) -> nil;
 fun playdate.graphics.getTextSizeForMaxWidth(text: string, maxWidth: integer, leadingAdjustment?: integer, font?: playdate.graphics.font) -> (width: integer, height: integer);
 fun playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> (image: playdate.graphics.image, textWasTruncated: boolean);
 fun playdate.graphics.video.new(path: string) -> playdate.graphics.video;
