@@ -818,15 +818,15 @@ fn playdate.sound.sequence:setLoops(startStep: integer, endStep: integer, loopCo
 fn playdate.sound.sequence:setLoops(loopCount: integer) -> nil
 fn playdate.sound.sequence:getTrackCount() -> integer
 fn playdate.sound.sequence:addTrack(track?: playdate.sound.track) -> nil
-fn playdate.sound.sequence:setTrackAtIndex(n: any, track: any) -> nil
-fn playdate.sound.sequence:getTrackAtIndex(n: any) -> playdate.sound.track
+fn playdate.sound.sequence:setTrackAtIndex(n: integer, track: playdate.sound.track) -> nil
+fn playdate.sound.sequence:getTrackAtIndex(n: integer) -> playdate.sound.track
 fn playdate.sound.sequence:allNotesOff() -> nil
 fn playdate.sound.track.new() -> playdate.sound.track
-fn playdate.sound.track:addNote(step: integer, note: any, length: number, velocity?: any) -> nil
+fn playdate.sound.track:addNote(step: integer, note: string|integer, length: number, velocity?: number) -> nil
 fn playdate.sound.track:addNote(table: table) -> nil
-fn playdate.sound.track:setNotes(list: any) -> nil
-fn playdate.sound.track:getNotes(step?: integer, endstep?: any) -> SoundTrackNoteOut[]
-fn playdate.sound.track:removeNote(step: integer, note: any) -> nil
+fn playdate.sound.track:setNotes(list: table[]) -> nil
+fn playdate.sound.track:getNotes(step?: integer, endstep?: integer) -> SoundTrackNoteOut[]
+fn playdate.sound.track:removeNote(step: integer, note: integer) -> nil
 fn playdate.sound.track:clearNotes() -> nil
 fn playdate.sound.track:getLength() -> integer
 fn playdate.sound.track:getNotesActive() -> integer
@@ -834,24 +834,24 @@ fn playdate.sound.track:getPolyphony() -> integer
 fn playdate.sound.track:setInstrument(inst: playdate.sound.instrument) -> nil
 fn playdate.sound.track:getInstrument() -> playdate.sound.instrument
 fn playdate.sound.track:setMuted(flag: boolean) -> nil
-fn playdate.sound.track:addControlSignal(s: any) -> nil
+fn playdate.sound.track:addControlSignal(s: playdate.sound.controlsignal) -> nil
 fn playdate.sound.track:getControlSignals() -> playdate.sound.controlsignal[]
 fn playdate.sound.instrument.new(synth?: playdate.sound.synth) -> playdate.sound.instrument
-fn playdate.sound.instrument:addVoice(v: playdate.geometry.vector2D, note?: any, rangeend?: any, transpose?: any) -> nil
+fn playdate.sound.instrument:addVoice(v: playdate.geometry.vector2D, note?: integer, rangeend?: integer, transpose?: integer) -> nil
 fn playdate.sound.instrument:setTranspose(halfsteps: number) -> nil
-fn playdate.sound.instrument:playNote(frequency: any, vel?: any, length?: number, when?: any) -> nil
-fn playdate.sound.instrument:playMIDINote(note: any, vel?: any, length?: number, when?: any) -> nil
-fn playdate.sound.instrument:noteOff(note: any, when?: any) -> nil
+fn playdate.sound.instrument:playNote(frequency: number, vel?: number, length?: number, when?: number) -> nil
+fn playdate.sound.instrument:playMIDINote(note: number|string, vel?: number, length?: number, when?: number) -> nil
+fn playdate.sound.instrument:noteOff(note: integer, when?: number) -> nil
 fn playdate.sound.instrument:allNotesOff() -> nil
 fn playdate.sound.instrument:setVolume(left: integer, right?: integer) -> nil
 fn playdate.sound.instrument:getVolume() -> (left_or_mono: number, right: number?)
 fn playdate.sound.controlsignal.new() -> playdate.sound.controlsignal
-fn playdate.sound.controlsignal:addEvent(step: integer, value: any, interpolate?: any) -> nil
-fn playdate.sound.controlsignal:addEvent(event: any) -> nil
+fn playdate.sound.controlsignal:addEvent(step: integer, value: number, interpolate?: any) -> nil
+fn playdate.sound.controlsignal:addEvent(event: table) -> nil
 fn playdate.sound.controlsignal:clearEvents() -> nil
 fn playdate.sound.controlsignal:setControllerType(number: integer) -> nil
 fn playdate.sound.controlsignal:getControllerType() -> integer
-fn playdate.sound.micinput.recordToSample(buffer: any, completionCallback: fun(sample: playdate.sound.sample): nil) -> nil
+fn playdate.sound.micinput.recordToSample(buffer: playdate.sound.sample, completionCallback: fun(sample: playdate.sound.sample): nil) -> nil
 fn playdate.sound.micinput.stopRecording() -> nil
 fn playdate.sound.micinput.startListening() -> nil
 fn playdate.sound.micinput.stopListening() -> nil
@@ -866,29 +866,26 @@ fn playdate.string.trimWhitespace(string: string) -> string
 fn playdate.string.trimLeadingWhitespace(string: string) -> string
 fn playdate.string.trimTrailingWhitespace(string: string) -> string
 fn playdate.timer.updateTimers() -> nil
-fn playdate.timer.new(duration: any, callback: function, ...: any) -> playdate.timer
-fn playdate.timer.performAfterDelay(delay: any, callback: function, ...: any) -> nil
-fn playdate.timer.new(duration: any, startValue?: any, endValue?: any, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number) -> nil
+fn playdate.timer.new(duration: integer, callback: function, ...: any) -> playdate.timer
+fn playdate.timer.performAfterDelay(delay: integer, callback: function, ...: any) -> nil
+fn playdate.timer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number) -> nil
 fn playdate.timer.keyRepeatTimer(callback: function, ...: any) -> nil
-fn playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring: any, delayAfterSecondFiring: any, callback: function, ...: any) -> nil
+fn playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring: integer, delayAfterSecondFiring: integer, callback: function, ...: any) -> nil
 fn playdate.timer:pause() -> nil
 fn playdate.timer:start() -> nil
 fn playdate.timer:remove() -> nil
 fn playdate.timer:reset() -> nil
 fn playdate.timer.allTimers() -> nil
-fn playdate.timer.timerEndedCallback(...: any) -> nil
 fn playdate.timer.updateCallback(...: any) -> nil
 fn playdate.frameTimer.updateTimers() -> nil
-fn playdate.frameTimer.new(duration: any, callback: function, ...: any) -> playdate.frameTimer
-fn playdate.frameTimer.performAfterDelay(delay: any, callback: function, ...: any) -> nil
-fn playdate.frameTimer.new(duration: any, startValue?: any, endValue?: any, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number) -> playdate.frameTimer
+fn playdate.frameTimer.new(duration: integer, callback: function, ...: any) -> playdate.frameTimer
+fn playdate.frameTimer.performAfterDelay(delay: integer, callback: function, ...: any) -> nil
+fn playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number) -> playdate.frameTimer
 fn playdate.frameTimer:pause() -> nil
 fn playdate.frameTimer:start() -> nil
 fn playdate.frameTimer:remove() -> nil
 fn playdate.frameTimer:reset() -> nil
 fn playdate.frameTimer.allTimers() -> playdate.frameTimer[]
-fn playdate.frameTimer.timerEndedCallback(...: any) -> nil
-fn playdate.frameTimer.updateCallback(...: any) -> nil
 fn playdate.ui.crankIndicator:start() -> nil
 fn playdate.ui.crankIndicator:update() -> nil
 fn playdate.ui.gridview.new(cellWidth: integer, cellHeight: integer) -> playdate.ui.gridview
@@ -902,11 +899,11 @@ fn playdate.ui.gridview:setNumberOfRowsInSection(section: integer, num: integer)
 fn playdate.ui.gridview:getNumberOfRowsInSection(section: integer) -> integer
 fn playdate.ui.gridview:setNumberOfColumns(num: integer) -> nil
 fn playdate.ui.gridview:getNumberOfColumns() -> integer
-fn playdate.ui.gridview:setNumberOfRows(...: any) -> nil
+fn playdate.ui.gridview:setNumberOfRows(...: integer) -> nil
 fn playdate.ui.gridview:setCellSize(cellWidth: integer, cellHeight: integer) -> nil
 fn playdate.ui.gridview:setCellPadding(left: integer, right: integer, top: integer, bottom: integer) -> nil
 fn playdate.ui.gridview:setContentInset(left: integer, right: integer, top: integer, bottom: integer) -> nil
-fn playdate.ui.gridview:getCellBounds(section: integer, row: integer, column: integer, gridWidth?: any) -> (x: integer, y: integer, width: integer, height: integer)
+fn playdate.ui.gridview:getCellBounds(section: integer, row: integer, column: integer, gridWidth?: integer) -> (x: integer, y: integer, width: integer, height: integer)
 fn playdate.ui.gridview:setSectionHeaderHeight(height: integer) -> nil
 fn playdate.ui.gridview:getSectionHeaderHeight() -> integer
 fn playdate.ui.gridview:setSectionHeaderPadding(left: integer, right: integer, top: integer, bottom: integer) -> nil
@@ -931,4 +928,4 @@ fn playdate.ui.gridview:selectNextColumn(wrapSelection: boolean, scrollToSelecti
 fn playdate.ui.gridview:selectPreviousColumn(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean) -> nil
 fn playdate.setCollectsGarbage(flag: boolean) -> nil
 fn playdate.setMinimumGCTime(ms: integer) -> nil
-fn playdate.setGCScaling(min: any, max: any) -> nil
+fn playdate.setGCScaling(min: number, max: number) -> nil
