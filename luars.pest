@@ -1,5 +1,5 @@
 Function = {
-    "fn" ~ " " ~ W
+    "fun" ~ " " ~ W
     ~ lua_table ~ W
     ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
     ~ "->" ~ W ~ FunctionReturnType ~ W
@@ -18,7 +18,7 @@ FunctionReturnType = {
 IDENTIFIER = @{ "_" | ASCII_ALPHA ~ ( "_" | ASCII_DIGIT | ASCII_ALPHA )* }
 
 FunctionType = {
-    "fn" ~
+    "fun" ~
     "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
     ~ "->" ~ W ~ FunctionReturnType ~ W
 }
