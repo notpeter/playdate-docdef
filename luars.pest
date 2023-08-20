@@ -1,5 +1,34 @@
+Statement = {
+    ( Module | Function | Constant | Object ) ~ ";\n"
+}
+
+Module = {
+    "mod" ~ " " ~ W
+    ~ lua_table ~ W
+}
+
+Constant = { ConstantString | ConstantInteger }
+
+ConstantString = {
+    "con " ~ W
+    ~ lua_table ~ W
+    ~ ":" ~ W
+    ~ "string" ~ W
+    ~ "=" ~ W
+    ~ "\"" ~ (!"\"" ~ ANY)* ~ "\"" ~ W
+}
+
+ConstantInteger = {
+    "con " ~ W
+    ~ lua_table ~ W
+    ~ ":" ~ W
+    ~ "integer" ~ W
+    ~ "=" ~ W
+    ~ ( "-"? ~ ASCII_DIGIT+ ) ~ W
+}
+
 Function = {
-    "fun" ~ " " ~ W
+    "fun " ~ W
     ~ lua_table ~ W
     ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
     ~ "->" ~ W ~ FunctionReturnType ~ W
