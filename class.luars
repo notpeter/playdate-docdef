@@ -1,6 +1,20 @@
 mod json;
 
 mod playdate;
+con playdate.kButtonLeft: integer = 1
+con playdate.kButtonRight: integer = 2
+con playdate.kButtonUp: integer = 4
+con playdate.kButtonDown: integer = 8
+con playdate.kButtonB: integer = 16
+con playdate.kButtonA: integer = 32
+cat playdate._Button: integer (
+    | playdate.kButtonLeft
+    | playdate.kButtonRight
+    | playdate.kButtonUp
+    | playdate.kButtonDown
+    | playdate.kButtonB
+    | playdate.kButtonA
+);
 obj playdate._metadata {
     name: string,
     author: string,
@@ -83,6 +97,16 @@ obj playdate.inputHandlers._InputHandler {
 };
 
 mod playdate.file;
+con playdate.file.kFileRead: integer = 3;
+con playdate.file.kFileWrite: integer = 4;
+con playdate.file.kFileAppend: integer = 8;
+cat playdate.file._FileMode: integer (
+    | playdate.file.kFileRead
+    | playdate.file.kFileWrite
+    | playdate.file.kFileAppend
+);
+
+
 obj playdate.file._ModTime {// second level accuracy time.  Used by playdate.file.modtime
     year: integer,          // 4-digit year
     month: integer,         // month of the year 1-12
@@ -100,12 +124,6 @@ con playdate.geometry.kUnflipped: integer = 0;
 con playdate.geometry.kFlippedX: integer = 1;
 con playdate.geometry.kFlippedY: integer = 2;
 con playdate.geometry.kFlippedXY: integer = 3;
-cat playdate.geometry._FlipType: integer (
-    | playdate.geometry.kUnflipped
-    | playdate.geometry.kFlippedX
-    | playdate.geometry.kFlippedY
-    | playdate.geometry.kFlippedXY
-);
 cat playdate.geometry._FlipTypeStr: string (
     | "flipX"
     | "flipY"
@@ -168,6 +186,28 @@ obj playdate.geometry.vector2D {
 };
 
 mod playdate.graphics;
+con playdate.graphics.kStrokeCentered: integer = 0;
+con playdate.graphics.kStrokeInside: integer = 1;
+con playdate.graphics.kStrokeOutside: integer = 2;
+con playdate.graphics.kPolygonFillNonZero: integer = 0
+con playdate.graphics.kPolygonFillEvenOdd: integer = 1
+con playdate.graphics.kImageUnflipped: integer = 0;
+con playdate.graphics.kImageFlippedX: integer = 1;
+con playdate.graphics.kImageFlippedY: integer = 2;
+con playdate.graphics.kImageFlippedXY: integer = 3;
+con playdate.graphics.kColorBlack: integer = 0;
+con playdate.graphics.kColorWhite: integer = 1;
+con playdate.graphics.kColorClear: integer = 2;
+con playdate.graphics.kColorXOR: integer = 3;
+con playdate.graphics.kDrawModeCopy: integer = 0;
+con playdate.graphics.kDrawModeWhiteTransparent: integer = 1;
+con playdate.graphics.kDrawModeBlackTransparent: integer = 2;
+con playdate.graphics.kDrawModeFillWhite: integer = 3;
+con playdate.graphics.kDrawModeFillBlack: integer = 4;
+con playdate.graphics.kDrawModeXOR: integer = 5;
+con playdate.graphics.kDrawModeNXOR: integer = 6;
+con playdate.graphics.kDrawModeInverted: integer = 7;
+cat playdate.graphics._
 
 mod playdate.graphics.animation;
 
@@ -232,6 +272,18 @@ cat playdate.graphics.font._LanguageStr: string (
 obj playdate.graphics.font;
 
 mod playdate.graphics.image;
+con playdate.graphics.image.kDitherTypeNone: integer = 0;
+con playdate.graphics.image.kDitherTypeDiagonalLine: integer = 1;
+con playdate.graphics.image.kDitherTypeVerticalLine: integer = 2;
+con playdate.graphics.image.kDitherTypeHorizontalLine: integer = 3;
+con playdate.graphics.image.kDitherTypeScreen: integer = 4;
+con playdate.graphics.image.kDitherTypeBayer2x2: integer = 5;
+con playdate.graphics.image.kDitherTypeBayer4x4: integer = 6;
+con playdate.graphics.image.kDitherTypeBayer8x8: integer = 7;
+con playdate.graphics.image.kDitherTypeFloydSteinberg: integer = 8;
+con playdate.graphics.image.kDitherTypeBurkes: integer = 9;
+con playdate.graphics.image.kDitherTypeAtkinson: integer = 10;
+
 obj playdate.graphics.image {
     x: integer,
     y: integer,
@@ -254,23 +306,12 @@ con playdate.graphics.sprite.kCollisionTypeSlide = 0;
 con playdate.graphics.sprite.kCollisionTypeFreeze = 1;
 con playdate.graphics.sprite.kCollisionTypeOverlap = 2
 con playdate.graphics.sprite.kCollisionTypeBounce = 3
-cat playdate.graphics.sprite._CollisionType: integer (
-    | playdate.graphics.sprite.kCollisionTypeSlide
-    | playdate.graphics.sprite.kCollisionTypeFreeze
-    | playdate.graphics.sprite.kCollisionTypeOverlap
-    | playdate.graphics.sprite.kCollisionTypeBounce
-);
-cat playdate.graphics.sprite._collisionResponse (
-    | nil
-    | playdate.graphics.sprite._CollisionType
-    | fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite) -> playdate.graphics.sprite._CollisionType
-);
 obj playdate.graphics.sprite {
     x: integer,
     y: integer,
     width: integer,
     height: integer,
-    collisionResponse?: playdate.graphics.sprite._collisionResponse,
+    collisionResponse?: (playdate.graphics.sprite._CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite) -> playdate.graphics.sprite._CollisionType),
     update?: fun()->nil,
 };
 obj playdate.graphics.sprite._CollisionData { // returned from sprite:moveWithCollisions and sprite:checkCollisions
@@ -304,6 +345,9 @@ obj playdate.graphics.video;
 mod playdate.inputHandlers;
 
 mod playdate.keyboard;
+con playdate.keyboard.kCapitalizationNormal: integer = 1;
+con playdate.keyboard.kCapitalizationWords: integer = 2;
+con playdate.keyboard.kCapitalizationSentences: integer = 3;
 obj playdate.keyboard {
     text: string,
 };
@@ -333,6 +377,25 @@ obj playdate.pathfinder.node {
 mod playdate.simulator;
 
 mod playdate.sound;
+con playdate.sound.kFormat8bitMono: integer = 0;
+con playdate.sound.kFormat8bitStereo: integer = 1;
+con playdate.sound.kFormat16bitMono: integer = 2;
+con playdate.sound.kFormat16bitStereo: integer = 3;
+con playdate.sound.kLFOSquare: integer = 0;
+con playdate.sound.kLFOTriangle: integer = 1;
+con playdate.sound.kLFOSine: integer = 2;
+con playdate.sound.kLFOSampleAndHold: integer = 3;
+con playdate.sound.kLFOSawtoothUp: integer = 4;
+con playdate.sound.kLFOSawtoothDown: integer = 5;
+con playdate.sound.kWaveSquare: integer = 0;
+con playdate.sound.kWaveTriangle: integer = 1;
+con playdate.sound.kWaveSine: integer = 2;
+con playdate.sound.kWaveNoise: integer = 3;
+con playdate.sound.kWaveSawtooth: integer = 4;
+con playdate.sound.kWavePOPhase: integer = 5;
+con playdate.sound.kWavePODigital: integer = 6;
+con playdate.sound.kWavePOVosim: integer = 7;
+
 
 mod playdate.sound.effect;
 obj playdate.sound.effect;

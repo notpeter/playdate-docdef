@@ -34,9 +34,9 @@ fun playdate.startAccelerometer() -> nil
 fun playdate.stopAccelerometer() -> nil
 fun playdate.readAccelerometer() -> (x: number, y: number, z: number)
 fun playdate.accelerometerIsRunning() -> boolean
-fun playdate.buttonIsPressed(button: integer) -> boolean
-fun playdate.buttonJustPressed(button: integer) -> boolean
-fun playdate.buttonJustReleased(button: integer) -> boolean
+fun playdate.buttonIsPressed(button: playdate._Button) -> boolean
+fun playdate.buttonJustPressed(button: playdate._Button) -> boolean
+fun playdate.buttonJustReleased(button: playdate._Button) -> boolean
 fun playdate.getButtonState() -> (current: integer, pressed: integer, released: integer)
 fun playdate.AButtonDown() -> nil
 fun playdate.AButtonHeld() -> nil
@@ -146,7 +146,7 @@ fun playdate.datastore.read(filename?: string) -> table?
 fun playdate.datastore.delete(filename?: string) -> boolean
 fun playdate.datastore.writeImage(image: playdate.graphics.image, path: string) -> nil
 fun playdate.datastore.readImage(path: string) -> playdate.graphics.image?
-fun playdate.file.open(path: string, mode?: integer) -> (file: playdate.file.file?, error: string?)
+fun playdate.file.open(path: string, mode?: playdate.file._FileMode) -> (file: playdate.file.file?, error: string?)
 fun playdate.file.file:close() -> nil
 fun playdate.file.file:write(string: string) -> (bytes_written: integer, error: string?)
 fun playdate.file.file:flush() -> nil
@@ -262,7 +262,7 @@ fun playdate.geometry.rect:containsRect(x: integer, y: integer, width: integer, 
 fun playdate.geometry.rect:containsPoint(p: playdate.geometry.point) -> boolean
 fun playdate.geometry.rect:containsPoint(x: integer, y: integer) -> boolean
 fun playdate.geometry.rect:centerPoint() -> playdate.geometry.point
-fun playdate.geometry.rect:flipRelativeToRect(r2: playdate.geometry.rect, flip: playdate.geometry._FlipType) -> nil
+fun playdate.geometry.rect:flipRelativeToRect(r2: playdate.geometry.rect, flip: integer| -> nil
 fun playdate.geometry.size.new(width: integer, height: integer) -> playdate.geometry.size
 fun playdate.geometry.size:copy() -> playdate.geometry.size
 fun playdate.geometry.size:unpack() -> (width: number, height: number)
@@ -301,12 +301,12 @@ fun playdate.graphics.image:load(path: string) -> (success: boolean, error: stri
 fun playdate.graphics.image:copy() -> playdate.graphics.image
 fun playdate.graphics.image:getSize() -> (width: integer, height: integer)
 fun playdate.graphics.imageSizeAtPath(path: string) -> (width: integer, height: integer)
-fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil
-fun playdate.graphics.image:draw(p: playdate.geometry.point, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil
-fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
-fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
-fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
-fun playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil
+fun playdate.graphics.image:draw(p: playdate.geometry.point, flip?: (integer|playdate.geometry._FlipTypeStr), sourceRect?: playdate.geometry.rect) -> nil
+fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
 fun playdate.graphics.image:clear(color: integer) -> nil
 fun playdate.graphics.image:sample(x: integer, y: integer) -> integer
 fun playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: integer, yscale?: integer) -> nil
@@ -322,9 +322,9 @@ fun playdate.graphics.image:addMask(opaque?: boolean) -> nil
 fun playdate.graphics.image:removeMask() -> nil
 fun playdate.graphics.image:hasMask() -> boolean
 fun playdate.graphics.image:clearMask(opaque?: boolean) -> nil
-fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
-fun playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
-fun playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), xPhase?: integer, yPhase?: integer) -> nil
+fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (integer|playdate.geometry._FlipTypeStr), xPhase?: integer, yPhase?: integer) -> nil
 fun playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer) -> nil
 fun playdate.graphics.image:setInverted(flag: boolean) -> nil
 fun playdate.graphics.image:invertedImage() -> playdate.graphics.image
@@ -402,7 +402,7 @@ fun playdate.graphics.getStrokeLocation() -> integer
 fun playdate.graphics.lockFocus(image: playdate.graphics.image) -> nil
 fun playdate.graphics.unlockFocus() -> nil
 fun playdate.graphics.animation.loop.new(delay?: number, imageTable?: playdate.graphics.imagetable, shouldLoop?: boolean) -> playdate.graphics.animation.loop
-fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
 fun playdate.graphics.animation.loop:image() -> playdate.graphics.image
 fun playdate.graphics.animation.loop:isValid() -> boolean
 fun playdate.graphics.animation.loop:setImageTable(imageTable: playdate.graphics.imagetable) -> nil
@@ -436,7 +436,7 @@ fun playdate.graphics.imagetable:setImage(n: integer, image: playdate.graphics.i
 fun playdate.graphics.imagetable:load(path: string) -> (success: boolean, error: string?)
 fun playdate.graphics.imagetable:getLength() -> integer
 fun playdate.graphics.imagetable:getSize() -> (cellsWide: integer, cellsHigh: integer)
-fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr)) -> nil
+fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|playdate.geometry._FlipTypeStr)) -> nil
 fun playdate.graphics.imagetable:__index(n: integer) -> nil
 fun playdate.graphics.tilemap.new() -> playdate.graphics.tilemap
 fun playdate.graphics.tilemap:setImageTable(table: table) -> nil
@@ -454,7 +454,7 @@ fun playdate.graphics.tilemap:getCollisionRects(emptyIDs: integer[]) -> playdate
 fun playdate.graphics.sprite.new(image_or_tilemap?: playdate.graphics.image|playdate.graphics.tilemap) -> playdate.graphics.sprite
 fun playdate.graphics.sprite.spriteWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font) -> playdate.graphics.sprite
 fun playdate.graphics.sprite.update() -> nil
-fun playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), scale?: integer, yscale?: integer) -> nil
+fun playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: (integer|playdate.geometry._FlipTypeStr), scale?: integer, yscale?: integer) -> nil
 fun playdate.graphics.sprite:getImage() -> playdate.graphics.image
 fun playdate.graphics.sprite:add() -> nil
 fun playdate.graphics.sprite.addSprite(sprite: playdate.graphics.sprite) -> nil
@@ -482,7 +482,7 @@ fun playdate.graphics.sprite:updatesEnabled() -> boolean
 fun playdate.graphics.sprite:setTag(tag: integer) -> nil
 fun playdate.graphics.sprite:getTag() -> integer
 fun playdate.graphics.sprite:setImageDrawMode(mode: integer) -> nil
-fun playdate.graphics.sprite:setImageFlip(flip: (playdate.geometry._FlipType|playdate.geometry._FlipTypeStr), flipCollideRect?: integer) -> nil
+fun playdate.graphics.sprite:setImageFlip(flip: (integer|playdate.geometry._FlipTypeStr), flipCollideRect?: integer) -> nil
 fun playdate.graphics.sprite:getImageFlip() -> integer
 fun playdate.graphics.sprite:setIgnoresDrawOffset(flag: boolean) -> nil
 fun playdate.graphics.sprite:setBounds(x: integer, y: integer, width: integer, height: integer) -> nil
