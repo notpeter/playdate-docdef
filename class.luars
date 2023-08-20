@@ -100,19 +100,17 @@ con playdate.geometry.kUnflipped: integer = 0;
 con playdate.geometry.kFlippedX: integer = 1;
 con playdate.geometry.kFlippedY: integer = 2;
 con playdate.geometry.kFlippedXY: integer = 3;
-cat playdate.geometry._FlipType (
+cat playdate.geometry._FlipType: integer (
     | playdate.geometry.kUnflipped
     | playdate.geometry.kFlippedX
     | playdate.geometry.kFlippedY
     | playdate.geometry.kFlippedXY
 );
-cat playdate.geometry._FlipTypeStr (
+cat playdate.geometry._FlipTypeStr: string (
     | "flipX"
     | "flipY"
     | "filpXY"
 )
-
-
 
 mod playdate.geometry.affineTransform;
 obj playdate.geometry.affineTransform;
@@ -222,15 +220,15 @@ cat playdate.graphics.font.FontVariantStr: string (
     | "normal"
     | "bold"
     | "italic"
-)
+);
 cat playdate.graphics.font._Language: integer (
     | playdate.graphics.font.kLanguageEnglish
     | playdate.graphics.font.kLanguageJapanese
-)
+);
 cat playdate.graphics.font._LanguageStr: string (
     | "en"
     | "jp"
-)
+);
 obj playdate.graphics.font;
 
 mod playdate.graphics.image;
@@ -256,7 +254,7 @@ con playdate.graphics.sprite.kCollisionTypeSlide = 0;
 con playdate.graphics.sprite.kCollisionTypeFreeze = 1;
 con playdate.graphics.sprite.kCollisionTypeOverlap = 2
 con playdate.graphics.sprite.kCollisionTypeBounce = 3
-cat playdate.graphics.sprite._CollisionType (
+cat playdate.graphics.sprite._CollisionType: integer (
     | playdate.graphics.sprite.kCollisionTypeSlide
     | playdate.graphics.sprite.kCollisionTypeFreeze
     | playdate.graphics.sprite.kCollisionTypeOverlap
@@ -264,7 +262,6 @@ cat playdate.graphics.sprite._CollisionType (
 );
 cat playdate.graphics.sprite._collisionResponse (
     | nil
-    | integer
     | playdate.graphics.sprite._CollisionType
     | fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite) -> playdate.graphics.sprite._CollisionType
 );
@@ -279,7 +276,7 @@ obj playdate.graphics.sprite {
 obj playdate.graphics.sprite._CollisionData { // returned from sprite:moveWithCollisions and sprite:checkCollisions
     sprite: playdate.graphics.sprite,
     other: playdate.graphics.sprite,
-    type: (integer|playdate.graphics.sprite._CollisionType),
+    type: playdate.graphics.sprite._CollisionType,
     overlaps: boolean,
     ti: number, // 0.0-1.0
     move: playdate.geometry.vector2D,
@@ -331,7 +328,7 @@ obj playdate.pathfinder.node {
     x: integer,
     y: integer,
     id: integer,
-}
+};
 
 mod playdate.simulator;
 
@@ -351,7 +348,7 @@ obj playdate.sound.controlsignal._ControlSignalEvent {
     step: integer,
     value: number,
     interpolate?: boolean,
-}
+};
 obj playdate.sound.controlsignal: playdate.sound.signal {
     events: playdate.sound.controlsignal._ControlSignalEvent;
 };
@@ -417,7 +414,7 @@ obj playdate.sound.track._SoundTrackNote { // This is what comes back from playd
     note: number,
     length: integer,
     velocity: number,
-}
+};
 
 mod playdate.sound.twopolefilter;
 obj playdate.sound.twopolefilter: playdate.sound.effect;

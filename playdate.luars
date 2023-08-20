@@ -406,11 +406,11 @@ fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (playda
 fun playdate.graphics.animation.loop:image() -> playdate.graphics.image
 fun playdate.graphics.animation.loop:isValid() -> boolean
 fun playdate.graphics.animation.loop:setImageTable(imageTable: playdate.graphics.imagetable) -> nil
-fun playdate.graphics.animator.new(duration: integer, startValue: number|playdate.geometry.point, endValue: number|playdate.geometry.point, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, startTimeOffset?: integer) -> playdate.graphics.animator
-fun playdate.graphics.animator.new(duration: integer, lineSegment: playdate.geometry.lineSegment, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, startTimeOffset?: integer) -> playdate.graphics.animator
-fun playdate.graphics.animator.new(duration: integer, arc: playdate.geometry.arc, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, startTimeOffset?: integer) -> playdate.graphics.animator
-fun playdate.graphics.animator.new(duration: integer, polygon: playdate.geometry.polygon, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, startTimeOffset?: integer) -> playdate.graphics.animator
-fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFunctions: function[], startTimeOffset?: integer) -> playdate.graphics.animator
+fun playdate.graphics.animator.new(duration: integer, startValue: number|playdate.geometry.point, endValue: number|playdate.geometry.point, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number, startTimeOffset?: integer) -> playdate.graphics.animator
+fun playdate.graphics.animator.new(duration: integer, lineSegment: playdate.geometry.lineSegment, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number, startTimeOffset?: integer) -> playdate.graphics.animator
+fun playdate.graphics.animator.new(duration: integer, arc: playdate.geometry.arc, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number, startTimeOffset?: integer) -> playdate.graphics.animator
+fun playdate.graphics.animator.new(duration: integer, polygon: playdate.geometry.polygon, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number, startTimeOffset?: integer) -> playdate.graphics.animator
+fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFunctions: (fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number)[], startTimeOffset?: integer) -> playdate.graphics.animator
 fun playdate.graphics.animator:currentValue() -> number|playdate.geometry.point
 fun playdate.graphics.animator:valueAtTime(time: number) -> number|playdate.geometry.point
 fun playdate.graphics.animator:progress() -> number
@@ -868,7 +868,7 @@ fun playdate.string.trimTrailingWhitespace(string: string) -> string
 fun playdate.timer.updateTimers() -> nil
 fun playdate.timer.new(duration: integer, callback: function, ...: any) -> playdate.timer
 fun playdate.timer.performAfterDelay(delay: integer, callback: function, ...: any) -> nil
-fun playdate.timer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number) -> nil
+fun playdate.timer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number) -> nil
 fun playdate.timer.keyRepeatTimer(callback: function, ...: any) -> nil
 fun playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring: integer, delayAfterSecondFiring: integer, callback: function, ...: any) -> nil
 fun playdate.timer:pause() -> nil
@@ -880,7 +880,7 @@ fun playdate.timer.updateCallback(...: any) -> nil
 fun playdate.frameTimer.updateTimers() -> nil
 fun playdate.frameTimer.new(duration: integer, callback: function, ...: any) -> playdate.frameTimer
 fun playdate.frameTimer.performAfterDelay(delay: integer, callback: function, ...: any) -> nil
-fun playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number) -> playdate.frameTimer
+fun playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: fun(t:number, b:number, c:number, d:number, a?:number, p?:number) -> number) -> playdate.frameTimer
 fun playdate.frameTimer:pause() -> nil
 fun playdate.frameTimer:start() -> nil
 fun playdate.frameTimer:remove() -> nil
