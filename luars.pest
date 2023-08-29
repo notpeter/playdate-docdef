@@ -1,68 +1,57 @@
+Document = { Statement+ }
 Statement = {
-    ( Module | Function | Constant | Object ) ~ ";\n"
+    (Module | Function | Constant | Variable) ~ ";" ~ "\n"?
 }
-
 Module = {
-    "mod" ~ " " ~ W
-    ~ lua_table ~ W
+    "mod" ~ " " ~ W ~ lua_identifier ~ W
 }
-
-Constant = { ConstantString | ConstantInteger }
-
-ConstantString = {
-    "con " ~ W
-    ~ lua_table ~ W
-    ~ ":" ~ W
-    ~ "string" ~ W
-    ~ "=" ~ W
-    ~ "\"" ~ (!"\"" ~ ANY)* ~ "\"" ~ W
+Variable = {
+	"let " ~ W ~ lua_identifier ~ W ~ ":" ~ W ~ LuaTypeUnparsed ~ W
 }
-
-ConstantInteger = {
-    "con " ~ W
-    ~ lua_table ~ W
-    ~ ":" ~ W
-    ~ "integer" ~ W
-    ~ "=" ~ W
-    ~ ( "-"? ~ ASCII_DIGIT+ ) ~ W
+Constant = {
+    "con " ~ W ~ lua_identifier ~ W ~ ":" ~ W ~ "integer" ~ W ~ "=" ~ W ~ IntegerValue ~ W
 }
-
-Function = {
-    "fun " ~ W
-    ~ lua_table ~ W
-    ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
-    ~ "->" ~ W ~ FunctionReturnType ~ W
+Function             = {
+    "fun " ~ W ~ lua_table ~ W ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
 }
 FunctionalParameters = {
-    "..." |
-    (FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)* ) ~ ("," ~ W ~ "...")? ~ ","?
+    "..."
+  | (FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?
 }
-FunctionalParameter = { IDENTIFIER ~ W ~ ":" ~ W ~ ( LuaType | FunctionType ) }
+FunctionalParameter  = { IDENTIFIER ~ W ~ ":" ~ W ~ (LuaType | FunctionType) }
 
-FunctionReturnType = {
+FunctionReturnType =  {
     ("(" ~ W ~ IDENTIFIER ~ W ~ ":" ~ W ~ LuaType ~ W ~ ("," ~ W ~ IDENTIFIER ~ W ~ ":" ~ W ~ LuaType ~ W)+ ~ ")") // (a: type, b: type)
-    | "(" ~ W ~ LuaType ~ W ~ ("," ~ W ~ LuaType ~ W)+ ~ ")" // (type, type)
-    | LuaType // single type
+
+  | "(" ~ W ~ LuaType ~ W ~ ("," ~ W ~ LuaType ~ W)+ ~ ")" // (type, type)
+
+  | LuaType // single type
 }
-IDENTIFIER = @{ "_" | ASCII_ALPHA ~ ( "_" | ASCII_DIGIT | ASCII_ALPHA )* }
+IDENTIFIER         = @{ "_" | ASCII_ALPHA ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 FunctionType = {
-    "fun" ~
-    "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W
-    ~ "->" ~ W ~ FunctionReturnType ~ W
+    "fun" ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
 }
 
-lua_table = @{
-	(IDENTIFIER ~ ("." ~ IDENTIFIER)*)?
-    ~ class_or_instance
-    ~ IDENTIFIER
+lua_table         = @{
+    (IDENTIFIER ~ ("." ~ IDENTIFIER)*)? ~ class_or_instance ~ IDENTIFIER
 }
-class_or_instance = { (":" | ".") }
+lua_identifier    = @{
+    IDENTIFIER ~ ("." ~ IDENTIFIER)*
+}
+class_or_instance =  { (":" | ".") }
 
+IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
+
+LuaTypeUnparsed = @{
+	lua_identifier
+    ~ ("[][][]" | "[][]" | "[]")?
+    ~ "?"?
+}
 LuaType = @{
-    ( LuaCatsBuiltIn ~ "?" ) |
-    ( LuaCatsBuiltIn ~ "[]" ) |
-    ( LuaCatsBuiltIn ~ ( "|" ~ LuaCatsBuiltIn )*)
+    (LuaCatsBuiltIn ~ "?")
+  | (LuaCatsBuiltIn ~ "[]")
+  | (LuaCatsBuiltIn ~ ("|" ~ LuaCatsBuiltIn)*)
 }
 
 LuaCatsBuiltIn = @{ "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
