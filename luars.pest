@@ -1,6 +1,6 @@
 Document = { Statement+ }
 Statement = {
-    (Module | Function | Constant | Variable) ~ ";" ~ "\n"?
+    (Module | Function | Constant | Variable | Object) ~ ";" ~ "\n"?
 }
 Module = {
     "mod" ~ " " ~ W ~ lua_identifier ~ W
@@ -11,8 +11,11 @@ Variable = {
 Constant = {
     "con " ~ W ~ lua_identifier ~ W ~ ":" ~ W ~ "integer" ~ W ~ "=" ~ W ~ IntegerValue ~ W
 }
-Function             = {
+Function = {
     "fun " ~ W ~ lua_table ~ W ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
+}
+Object = {
+    "obj " ~ W ~ lua_identifier ~ W ~ "=" ~ W ~ "{" ~ W ~ FunctionalParameters? ~ W ~ "}" ~ W
 }
 FunctionalParameters = {
     "..."
@@ -27,7 +30,6 @@ FunctionReturnType =  {
 
   | LuaType // single type
 }
-IDENTIFIER         = @{ "_" | ASCII_ALPHA ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 FunctionType = {
     "fun" ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
@@ -39,6 +41,8 @@ lua_table         = @{
 lua_identifier    = @{
     IDENTIFIER ~ ("." ~ IDENTIFIER)*
 }
+IDENTIFIER         = @{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
+
 class_or_instance =  { (":" | ".") }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
