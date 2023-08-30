@@ -1,8 +1,5 @@
 use indexmap::IndexMap;
 
-use crate::config::CLASS;
-
-
 pub fn print_class_defs() {
     for (class_def, fields) in CLASS.iter() {
         println!("{}", class_str(class_def, fields));

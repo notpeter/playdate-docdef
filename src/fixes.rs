@@ -2,7 +2,7 @@ use indexmap::IndexMap;
 use regex::Regex;
 use lazy_static::lazy_static;
 
-use crate::config::{TYPO, INVALID, PARAM_TYPES, RETURN};
+use crate::config::{TYPO, INVALID};
 use crate::stub::Stub;
 
 lazy_static! {
@@ -42,6 +42,12 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
             *t = PARAM_TYPES.get(p_an.as_str()).unwrap().to_string();
         }
     }
+
+    // if anchor == "f-easingFunctions" {
+    //     println!("poop");
+    //     let q = RETURN.keys().collect::<Vec<&String>>();
+    //     println!("{:?}", q);
+    // }
 
     let f = crate::stub::func_signature(&fname, &params);
     let returns: IndexMap<String, String> = RETURN.get(&f).unwrap_or(&IndexMap::new()).clone();

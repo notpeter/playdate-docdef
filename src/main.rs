@@ -129,21 +129,22 @@ fn main() {
 
     if true {
         for stub in stubs {
-            println!("{}", stub.to_toml());
+            println!("{}", stub.to_luars());
         }
     }
-    else if args.action == Action::Annotate {
+    else
+    if args.action == Action::Annotate {
         print_class_defs();
+        println!("{prefix}");
         for stub in stubs {
-            println!("{prefix}");
             println!("{}", stub.to_lua());
-            println!("{suffix}")
         }
+        println!("{suffix}")
     } else if args.action == Action::Stub {
+        println!("{prefix}");
         for stub in stubs {
-            println!("{prefix}");
             println!("{}", stub.to_stub());
-            println!("{suffix}")
         }
+        println!("{suffix}")
     }
 }

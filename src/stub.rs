@@ -16,6 +16,33 @@ pub fn func_signature(name: &String, params: &Vec<(String, String)>) -> String {
 }
 
 impl Stub {
+    pub fn to_luars(&self) -> String {
+        let mut s = String::new();
+        // s.push_str(&format!("# https://sdk.play.date/Inside%20Playdate.html#{}\n", self.anchor));
+        s.push_str(&format!("fn {}(", &self.title));
+        s.push_str(&format!(
+            "{}",
+            self.params
+                .iter()
+                .map(|(p_name, p_type)| format!("{}: {}", p_name, p_type))
+                .collect::<Vec<String>>()
+                .join(", ")
+        ));
+        s.push_str(") -> ");
+        if self.returns.len() == 1 {
+            s.push_str(&self.returns.values().next().unwrap().to_string());
+        } else {
+            s.push_str(&format!(
+                "({})",
+                self.returns
+                    .iter()
+                    .map(|(r_name, r_type)| format!("{}: {}", r_name, r_type))
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            ));
+        }
+        s
+    }
     pub fn to_toml(&self) -> String {
         let mut s = String::new();
         s.push_str(
