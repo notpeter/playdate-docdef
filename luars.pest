@@ -50,8 +50,8 @@ Object = {
     ~ ("=" ~ W ~ "{" ~ W ~ TablePrototype? ~ W ~ "}" ~ W)?
 }
 FunctionalParameters = {
-    "..."
-  | (FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?
+    VariableParameter
+    | ((FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?)
 }
 
 TablePrototype = {
@@ -67,6 +67,7 @@ DotDotDot = { "..." }
 // these optionals and ... are overly friendly
 // foo(bar?: integer): (baz:integer?, boop:string?)
 FunctionalParameter  = { (LuaIdentifier | "...") ~ Optional? ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
+VariableParameter = { DotDotDot ~ Optional? ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
 
 oParen = _{ "(" }
 cParen = _{ ")" }
@@ -87,6 +88,7 @@ TypeLua = @{
 }
 LT = _{
     | ("fun(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ (":" ~ W ~ UnparsedType ~ Optional? ~ W)?)
+    | ("table<" ~ W ~ Identifier ~ W ~ "," ~ W ~ TypeLua ~ W ~ ">" ~ W)
     | UnparsedType
 }
 UnparsedType = _{
