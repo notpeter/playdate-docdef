@@ -31,7 +31,18 @@ Constant = {
     Con ~ W ~ Identifier ~ W ~ ":" ~ W ~ ConsType ~ W ~ "=" ~ W ~ IntegerValue ~ W
 }
 Function = {
-    Fun ~ W ~ lua_table ~ W ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
+    Fun ~ W ~ (
+        (Identifier ~ ":" ~ Identifier ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen)
+        | (Identifier ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen)
+    )
+    ~ Return?
+}
+Return = {
+    (
+        (":" ~ W ~ TypeLua ~ W)
+        | (":" ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen ~ W)
+    )
+    ~ Optional?
 }
 Object = {
     Obj ~ W ~ Identifier ~ W
@@ -42,6 +53,7 @@ FunctionalParameters = {
     "..."
   | (FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?
 }
+
 TablePrototype = {
     TableKey ~ W ~ ":" ~ W ~ TypeLua
     ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ TypeLua)*
@@ -52,22 +64,14 @@ TableKey = !{
 	| (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
 }
 DotDotDot = { "..." }
-FunctionalParameter  = { LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua) }
+// these optionals and ... are overly friendly
+// foo(bar?: integer): (baz:integer?, boop:string?)
+FunctionalParameter  = { (LuaIdentifier | "...") ~ Optional? ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
 
-FunctionReturnType =  {
-    ("(" ~ W ~ LuaIdentifier ~ W ~ ":" ~ W ~ TypeLua ~ W ~ ("," ~ W ~ LuaIdentifier ~ W ~ ":" ~ W ~ TypeLua ~ W)+ ~ ")") // (a: type, b: type)
-    | "(" ~ W ~ TypeLua ~ W ~ ("," ~ W ~ TypeLua ~ W)+ ~ ")" // (type, type)
-    | TypeLua // single type
-}
-
-FunctionType = {
-    "fun" ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
-}
+oParen = _{ "(" }
+cParen = _{ ")" }
 
 Optional = { "?" }
-lua_table = @{
-    Identifier ~ class_or_instance ~ LuaIdentifier
-}
 Identifier = @{
     LuaIdentifier ~ ("." ~ LuaIdentifier)*
 }
