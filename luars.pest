@@ -1,63 +1,109 @@
-Document = { Statement+ }
-Statement = {
-    (Module | Function | Constant | Variable | Object) ~ ";" ~ "\n"?
+/*
+    Maybe do:
+    * Handle tabs and " " (non-breaking space)
+    * Handle comments
+    * Re-evaluate Pest Implicit whitepsace: https://pest.rs/book/grammars/syntax.html#implicit-whitespace
+    * Handle newlines in W whitepsace
+    * Re-evlate
+    * Switch from "\n" to NEWLINE ("\n" | "\r\n" | "\r")
+    * Unicode support (not today satan)
+*/
+Document = _{ Statement* }
+Statement = _{
+    (
+        WHITE_LINE
+        | ((Module | Function | Constant | Variable | Object) ~ ";" ~ W ~ "\n"?)
+    )
 }
+Mod = _{ "mod " }
+Let = _{ "let " }
+Con = _{ "con " }
+Fun = _{ "fun " }
+Obj = _{ "obj " }
+
 Module = {
-    "mod" ~ " " ~ W ~ lua_identifier ~ W
+    Mod ~ W ~ Identifier ~ W
 }
 Variable = {
-	"let " ~ W ~ lua_identifier ~ W ~ ":" ~ W ~ LuaTypeUnparsed ~ W
+	Let ~ W ~ Identifier ~ W ~ ":" ~ W ~ TypeLua ~ W
 }
 Constant = {
-    "con " ~ W ~ lua_identifier ~ W ~ ":" ~ W ~ "integer" ~ W ~ "=" ~ W ~ IntegerValue ~ W
+    Con ~ W ~ Identifier ~ W ~ ":" ~ W ~ ConsType ~ W ~ "=" ~ W ~ IntegerValue ~ W
 }
 Function = {
-    "fun " ~ W ~ lua_table ~ W ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
+    Fun ~ W ~ lua_table ~ W ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
 }
 Object = {
-    "obj " ~ W ~ lua_identifier ~ W ~ "=" ~ W ~ "{" ~ W ~ FunctionalParameters? ~ W ~ "}" ~ W
+    Obj ~ W ~ Identifier ~ W
+    ~ (":" ~ W ~ TypeLua ~ W)?
+    ~ ("=" ~ W ~ "{" ~ W ~ TablePrototype? ~ W ~ "}" ~ W)?
 }
 FunctionalParameters = {
     "..."
   | (FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?
 }
-FunctionalParameter  = { IDENTIFIER ~ W ~ ":" ~ W ~ (LuaType | FunctionType) }
+TablePrototype = {
+    TableKey ~ W ~ ":" ~ W ~ TypeLua
+    ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ TypeLua)*
+    ~ W ~ ","?
+}
+TableKey = !{
+    ( DotDotDot | QuotedString | LuaIdentifier) ~ Optional?
+	| (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
+}
+DotDotDot = { "..." }
+FunctionalParameter  = { LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua) }
 
 FunctionReturnType =  {
-    ("(" ~ W ~ IDENTIFIER ~ W ~ ":" ~ W ~ LuaType ~ W ~ ("," ~ W ~ IDENTIFIER ~ W ~ ":" ~ W ~ LuaType ~ W)+ ~ ")") // (a: type, b: type)
-
-  | "(" ~ W ~ LuaType ~ W ~ ("," ~ W ~ LuaType ~ W)+ ~ ")" // (type, type)
-
-  | LuaType // single type
+    ("(" ~ W ~ LuaIdentifier ~ W ~ ":" ~ W ~ TypeLua ~ W ~ ("," ~ W ~ LuaIdentifier ~ W ~ ":" ~ W ~ TypeLua ~ W)+ ~ ")") // (a: type, b: type)
+    | "(" ~ W ~ TypeLua ~ W ~ ("," ~ W ~ TypeLua ~ W)+ ~ ")" // (type, type)
+    | TypeLua // single type
 }
 
 FunctionType = {
     "fun" ~ "(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ "->" ~ W ~ FunctionReturnType ~ W
 }
 
-lua_table         = @{
-    (IDENTIFIER ~ ("." ~ IDENTIFIER)*)? ~ class_or_instance ~ IDENTIFIER
+Optional = { "?" }
+lua_table = @{
+    Identifier ~ class_or_instance ~ LuaIdentifier
 }
-lua_identifier    = @{
-    IDENTIFIER ~ ("." ~ IDENTIFIER)*
+Identifier = @{
+    LuaIdentifier ~ ("." ~ LuaIdentifier)*
 }
-IDENTIFIER         = @{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
+LuaIdentifier = @{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 class_or_instance =  { (":" | ".") }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
 
-LuaTypeUnparsed = @{
-	lua_identifier
-    ~ ("[][][]" | "[][]" | "[]")?
-    ~ "?"?
+TypeLua = @{
+    LT
+    | "(" ~ W ~ LT ~ W ~ ("|" ~ W ~ LT ~ W)+ ~ ")"
 }
-LuaType = @{
-    (LuaCatsBuiltIn ~ "?")
-  | (LuaCatsBuiltIn ~ "[]")
-  | (LuaCatsBuiltIn ~ ("|" ~ LuaCatsBuiltIn)*)
+LT = _{
+    | ("fun(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ (":" ~ W ~ UnparsedType ~ Optional? ~ W)?)
+    | UnparsedType
+}
+UnparsedType = _{
+	Identifier
+    ~ ("[][][]" | "[][]" | "[]")?
 }
 
-LuaCatsBuiltIn = @{ "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
+QuotedString = _{ Quote ~ StringLiteral ~ Quote }
+Quote = _{ "\"" }
+StringLiteral = { QuotedChar* }
+QuotedChar = _{ !"\"" ~ ANY }
+
+
+// TypeLua = @{
+//     (LuaCatsBuiltIn ~ "?")
+//   | (LuaCatsBuiltIn ~ "[]")
+//   | (LuaCatsBuiltIn ~ ("|" ~ LuaCatsBuiltIn)*)
+// }
+
+// LuaCatsBuiltIn = { "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
 // LuaTypes_non_nil = @{ "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
+ConsType = { "boolean" | "string" | "number" | "integer" | "float" }
 W = _{ " "* }
+WHITE_LINE = _{ " "* ~ "\n" }
