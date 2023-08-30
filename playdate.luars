@@ -202,7 +202,7 @@ obj playdate.sound.track;
 obj playdate.sound.twopolefilter: playdate.sound.effect;
 obj playdate.timer = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
 obj playdate.ui.gridview = { needsDisplay:boolean, backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice), isScrolling:boolean, scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, easingAmplitude?: number, easingPeriod?: number, changeRowOnColumnWrap: boolean, scrollCellsToCenter: boolean, };
-let playdate.argv: string[];
+let playdate.argv: string[];
 let playdate.isSimulator: boolean;
 let playdate.metadata: playdate._metadata;
 let playdate.systeminfo: playdate._systeminfo;
