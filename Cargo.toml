@@ -19,3 +19,5 @@ serde = { version = "1.0.181", features = ["derive"] }
 # preserve_order uses "IndexMap" instead of "BTreeMap" preserving order after parsing.
 toml = { version = "0.7.6", features = ["preserve_order"] }
 indexmap = { version = "2.0.0", features = ["serde"] }
+pest = "2.7.3"
+pest_derive = "2.7.3"

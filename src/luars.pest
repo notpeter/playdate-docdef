@@ -8,7 +8,7 @@
     * Switch from "\n" to NEWLINE ("\n" | "\r\n" | "\r")
     * Unicode support (not today satan)
 */
-Document = _{ Statement* }
+Document = { Statement* }
 Statement = _{
     (
         WHITE_LINE
@@ -77,8 +77,6 @@ Identifier = @{
     LuaIdentifier ~ ("." ~ LuaIdentifier)*
 }
 LuaIdentifier = @{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
-
-class_or_instance =  { (":" | ".") }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
 
