@@ -46,8 +46,8 @@ Return = {
 }
 Object = {
     Obj ~ W ~ Identifier ~ W
-    ~ (":" ~ W ~ TypeLua ~ W)?
-    ~ ("=" ~ W ~ "{" ~ W ~ TablePrototype? ~ W ~ "}" ~ W)?
+    ~ (":" ~ W ~ TypeLua ~ W)
+    ~ ("=" ~ W ~ "{" ~ W ~ TablePrototype? ~ W ~ "}" ~ W)
 }
 FunctionalParameters = {
     VariableParameter
