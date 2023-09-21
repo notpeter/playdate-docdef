@@ -38,9 +38,9 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     // Apply types from Types.toml
     for (p, t) in params.iter_mut() {
         let p_an = p.replace("?", ""); // without "?" at the the end for optional
-        if PARAM_TYPES.contains_key(p_an.as_str()) {
-            *t = PARAM_TYPES.get(p_an.as_str()).unwrap().to_string();
-        }
+        // if PARAM_TYPES.contains_key(p_an.as_str()) {
+        //     *t = PARAM_TYPES.get(p_an.as_str()).unwrap().to_string();
+        // }
     }
 
     // if anchor == "f-easingFunctions" {
@@ -50,7 +50,8 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     // }
 
     let f = crate::stub::func_signature(&fname, &params);
-    let returns: IndexMap<String, String> = RETURN.get(&f).unwrap_or(&IndexMap::new()).clone();
+    // let returns: IndexMap<String, String> = RETURN.get(&f).unwrap_or(&IndexMap::new()).clone();
+    let returns = IndexMap::new();
 
     Stub {
         title: fname,
