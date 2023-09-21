@@ -14,7 +14,7 @@ enum LuarsStatement<'a> {
     Variable(&'a str, &'a str),
     Constant(&'a str, &'a str, isize),
     Function(&'a str, Vec<(&'a str, &'a str)>),
-    Object(&'a str, Vec<(&'a str, &'a str)>),
+    Object(&'a str, &'a str, Vec<(&'a str, &'a str)>),
 }
 
 
@@ -40,39 +40,19 @@ fn main() {
                 let cons_type: &str = iterator.next().unwrap().as_str();
                 let cons_value: isize = iterator.next().unwrap().as_str().parse::<isize>().unwrap();
                 LuarsStatement::Constant(cons_name, cons_type, cons_value)
-                // println!("{}", cons_name);
-                // unreachable!()
-                // for part in line.into_inner() {
-                //     let cons_name: &str;
-                //     let cons_type: &str;
-                //     let cons_value: &str;
-                //     match part.as_rule() {
-                //         Rule::Identifier => {
-                //             let cons_name = part.as_str();
-                //             println!("Name: {}", cons_name);
-                //         }
-                //         Rule::ConsType => {
-                //             let cons_type = part.as_str();
-                //             println!("Type: {}", cons_type);
-                //         }
-                //         Rule::IntegerValue => {
-                //             let cons_value = part.as_str();
-                //             println!("Value: {}", cons_value);
-                //         }
-                //         _ => unreachable!(),
-                //     }
-                //     LuarsStatement::Constant(cons_name, cons_type, cons_value)
-                // }
-                // unreachable!()
+            }
+            Rule::Object => {
+                let mut iterator = line.into_inner();
+                let obj_name: &str = iterator.next().unwrap().as_str();
+                let obj_type: &str = iterator.next().unwrap().as_str();
+                let mut obj_fields: Vec<(&str, &str)> = Vec::new();
+                LuarsStatement::Object(obj_name, obj_type, obj_fields)
             }
             // Rule::Variable => {
             //     println!("Variable!");
             // }
             // Rule::Function => {
             //     println!("Function!");
-            // }
-            // Rule::Object => {
-            //     println!("Object!");
             // }
             // _ => {
             //     println!("Rule: {:?}", record.as_rule(), record.);
