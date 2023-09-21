@@ -206,7 +206,7 @@ let playdate.isSimulator: boolean;
 let playdate.metadata: playdate._metadata;
 let playdate.systeminfo: playdate._systeminfo;
 let playdate.ui.crankIndicator.clockwise: boolean;
-fun json.decode(string: string): table;
+fun json.decode(str: string): table;
 fun json.decodeFile(file: playdate.file.file): table;
 fun json.decodeFile(path: string): table;
 fun json.encode(table: table): string;

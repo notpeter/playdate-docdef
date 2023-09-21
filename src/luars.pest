@@ -31,10 +31,11 @@ Constant = {
     Con ~ W ~ Identifier ~ W ~ ":" ~ W ~ ConsType ~ W ~ "=" ~ W ~ IntegerValue ~ W
 }
 Function = {
-    Fun ~ W ~ (
-        (Identifier ~ ":" ~ Identifier ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen)
-        | (Identifier ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen)
-    )
+    Fun ~ W
+    ~ FunctionName ~ W
+    ~ oParen ~ W
+    ~ FunctionalParameters? ~ W
+    ~ cParen
     ~ Return?
 }
 Return = {
@@ -49,6 +50,11 @@ Object = {
     ~ (":" ~ W ~ TypeLua ~ W)
     ~ ("=" ~ W ~ "{" ~ W ~ TablePrototype? ~ W ~ "}" ~ W)
 }
+FunctionName = {
+    (Identifier ~ ":" ~ Identifier)
+    | Identifier
+}
+
 FunctionalParameters = {
     VariableParameter
     | ((FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?)
@@ -66,7 +72,8 @@ TableKey = !{
 DotDotDot = { "..." }
 // these optionals and ... are overly friendly
 // foo(bar?: integer): (baz:integer?, boop:string?)
-FunctionalParameter  = { (LuaIdentifier | "...") ~ Optional? ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
+FunctionalParameter  = { ParameterIdentifier ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
+ParameterIdentifier = { ("..." | LuaIdentifier) ~ Optional? }
 VariableParameter = { DotDotDot ~ Optional? ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
 
 oParen = _{ "(" }
