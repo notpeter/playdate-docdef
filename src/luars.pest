@@ -83,7 +83,7 @@ Optional = { "?" }
 Identifier = @{
     LuaIdentifier ~ ("." ~ LuaIdentifier)*
 }
-LuaIdentifier = @{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
+LuaIdentifier = _{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
 

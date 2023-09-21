@@ -16,6 +16,43 @@ pub enum LuarsStatement<'a> {
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
 
+impl Display for LuarsStatement<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LuarsStatement::Module(name) => {
+                write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
+            }
+            LuarsStatement::Constant(name, cons_type, cons_integer) => {
+                write!(f, "---@type {}\n{} <const> = {}\n", cons_type, name, cons_integer)
+            }
+            LuarsStatement::Object(name, parent, tablekeys) => {
+                if String::from(*name) == "playdate._PowerStatus".to_string() {
+                    println!("---------------------------");
+                    println!("{} {} {:?}", name, parent, tablekeys);
+                }
+                let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
+                write!(f, "---@class {} : {}\n{}\n{} = {{}}\n", name, parent, fields, name)
+            }
+            LuarsStatement::Variable(name, var_type) => {
+                write!(f, "---@type {}\n{} = {{}}\n", var_type, name)
+            }
+            LuarsStatement::Function(name, params, returns) => {
+                if params.len() == 0 {
+                    let returns = &returns.iter().map(|(k, v)| format!("---@return {} {}", k, v)).collect::<Vec<String>>().join("\n").replace("  ", " ");
+                    write!(f, "{}\nfunction {}()\n", returns, name)
+                } else {
+                    let params_ = &params.iter().map(|(k, _)| format!("{}", k)).collect::<Vec<String>>().join(", ");
+                    let params = &params.iter().map(|(k, v)| format!("---@param {} {}", k, v)).collect::<Vec<String>>().join("\n");
+                    let returns = &returns.iter().map(|(k, v)| format!("---@return {} {}", k, v)).collect::<Vec<String>>().join("\n").replace("  ", " ");
+                    write!(f, "{}\n{}\nfunction {}({})\n", params, returns, name, params_)
+                }
+
+            }
+            // _ => { println!("{}", self); unreachable!() }
+        }
+    }
+}
+
 pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
     let document = LuarsParser::parse(Rule::Document, &unparsed_file)
     .expect("unsuccessful parse")
