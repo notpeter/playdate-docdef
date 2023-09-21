@@ -1,4 +1,4 @@
-use std::fs;
+use std::fmt::Display;
 
 use pest::Parser;
 use pest_derive::Parser;
@@ -41,12 +41,16 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
                 let obj_name: &str = iterator.next().unwrap().as_str();
                 let obj_type: &str = iterator.next().unwrap().as_str();
                 let mut obj_proto: Vec<(&str, &str)> = Vec::new();
-                for field in iterator {
-                    let mut field_iterator = field.into_inner();
-                    let field_name: &str = field_iterator.next().unwrap().as_str();
-                    let field_type: &str = field_iterator.next().unwrap().as_str();
-                    obj_proto.push((field_name, field_type));
+                if iterator.peek().is_some() && iterator.peek().unwrap().as_rule() == Rule::TablePrototype {
+                    let mut field = iterator.next().unwrap().into_inner();
+                    while field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::TableKey {
+                        let field_name: &str = field.next().unwrap().as_str();
+                        let field_type: &str = field.next().unwrap().as_str();
+                        //     println!("{:#?}", field);
+                        obj_proto.push((field_name, field_type));
+                    }
                 }
+                // println!("{} : {} = {:?}", obj_name, obj_type, obj_proto);
                 LuarsStatement::Object(obj_name, obj_type, obj_proto)
             }
             Rule::Variable => {
