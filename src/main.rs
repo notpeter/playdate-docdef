@@ -11,12 +11,11 @@ pub struct LuarsParser;
 #[derive(Debug)]
 enum LuarsStatement<'a> {
     Module(&'a str),
-    Variable(&'a str, &'a str),
     Constant(&'a str, &'a str, isize),
-    Function(&'a str, Vec<(&'a str, &'a str)>),
     Object(&'a str, &'a str, Vec<(&'a str, &'a str)>),
+    Variable(&'a str, &'a str),
+    Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
-
 
 
 fn main() {
@@ -45,19 +44,28 @@ fn main() {
                 let mut iterator = line.into_inner();
                 let obj_name: &str = iterator.next().unwrap().as_str();
                 let obj_type: &str = iterator.next().unwrap().as_str();
-                let mut obj_fields: Vec<(&str, &str)> = Vec::new();
-                LuarsStatement::Object(obj_name, obj_type, obj_fields)
+                let obj_proto: Vec<(&str, &str)> = Vec::new();
+                // Fixme: Actually parse fields.
+                // let proto = LuarsParser::parse(Rule::Document, iterator.next().unwrap().as_str());
+                LuarsStatement::Object(obj_name, obj_type, obj_proto)
             }
-            // Rule::Variable => {
-            //     println!("Variable!");
-            // }
-            // Rule::Function => {
-            //     println!("Function!");
-            // }
-            // _ => {
-            //     println!("Rule: {:?}", record.as_rule(), record.);
-            // }
-            _ => unreachable!(),
+            Rule::Variable => {
+                let mut iterator = line.into_inner();
+                let var_name: &str = iterator.next().unwrap().as_str();
+                let var_type: &str = iterator.next().unwrap().as_str();
+                LuarsStatement::Variable(var_name, var_type)
+            }
+            Rule::Function => {
+                let mut iterator = line.into_inner();
+                let func_name: &str = iterator.next().unwrap().as_str();
+                let func_params: Vec<(&str, &str)> = Vec::new();
+                let func_returns: Vec<(&str, &str)> = Vec::new();
+                LuarsStatement::Function(func_name, func_params, func_returns)
+            }
+            _ => {
+                println!("Rule: {:?}", line.as_rule());
+                unreachable!()
+            }
         };
         println!("{:?}", f);
     }
