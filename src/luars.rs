@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, cmp::Ordering};
 
 use pest::Parser;
 use pest_derive::Parser;
@@ -7,13 +7,59 @@ use pest_derive::Parser;
 #[grammar = "luars.pest"]
 pub struct LuarsParser;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
     Module(&'a str),
     Constant(&'a str, &'a str, isize),
     Object(&'a str, &'a str, Vec<(&'a str, &'a str)>),
     Variable(&'a str, &'a str),
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
+}
+
+#[derive(PartialEq, Eq, Hash, PartialOrd, Ord)]
+struct LuarsSortKey<'a> {
+    namespace: &'a str,
+    id: usize,
+    name: &'a str,
+}
+
+impl LuarsStatement<'_> {
+
+    fn id(&self) -> LuarsSortKey {
+        let (name, id) = match self {
+            LuarsStatement::Module(name) => (name, 1),
+            LuarsStatement::Constant(name, _, _) => (name, 2),
+            LuarsStatement::Variable(name, _) => (name, 2),
+            LuarsStatement::Object(name, _, _) => (name, 4),
+            LuarsStatement::Function(name, _, _) => {
+                if name.contains(":") {
+                    (name, 5) // instance methods
+                } else {
+                    (name, 3) // class methods
+                }
+            },
+        };
+        let (namespace, name) = if name.contains(":") {
+            name.split_at(name.rfind(":").unwrap())
+        } else if name.contains(".") {
+            name.split_at(name.rfind(".").unwrap())
+        } else {
+            ("", *name)
+        };
+        LuarsSortKey { namespace, id, name }
+    }
+}
+
+impl PartialOrd for LuarsStatement<'_> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.id().partial_cmp(&other.id())
+    }
+}
+
+impl Ord for LuarsStatement<'_> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.id().cmp(&other.id())
+    }
 }
 
 impl Display for LuarsStatement<'_> {
@@ -126,5 +172,6 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
         //println!("{:?}", f);
         statements.push(f);
     }
+    statements.sort();
     statements
 }
