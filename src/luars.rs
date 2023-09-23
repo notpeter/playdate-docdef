@@ -69,15 +69,11 @@ impl Display for LuarsStatement<'_> {
                 write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
             }
             LuarsStatement::Constant(name, cons_type, cons_integer) => {
-                write!(f, "---@type {}\n{} <const> = {}\n", cons_type, name, cons_integer)
+                write!(f, "---@type {}\n{} = {}  ", cons_type, name, cons_integer)
             }
             LuarsStatement::Object(name, parent, tablekeys) => {
-                if String::from(*name) == "playdate._PowerStatus".to_string() {
-                    println!("---------------------------");
-                    println!("{} {} {:?}", name, parent, tablekeys);
-                }
                 let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
-                write!(f, "---@class {} : {}\n{}\n{} = {{}}\n", name, parent, fields, name)
+                write!(f, "---@class {} : {}\n{}\n", name, parent, fields)
             }
             LuarsStatement::Variable(name, var_type) => {
                 write!(f, "---@type {}\n{} = {{}}\n", var_type, name)
@@ -87,10 +83,17 @@ impl Display for LuarsStatement<'_> {
                     let returns = &returns.iter().map(|(k, v)| format!("---@return {} {}", k, v)).collect::<Vec<String>>().join("\n").replace("  ", " ");
                     write!(f, "{}\nfunction {}()\n", returns, name)
                 } else {
-                    let params_ = &params.iter().map(|(k, _)| format!("{}", k)).collect::<Vec<String>>().join(", ");
-                    let params = &params.iter().map(|(k, v)| format!("---@param {} {}", k, v)).collect::<Vec<String>>().join("\n");
+                    let mut params_: Vec<&str> = Vec::new();
+                    let mut params_out: Vec<String> = Vec::new();
+                    for  (k, v) in params.iter() {
+                        params_.push(k);
+                        let p = format!("---@param {} {}", k, v);
+                        params_out.push(p);
+                    }
+                    // let params_ = &params.iter().map(|(k, _)| format!("{}", k)).collect::<Vec<String>>().join(", ");
+                    // let params = &params.iter().map(|(k, v)| format!("---@param {} {}", k, v)).collect::<Vec<String>>().join("\n");
                     let returns = &returns.iter().map(|(k, v)| format!("---@return {} {}", k, v)).collect::<Vec<String>>().join("\n").replace("  ", " ");
-                    write!(f, "{}\n{}\nfunction {}({})\n", params, returns, name, params_)
+                    write!(f, "{}\n{}\nfunction {}({})\n", params_out.join("\n"), returns, name, params_.join(", "))
                 }
 
             }
