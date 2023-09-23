@@ -69,7 +69,7 @@ impl Display for LuarsStatement<'_> {
                 write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
             }
             LuarsStatement::Constant(name, cons_type, cons_integer) => {
-                write!(f, "---@type {}\n{} = {}  ", cons_type, name, cons_integer)
+                write!(f, "---@type {}\n{} = {}", cons_type, name, cons_integer)
             }
             LuarsStatement::Object(name, parent, tablekeys) => {
                 let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
@@ -86,7 +86,8 @@ impl Display for LuarsStatement<'_> {
                     let mut params_: Vec<&str> = Vec::new();
                     let mut params_out: Vec<String> = Vec::new();
                     for  (k, v) in params.iter() {
-                        params_.push(k);
+                        let k_noq = k.trim_matches('?');
+                        params_.push(k_noq);
                         let p = format!("---@param {} {}", k, v);
                         params_out.push(p);
                     }
