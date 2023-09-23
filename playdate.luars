@@ -9,7 +9,7 @@ mod playdate = {
     kButtonB: integer = 16,
     kButtonA: integer = 32,
     metadate: _Metadata,
-    systeminfo: _Systeminfo,
+    systeminfo: _SystemInfo,
 };
 mod playdate.datastore;
 mod playdate.display;
@@ -156,12 +156,18 @@ mod playdate.ui.crankIndicator = {
 };
 mod playdate.ui.gridview;
 mod table;
+obj _CollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: playdate.geometry.vector2D, normal: playdate.geometry.vector2D, touch: playdate.geometry.point, spriteRect: playdate.geometry.rect, otherRect: playdate.geometry.rect, bounce?: playdate.geometry.point, slide?: playdate.geometry.point, };
+obj _CollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: playdate.geometry.point, exitPoint: playdate.geometry.point, t1: number, t2: number, };
+obj _ControlSignalEvent: table = { step: integer, value: number, interpolate?: boolean, };
 obj _DateTime: table = { year: integer, month: integer, day: integer, weekday: integer, hour: integer, minute: integer, second: integer, millisecond: integer, };
-obj _PowerStatus: table = { charging: boolean, USB: boolean, screws: boolean, };
-obj _SystemStats: table = { " kernel": number, " game": number, " audio": number, };
+obj _InputHandler: table = { AButtonDown?: fun(), AButtonHeld?: fun(), AButtonUp?: fun(), BButtonDown?: fun(), BButtonHeld?: fun(), BButtonUp?: fun(), downButtonDown?: fun(), downButtonUp?: fun(), leftButtonDown?: fun(), leftButtonUp?: fun(), rightButtonDown?: fun(), rightButtonUp?: fun(), upButtonDown?: fun(), upButtonUp?: fun(), cranked?: fun(change:number, acceleratedChange:number)};
 obj _Metadata: table = { name: string, author: string, description: string, bundleID: string, version: string, buildNumber: integer, pdxversion: integer, imagePath?: string, launchSoundPath?: string, contentWarning?: string, contentWarning2?: string, ...: string, };
-obj _Systeminfo: table = { buildtime: string, commit: string, pdxcompatversion: integer, pdxversion: integer, };
 obj _ModTime: table = { year: integer, month: integer, day: integer, hour: integer, minute: integer, second: integer, };
+obj _PowerStatus: table = { charging: boolean, USB: boolean, screws: boolean, };
+obj _SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
+obj _SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
+obj _SystemInfo: table = { buildtime: string, commit: string, pdxcompatversion: integer, pdxversion: integer, };
+obj _SystemStats: table = { " kernel": number, " game": number, " audio": number, };
 obj playdate.file.file: table = {};
 obj playdate.frameTimer: table = { delay: integer, discardOnCompletion: boolean, duration: integer, frame: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any, };
 obj playdate.geometry.affineTransform: table = {};
@@ -180,18 +186,14 @@ obj playdate.graphics.image: table = { x: integer, y: integer, width: integer, h
 obj playdate.graphics.imagetable: table = {};
 obj playdate.graphics.nineSlice: table = { innerRect: playdate.geometry.rect, minWidth: integer, minHeight: integer, };
 obj playdate.graphics.sprite: table = { x: integer, y: integer, width: integer, height: integer, collisionResponse?: (_CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite): _CollisionType?), update?: fun():nil, };
-obj _CollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: playdate.geometry.vector2D, normal: playdate.geometry.vector2D, touch: playdate.geometry.point, spriteRect: playdate.geometry.rect, otherRect: playdate.geometry.rect, bounce?: playdate.geometry.point, slide?: playdate.geometry.point, };
-obj _CollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: playdate.geometry.point, exitPoint: playdate.geometry.point, t1: number, t2: number, };
 obj playdate.graphics.tilemap: table = {};
 obj playdate.graphics.video: table = {};
-obj _InputHandler: table = { AButtonDown?: fun(), AButtonHeld?: fun(), AButtonUp?: fun(), BButtonDown?: fun(), BButtonHeld?: fun(), BButtonUp?: fun(), downButtonDown?: fun(), downButtonUp?: fun(), leftButtonDown?: fun(), leftButtonUp?: fun(), rightButtonDown?: fun(), rightButtonUp?: fun(), upButtonDown?: fun(), upButtonUp?: fun(), cranked?: fun(change:number, acceleratedChange:number)};
 obj playdate.keyboard: table = { text: string, };
 obj playdate.menu.item: table = { title: string, value: (integer|boolean|string)};
 obj playdate.pathfinder.graph: table = {};
 obj playdate.pathfinder.node: table = { x: integer, y: integer, id: integer, };
 obj playdate.sound.bitcrusher: playdate.sound.effect = {};
 obj playdate.sound.channel: table = {};
-obj _ControlSignalEvent: table = { step: integer, value: number, interpolate?: boolean, };
 obj playdate.sound.controlsignal: playdate.sound.signal = { events: _ControlSignalEvent };
 obj playdate.sound.delayline: playdate.sound.effect = {};
 obj playdate.sound.delaylinetap: playdate.sound.source = {};
@@ -209,8 +211,6 @@ obj playdate.sound.sequence: table = {};
 obj playdate.sound.signal: table = {};
 obj playdate.sound.source: table = {};
 obj playdate.sound.synth: playdate.sound.source = {};
-obj _SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
-obj _SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
 obj playdate.sound.track: table = {};
 obj playdate.sound.twopolefilter: playdate.sound.effect = {};
 obj playdate.timer: table = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
