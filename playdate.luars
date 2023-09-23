@@ -1,10 +1,32 @@
 mod json;
+mod playdate = {
+    argv: string[],
+    isSimulator: boolean,
+    kButtonLeft: integer = 1,
+    kButtonRight: integer = 2,
+    kButtonUp: integer = 4,
+    kButtonDown: integer = 8,
+    kButtonB: integer = 16,
+    kButtonA: integer = 32,
+    metadate: _Metadata,
+    systeminfo: _Systeminfo,
+};
 mod playdate.datastore;
 mod playdate.display;
 mod playdate.easingFunctions;
 mod playdate.file.file;
-mod playdate.file;
+mod playdate.file = {
+    kFileRead: integer = 3,
+    kFileAppend: integer = 8,
+    kFileWrite: integer = 4,
+};
 mod playdate.frameTimer;
+mod playdate.geometry = {
+    kUnflipped: integer = 0,
+    kFlippedX: integer = 1,
+    kFlippedY: integer = 2,
+    kFlippedXY: integer = 3,
+};
 mod playdate.geometry.affineTransform;
 mod playdate.geometry.arc;
 mod playdate.geometry.lineSegment;
@@ -13,29 +35,96 @@ mod playdate.geometry.polygon;
 mod playdate.geometry.rect;
 mod playdate.geometry.size;
 mod playdate.geometry.vector2D;
-mod playdate.geometry;
+mod playdate.graphics = {
+    kColorBlack: integer = 0,
+    kColorWhite: integer = 1,
+    kColorClear: integer = 2,
+    kColorXOR: integer = 3,
+    kDrawModeCopy: integer = 0,
+    kDrawModeWhiteTransparent: integer = 1,
+    kDrawModeBlackTransparent: integer = 2,
+    kDrawModeFillWhite: integer = 3,
+    kDrawModeFillBlack: integer = 4,
+    kDrawModeXOR: integer = 5,
+    kDrawModeNXOR: integer = 6,
+    kDrawModeInverted: integer = 7,
+    kImageUnflipped: integer = 0,
+    kImageFlippedX: integer = 1,
+    kImageFlippedY: integer = 2,
+    kImageFlippedXY: integer = 3,
+    kPolygonFillNonZero: integer = 0,
+    kPolygonFillEvenOdd: integer = 1,
+    kStrokeCentered: integer = 0,
+    kStrokeInside: integer = 1,
+    kStrokeOutside: integer = 2
+};
+mod playdate.graphics.animation;
 mod playdate.graphics.animation.blinker;
 mod playdate.graphics.animation.loop;
-mod playdate.graphics.animation;
 mod playdate.graphics.animator;
-mod playdate.graphics.font;
-mod playdate.graphics.image;
+mod playdate.graphics.font = {
+    kLanguageEnglish: integer = 0,
+    kLanguageJapanese: integer = 1,
+    kVariantNormal: integer = 0,
+    kVariantBold: integer = 1,
+    kVariantItalic: integer = 2,
+};
+mod playdate.graphics.image = {
+    kDitherTypeNone: integer = 0,
+    kDitherTypeDiagonalLine: integer = 1,
+    kDitherTypeHorizontalLine: integer = 3,
+    kDitherTypeVerticalLine: integer = 2,
+    kDitherTypeScreen: integer = 4,
+    kDitherTypeBayer2x2: integer = 5,
+    kDitherTypeBayer4x4: integer = 6,
+    kDitherTypeBayer8x8: integer = 7,
+    kDitherTypeFloydSteinberg: integer = 8,
+    kDitherTypeBurkes: integer = 9,
+    kDitherTypeAtkinson: integer = 10,
+};
 mod playdate.graphics.imagetable;
 mod playdate.graphics.nineSlice;
-mod playdate.graphics.sprite;
+mod playdate.graphics.sprite = {
+    kCollisionTypeSlide: integer = 0,
+    kCollisionTypeFreeze: integer = 1,
+    kCollisionTypeOverlap: integer = 2,
+    kCollisionTypeBounce: integer = 3,
+};
 mod playdate.graphics.tilemap;
 mod playdate.graphics.video;
-mod playdate.graphics;
 mod playdate.inputHandlers;
-mod playdate.inputHandlers;
-mod playdate.keyboard;
+mod playdate.keyboard = {
+    kCapitalizationNormal: integer = 1,
+    kCapitalizationSentences: integer = 3,
+    kCapitalizationWords: integer = 2,
+};
 mod playdate.math;
-mod playdate.menu.item;
 mod playdate.menu;
+mod playdate.menu.item;
+mod playdate.pathfinder;
 mod playdate.pathfinder.graph;
 mod playdate.pathfinder.node;
-mod playdate.pathfinder;
 mod playdate.simulator;
+mod playdate.sound = {
+    kFormat8bitMono: integer = 0,
+    kFormat8bitStereo: integer = 1,
+    kFormat16bitMono: integer = 2,
+    kFormat16bitStereo: integer = 3,
+    kLFOSquare: integer = 0,
+    kLFOTriangle: integer = 1,
+    kLFOSine: integer = 2,
+    kLFOSampleAndHold: integer = 3,
+    kLFOSawtoothUp: integer = 4,
+    kLFOSawtoothDown: integer = 5,
+    kWaveSquare: integer = 0,
+    kWaveTriangle: integer = 1,
+    kWaveSine: integer = 2,
+    kWaveNoise: integer = 3,
+    kWaveSawtooth: integer = 4,
+    kWavePOPhase: integer = 5,
+    kWavePODigital: integer = 6,
+    kWavePOVosim: integer = 7,
+};
 mod playdate.sound.bitcrusher;
 mod playdate.sound.channel;
 mod playdate.sound.controlsignal;
@@ -59,89 +148,14 @@ mod playdate.sound.source;
 mod playdate.sound.synth;
 mod playdate.sound.track;
 mod playdate.sound.twopolefilter;
-mod playdate.sound;
 mod playdate.string;
 mod playdate.timer;
-mod playdate.ui.crankIndicator;
-mod playdate.ui.gridview;
 mod playdate.ui;
-mod playdate;
+mod playdate.ui.crankIndicator = {
+    clockwise: boolean,
+};
+mod playdate.ui.gridview;
 mod table;
-con playdate.file.kFileAppend: integer = 8;
-con playdate.file.kFileRead: integer = 3;
-con playdate.file.kFileWrite: integer = 4;
-con playdate.geometry.kFlippedX: integer = 1;
-con playdate.geometry.kFlippedXY: integer = 3;
-con playdate.geometry.kFlippedY: integer = 2;
-con playdate.geometry.kUnflipped: integer = 0;
-con playdate.graphics.font.kLanguageEnglish: integer = 0;
-con playdate.graphics.font.kLanguageJapanese: integer = 1;
-con playdate.graphics.font.kVariantBold: integer = 1;
-con playdate.graphics.font.kVariantItalic: integer = 2;
-con playdate.graphics.font.kVariantNormal: integer = 0;
-con playdate.graphics.image.kDitherTypeAtkinson: integer = 10;
-con playdate.graphics.image.kDitherTypeBayer2x2: integer = 5;
-con playdate.graphics.image.kDitherTypeBayer4x4: integer = 6;
-con playdate.graphics.image.kDitherTypeBayer8x8: integer = 7;
-con playdate.graphics.image.kDitherTypeBurkes: integer = 9;
-con playdate.graphics.image.kDitherTypeDiagonalLine: integer = 1;
-con playdate.graphics.image.kDitherTypeFloydSteinberg: integer = 8;
-con playdate.graphics.image.kDitherTypeHorizontalLine: integer = 3;
-con playdate.graphics.image.kDitherTypeNone: integer = 0;
-con playdate.graphics.image.kDitherTypeScreen: integer = 4;
-con playdate.graphics.image.kDitherTypeVerticalLine: integer = 2;
-con playdate.graphics.kColorBlack: integer = 0;
-con playdate.graphics.kColorClear: integer = 2;
-con playdate.graphics.kColorWhite: integer = 1;
-con playdate.graphics.kColorXOR: integer = 3;
-con playdate.graphics.kDrawModeBlackTransparent: integer = 2;
-con playdate.graphics.kDrawModeCopy: integer = 0;
-con playdate.graphics.kDrawModeFillBlack: integer = 4;
-con playdate.graphics.kDrawModeFillWhite: integer = 3;
-con playdate.graphics.kDrawModeInverted: integer = 7;
-con playdate.graphics.kDrawModeNXOR: integer = 6;
-con playdate.graphics.kDrawModeWhiteTransparent: integer = 1;
-con playdate.graphics.kDrawModeXOR: integer = 5;
-con playdate.graphics.kImageFlippedX: integer = 1;
-con playdate.graphics.kImageFlippedXY: integer = 3;
-con playdate.graphics.kImageFlippedY: integer = 2;
-con playdate.graphics.kImageUnflipped: integer = 0;
-con playdate.graphics.kPolygonFillEvenOdd: integer = 1;
-con playdate.graphics.kPolygonFillNonZero: integer = 0;
-con playdate.graphics.kStrokeCentered: integer = 0;
-con playdate.graphics.kStrokeInside: integer = 1;
-con playdate.graphics.kStrokeOutside: integer = 2;
-con playdate.graphics.sprite.kCollisionTypeBounce: integer = 3;
-con playdate.graphics.sprite.kCollisionTypeFreeze: integer = 1;
-con playdate.graphics.sprite.kCollisionTypeOverlap: integer = 2;
-con playdate.graphics.sprite.kCollisionTypeSlide: integer = 0;
-con playdate.kButtonA: integer = 32;
-con playdate.kButtonB: integer = 16;
-con playdate.kButtonDown: integer = 8;
-con playdate.kButtonLeft: integer = 1;
-con playdate.kButtonRight: integer = 2;
-con playdate.kButtonUp: integer = 4;
-con playdate.keyboard.kCapitalizationNormal: integer = 1;
-con playdate.keyboard.kCapitalizationSentences: integer = 3;
-con playdate.keyboard.kCapitalizationWords: integer = 2;
-con playdate.sound.kFormat16bitMono: integer = 2;
-con playdate.sound.kFormat16bitStereo: integer = 3;
-con playdate.sound.kFormat8bitMono: integer = 0;
-con playdate.sound.kFormat8bitStereo: integer = 1;
-con playdate.sound.kLFOSampleAndHold: integer = 3;
-con playdate.sound.kLFOSawtoothDown: integer = 5;
-con playdate.sound.kLFOSawtoothUp: integer = 4;
-con playdate.sound.kLFOSine: integer = 2;
-con playdate.sound.kLFOSquare: integer = 0;
-con playdate.sound.kLFOTriangle: integer = 1;
-con playdate.sound.kWaveNoise: integer = 3;
-con playdate.sound.kWavePODigital: integer = 6;
-con playdate.sound.kWavePOPhase: integer = 5;
-con playdate.sound.kWavePOVosim: integer = 7;
-con playdate.sound.kWaveSawtooth: integer = 4;
-con playdate.sound.kWaveSine: integer = 2;
-con playdate.sound.kWaveSquare: integer = 0;
-con playdate.sound.kWaveTriangle: integer = 1;
 obj _DateTime: table = { year: integer, month: integer, day: integer, weekday: integer, hour: integer, minute: integer, second: integer, millisecond: integer, };
 obj _PowerStatus: table = { charging: boolean, USB: boolean, screws: boolean, };
 obj _SystemStats: table = { " kernel": number, " game": number, " audio": number, };
@@ -201,11 +215,6 @@ obj playdate.sound.track: table = {};
 obj playdate.sound.twopolefilter: playdate.sound.effect = {};
 obj playdate.timer: table = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
 obj playdate.ui.gridview: table = { needsDisplay:boolean, backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice), isScrolling:boolean, scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, easingAmplitude?: number, easingPeriod?: number, changeRowOnColumnWrap: boolean, scrollCellsToCenter: boolean, };
-let playdate.argv: string[];
-let playdate.isSimulator: boolean;
-let playdate.metadata: _Metadata;
-let playdate.systeminfo: _Systeminfo;
-let playdate.ui.crankIndicator.clockwise: boolean;
 fun json.decode(str: string): table;
 fun json.decodeFile(file: playdate.file.file): table;
 fun json.decodeFile(path: string): table;

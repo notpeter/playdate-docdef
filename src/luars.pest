@@ -12,23 +12,16 @@ Document = { Statement* }
 Statement = _{
     (
         WHITE_LINE
-        | ((Module | Function | Constant | Variable | Object) ~ ";" ~ W ~ "\n"?)
+        | ((Module | Function | Object) ~ ";" ~ W ~ "\n"?)
     )
 }
 Mod = _{ "mod " }
-Let = _{ "let " }
-Con = _{ "con " }
 Fun = _{ "fun " }
 Obj = _{ "obj " }
 
 Module = {
     Mod ~ W ~ Identifier ~ W
-}
-Variable = {
-	Let ~ W ~ Identifier ~ W ~ ":" ~ W ~ TypeLua ~ W
-}
-Constant = {
-    Con ~ W ~ Identifier ~ W ~ ":" ~ W ~ ConsType ~ W ~ "=" ~ W ~ IntegerValue ~ W
+    ~ ("=" ~ W ~ "{" ~ W ~ TableConstants ~ W ~ "}" ~ W)?
 }
 Function = {
     Fun ~ W
@@ -37,6 +30,11 @@ Function = {
     ~ FunctionalParameters? ~ W
     ~ cParen
     ~ Return?
+}
+TableConstants = {
+    TableKey ~ W ~ ":" ~ W ~ TypeLua ~ W ~ ("=" ~ W ~ IntegerValue ~ W)?
+    ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ TypeLua ~ W ~ ("=" ~ W ~ IntegerValue ~W)?)*
+    ~ W ~ ","?
 }
 Return = {
     (
@@ -115,6 +113,6 @@ QuotedChar = _{ !"\"" ~ ANY }
 
 // LuaCatsBuiltIn = { "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
 // LuaTypes_non_nil = @{ "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
-ConsType = { "boolean" | "string" | "number" | "integer" | "float" }
-W = _{ " "* }
+// ConsType = { "boolean" | "string" | "number" | "integer" | "float" }
+W = _{ (" " | "\n" )* }
 WHITE_LINE = _{ " "* ~ "\n" }
