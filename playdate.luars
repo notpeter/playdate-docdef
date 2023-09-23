@@ -1,6 +1,13 @@
-class json;
+tbl json;
+fun json.decode(str: string): table;
+fun json.decodeFile(file: File): table;
+fun json.decodeFile(path: string): table;
+fun json.encode(table: table): string;
+fun json.encodePretty(table: table): string;
+fun json.encodeToFile(file: File, pretty: boolean, table: table): nil;
+fun json.encodeToFile(path: string, pretty?: boolean, table?: table): nil;
 
-class playdate = {
+tbl playdate = {
     argv: string[],
     isSimulator: boolean,
     kButtonLeft: integer = 1,
@@ -12,410 +19,13 @@ class playdate = {
     metadate: Metadata,
     systeminfo: SystemInfo,
 };
-class DateTime = {
-    year: integer,
-    month: integer,
-    day: integer,
-    weekday: integer,
-    hour: integer,
-    minute: integer,
-    second: integer,
-    millisecond: integer,
-};
-class Metadata = {
-    name: string,
-    author: string,
-    description: string,
-    bundleID: string,
-    version: string,
-    buildNumber: integer,
-    pdxversion: integer,
-    imagePath?: string,
-    launchSoundPath?: string,
-    contentWarning?: string,
-    contentWarning2?: string,
-    ...: string,
-};
-class ModTime = {
-    year: integer,
-    month: integer,
-    day: integer,
-    hour: integer,
-    minute: integer,
-    second: integer,
-};
-class PowerStatus = {
-    charging: boolean,
-    USB: boolean,
-    screws: boolean,
-};
-class SystemInfo = {
-    buildtime: string,
-    commit: string,
-    pdxcompatversion: integer,
-    pdxversion: integer,
-};
-class SystemStats = {
-    " kernel": number,
-    " game": number,
-    " audio": number,
-};
-
-class playdate.datastore;
-
-class playdate.display;
-
-class playdate.easingFunctions;
-
-class playdate.file = {
-    kFileRead: integer = 3,
-    kFileAppend: integer = 8,
-    kFileWrite: integer = 4,
-};
-
-class playdate.file.file;
-class File: playdate.file.file = {};
-fun File:close(): nil;
-fun File:flush(): nil;
-fun File:read(numberOfBytes: integer): (numberOfBytes: integer, error: string?);
-fun File:readline(): string;
-fun File:seek(offset: integer): nil;
-fun File:tell(): integer;
-fun File:write(string: string): (bytes_written: integer, error: string?);
-
-class playdate.frameTimer;
-class FrameTimer: playdate.frameTimer = {
-    delay: integer,
-    discardOnCompletion: boolean,
-    duration: integer,
-    frame: integer,
-    repeats: boolean,
-    reverses: boolean,
-    timerEndedArgs: any,
-};
-fun FrameTimer:pause(): nil;
-fun FrameTimer:remove(): nil;
-fun FrameTimer:reset(): nil;
-fun FrameTimer:start(): nil;
-
-class playdate.geometry = {
-    kUnflipped: integer = 0,
-    kFlippedX: integer = 1,
-    kFlippedY: integer = 2,
-    kFlippedXY: integer = 3,
-};
-
-class playdate.geometry.affineTransform;
-class AffineTransform: playdate.geometry.affineTransform;
-fun AffineTransform:__mul(p: Point): Point;
-fun AffineTransform:__mul(t: AffineTransform): AffineTransform;
-fun AffineTransform:__mul(v: Vector2D): Vector2D;
-fun AffineTransform:concat(af: AffineTransform): nil;
-fun AffineTransform:copy(): AffineTransform;
-fun AffineTransform:invert(): nil;
-fun AffineTransform:reset(): nil;
-fun AffineTransform:rotate(angle: number, point?: Point): nil;
-fun AffineTransform:rotate(angle: number, x?: integer, y?: integer): nil;
-fun AffineTransform:rotatedBy(angle: number, point?: Point): AffineTransform;
-fun AffineTransform:rotatedBy(angle: number, x?: integer, y?: integer): AffineTransform;
-fun AffineTransform:scale(sx: number, sy?: number): nil;
-fun AffineTransform:scaledBy(sx: number, sy?: number): AffineTransform;
-fun AffineTransform:skew(sx: number, sy: number): nil;
-fun AffineTransform:skewedBy(sx: number, sy: number): AffineTransform;
-fun AffineTransform:transformAABB(r: Rect): nil;
-fun AffineTransform:transformLineSegment(ls: LineSegment): nil;
-fun AffineTransform:transformPoint(p: Point): nil;
-fun AffineTransform:transformPolygon(p: Polygon): nil;
-fun AffineTransform:transformXY(x: integer, y: integer): (x: number, y: number);
-fun AffineTransform:transformedAABB(r: Rect): Rect;
-fun AffineTransform:transformedLineSegment(ls: LineSegment): LineSegment;
-fun AffineTransform:transformedPoint(p: Point): Point;
-fun AffineTransform:transformedPolygon(p: Polygon): Polygon;
-fun AffineTransform:translate(dx: integer, dy: integer): nil;
-fun AffineTransform:translatedBy(dx: integer, dy: integer): AffineTransform;
-
-class playdate.geometry.arc;
-class Arc: playdate.geometry.arc = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
-fun Arc:copy(): Arc;
-fun Arc:isClockwise(): boolean;
-fun Arc:length(): number;
-fun Arc:pointOnArc(distance: integer, extend: boolean): Point;
-fun Arc:setIsClockwise(flag: boolean): nil;
-
-class playdate.geometry.lineSegment;
-class LineSegment: playdate.geometry.lineSegment = {
-    x1: integer,
-    y1: integer,
-    x2: integer,
-    y2: integer,
-};
-fun LineSegment:closestPointOnLineToPoint(p: Point): Point;
-fun LineSegment:copy(): LineSegment;
-fun LineSegment:intersectsLineSegment(ls: LineSegment): (intersects: boolean, intersection: Point?);
-fun LineSegment:intersectsPolygon(poly: Polygon): (intersects: boolean, intersectionPoints: Point[]?);
-fun LineSegment:intersectsRect(rect: Rect): (intersects: boolean, intersectionPoints: Point[]?);
-fun LineSegment:length(): number;
-fun LineSegment:midPoint(): Point;
-fun LineSegment:offset(dx: integer, dy: integer): nil;
-fun LineSegment:offsetBy(dx: integer, dy: integer): LineSegment;
-fun LineSegment:pointOnLine(distance: integer, extend?: boolean): Point;
-fun LineSegment:segmentVector(): Vector2D;
-fun LineSegment:unpack(): (x1: number, y1: number, x2: number, y2: number);
-
-
-class playdate.geometry.point;
-class Point: playdate.geometry.point = { x: number, y: number, };
-
-class playdate.geometry.polygon;
-class Polygon: playdate.geometry.polygon = {};
-
-class playdate.geometry.rect;
-class Rect: playdate.geometry.rect = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    top: number,
-    bottom: number,
-    left: number,
-    right: number,
-    size: Size,
-};
-
-class playdate.geometry.size;
-fun playdate.geometry.size.new(width: integer, height: integer): Size;
-class Size: playdate.geometry.size = { width: number, height: number, };
-fun Size:copy(): Size;
-fun Size:unpack(): (width: number, height: number);
-
-class playdate.geometry.vector2D;
-class Vector2D: playdate.geometry.vector2D = { dx: number, dy: number, };
-
-class playdate.graphics = {
-    kColorBlack: integer = 0,
-    kColorWhite: integer = 1,
-    kColorClear: integer = 2,
-    kColorXOR: integer = 3,
-    kDrawModeCopy: integer = 0,
-    kDrawModeWhiteTransparent: integer = 1,
-    kDrawModeBlackTransparent: integer = 2,
-    kDrawModeFillWhite: integer = 3,
-    kDrawModeFillBlack: integer = 4,
-    kDrawModeXOR: integer = 5,
-    kDrawModeNXOR: integer = 6,
-    kDrawModeInverted: integer = 7,
-    kImageUnflipped: integer = 0,
-    kImageFlippedX: integer = 1,
-    kImageFlippedY: integer = 2,
-    kImageFlippedXY: integer = 3,
-    kPolygonFillNonZero: integer = 0,
-    kPolygonFillEvenOdd: integer = 1,
-    kStrokeCentered: integer = 0,
-    kStrokeInside: integer = 1,
-    kStrokeOutside: integer = 2
-};
-
-class playdate.graphics.animation;
-
-class playdate.graphics.animation.blinker;
-class AnimationBlinker: playdate.graphics.animation.blinker = { onDuration: integer, offDuration: integer, loop: boolean, cycles: integer, default: boolean, counter: integer, on: boolean, running: boolean, };
-
-class playdate.graphics.animation.loop;
-class AnimationLoop: playdate.graphics.animation.loop = { delay: number, startFrame: integer, endFrame: integer, frame: integer, step: integer, shouldLoop: boolean, paused: boolean, };
-
-class playdate.graphics.animator;
-class Animator: playdate.graphics.animator = { repeatCount: integer, reverses: integer, easingAmplitude: number, easingPeriod: number, s?: number, a?: number, p?: number, };
-
-class playdate.graphics.font = {
-    kLanguageEnglish: integer = 0,
-    kLanguageJapanese: integer = 1,
-    kVariantNormal: integer = 0,
-    kVariantBold: integer = 1,
-    kVariantItalic: integer = 2,
-};
-class Font: playdate.graphics.font = {};
-
-class playdate.graphics.image = {
-    kDitherTypeNone: integer = 0,
-    kDitherTypeDiagonalLine: integer = 1,
-    kDitherTypeHorizontalLine: integer = 3,
-    kDitherTypeVerticalLine: integer = 2,
-    kDitherTypeScreen: integer = 4,
-    kDitherTypeBayer2x2: integer = 5,
-    kDitherTypeBayer4x4: integer = 6,
-    kDitherTypeBayer8x8: integer = 7,
-    kDitherTypeFloydSteinberg: integer = 8,
-    kDitherTypeBurkes: integer = 9,
-    kDitherTypeAtkinson: integer = 10,
-};
-class Image: playdate.graphics.image = { x: integer, y: integer, width: integer, height: integer, };
-
-class playdate.graphics.imagetable;
-class ImageTable: playdate.graphics.imagetable = {};
-
-class playdate.graphics.nineSlice;
-class NineSlice: playdate.graphics.nineSlice = { innerRect: Rect, minWidth: integer, minHeight: integer, };
-
-class playdate.graphics.sprite = {
-    kCollisionTypeSlide: integer = 0,
-    kCollisionTypeFreeze: integer = 1,
-    kCollisionTypeOverlap: integer = 2,
-    kCollisionTypeBounce: integer = 3,
-};
-class Sprite: playdate.graphics.sprite = { x: integer, y: integer, width: integer, height: integer, collisionResponse?: (_CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite): _CollisionType?), update?: fun():nil, };
-class SpriteCollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: Vector2D, normal: Vector2D, touch: Point, spriteRect: Rect, otherRect: Rect, bounce?: Point, slide?: Point, };
-class SpriteCollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: Point, exitPoint: Point, t1: number, t2: number, };
-
-class playdate.graphics.tilemap;
-class TileMap: playdate.graphics.tilemap = {};
-
-class playdate.graphics.video;
-class Video: playdate.graphics.video = {};
-
-class playdate.inputHandlers;
-class InputHandler: table = { AButtonDown?: fun(), AButtonHeld?: fun(), AButtonUp?: fun(), BButtonDown?: fun(), BButtonHeld?: fun(), BButtonUp?: fun(), downButtonDown?: fun(), downButtonUp?: fun(), leftButtonDown?: fun(), leftButtonUp?: fun(), rightButtonDown?: fun(), rightButtonUp?: fun(), upButtonDown?: fun(), upButtonUp?: fun(), cranked?: fun(change:number, acceleratedChange:number)};
-
-class playdate.keyboard = {
-    kCapitalizationNormal: integer = 1,
-    kCapitalizationSentences: integer = 3,
-    kCapitalizationWords: integer = 2,
-};
-class Keyboard: playdate.keyboard = { text: string, };
-
-class playdate.math;
-
-class playdate.menu;
-
-class playdate.menu.item;
-class MenuItem: playdate.menu.item = { title: string, value: (integer|boolean|string)};
-
-class playdate.pathfinder;
-
-class playdate.pathfinder.graph;
-class PathFinderGraph: playdate.pathfinder.graph = {};
-
-class playdate.pathfinder.node;
-class PathFinderNode: playdate.pathfinder.node = { x: integer, y: integer, id: integer, };
-
-class playdate.simulator;
-class playdate.sound = {
-    kFormat8bitMono: integer = 0,
-    kFormat8bitStereo: integer = 1,
-    kFormat16bitMono: integer = 2,
-    kFormat16bitStereo: integer = 3,
-    kLFOSquare: integer = 0,
-    kLFOTriangle: integer = 1,
-    kLFOSine: integer = 2,
-    kLFOSampleAndHold: integer = 3,
-    kLFOSawtoothUp: integer = 4,
-    kLFOSawtoothDown: integer = 5,
-    kWaveSquare: integer = 0,
-    kWaveTriangle: integer = 1,
-    kWaveSine: integer = 2,
-    kWaveNoise: integer = 3,
-    kWaveSawtooth: integer = 4,
-    kWavePOPhase: integer = 5,
-    kWavePODigital: integer = 6,
-    kWavePOVosim: integer = 7,
-};
-class playdate.sound.effect;
-
-class playdate.sound.bitcrusher: playdate.sound.effect;
-class SoundEffectBitCrusher: playdate.sound.bitcrusher = {};
-
-class playdate.sound.onepolefilter: playdate.sound.effect;
-class SoundEffectOnePoleFilter: playdate.sound.onepolefilter = {};
-
-class SoundEffectOverDrive: playdate.sound.overdrive = {};
-class playdate.sound.overdrive: playdate.sound.effect;
-
-class playdate.sound.ringmod: playdate.sound.effect;
-class SoundEffectRingMod: playdate.sound.ringmod = {};
-
-class playdate.sound.delayline: playdate.sound.effect;
-class SoundEffectDelayLine: playdate.sound.delayline = {};
-
-class playdate.sound.twopolefilter: playdate.sound.effect;
-class SoundEffectTwoPoleFilter: playdate.sound.twopolefilter = {};
-
-class playdate.sound.channel;
-class SoundChannel: playdate.sound.channel = {};
-
-class playdate.sound.signal;
-
-class playdate.sound.controlsignal: playdate.sound.signal;
-class ControlSignal: playdate.sound.controlsignal = { events: SoundControlEvent };
-class ControlEvent: table = { step: integer, value: number, interpolate?: boolean, };
-
-class playdate.sound.envelope: playdate.sound.signal;
-class Envelope: playdate.sound.envelope = {};
-
-class playdate.sound.lfo: playdate.sound.signal
-class SoundLFO: playdate.sound.lfo = {};
-
-class playdate.sound.source;
-
-class playdate.sound.delaylinetap: playdate.sound.source;
-class DelayLineTap: playdate.sound.delaylinetap = {};
-
-class playdate.sound.fileplayer: playdate.sound.source;
-class FilePlayer: playdate.sound.fileplayer = {};
-
-class playdate.sound.instrument: playdate.sound.source;
-class Instrument: playdate.sound.instrument = {};
-
-class playdate.sound.sampleplayer: playdate.sound.source;
-class SamplePlayer: playdate.sound.sampleplayer = {};
-
-class playdate.sound.synth: playdate.sound.source;
-class Synth: playdate.sound.synth = {};
-
-class playdate.sound.micinput;
-
-class playdate.sound.sample;
-class playdate.sound.sample: table = {};
-
-class playdate.sound.sequence;
-class playdate.sound.sequence: table = {};
-
-class playdate.sound.signal: table = {};
-
-class playdate.sound.track: table = {};
-
-class playdate.sound.track;
-class SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
-class SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
-
-class playdate.string;
-
-class playdate.timer;
-class Timer: playdate.timer = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
-
-class playdate.ui;
-
-class playdate.ui.crankIndicator = {
-    clockwise: boolean,
-};
-
-class playdate.ui.gridview;
-class UIGridView: playdate.ui.gridview = { needsDisplay:boolean, backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice), isScrolling:boolean, scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, easingAmplitude?: number, easingPeriod?: number, changeRowOnColumnWrap: boolean, scrollCellsToCenter: boolean, };
-
-class table;
-
-fun json.decode(str: string): table;
-fun json.decodeFile(file: playdate.file.file): table;
-fun json.decodeFile(path: string): table;
-fun json.encode(table: table): string;
-fun json.encodePretty(table: table): string;
-fun json.encodeToFile(file: playdate.file.file, pretty: boolean, table: table): nil;
-fun json.encodeToFile(path: string, pretty?: boolean, table?: table): nil;
 fun playdate.AButtonDown(): nil;
 fun playdate.AButtonHeld(): nil;
 fun playdate.AButtonUp(): nil;
 fun playdate.BButtonDown(): nil;
 fun playdate.BButtonHeld(): nil;
 fun playdate.BButtonUp(): nil;
-fun playdate.GMTTimeFromEpoch(seconds: integer, milliseconds: integer): _DateTime;
+fun playdate.GMTTimeFromEpoch(seconds: integer, milliseconds: integer): DateTime;
 fun playdate.accelerometerIsRunning(): boolean;
 fun playdate.apiVersion(): (api_version: integer, runtime_minimum_api_version: integer);
 fun playdate.buttonIsPressed(button: integer): boolean;
@@ -425,15 +35,73 @@ fun playdate.clearConsole(): nil;
 fun playdate.crankDocked(): nil;
 fun playdate.crankUndocked(): nil;
 fun playdate.cranked(change: number, acceleratedChange: number): nil;
-fun playdate.datastore.delete(filename?: string): boolean;
-fun playdate.datastore.read(filename?: string): table?;
-fun playdate.datastore.readImage(path: string): playdate.graphics.image?;
-fun playdate.datastore.write(table: table, filename?: string, pretty: boolean): nil;
-fun playdate.datastore.writeImage(image: playdate.graphics.image, path: string): nil;
 fun playdate.debugDraw(): nil;
 fun playdate.deviceDidUnlock(): nil;
 fun playdate.deviceWillLock(): nil;
 fun playdate.deviceWillSleep(): nil;
+fun playdate.downButtonDown(): nil;
+fun playdate.downButtonUp(): nil;
+fun playdate.drawFPS(x: integer, y: integer): nil;
+fun playdate.epochFromGMTTime(time: DateTime): (seconds: integer, milliseconds: integer);
+fun playdate.epochFromTime(time: DateTime): (seconds: integer, milliseconds: integer);
+fun playdate.gameWillPause(): nil;
+fun playdate.gameWillResume(): nil;
+fun playdate.gameWillTerminate(): nil;
+fun playdate.getBatteryPercentage(): integer;
+fun playdate.getBatteryVoltage(): number;
+fun playdate.getButtonState(): (current: integer, pressed: integer, released: integer);
+fun playdate.getCrankChange(): number;
+fun playdate.getCrankPosition(): number;
+fun playdate.getCrankTicks(ticksPerRevolution: number): number;
+fun playdate.getCurrentTimeMilliseconds(): integer;
+fun playdate.getElapsedTime(): number;
+fun playdate.getFPS(): number;
+fun playdate.getFlipped(): boolean;
+fun playdate.getGMTTime(): DateTime;
+fun playdate.getPowerStatus(): PowerStatus;
+fun playdate.getReduceFlashing(): boolean;
+fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
+fun playdate.getStats(): SystemStats;
+fun playdate.getSystemLanguage(): integer;
+fun playdate.getSystemMenu(): Menu;
+fun playdate.getTime(): DateTime;
+fun playdate.isCrankDocked(): boolean;
+fun playdate.keyPressed(key: string): nil;
+fun playdate.keyReleased(key: string): nil;
+fun playdate.leftButtonDown(): nil;
+fun playdate.leftButtonUp(): nil;
+fun playdate.readAccelerometer(): (x: number, y: number, z: number);
+fun playdate.resetElapsedTime(): nil;
+fun playdate.rightButtonDown(): nil;
+fun playdate.rightButtonUp(): nil;
+fun playdate.setAutoLockDisabled(disable: boolean): nil;
+fun playdate.setCollectsGarbage(flag: boolean): nil;
+fun playdate.setCrankSoundsDisabled(disable: boolean): nil;
+fun playdate.setDebugDrawColor(r: number, g: number, b: number, a: number): nil;
+fun playdate.setGCScaling(min: number, max: number): nil;
+fun playdate.setMenuImage(image: Image, xOffset?: integer): nil;
+fun playdate.setMinimumGCTime(ms: integer): nil;
+fun playdate.setNewlinePrinted(flag: boolean): nil;
+fun playdate.setStatsInterval(seconds: number): nil;
+fun playdate.shouldDisplay24HourTime(): boolean;
+fun playdate.start(): nil;
+fun playdate.startAccelerometer(): nil;
+fun playdate.stop(): nil;
+fun playdate.stopAccelerometer(): nil;
+fun playdate.timeFromEpoch(seconds: integer, milliseconds: integer): DateTime;
+fun playdate.upButtonDown(): nil;
+fun playdate.upButtonUp(): nil;
+fun playdate.update(): nil;
+fun playdate.wait(milliseconds: integer): nil;
+
+tbl playdate.datastore;
+fun playdate.datastore.delete(filename?: string): boolean;
+fun playdate.datastore.read(filename?: string): table?;
+fun playdate.datastore.readImage(path: string): Image?;
+fun playdate.datastore.write(table: table, filename?: string, pretty: boolean): nil;
+fun playdate.datastore.writeImage(image: Image, path: string): nil;
+
+tbl playdate.display;
 fun playdate.display.flush(): nil;
 fun playdate.display.getHeight(): integer;
 fun playdate.display.getInverted(): boolean;
@@ -451,9 +119,8 @@ fun playdate.display.setMosaic(x: integer, y: integer): nil;
 fun playdate.display.setOffset(x: integer, y: integer): nil;
 fun playdate.display.setRefreshRate(rate: number): nil;
 fun playdate.display.setScale(scale: integer): nil;
-fun playdate.downButtonDown(): nil;
-fun playdate.downButtonUp(): nil;
-fun playdate.drawFPS(x: integer, y: integer): nil;
+
+tbl playdate.easingFunctions;
 fun playdate.easingFunctions.inBack(t: number, b: number, c: number, d: number, s?: number): number;
 fun playdate.easingFunctions.inBounce(t: number, b: number, c: number, d: number): number;
 fun playdate.easingFunctions.inCirc(t: number, b: number, c: number, d: number): number;
@@ -495,8 +162,12 @@ fun playdate.easingFunctions.outQuad(t: number, b: number, c: number, d: number)
 fun playdate.easingFunctions.outQuart(t: number, b: number, c: number, d: number): number;
 fun playdate.easingFunctions.outQuint(t: number, b: number, c: number, d: number): number;
 fun playdate.easingFunctions.outSine(t: number, b: number, c: number, d: number): number;
-fun playdate.epochFromGMTTime(time: _DateTime): (seconds: integer, milliseconds: integer);
-fun playdate.epochFromTime(time: table): (seconds: integer, milliseconds: integer);
+
+tbl playdate.file = {
+    kFileRead: integer = 3,
+    kFileAppend: integer = 8,
+    kFileWrite: integer = 4,
+};
 fun playdate.file.delete(path: string, recursive?: boolean): boolean;
 fun playdate.file.exists(path: string): boolean;
 fun playdate.file.getSize(path: string): integer;
@@ -505,141 +176,244 @@ fun playdate.file.isdir(path: string): boolean;
 fun playdate.file.listFiles(path: string, showhidden?: boolean): string[];
 fun playdate.file.load(path: string, env?: table): function;
 fun playdate.file.mkdir(path: string): nil;
-fun playdate.file.modtime(path: string): _ModTime;
-fun playdate.file.open(path: string, mode?: integer): (file: playdate.file.file?, error: string?);
+fun playdate.file.modtime(path: string): ModTime;
+fun playdate.file.open(path: string, mode?: integer): (file: File?, error: string?);
 fun playdate.file.rename(path: string, newPath: string): boolean;
 fun playdate.file.run(path: string, env?: table): nil;
-fun playdate.frameTimer.allTimers(): playdate.frameTimer[];
-fun playdate.frameTimer.new(duration: integer, callback: function, ...: any): playdate.frameTimer;
-fun playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: function): playdate.frameTimer;
+
+tbl playdate.file.file;
+tbl File: playdate.file.file = {};
+fun File:close(): nil;
+fun File:flush(): nil;
+fun File:read(numberOfBytes: integer): (numberOfBytes: integer, error: string?);
+fun File:readline(): string;
+fun File:seek(offset: integer): nil;
+fun File:tell(): integer;
+fun File:write(string: string): (bytes_written: integer, error: string?);
+
+tbl playdate.frameTimer;
+fun playdate.frameTimer.allTimers(): FrameTimer[];
+fun playdate.frameTimer.new(duration: integer, callback: function, ...: any): FrameTimer;
+fun playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: function): FrameTimer;
 fun playdate.frameTimer.performAfterDelay(delay: integer, callback: function, ...: any): nil;
 fun playdate.frameTimer.updateTimers(): nil;
-fun playdate.gameWillPause(): nil;
-fun playdate.gameWillResume(): nil;
-fun playdate.gameWillTerminate(): nil;
+tbl FrameTimer: playdate.frameTimer = {
+    delay: integer,
+    discardOnCompletion: boolean,
+    duration: integer,
+    frame: integer,
+    repeats: boolean,
+    reverses: boolean,
+    timerEndedArgs: any,
+};
+fun FrameTimer:pause(): nil;
+fun FrameTimer:remove(): nil;
+fun FrameTimer:reset(): nil;
+fun FrameTimer:start(): nil;
+
+tbl playdate.geometry = {
+    kUnflipped: integer = 0,
+    kFlippedX: integer = 1,
+    kFlippedY: integer = 2,
+    kFlippedXY: integer = 3,
+};
+fun playdate.geometry.distanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
+fun playdate.geometry.squaredDistanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
+
+tbl playdate.geometry.affineTransform;
 fun playdate.geometry.affineTransform.new(): AffineTransform;
 fun playdate.geometry.affineTransform.new(m11: number, m12: number, m21: number, m22: number, tx: number, ty: number): AffineTransform;
+tbl AffineTransform: playdate.geometry.affineTransform;
+fun AffineTransform:__mul(p: Point): Point;
+fun AffineTransform:__mul(t: AffineTransform): AffineTransform;
+fun AffineTransform:__mul(v: Vector2D): Vector2D;
+fun AffineTransform:concat(af: AffineTransform): nil;
+fun AffineTransform:copy(): AffineTransform;
+fun AffineTransform:invert(): nil;
+fun AffineTransform:reset(): nil;
+fun AffineTransform:rotate(angle: number, point?: Point): nil;
+fun AffineTransform:rotate(angle: number, x?: integer, y?: integer): nil;
+fun AffineTransform:rotatedBy(angle: number, point?: Point): AffineTransform;
+fun AffineTransform:rotatedBy(angle: number, x?: integer, y?: integer): AffineTransform;
+fun AffineTransform:scale(sx: number, sy?: number): nil;
+fun AffineTransform:scaledBy(sx: number, sy?: number): AffineTransform;
+fun AffineTransform:skew(sx: number, sy: number): nil;
+fun AffineTransform:skewedBy(sx: number, sy: number): AffineTransform;
+fun AffineTransform:transformAABB(r: Rect): nil;
+fun AffineTransform:transformLineSegment(ls: LineSegment): nil;
+fun AffineTransform:transformPoint(p: Point): nil;
+fun AffineTransform:transformPolygon(p: Polygon): nil;
+fun AffineTransform:transformXY(x: integer, y: integer): (x: number, y: number);
+fun AffineTransform:transformedAABB(r: Rect): Rect;
+fun AffineTransform:transformedLineSegment(ls: LineSegment): LineSegment;
+fun AffineTransform:transformedPoint(p: Point): Point;
+fun AffineTransform:transformedPolygon(p: Polygon): Polygon;
+fun AffineTransform:translate(dx: integer, dy: integer): nil;
+fun AffineTransform:translatedBy(dx: integer, dy: integer): AffineTransform;
+
+tbl playdate.geometry.arc;
 fun playdate.geometry.arc.new(x: integer, y: integer, radius: number, startAngle: number, endAngle: number, direction?: boolean): Arc;
-fun playdate.geometry.distanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
+tbl Arc: playdate.geometry.arc = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
+fun Arc:copy(): Arc;
+fun Arc:isClockwise(): boolean;
+fun Arc:length(): number;
+fun Arc:pointOnArc(distance: integer, extend: boolean): Point;
+fun Arc:setIsClockwise(flag: boolean): nil;
+
+tbl playdate.geometry.lineSegment;
 fun playdate.geometry.lineSegment.fast_intersection(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer, x4: integer, y4: integer): (intersects: boolean, x: number?, y: number?);
 fun playdate.geometry.lineSegment.new(x1: integer, y1: integer, x2: integer, y2: integer): LineSegment;
+tbl LineSegment: playdate.geometry.lineSegment = {
+    x1: integer,
+    y1: integer,
+    x2: integer,
+    y2: integer,
+};
+fun LineSegment:closestPointOnLineToPoint(p: Point): Point;
+fun LineSegment:copy(): LineSegment;
+fun LineSegment:intersectsLineSegment(ls: LineSegment): (intersects: boolean, intersection: Point?);
+fun LineSegment:intersectsPolygon(poly: Polygon): (intersects: boolean, intersectionPoints: Point[]?);
+fun LineSegment:intersectsRect(rect: Rect): (intersects: boolean, intersectionPoints: Point[]?);
+fun LineSegment:length(): number;
+fun LineSegment:midPoint(): Point;
+fun LineSegment:offset(dx: integer, dy: integer): nil;
+fun LineSegment:offsetBy(dx: integer, dy: integer): LineSegment;
+fun LineSegment:pointOnLine(distance: integer, extend?: boolean): Point;
+fun LineSegment:segmentVector(): Vector2D;
+fun LineSegment:unpack(): (x1: number, y1: number, x2: number, y2: number);
+
+tbl playdate.geometry.point;
 fun playdate.geometry.point.new(x: integer, y: integer): Point;
-fun playdate.geometry.point:__add(v: Vector2D): Point;
-fun playdate.geometry.point:__concat(p2: Point): LineSegment;
-fun playdate.geometry.point:__mul(t: AffineTransform): Point;
-fun playdate.geometry.point:__sub(p2: Point): Vector2D;
-fun playdate.geometry.point:copy(): Point;
-fun playdate.geometry.point:distanceToPoint(p: Point): number;
-fun playdate.geometry.point:offset(dx: integer, dy: integer): nil;
-fun playdate.geometry.point:offsetBy(dx: integer, dy: integer): Point;
-fun playdate.geometry.point:squaredDistanceToPoint(p: Point): number;
-fun playdate.geometry.point:unpack(): (x: number, y: number);
+tbl Point: playdate.geometry.point = {
+    x: number,
+    y: number,
+};
+fun Point:__add(v: Vector2D): Point;
+fun Point:__concat(p2: Point): LineSegment;
+fun Point:__mul(t: AffineTransform): Point;
+fun Point:__sub(p2: Point): Vector2D;
+fun Point:copy(): Point;
+fun Point:distanceToPoint(p: Point): number;
+fun Point:offset(dx: integer, dy: integer): nil;
+fun Point:offsetBy(dx: integer, dy: integer): Point;
+fun Point:squaredDistanceToPoint(p: Point): number;
+fun Point:unpack(): (x: number, y: number);
+
+tbl playdate.geometry.polygon;
 fun playdate.geometry.polygon.new(numberOfVertices: integer): Polygon;
 fun playdate.geometry.polygon.new(p1: Point, p2: Point, ...: integer): Polygon;
 fun playdate.geometry.polygon.new(x1: integer, y1: integer, x2: integer, y2: integer, ...: integer): Polygon;
-fun playdate.geometry.polygon:__mul(t: AffineTransform): Polygon;
-fun playdate.geometry.polygon:close(): nil;
-fun playdate.geometry.polygon:containsPoint(p: Point, fillRule?: integer): boolean;
-fun playdate.geometry.polygon:containsPoint(x: integer, y: integer, fillRule?: integer): boolean;
-fun playdate.geometry.polygon:copy(): Polygon;
-fun playdate.geometry.polygon:count(): integer;
-fun playdate.geometry.polygon:getBounds(): (x: number, y: number, width: number, height: number);
-fun playdate.geometry.polygon:getBoundsRect(): Rect;
-fun playdate.geometry.polygon:getPointAt(n: integer): Point;
-fun playdate.geometry.polygon:intersects(p: Point): boolean;
-fun playdate.geometry.polygon:isClosed(): boolean;
-fun playdate.geometry.polygon:length(): number;
-fun playdate.geometry.polygon:pointOnPolygon(distance: integer, extend?: boolean): Point;
-fun playdate.geometry.polygon:setPointAt(n: integer, x: integer, y: integer): nil;
-fun playdate.geometry.polygon:translate(dx: integer, dy: integer): nil;
+tbl Polygon: playdate.geometry.polygon = {};
+fun Polygon:__mul(t: AffineTransform): Polygon;
+fun Polygon:close(): nil;
+fun Polygon:containsPoint(p: Point, fillRule?: integer): boolean;
+fun Polygon:containsPoint(x: integer, y: integer, fillRule?: integer): boolean;
+fun Polygon:copy(): Polygon;
+fun Polygon:count(): integer;
+fun Polygon:getBounds(): (x: number, y: number, width: number, height: number);
+fun Polygon:getBoundsRect(): Rect;
+fun Polygon:getPointAt(n: integer): Point;
+fun Polygon:intersects(p: Point): boolean;
+fun Polygon:isClosed(): boolean;
+fun Polygon:length(): number;
+fun Polygon:pointOnPolygon(distance: integer, extend?: boolean): Point;
+fun Polygon:setPointAt(n: integer, x: integer, y: integer): nil;
+fun Polygon:translate(dx: integer, dy: integer): nil;
+
+tbl playdate.geometry.rect;
 fun playdate.geometry.rect.fast_intersection(x1: integer, y1: integer, w1: integer, h1: integer, x2: integer, y2: integer, w2: integer, h2: integer): (x: number, y: number, width: number, height: number);
 fun playdate.geometry.rect.fast_union(x1: integer, y1: integer, w1: integer, h1: integer, x2: integer, y2: integer, w2: integer, h2: integer): (x: number, y: number, width: number, height: number);
 fun playdate.geometry.rect.new(x: integer, y: integer, width: integer, height: integer): Rect;
-fun playdate.geometry.rect:centerPoint(): Point;
-fun playdate.geometry.rect:containsPoint(p: Point): boolean;
-fun playdate.geometry.rect:containsPoint(x: integer, y: integer): boolean;
-fun playdate.geometry.rect:containsRect(r2: Rect): boolean;
-fun playdate.geometry.rect:containsRect(x: integer, y: integer, width: integer, height: integer): boolean;
-fun playdate.geometry.rect:copy(): Rect;
-fun playdate.geometry.rect:flipRelativeToRect(r2: Rect, flip: (integer|string)): nil;
-fun playdate.geometry.rect:inset(dx: integer, dy: integer): nil;
-fun playdate.geometry.rect:insetBy(dx: integer, dy: integer): Rect;
-fun playdate.geometry.rect:intersection(r2: Rect): Rect;
-fun playdate.geometry.rect:intersects(r2: Rect): boolean;
-fun playdate.geometry.rect:isEmpty(): boolean;
-fun playdate.geometry.rect:isEqual(r2: Rect): boolean;
-fun playdate.geometry.rect:offset(dx: integer, dy: integer): nil;
-fun playdate.geometry.rect:offsetBy(dx: integer, dy: integer): Rect;
-fun playdate.geometry.rect:toPolygon(): Polygon;
-fun playdate.geometry.rect:union(r2: Rect): Rect;
-fun playdate.geometry.rect:unpack(): (x: number, y: number, width: number, height: number);
-fun playdate.geometry.squaredDistanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
+tbl Rect: playdate.geometry.rect = {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    top: number,
+    bottom: number,
+    left: number,
+    right: number,
+    size: Size,
+};
+fun Rect:centerPoint(): Point;
+fun Rect:containsPoint(p: Point): boolean;
+fun Rect:containsPoint(x: integer, y: integer): boolean;
+fun Rect:containsRect(r2: Rect): boolean;
+fun Rect:containsRect(x: integer, y: integer, width: integer, height: integer): boolean;
+fun Rect:copy(): Rect;
+fun Rect:flipRelativeToRect(r2: Rect, flip: (integer|string)): nil;
+fun Rect:inset(dx: integer, dy: integer): nil;
+fun Rect:insetBy(dx: integer, dy: integer): Rect;
+fun Rect:intersection(r2: Rect): Rect;
+fun Rect:intersects(r2: Rect): boolean;
+fun Rect:isEmpty(): boolean;
+fun Rect:isEqual(r2: Rect): boolean;
+fun Rect:offset(dx: integer, dy: integer): nil;
+fun Rect:offsetBy(dx: integer, dy: integer): Rect;
+fun Rect:toPolygon(): Polygon;
+fun Rect:union(r2: Rect): Rect;
+fun Rect:unpack(): (x: number, y: number, width: number, height: number);
+
+tbl playdate.geometry.size;
+fun playdate.geometry.size.new(width: integer, height: integer): Size;
+tbl Size: playdate.geometry.size = { width: number, height: number, };
+fun Size:copy(): Size;
+fun Size:unpack(): (width: number, height: number);
+
+tbl playdate.geometry.vector2D;
 fun playdate.geometry.vector2D.new(x: integer, y: integer): Vector2D;
 fun playdate.geometry.vector2D.newPolar(length: number, angle: number): Vector2D;
-fun playdate.geometry.vector2D:__add(v2: Vector2D): Vector2D;
-fun playdate.geometry.vector2D:__div(s: number): Vector2D;
-fun playdate.geometry.vector2D:__mul(s: number): Vector2D;
-fun playdate.geometry.vector2D:__mul(t: AffineTransform): Vector2D;
-fun playdate.geometry.vector2D:__mul(v2: Vector2D): Vector2D;
-fun playdate.geometry.vector2D:__sub(v2: Vector2D): Vector2D;
-fun playdate.geometry.vector2D:__unm(): Vector2D;
-fun playdate.geometry.vector2D:addVector(v: Vector2D): nil;
-fun playdate.geometry.vector2D:angleBetween(v: Vector2D): number;
-fun playdate.geometry.vector2D:copy(): Vector2D;
-fun playdate.geometry.vector2D:dotProduct(v: Vector2D): number;
-fun playdate.geometry.vector2D:leftNormal(): Vector2D;
-fun playdate.geometry.vector2D:magnitude(): number;
-fun playdate.geometry.vector2D:magnitudeSquared(): number;
-fun playdate.geometry.vector2D:normalize(): nil;
-fun playdate.geometry.vector2D:normalized(): Vector2D;
-fun playdate.geometry.vector2D:projectAlong(v: Vector2D): nil;
-fun playdate.geometry.vector2D:projectedAlong(v: Vector2D): Vector2D;
-fun playdate.geometry.vector2D:rightNormal(): Vector2D;
-fun playdate.geometry.vector2D:scale(s: number): nil;
-fun playdate.geometry.vector2D:scaledBy(s: number): Vector2D;
-fun playdate.geometry.vector2D:unpack(): (x: number, y: number);
-fun playdate.getBatteryPercentage(): integer;
-fun playdate.getBatteryVoltage(): number;
-fun playdate.getButtonState(): (current: integer, pressed: integer, released: integer);
-fun playdate.getCrankChange(): number;
-fun playdate.getCrankPosition(): number;
-fun playdate.getCrankTicks(ticksPerRevolution: number): number;
-fun playdate.getCurrentTimeMilliseconds(): integer;
-fun playdate.getElapsedTime(): number;
-fun playdate.getFPS(): number;
-fun playdate.getFlipped(): boolean;
-fun playdate.getGMTTime(): _DateTime;
-fun playdate.getPowerStatus(): _PowerStatus;
-fun playdate.getReduceFlashing(): boolean;
-fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
-fun playdate.getStats(): _SystemStats;
-fun playdate.getSystemLanguage(): integer;
-fun playdate.getSystemMenu(): playdate.menu;
-fun playdate.getTime(): _DateTime;
-fun playdate.graphics.animation.blinker.new(onDuration?: integer, offDuration?: integer, loop?: boolean, cycles?: integer, default?: boolean): playdate.graphics.animation.blinker;
-fun playdate.graphics.animation.blinker.stopAll(): nil;
-fun playdate.graphics.animation.blinker.updateAll(): nil;
-fun playdate.graphics.animation.blinker:remove(): nil;
-fun playdate.graphics.animation.blinker:start(onDuration?: integer, offDuration?: integer, loop?: boolean, cycles?: integer, default?: boolean): nil;
-fun playdate.graphics.animation.blinker:startLoop(): nil;
-fun playdate.graphics.animation.blinker:stop(): nil;
-fun playdate.graphics.animation.blinker:update(): nil;
-fun playdate.graphics.animation.loop.new(delay?: number, imageTable?: playdate.graphics.imagetable, shouldLoop?: boolean): playdate.graphics.animation.loop;
-fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (integer|string)): nil;
-fun playdate.graphics.animation.loop:image(): playdate.graphics.image;
-fun playdate.graphics.animation.loop:isValid(): boolean;
-fun playdate.graphics.animation.loop:setImageTable(imageTable: playdate.graphics.imagetable): nil;
-fun playdate.graphics.animator.new(duration: integer, arc: Arc, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator.new(duration: integer, lineSegment: LineSegment, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator.new(duration: integer, polygon: Polygon, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator.new(duration: integer, startValue: (number|playdate.geometry.point), endValue: (number|playdate.geometry.point), easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFunctions: function[], startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator:currentValue(): (number|playdate.geometry.point);
-fun playdate.graphics.animator:ended(): boolean;
-fun playdate.graphics.animator:progress(): number;
-fun playdate.graphics.animator:reset(duration?: integer): nil;
-fun playdate.graphics.animator:valueAtTime(time: number): (number|playdate.geometry.point);
-fun playdate.graphics.checkAlphaCollision(image1: playdate.graphics.image, x1: integer, y1: integer, flip1: integer, image2: playdate.graphics.image, x2: integer, y2: integer, flip2: integer): boolean;
+tbl Vector2D: playdate.geometry.vector2D = {
+    dx: number,
+    dy: number,
+};
+fun Vector2D:__add(v2: Vector2D): Vector2D;
+fun Vector2D:__div(s: number): Vector2D;
+fun Vector2D:__mul(s: number): Vector2D;
+fun Vector2D:__mul(t: AffineTransform): Vector2D;
+fun Vector2D:__mul(v2: Vector2D): Vector2D;
+fun Vector2D:__sub(v2: Vector2D): Vector2D;
+fun Vector2D:__unm(): Vector2D;
+fun Vector2D:addVector(v: Vector2D): nil;
+fun Vector2D:angleBetween(v: Vector2D): number;
+fun Vector2D:copy(): Vector2D;
+fun Vector2D:dotProduct(v: Vector2D): number;
+fun Vector2D:leftNormal(): Vector2D;
+fun Vector2D:magnitude(): number;
+fun Vector2D:magnitudeSquared(): number;
+fun Vector2D:normalize(): nil;
+fun Vector2D:normalized(): Vector2D;
+fun Vector2D:projectAlong(v: Vector2D): nil;
+fun Vector2D:projectedAlong(v: Vector2D): Vector2D;
+fun Vector2D:rightNormal(): Vector2D;
+fun Vector2D:scale(s: number): nil;
+fun Vector2D:scaledBy(s: number): Vector2D;
+fun Vector2D:unpack(): (x: number, y: number);
+
+tbl playdate.graphics = {
+    kColorBlack: integer = 0,
+    kColorWhite: integer = 1,
+    kColorClear: integer = 2,
+    kColorXOR: integer = 3,
+    kDrawModeCopy: integer = 0,
+    kDrawModeWhiteTransparent: integer = 1,
+    kDrawModeBlackTransparent: integer = 2,
+    kDrawModeFillWhite: integer = 3,
+    kDrawModeFillBlack: integer = 4,
+    kDrawModeXOR: integer = 5,
+    kDrawModeNXOR: integer = 6,
+    kDrawModeInverted: integer = 7,
+    kImageUnflipped: integer = 0,
+    kImageFlippedX: integer = 1,
+    kImageFlippedY: integer = 2,
+    kImageFlippedXY: integer = 3,
+    kPolygonFillNonZero: integer = 0,
+    kPolygonFillEvenOdd: integer = 1,
+    kStrokeCentered: integer = 0,
+    kStrokeInside: integer = 1,
+    kStrokeOutside: integer = 2
+};
+fun playdate.graphics.checkAlphaCollision(image1: Image, x1: integer, y1: integer, flip1: integer, image2: Image, x2: integer, y2: integer, flip2: integer): boolean;
 fun playdate.graphics.clear(color?: integer): nil;
 fun playdate.graphics.clearClipRect(): nil;
 fun playdate.graphics.clearStencil(): nil;
@@ -655,7 +429,7 @@ fun playdate.graphics.drawEllipseInRect(x: integer, y: integer, width: integer, 
 fun playdate.graphics.drawLine(x1: integer, y1: integer, x2: integer, y2: integer): nil;
 fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
-fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string)): nil;
+fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: Font, language?: (integer|string)): nil;
 fun playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string)): nil;
 fun playdate.graphics.drawPixel(x: integer, y: integer): nil;
 fun playdate.graphics.drawPolygon(p: Polygon): nil;
@@ -665,9 +439,9 @@ fun playdate.graphics.drawRect(x: integer, y: integer, w: integer, h: integer): 
 fun playdate.graphics.drawRoundRect(r: Rect, radius: number): nil;
 fun playdate.graphics.drawRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.drawSineWave(startX: integer, startY: integer, endX: integer, endY: integer, startAmplitude: integer, endAmplitude: integer, period: integer, phaseShift?: integer): nil;
-fun playdate.graphics.drawText(text: string, x: integer, y: integer, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer): nil;
+fun playdate.graphics.drawText(text: string, x: integer, y: integer, fontFamily?: table<integer, Font>, leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer): nil;
-fun playdate.graphics.drawTextInRect(text: string, rect: Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): nil;
+fun playdate.graphics.drawTextInRect(text: string, rect: Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: Font): nil;
 fun playdate.graphics.drawTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): nil;
 fun playdate.graphics.drawTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
 fun playdate.graphics.fillCircleAtPoint(p: Point, radius: number): nil;
@@ -683,42 +457,152 @@ fun playdate.graphics.fillRect(x: integer, y: integer, width: integer, height: i
 fun playdate.graphics.fillRoundRect(r: Rect, radius: number): nil;
 fun playdate.graphics.fillRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.fillTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
-fun playdate.graphics.font.new(path: string): playdate.graphics.font;
-fun playdate.graphics.font.newFamily(fontPaths: table<integer, string>): playdate.graphics.font[];
-fun playdate.graphics.font:drawText(text: string, x: integer, y: integer, leadingAdjustment?: integer): nil;
-fun playdate.graphics.font:drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer): nil;
-fun playdate.graphics.font:getGlyph(character: string): playdate.graphics.image;
-fun playdate.graphics.font:getHeight(): integer;
-fun playdate.graphics.font:getLeading(): integer;
-fun playdate.graphics.font:getTextWidth(text: string): integer;
-fun playdate.graphics.font:getTracking(): integer;
-fun playdate.graphics.font:setLeading(pixels: integer): nil;
-fun playdate.graphics.font:setTracking(pixels: integer): nil;
 fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: function): nil;
 fun playdate.graphics.getBackgroundColor(): integer;
 fun playdate.graphics.getClipRect(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.graphics.getColor(): integer;
-fun playdate.graphics.getDisplayImage(): playdate.graphics.image;
+fun playdate.graphics.getDisplayImage(): Image;
 fun playdate.graphics.getDrawOffset(): (x: integer, y: integer);
-fun playdate.graphics.getFont(variant?: (integer|string)): playdate.graphics.font;
+fun playdate.graphics.getFont(variant?: (integer|string)): Font;
 fun playdate.graphics.getFontTracking(): integer;
 fun playdate.graphics.getImageDrawMode(): integer;
 fun playdate.graphics.getLineWidth(): integer;
 fun playdate.graphics.getLocalizedText(key: string, language?: (integer|string)): string;
 fun playdate.graphics.getScreenClipRect(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.graphics.getStrokeLocation(): integer;
-fun playdate.graphics.getSystemFont(variant?: (integer|string)): playdate.graphics.font;
-fun playdate.graphics.getTextSize(str: string, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer): (width: integer, height: integer);
-fun playdate.graphics.getTextSizeForMaxWidth(text: string, maxWidth: integer, leadingAdjustment?: integer, font?: playdate.graphics.font): (width: integer, height: integer);
-fun playdate.graphics.getWorkingImage(): playdate.graphics.image;
-fun playdate.graphics.image.new(path: string): (image: playdate.graphics.image?, error: string?);
-fun playdate.graphics.image.new(width: integer, height: integer, bgcolor?: integer): playdate.graphics.image;
+fun playdate.graphics.getSystemFont(variant?: (integer|string)): Font;
+fun playdate.graphics.getTextSize(str: string, fontFamily?: table<integer, Font>, leadingAdjustment?: integer): (width: integer, height: integer);
+fun playdate.graphics.getTextSizeForMaxWidth(text: string, maxWidth: integer, leadingAdjustment?: integer, font?: Font): (width: integer, height: integer);
+fun playdate.graphics.getWorkingImage(): Image;
+fun playdate.graphics.lockFocus(image: Image): nil;
+fun playdate.graphics.perlin(x: integer, y: integer, z: integer, _repeat: number, octaves?: integer, persistence?: number): number;
+fun playdate.graphics.perlinArray(count: integer, x: integer, dx: integer, y?: integer, dy?: integer, z?: integer, dz?: integer, _repeat: number, octaves?: integer, persistence?: number): number[];
+fun playdate.graphics.popContext(): nil;
+fun playdate.graphics.pushContext(image?: Image): nil;
+fun playdate.graphics.setBackgroundColor(color: integer): nil;
+fun playdate.graphics.setClipRect(rect: Rect): nil;
+fun playdate.graphics.setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
+fun playdate.graphics.setColor(color: integer): nil;
+fun playdate.graphics.setDitherPattern(alpha: number, ditherType?: integer): nil;
+fun playdate.graphics.setDrawOffset(x: integer, y: integer): nil;
+fun playdate.graphics.setFont(font: Font, variant?: (integer|string)): nil;
+fun playdate.graphics.setFontFamily(fontFamily: table<integer, Font>): nil;
+fun playdate.graphics.setFontTracking(pixels: integer): nil;
+fun playdate.graphics.setImageDrawMode(mode: integer): nil;
+fun playdate.graphics.setLineCapStyle(style: integer): nil;
+fun playdate.graphics.setLineWidth(width: integer): nil;
+fun playdate.graphics.setPattern(pattern: integer[]): nil;
+fun playdate.graphics.setPolygonFillRule(rule: integer): nil;
+fun playdate.graphics.setScreenClipRect(rect: Rect): nil;
+fun playdate.graphics.setScreenClipRect(x: integer, y: integer, width: integer, height: integer): nil;
+fun playdate.graphics.setStencilImage(image: Image, tile?: boolean): nil;
+fun playdate.graphics.setStencilPattern(level: any, ditherType?: integer): nil;
+fun playdate.graphics.setStencilPattern(pattern: integer[]): nil;
+fun playdate.graphics.setStencilPattern(row1: integer, row2: integer, row3: integer, row4: integer, row5: integer, row6: integer, row7: integer, row8: integer): nil;
+fun playdate.graphics.setStrokeLocation(location: integer): nil;
+fun playdate.graphics.unlockFocus(): nil;
+
+tbl playdate.graphics.animation;
+
+tbl playdate.graphics.animation.loop;
+fun playdate.graphics.animation.loop.new(delay?: number, imageTable?: ImageTable, shouldLoop?: boolean): AnimationLoop;
+tbl AnimationLoop: playdate.graphics.animation.loop = {
+    delay: number,
+    startFrame: integer,
+    endFrame: integer,
+    frame: integer,
+    step: integer,
+    shouldLoop: boolean,
+    paused: boolean,
+};
+fun AnimationLoop:draw(x: integer, y: integer, flip?: (integer|string)): nil;
+fun AnimationLoop:image(): Image;
+fun AnimationLoop:isValid(): boolean;
+fun AnimationLoop:setImageTable(imageTable: ImageTable): nil;
+
+tbl playdate.graphics.animation.blinker;
+fun playdate.graphics.animation.blinker.new(onDuration?: integer, offDuration?: integer, loop?: boolean, cycles?: integer, default?: boolean): Blinker;
+fun playdate.graphics.animation.blinker.stopAll(): nil;
+fun playdate.graphics.animation.blinker.updateAll(): nil;
+tbl Blinker: playdate.graphics.animation.blinker = {
+    onDuration: integer,
+    offDuration: integer,
+    loop: boolean,
+    cycles: integer,
+    default: boolean,
+    counter: integer,
+    on: boolean,
+    running: boolean,
+};
+fun Blinker:remove(): nil;
+fun Blinker:start(onDuration?: integer, offDuration?: integer, loop?: boolean, cycles?: integer, default?: boolean): nil;
+fun Blinker:startLoop(): nil;
+fun Blinker:stop(): nil;
+fun Blinker:update(): nil;
+
+tbl playdate.graphics.animator;
+fun playdate.graphics.animator.new(duration: integer, arc: Arc, easingFunction?: function, startTimeOffset?: integer): Animator;
+fun playdate.graphics.animator.new(duration: integer, lineSegment: LineSegment, easingFunction?: function, startTimeOffset?: integer): Animator;
+fun playdate.graphics.animator.new(duration: integer, polygon: Polygon, easingFunction?: function, startTimeOffset?: integer): Animator;
+fun playdate.graphics.animator.new(duration: integer, startValue: (number|Point), endValue: (number|Point), easingFunction?: function, startTimeOffset?: integer): Animator;
+fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFunctions: function[], startTimeOffset?: integer): Animator;
+tbl Animator: playdate.graphics.animator = {
+    repeatCount: integer,
+    reverses: integer,
+    easingAmplitude: number,
+    easingPeriod: number,
+    s?: number,
+    a?: number,
+    p?: number,
+};
+fun Animator:currentValue(): (number|Point);
+fun Animator:ended(): boolean;
+fun Animator:progress(): number;
+fun Animator:reset(duration?: integer): nil;
+fun Animator:valueAtTime(time: number): (number|Point);
+
+tbl playdate.graphics.font = {
+    kLanguageEnglish: integer = 0,
+    kLanguageJapanese: integer = 1,
+    kVariantNormal: integer = 0,
+    kVariantBold: integer = 1,
+    kVariantItalic: integer = 2,
+};
+fun playdate.graphics.font.new(path: string): Font;
+fun playdate.graphics.font.newFamily(fontPaths: table<integer, string>): Font[];
+tbl Font: playdate.graphics.font = {};
+fun Font:drawText(text: string, x: integer, y: integer, leadingAdjustment?: integer): nil;
+fun Font:drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer): nil;
+fun Font:getGlyph(character: string): Image;
+fun Font:getHeight(): integer;
+fun Font:getLeading(): integer;
+fun Font:getTextWidth(text: string): integer;
+fun Font:getTracking(): integer;
+fun Font:setLeading(pixels: integer): nil;
+fun Font:setTracking(pixels: integer): nil;
+
+tbl playdate.graphics.image = {
+    kDitherTypeNone: integer = 0,
+    kDitherTypeDiagonalLine: integer = 1,
+    kDitherTypeHorizontalLine: integer = 3,
+    kDitherTypeVerticalLine: integer = 2,
+    kDitherTypeScreen: integer = 4,
+    kDitherTypeBayer2x2: integer = 5,
+    kDitherTypeBayer4x4: integer = 6,
+    kDitherTypeBayer8x8: integer = 7,
+    kDitherTypeFloydSteinberg: integer = 8,
+    kDitherTypeBurkes: integer = 9,
+    kDitherTypeAtkinson: integer = 10,
+};
+tbl Image: playdate.graphics.image = { x: integer, y: integer, width: integer, height: integer, };
+fun playdate.graphics.image.new(path: string): (image: Image?, error: string?);
+fun playdate.graphics.image.new(width: integer, height: integer, bgcolor?: integer): Image;
 fun playdate.graphics.image:addMask(opaque?: boolean): nil;
-fun playdate.graphics.image:blendWithImage(image: playdate.graphics.image, alpha: number, ditherType: integer): playdate.graphics.image;
-fun playdate.graphics.image:blurredImage(radius: number, numPasses: integer, ditherType: integer, padEdges?: boolean, xPhase?: integer, yPhase?: integer): playdate.graphics.image;
+fun playdate.graphics.image:blendWithImage(image: Image, alpha: number, ditherType: integer): Image;
+fun playdate.graphics.image:blurredImage(radius: number, numPasses: integer, ditherType: integer, padEdges?: boolean, xPhase?: integer, yPhase?: integer): Image;
 fun playdate.graphics.image:clear(color: integer): nil;
 fun playdate.graphics.image:clearMask(opaque?: boolean): nil;
-fun playdate.graphics.image:copy(): playdate.graphics.image;
+fun playdate.graphics.image:copy(): Image;
 fun playdate.graphics.image:draw(p: Point, flip?: (integer|string), sourceRect?: Rect): nil;
 fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|string), sourceRect?: Rect): nil;
 fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (integer|string)): nil;
@@ -733,191 +617,201 @@ fun playdate.graphics.image:drawScaled(x: integer, y: integer, scale: integer, y
 fun playdate.graphics.image:drawTiled(rect: Rect, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawWithTransform(xform: AffineTransform, x: integer, y: integer): nil;
-fun playdate.graphics.image:fadedImage(alpha: number, ditherType: integer): playdate.graphics.image;
-fun playdate.graphics.image:getMaskImage(): playdate.graphics.image;
+fun playdate.graphics.image:fadedImage(alpha: number, ditherType: integer): Image;
+fun playdate.graphics.image:getMaskImage(): Image;
 fun playdate.graphics.image:getSize(): (width: integer, height: integer);
 fun playdate.graphics.image:hasMask(): boolean;
-fun playdate.graphics.image:invertedImage(): playdate.graphics.image;
+fun playdate.graphics.image:invertedImage(): Image;
 fun playdate.graphics.image:load(path: string): (success: boolean, error: string?);
 fun playdate.graphics.image:removeMask(): nil;
-fun playdate.graphics.image:rotatedImage(angle: number, scale?: integer, yscale?: integer): playdate.graphics.image;
+fun playdate.graphics.image:rotatedImage(angle: number, scale?: integer, yscale?: integer): Image;
 fun playdate.graphics.image:sample(x: integer, y: integer): integer;
-fun playdate.graphics.image:scaledImage(scale: integer, yscale?: integer): playdate.graphics.image;
+fun playdate.graphics.image:scaledImage(scale: integer, yscale?: integer): Image;
 fun playdate.graphics.image:setInverted(flag: boolean): nil;
-fun playdate.graphics.image:setMaskImage(maskImage: playdate.graphics.image): nil;
-fun playdate.graphics.image:transformedImage(xform: AffineTransform): playdate.graphics.image;
-fun playdate.graphics.image:vcrPauseFilterImage(): playdate.graphics.image;
+fun playdate.graphics.image:setMaskImage(maskImage: Image): nil;
+fun playdate.graphics.image:transformedImage(xform: AffineTransform): Image;
+fun playdate.graphics.image:vcrPauseFilterImage(): Image;
 fun playdate.graphics.imageSizeAtPath(path: string): (width: integer, height: integer);
-fun playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): (image: playdate.graphics.image, textWasTruncated: boolean);
-fun playdate.graphics.imagetable.new(count: integer, cellsWide?: integer, cellSize?: integer): playdate.graphics.imagetable;
-fun playdate.graphics.imagetable.new(path: string): playdate.graphics.imagetable;
-fun playdate.graphics.imagetable:__index(n: integer): nil;
-fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|string)): nil;
-fun playdate.graphics.imagetable:getImage(n: integer): playdate.graphics.image;
-fun playdate.graphics.imagetable:getImage(x: integer, y: integer): playdate.graphics.image;
-fun playdate.graphics.imagetable:getLength(): integer;
-fun playdate.graphics.imagetable:getSize(): (cellsWide: integer, cellsHigh: integer);
-fun playdate.graphics.imagetable:load(path: string): (success: boolean, error: string?);
-fun playdate.graphics.imagetable:setImage(n: integer, image: playdate.graphics.image): nil;
-fun playdate.graphics.lockFocus(image: playdate.graphics.image): nil;
-fun playdate.graphics.nineSlice.new(imagePath: string, innerX: integer, innerY: integer, innerWidth: integer, innerHeight: integer): playdate.graphics.nineSlice;
-fun playdate.graphics.nineSlice:drawInRect(rect: Rect): nil;
-fun playdate.graphics.nineSlice:drawInRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.nineSlice:getMinSize(): (width: integer, height: integer);
-fun playdate.graphics.nineSlice:getSize(): (width: integer, height: integer);
-fun playdate.graphics.perlin(x: integer, y: integer, z: integer, _repeat: number, octaves?: integer, persistence?: number): number;
-fun playdate.graphics.perlinArray(count: integer, x: integer, dx: integer, y?: integer, dy?: integer, z?: integer, dz?: integer, _repeat: number, octaves?: integer, persistence?: number): number[];
-fun playdate.graphics.popContext(): nil;
-fun playdate.graphics.pushContext(image?: playdate.graphics.image): nil;
-fun playdate.graphics.setBackgroundColor(color: integer): nil;
-fun playdate.graphics.setClipRect(rect: Rect): nil;
-fun playdate.graphics.setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.setColor(color: integer): nil;
-fun playdate.graphics.setDitherPattern(alpha: number, ditherType?: integer): nil;
-fun playdate.graphics.setDrawOffset(x: integer, y: integer): nil;
-fun playdate.graphics.setFont(font: playdate.graphics.font, variant?: (integer|string)): nil;
-fun playdate.graphics.setFontFamily(fontFamily: table<integer, playdate.graphics.font>): nil;
-fun playdate.graphics.setFontTracking(pixels: integer): nil;
-fun playdate.graphics.setImageDrawMode(mode: integer): nil;
-fun playdate.graphics.setLineCapStyle(style: integer): nil;
-fun playdate.graphics.setLineWidth(width: integer): nil;
-fun playdate.graphics.setPattern(pattern: integer[]): nil;
-fun playdate.graphics.setPolygonFillRule(rule: integer): nil;
-fun playdate.graphics.setScreenClipRect(rect: Rect): nil;
-fun playdate.graphics.setScreenClipRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.setStencilImage(image: playdate.graphics.image, tile?: boolean): nil;
-fun playdate.graphics.setStencilPattern(level: any, ditherType?: integer): nil;
-fun playdate.graphics.setStencilPattern(pattern: integer[]): nil;
-fun playdate.graphics.setStencilPattern(row1: integer, row2: integer, row3: integer, row4: integer, row5: integer, row6: integer, row7: integer, row8: integer): nil;
-fun playdate.graphics.setStrokeLocation(location: integer): nil;
+fun playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): (image: Image, textWasTruncated: boolean);
+
+tbl playdate.graphics.imagetable;
+fun playdate.graphics.imagetable.new(count: integer, cellsWide?: integer, cellSize?: integer): ImageTable;
+fun playdate.graphics.imagetable.new(path: string): ImageTable;
+tbl ImageTable: playdate.graphics.imagetable = {};
+fun ImageTable:__index(n: integer): nil;
+fun ImageTable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|string)): nil;
+fun ImageTable:getImage(n: integer): Image;
+fun ImageTable:getImage(x: integer, y: integer): Image;
+fun ImageTable:getLength(): integer;
+fun ImageTable:getSize(): (cellsWide: integer, cellsHigh: integer);
+fun ImageTable:load(path: string): (success: boolean, error: string?);
+fun ImageTable:setImage(n: integer, image: Image): nil;
+
+tbl playdate.graphics.nineSlice;
+fun playdate.graphics.nineSlice.new(imagePath: string, innerX: integer, innerY: integer, innerWidth: integer, innerHeight: integer): NineSlice;
+tbl NineSlice: playdate.graphics.nineSlice = {
+    innerRect: Rect,
+    minWidth: integer,
+    minHeight: integer,
+};
+fun NineSlice:drawInRect(rect: Rect): nil;
+fun NineSlice:drawInRect(x: integer, y: integer, width: integer, height: integer): nil;
+fun NineSlice:getMinSize(): (width: integer, height: integer);
+fun NineSlice:getSize(): (width: integer, height: integer);
+
+tbl playdate.graphics.sprite = {
+    kCollisionTypeSlide: integer = 0,
+    kCollisionTypeFreeze: integer = 1,
+    kCollisionTypeOverlap: integer = 2,
+    kCollisionTypeBounce: integer = 3,
+};
 fun playdate.graphics.sprite.addDirtyRect(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.sprite.addEmptyCollisionSprite(r: Rect): nil;
 fun playdate.graphics.sprite.addEmptyCollisionSprite(x: integer, y: integer, w: integer, h: integer): nil;
-fun playdate.graphics.sprite.addSprite(sprite: playdate.graphics.sprite): nil;
-fun playdate.graphics.sprite.addWallSprites(tilemap: playdate.graphics.tilemap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer): nil;
-fun playdate.graphics.sprite.allOverlappingSprites(): playdate.graphics.sprite[][];
+fun playdate.graphics.sprite.addSprite(sprite: Sprite): nil;
+fun playdate.graphics.sprite.addWallSprites(tilemap: TileMap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer): nil;
+fun playdate.graphics.sprite.allOverlappingSprites(): Sprite[][];
 fun playdate.graphics.sprite.clearClipRectsInRange(startz: integer, endz: integer): nil;
-fun playdate.graphics.sprite.getAllSprites(): playdate.graphics.sprite[];
+fun playdate.graphics.sprite.getAllSprites(): Sprite[];
 fun playdate.graphics.sprite.getAlwaysRedraw(): boolean;
-fun playdate.graphics.sprite.new(image_or_tilemap?: (playdate.graphics.image|playdate.graphics.tilemap)): playdate.graphics.sprite;
-fun playdate.graphics.sprite.performOnAllSprites(f: fun(sprite: playdate.graphics.sprite)): nil;
+fun playdate.graphics.sprite.new(image_or_tilemap?: (Image|TileMap)): Sprite
+fun playdate.graphics.sprite.performOnAllSprites(f: fun(sprite: Sprite)): nil;
 fun playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment: LineSegment): CollisionInfo[];
 fun playdate.graphics.sprite.querySpriteInfoAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): CollisionInfo[];
-fun playdate.graphics.sprite.querySpritesAlongLine(lineSegment: LineSegment): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesAtPoint(p: Point): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesAtPoint(x: integer, y: integer): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesInRect(rect: Rect): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesInRect(x: integer, y: integer, width: integer, height: integer): playdate.graphics.sprite[];
+fun playdate.graphics.sprite.querySpritesAlongLine(lineSegment: LineSegment): Sprite[];
+fun playdate.graphics.sprite.querySpritesAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): Sprite[];
+fun playdate.graphics.sprite.querySpritesAtPoint(p: Point): Sprite[];
+fun playdate.graphics.sprite.querySpritesAtPoint(x: integer, y: integer): Sprite[];
+fun playdate.graphics.sprite.querySpritesInRect(rect: Rect): Sprite[];
+fun playdate.graphics.sprite.querySpritesInRect(x: integer, y: integer, width: integer, height: integer): Sprite[];
 fun playdate.graphics.sprite.redrawBackground(): nil;
 fun playdate.graphics.sprite.removeAll(): nil;
-fun playdate.graphics.sprite.removeSprite(sprite: playdate.graphics.sprite): nil;
-fun playdate.graphics.sprite.removeSprites(spriteArray: playdate.graphics.sprite[]): nil;
+fun playdate.graphics.sprite.removeSprite(sprite: Sprite): nil;
+fun playdate.graphics.sprite.removeSprites(spriteArray: Sprite[]): nil;
 fun playdate.graphics.sprite.setAlwaysRedraw(flag: boolean): nil;
 fun playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback: fun(x: integer, y: integer, width: integer, height: integer): nil): nil;
 fun playdate.graphics.sprite.setClipRectsInRange(rect: Rect, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.setClipRectsInRange(x: integer, y: integer, width: integer, height: integer, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.spriteCount(): integer;
-fun playdate.graphics.sprite.spriteWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): playdate.graphics.sprite;
+fun playdate.graphics.sprite.spriteWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: Font): Sprite;
 fun playdate.graphics.sprite.update(): nil;
-fun playdate.graphics.sprite:add(): nil;
-fun playdate.graphics.sprite:alphaCollision(anotherSprite: playdate.graphics.sprite): boolean;
-fun playdate.graphics.sprite:checkCollisions(point: Point): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
-fun playdate.graphics.sprite:checkCollisions(x: integer, y: integer): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
-fun playdate.graphics.sprite:clearClipRect(): nil;
-fun playdate.graphics.sprite:clearCollideRect(): nil;
-fun playdate.graphics.sprite:clearStencil(): nil;
-fun playdate.graphics.sprite:collisionResponse(other: playdate.graphics.sprite): integer;
-fun playdate.graphics.sprite:collisionsEnabled(): boolean;
-fun playdate.graphics.sprite:copy(): playdate.graphics.sprite;
-fun playdate.graphics.sprite:draw(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite:getBounds(): (x: integer, y: integer, width: integer, height: integer);
-fun playdate.graphics.sprite:getBoundsRect(): Rect;
-fun playdate.graphics.sprite:getCenter(): (x: number, y: number);
-fun playdate.graphics.sprite:getCenterPoint(): Point;
-fun playdate.graphics.sprite:getCollideBounds(): (x: integer, y: integer, width: integer, height: integer);
-fun playdate.graphics.sprite:getCollideRect(): Rect;
-fun playdate.graphics.sprite:getCollidesWithGroupsMask(): integer;
-fun playdate.graphics.sprite:getGroupMask(): integer;
-fun playdate.graphics.sprite:getImage(): playdate.graphics.image;
-fun playdate.graphics.sprite:getImageFlip(): integer;
-fun playdate.graphics.sprite:getPosition(): (x: integer, y: integer);
-fun playdate.graphics.sprite:getRotation(): number;
-fun playdate.graphics.sprite:getScale(): (xScale: integer, yScale: integer);
-fun playdate.graphics.sprite:getSize(): (width: integer, height: integer);
-fun playdate.graphics.sprite:getTag(): integer;
-fun playdate.graphics.sprite:getZIndex(): integer;
-fun playdate.graphics.sprite:isOpaque(): boolean;
-fun playdate.graphics.sprite:isVisible(): boolean;
-fun playdate.graphics.sprite:markDirty(): nil;
-fun playdate.graphics.sprite:moveBy(x: integer, y: integer): nil;
-fun playdate.graphics.sprite:moveTo(x: integer, y: integer): nil;
-fun playdate.graphics.sprite:moveWithCollisions(goalPoint: Point): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
-fun playdate.graphics.sprite:moveWithCollisions(goalX: integer, goalY: integer): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
-fun playdate.graphics.sprite:overlappingSprites(): playdate.graphics.sprite[];
-fun playdate.graphics.sprite:remove(): nil;
-fun playdate.graphics.sprite:removeAnimator(): nil;
-fun playdate.graphics.sprite:resetCollidesWithGroupsMask(): nil;
-fun playdate.graphics.sprite:resetGroupMask(): nil;
-fun playdate.graphics.sprite:setAnimator(animator: playdate.graphics.animator, moveWithCollisions?: boolean, removeOnCollision?: boolean): nil;
-fun playdate.graphics.sprite:setBounds(rect: Rect): nil;
-fun playdate.graphics.sprite:setBounds(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite:setCenter(x: integer, y: integer): nil;
-fun playdate.graphics.sprite:setClipRect(rect: Rect): nil;
-fun playdate.graphics.sprite:setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite:setCollideRect(rect: Rect): nil;
-fun playdate.graphics.sprite:setCollideRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite:setCollidesWithGroups(groups: (integer|integer[])): nil;
-fun playdate.graphics.sprite:setCollidesWithGroupsMask(mask: integer): nil;
-fun playdate.graphics.sprite:setCollisionsEnabled(flag: boolean): nil;
-fun playdate.graphics.sprite:setGroupMask(mask: integer): nil;
-fun playdate.graphics.sprite:setGroups(groups: (integer|integer[])): nil;
-fun playdate.graphics.sprite:setIgnoresDrawOffset(flag: boolean): nil;
-fun playdate.graphics.sprite:setImage(image: playdate.graphics.image, flip?: (integer|string), scale?: integer, yscale?: integer): nil;
-fun playdate.graphics.sprite:setImageDrawMode(mode: integer): nil;
-fun playdate.graphics.sprite:setImageFlip(flip: (integer|string), flipCollideRect?: integer): nil;
-fun playdate.graphics.sprite:setOpaque(flag: boolean): nil;
-fun playdate.graphics.sprite:setRedrawsOnImageChange(flag: boolean): nil;
-fun playdate.graphics.sprite:setRotation(angle: number, scale?: integer, yScale?: integer): nil;
-fun playdate.graphics.sprite:setScale(scale: integer, yScale?: integer): nil;
-fun playdate.graphics.sprite:setSize(width: integer, height: integer): nil;
-fun playdate.graphics.sprite:setStencilImage(stencil: playdate.graphics.image, tile?: boolean): nil;
-fun playdate.graphics.sprite:setStencilPattern(level: any, ditherType?: integer): nil;
-fun playdate.graphics.sprite:setStencilPattern(pattern: integer[]): nil;
-fun playdate.graphics.sprite:setTag(tag: integer): nil;
-fun playdate.graphics.sprite:setTilemap(tilemap: playdate.graphics.tilemap): nil;
-fun playdate.graphics.sprite:setUpdatesEnabled(flag: boolean): nil;
-fun playdate.graphics.sprite:setVisible(flag: boolean): nil;
-fun playdate.graphics.sprite:setZIndex(z: integer): nil;
-fun playdate.graphics.sprite:update(): nil;
-fun playdate.graphics.sprite:updatesEnabled(): boolean;
-fun playdate.graphics.tilemap.new(): playdate.graphics.tilemap;
-fun playdate.graphics.tilemap:draw(x: integer, y: integer, sourceRect?: Rect): nil;
-fun playdate.graphics.tilemap:drawIgnoringOffset(x: integer, y: integer, sourceRect?: Rect): nil;
-fun playdate.graphics.tilemap:getCollisionRects(emptyIDs: integer[]): Rect[];
-fun playdate.graphics.tilemap:getPixelSize(): (width: integer, height: integer);
-fun playdate.graphics.tilemap:getSize(): (width: integer, height: integer);
-fun playdate.graphics.tilemap:getTileAtPosition(x: integer, y: integer): number?;
-fun playdate.graphics.tilemap:getTileSize(): (width: integer, height: integer);
-fun playdate.graphics.tilemap:getTiles(): (data: integer[], width: integer);
-fun playdate.graphics.tilemap:setImageTable(table: table): nil;
-fun playdate.graphics.tilemap:setSize(width: integer, height: integer): nil;
-fun playdate.graphics.tilemap:setTileAtPosition(x: integer, y: integer, index: integer): nil;
-fun playdate.graphics.tilemap:setTiles(data: integer[], width: integer): nil;
-fun playdate.graphics.unlockFocus(): nil;
-fun playdate.graphics.video.new(path: string): playdate.graphics.video;
-fun playdate.graphics.video:getContext(): playdate.graphics.image;
-fun playdate.graphics.video:getFrameCount(): integer;
-fun playdate.graphics.video:getFrameRate(): number;
-fun playdate.graphics.video:getSize(): (x: integer, y: integer);
-fun playdate.graphics.video:renderFrame(number: integer): nil;
-fun playdate.graphics.video:setContext(image: playdate.graphics.image): nil;
-fun playdate.graphics.video:useScreenContext(): nil;
+tbl Sprite: playdate.graphics.sprite = {
+    x: integer,
+    y: integer,
+    width: integer,
+    height: integer,
+    collisionResponse?: (integer|fun(self: Sprite, other: Sprite): integer?),
+    update?: fun():nil,
+};
+fun Sprite:add(): nil;
+fun Sprite:alphaCollision(anotherSprite: Sprite): boolean;
+fun Sprite:checkCollisions(point: Point): (actualX: integer, actualY: integer, collisions: SpriteCollisionData, length: integer);
+fun Sprite:checkCollisions(x: integer, y: integer): (actualX: integer, actualY: integer, collisions: SpriteCollisionData, length: integer);
+fun Sprite:clearClipRect(): nil;
+fun Sprite:clearCollideRect(): nil;
+fun Sprite:clearStencil(): nil;
+fun Sprite:collisionResponse(other: Sprite): integer;
+fun Sprite:collisionsEnabled(): boolean;
+fun Sprite:copy(): Sprite;
+fun Sprite:draw(x: integer, y: integer, width: integer, height: integer): nil;
+fun Sprite:getBounds(): (x: integer, y: integer, width: integer, height: integer);
+fun Sprite:getBoundsRect(): Rect;
+fun Sprite:getCenter(): (x: number, y: number);
+fun Sprite:getCenterPoint(): Point;
+fun Sprite:getCollideBounds(): (x: integer, y: integer, width: integer, height: integer);
+fun Sprite:getCollideRect(): Rect;
+fun Sprite:getCollidesWithGroupsMask(): integer;
+fun Sprite:getGroupMask(): integer;
+fun Sprite:getImage(): Image;
+fun Sprite:getImageFlip(): integer;
+fun Sprite:getPosition(): (x: integer, y: integer);
+fun Sprite:getRotation(): number;
+fun Sprite:getScale(): (xScale: integer, yScale: integer);
+fun Sprite:getSize(): (width: integer, height: integer);
+fun Sprite:getTag(): integer;
+fun Sprite:getZIndex(): integer;
+fun Sprite:isOpaque(): boolean;
+fun Sprite:isVisible(): boolean;
+fun Sprite:markDirty(): nil;
+fun Sprite:moveBy(x: integer, y: integer): nil;
+fun Sprite:moveTo(x: integer, y: integer): nil;
+fun Sprite:moveWithCollisions(goalPoint: Point): (actualX: integer, actualY: integer, collisions: SpriteCollisionData, length: integer);
+fun Sprite:moveWithCollisions(goalX: integer, goalY: integer): (actualX: integer, actualY: integer, collisions: SpriteCollisionData, length: integer);
+fun Sprite:overlappingSprites(): Sprite[];
+fun Sprite:remove(): nil;
+fun Sprite:removeAnimator(): nil;
+fun Sprite:resetCollidesWithGroupsMask(): nil;
+fun Sprite:resetGroupMask(): nil;
+fun Sprite:setAnimator(animator: Animator, moveWithCollisions?: boolean, removeOnCollision?: boolean): nil;
+fun Sprite:setBounds(rect: Rect): nil;
+fun Sprite:setBounds(x: integer, y: integer, width: integer, height: integer): nil;
+fun Sprite:setCenter(x: integer, y: integer): nil;
+fun Sprite:setClipRect(rect: Rect): nil;
+fun Sprite:setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
+fun Sprite:setCollideRect(rect: Rect): nil;
+fun Sprite:setCollideRect(x: integer, y: integer, width: integer, height: integer): nil;
+fun Sprite:setCollidesWithGroups(groups: (integer|integer[])): nil;
+fun Sprite:setCollidesWithGroupsMask(mask: integer): nil;
+fun Sprite:setCollisionsEnabled(flag: boolean): nil;
+fun Sprite:setGroupMask(mask: integer): nil;
+fun Sprite:setGroups(groups: (integer|integer[])): nil;
+fun Sprite:setIgnoresDrawOffset(flag: boolean): nil;
+fun Sprite:setImage(image: Image, flip?: (integer|string), scale?: integer, yscale?: integer): nil;
+fun Sprite:setImageDrawMode(mode: integer): nil;
+fun Sprite:setImageFlip(flip: (integer|string), flipCollideRect?: integer): nil;
+fun Sprite:setOpaque(flag: boolean): nil;
+fun Sprite:setRedrawsOnImageChange(flag: boolean): nil;
+fun Sprite:setRotation(angle: number, scale?: integer, yScale?: integer): nil;
+fun Sprite:setScale(scale: integer, yScale?: integer): nil;
+fun Sprite:setSize(width: integer, height: integer): nil;
+fun Sprite:setStencilImage(stencil: Image, tile?: boolean): nil;
+fun Sprite:setStencilPattern(level: any, ditherType?: integer): nil;
+fun Sprite:setStencilPattern(pattern: integer[]): nil;
+fun Sprite:setTag(tag: integer): nil;
+fun Sprite:setTilemap(tilemap: TileMap): nil;
+fun Sprite:setUpdatesEnabled(flag: boolean): nil;
+fun Sprite:setVisible(flag: boolean): nil;
+fun Sprite:setZIndex(z: integer): nil;
+fun Sprite:update(): nil;
+fun Sprite:updatesEnabled(): boolean;
+
+tbl playdate.graphics.tilemap;
+fun playdate.graphics.tilemap.new(): TileMap;
+tbl TileMap: playdate.graphics.tilemap = {};
+fun TileMap:draw(x: integer, y: integer, sourceRect?: Rect): nil;
+fun TileMap:drawIgnoringOffset(x: integer, y: integer, sourceRect?: Rect): nil;
+fun TileMap:getCollisionRects(emptyIDs: integer[]): Rect[];
+fun TileMap:getPixelSize(): (width: integer, height: integer);
+fun TileMap:getSize(): (width: integer, height: integer);
+fun TileMap:getTileAtPosition(x: integer, y: integer): number?;
+fun TileMap:getTileSize(): (width: integer, height: integer);
+fun TileMap:getTiles(): (data: integer[], width: integer);
+fun TileMap:setImageTable(table: table): nil;
+fun TileMap:setSize(width: integer, height: integer): nil;
+fun TileMap:setTileAtPosition(x: integer, y: integer, index: integer): nil;
+fun TileMap:setTiles(data: integer[], width: integer): nil;
+
+tbl playdate.graphics.video;
+fun playdate.graphics.video.new(path: string): Video;
+tbl Video: playdate.graphics.video = {};
+fun Video:getContext(): Image;
+fun Video:getFrameCount(): integer;
+fun Video:getFrameRate(): number;
+fun Video:getSize(): (x: integer, y: integer);
+fun Video:renderFrame(number: integer): nil;
+fun Video:setContext(image: Image): nil;
+fun Video:useScreenContext(): nil;
+
+tbl playdate.inputHandlers;
 fun playdate.inputHandlers.pop(): nil;
 fun playdate.inputHandlers.push(handler: table, masksPreviousHandlers?: boolean): nil;
-fun playdate.isCrankDocked(): boolean;
-fun playdate.keyPressed(key: string): nil;
-fun playdate.keyReleased(key: string): nil;
+
+tbl playdate.keyboard = {
+    kCapitalizationNormal: integer = 1,
+    kCapitalizationSentences: integer = 3,
+    kCapitalizationWords: integer = 2,
+    text: string,
+};
 fun playdate.keyboard.hide(): nil;
 fun playdate.keyboard.isVisible(): nil;
 fun playdate.keyboard.keyboardAnimatingCallback(): nil;
@@ -929,350 +823,561 @@ fun playdate.keyboard.setCapitalizationBehavior(behavior: integer): nil;
 fun playdate.keyboard.show(text?: string): nil;
 fun playdate.keyboard.textChangedCallback(ok: boolean): nil;
 fun playdate.keyboard.width(): nil;
-fun playdate.leftButtonDown(): nil;
-fun playdate.leftButtonUp(): nil;
+
+tbl playdate.math;
 fun playdate.math.lerp(min: number, max: number, t: number): number;
-fun playdate.menu.item:getTitle(): string;
-fun playdate.menu.item:getValue(): (integer|boolean|string);
-fun playdate.menu.item:setCallback(callback: function): nil;
-fun playdate.menu.item:setTitle(newTitle: string): nil;
-fun playdate.menu.item:setValue(newValue: (integer|boolean|string)): nil;
-fun playdate.menu:addCheckmarkMenuItem(title: string, initialValue?: boolean, callback?: function): nil;
-fun playdate.menu:addMenuItem(title: string, callback: function): nil;
-fun playdate.menu:addOptionsMenuItem(title: string, options: string[], initalValue?: string, callback?: function): nil;
-fun playdate.menu:getMenuItems(): playdate.menu.item[];
-fun playdate.menu:removeAllMenuItems(): nil;
-fun playdate.menu:removeMenuItem(menuItem: playdate.menu.item): nil;
-fun playdate.pathfinder.graph.new(nodeCount?: integer, coordinates?: integer[][]): playdate.pathfinder.graph;
-fun playdate.pathfinder.graph.new2DGrid(width: integer, height: integer, allowDiagonals?: boolean, includedNodes?: integer[]): playdate.pathfinder.graph;
-fun playdate.pathfinder.graph:addConnectionToNodeWithID(fromNodeID: integer, toNodeID: integer, weight: number, addReciprocalConnection: boolean): nil;
-fun playdate.pathfinder.graph:addConnections(connections: integer[][]): nil;
-fun playdate.pathfinder.graph:addNewNode(id: integer, x?: integer, y?: integer, connectedNodes?: playdate.pathfinder.node[], weights?: number[], addReciprocalConnections?: boolean): nil;
-fun playdate.pathfinder.graph:addNewNodes(count: integer): nil;
-fun playdate.pathfinder.graph:addNode(node: playdate.pathfinder.node, connectedNodes?: playdate.pathfinder.node[], weights?: number[], addReciprocalConnections?: boolean): nil;
-fun playdate.pathfinder.graph:addNodes(nodes: playdate.pathfinder.node[]): nil;
-fun playdate.pathfinder.graph:allNodes(): playdate.pathfinder.node[];
-fun playdate.pathfinder.graph:findPath(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node, heuristicFunction?: fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node): integer, findPathToGoalAdjacentNodes?: boolean): playdate.pathfinder.node[];
-fun playdate.pathfinder.graph:findPathWithIDs(startNodeID: integer, goalNodeID: integer, heuristicFunction?: fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node): integer, findPathToGoalAdjacentNodes?: boolean): integer[];
-fun playdate.pathfinder.graph:nodeWithID(id: integer): playdate.pathfinder.node?;
-fun playdate.pathfinder.graph:nodeWithXY(x: integer, y: integer): playdate.pathfinder.node?;
-fun playdate.pathfinder.graph:removeAllConnections(): nil;
-fun playdate.pathfinder.graph:removeAllConnectionsFromNodeWithID(id: integer, removeIncoming?: boolean): nil;
-fun playdate.pathfinder.graph:removeNode(node: playdate.pathfinder.node): nil;
-fun playdate.pathfinder.graph:removeNodeWithID(id: integer): nil;
-fun playdate.pathfinder.graph:removeNodeWithXY(x: integer, y: integer): nil;
-fun playdate.pathfinder.graph:setXYForNodeWithID(id: integer, x: integer, y: integer): nil;
-fun playdate.pathfinder.node:addConnection(node: playdate.pathfinder.node, weight: number, addReciprocalConnection: boolean): nil;
-fun playdate.pathfinder.node:addConnectionToNodeWithXY(x: integer, y: integer, weight: number, addReciprocalConnection: boolean): nil;
-fun playdate.pathfinder.node:addConnections(nodes: playdate.pathfinder.node[], weights: number[], addReciprocalConnections: boolean): nil;
-fun playdate.pathfinder.node:connectedNodes(): playdate.pathfinder.node[];
-fun playdate.pathfinder.node:removeAllConnections(removeIncoming?: boolean): nil;
-fun playdate.pathfinder.node:removeConnection(node: playdate.pathfinder.node, removeReciprocal?: boolean): nil;
-fun playdate.pathfinder.node:setXY(x: integer, y: integer): nil;
-fun playdate.readAccelerometer(): (x: number, y: number, z: number);
-fun playdate.resetElapsedTime(): nil;
-fun playdate.rightButtonDown(): nil;
-fun playdate.rightButtonUp(): nil;
-fun playdate.setAutoLockDisabled(disable: boolean): nil;
-fun playdate.setCollectsGarbage(flag: boolean): nil;
-fun playdate.setCrankSoundsDisabled(disable: boolean): nil;
-fun playdate.setDebugDrawColor(r: number, g: number, b: number, a: number): nil;
-fun playdate.setGCScaling(min: number, max: number): nil;
-fun playdate.setMenuImage(image: playdate.graphics.image, xOffset?: integer): nil;
-fun playdate.setMinimumGCTime(ms: integer): nil;
-fun playdate.setNewlinePrinted(flag: boolean): nil;
-fun playdate.setStatsInterval(seconds: number): nil;
-fun playdate.shouldDisplay24HourTime(): boolean;
+
+tbl playdate.menu;
+tbl Menu: playdate.menu;
+fun Menu:addCheckmarkMenuItem(title: string, initialValue?: boolean, callback?: function): nil;
+fun Menu:addMenuItem(title: string, callback: function): nil;
+fun Menu:addOptionsMenuItem(title: string, options: string[], initalValue?: string, callback?: function): nil;
+fun Menu:getMenuItems(): MenuItem[];
+fun Menu:removeAllMenuItems(): nil;
+fun Menu:removeMenuItem(menuItem: Menu): nil;
+
+tbl playdate.menu.item;
+tbl MenuItem: playdate.menu.item = { title: string, value: (integer|boolean|string)};
+fun MenuItem:getTitle(): string;
+fun MenuItem:getValue(): (integer|boolean|string);
+fun MenuItem:setCallback(callback: function): nil;
+fun MenuItem:setTitle(newTitle: string): nil;
+fun MenuItem:setValue(newValue: (integer|boolean|string)): nil;
+
+tbl playdate.pathfinder;
+
+tbl playdate.pathfinder.graph;
+fun playdate.pathfinder.graph.new(nodeCount?: integer, coordinates?: integer[][]): PathFinderGraph;
+fun playdate.pathfinder.graph.new2DGrid(width: integer, height: integer, allowDiagonals?: boolean, includedNodes?: integer[]): PathFinderGraph;
+tbl PathFinderGraph: playdate.pathfinder.graph = {};
+fun PathFinderGraph:addConnectionToNodeWithID(fromNodeID: integer, toNodeID: integer, weight: number, addReciprocalConnection: boolean): nil;
+fun PathFinderGraph:addConnections(connections: integer[][]): nil;
+fun PathFinderGraph:addNewNode(id: integer, x?: integer, y?: integer, connectedNodes?: PathFinderNode[], weights?: number[], addReciprocalConnections?: boolean): nil;
+fun PathFinderGraph:addNewNodes(count: integer): nil;
+fun PathFinderGraph:addNode(node: PathFinderNode, connectedNodes?: PathFinderNode[], weights?: number[], addReciprocalConnections?: boolean): nil;
+fun PathFinderGraph:addNodes(nodes: PathFinderNode[]): nil;
+fun PathFinderGraph:allNodes(): PathFinderNode[];
+fun PathFinderGraph:findPath(startNode: PathFinderNode, goalNode: PathFinderNode, heuristicFunction?: fun(startNode: PathFinderNode, goalNode: PathFinderNode): integer, findPathToGoalAdjacentNodes?: boolean): PathFinderNode[];
+fun PathFinderGraph:findPathWithIDs(startNodeID: integer, goalNodeID: integer, heuristicFunction?: fun(startNode: PathFinderNode, goalNode: PathFinderNode): integer, findPathToGoalAdjacentNodes?: boolean): integer[];
+fun PathFinderGraph:nodeWithID(id: integer): PathFinderNode?;
+fun PathFinderGraph:nodeWithXY(x: integer, y: integer): PathFinderNode?;
+fun PathFinderGraph:removeAllConnections(): nil;
+fun PathFinderGraph:removeAllConnectionsFromNodeWithID(id: integer, removeIncoming?: boolean): nil;
+fun PathFinderGraph:removeNode(node: PathFinderNode): nil;
+fun PathFinderGraph:removeNodeWithID(id: integer): nil;
+fun PathFinderGraph:removeNodeWithXY(x: integer, y: integer): nil;
+fun PathFinderGraph:setXYForNodeWithID(id: integer, x: integer, y: integer): nil;
+
+tbl playdate.pathfinder.node;
+tbl PathFinderNode: playdate.pathfinder.node = { x: integer, y: integer, id: integer, };
+fun PathFinderNode:addConnection(node: PathFinderNode, weight: number, addReciprocalConnection: boolean): nil;
+fun PathFinderNode:addConnectionToNodeWithXY(x: integer, y: integer, weight: number, addReciprocalConnection: boolean): nil;
+fun PathFinderNode:addConnections(nodes: PathFinderNode[], weights: number[], addReciprocalConnections: boolean): nil;
+fun PathFinderNode:connectedNodes(): PathFinderNode[];
+fun PathFinderNode:removeAllConnections(removeIncoming?: boolean): nil;
+fun PathFinderNode:removeConnection(node: PathFinderNode, removeReciprocal?: boolean): nil;
+fun PathFinderNode:setXY(x: integer, y: integer): nil;
+
+tbl playdate.simulator;
 fun playdate.simulator.exit(): nil;
 fun playdate.simulator.getURL(url: string): string;
-fun playdate.simulator.writeToFile(image: playdate.graphics.image, path: string): nil;
-fun playdate.sound.addEffect(effect: playdate.sound.effect): nil;
-fun playdate.sound.bitcrusher.new(): playdate.sound.bitcrusher;
-fun playdate.sound.bitcrusher:setAmount(amt: number): nil;
-fun playdate.sound.bitcrusher:setAmountMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.bitcrusher:setMix(level: number): nil;
-fun playdate.sound.bitcrusher:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.bitcrusher:setUndersampling(amt: number): nil;
-fun playdate.sound.bitcrusher:setUndersamplingMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.channel.new(): playdate.sound.channel;
-fun playdate.sound.channel:addEffect(effect: playdate.sound.effect): nil;
-fun playdate.sound.channel:addSource(source: playdate.sound.source): nil;
-fun playdate.sound.channel:getVolume(): number;
-fun playdate.sound.channel:remove(): nil;
-fun playdate.sound.channel:removeEffect(effect: playdate.sound.effect): nil;
-fun playdate.sound.channel:removeSource(source: playdate.sound.source): nil;
-fun playdate.sound.channel:setPan(pan: number): number;
-fun playdate.sound.channel:setPanMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.channel:setVolume(volume: number): nil;
-fun playdate.sound.channel:setVolumeMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.controlsignal.new(): playdate.sound.controlsignal;
-fun playdate.sound.controlsignal:addEvent(event: table): nil;
-fun playdate.sound.controlsignal:addEvent(step: integer, value: number, interpolate?: boolean): nil;
-fun playdate.sound.controlsignal:clearEvents(): nil;
-fun playdate.sound.controlsignal:getControllerType(): integer;
-fun playdate.sound.controlsignal:setControllerType(number: integer): nil;
-fun playdate.sound.delayline.new(length: number): playdate.sound.delayline;
-fun playdate.sound.delayline:addTap(delay: number): nil;
-fun playdate.sound.delayline:setFeedback(level: number): nil;
-fun playdate.sound.delayline:setMix(level: number): nil;
-fun playdate.sound.delayline:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.delaylinetap:getVolume(): number;
-fun playdate.sound.delaylinetap:setDelay(time: number): nil;
-fun playdate.sound.delaylinetap:setDelayMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.delaylinetap:setFlipChannels(flag: boolean): nil;
-fun playdate.sound.delaylinetap:setVolume(level: number): nil;
-fun playdate.sound.envelope.new(attack?: number, decay?: number, sustain?: number, release?: number): playdate.sound.envelope;
-fun playdate.sound.envelope:setAttack(attack: number): nil;
-fun playdate.sound.envelope:setCurvature(amount: number): nil;
-fun playdate.sound.envelope:setDecay(decay: number): nil;
-fun playdate.sound.envelope:setGlobal(flag: boolean): nil;
-fun playdate.sound.envelope:setLegato(flag: boolean): nil;
-fun playdate.sound.envelope:setOffset(offset: number): nil;
-fun playdate.sound.envelope:setRateScaling(scaling: number, start?: number, _end: number): nil;
-fun playdate.sound.envelope:setRelease(release: number): nil;
-fun playdate.sound.envelope:setRetrigger(flag: boolean): nil;
-fun playdate.sound.envelope:setScale(scale: integer): nil;
-fun playdate.sound.envelope:setSustain(sustain: number): nil;
-fun playdate.sound.envelope:setVelocitySensitivity(amount: number): nil;
-fun playdate.sound.envelope:trigger(velocity: number, length?: number): nil;
-fun playdate.sound.fileplayer.new(buffersize?: number): playdate.sound.fileplayer;
-fun playdate.sound.fileplayer.new(path: string, buffersize?: number): playdate.sound.fileplayer;
-fun playdate.sound.fileplayer:didUnderrun(): boolean;
-fun playdate.sound.fileplayer:getLength(): number;
-fun playdate.sound.fileplayer:getOffset(): number;
-fun playdate.sound.fileplayer:getRate(): number;
-fun playdate.sound.fileplayer:getVolume(): (left_or_mono: number, right: number?);
-fun playdate.sound.fileplayer:isPlaying(): boolean;
-fun playdate.sound.fileplayer:load(path: string): nil;
-fun playdate.sound.fileplayer:pause(): nil;
-fun playdate.sound.fileplayer:play(repeatCount?: integer): (success: boolean, error: string?);
-fun playdate.sound.fileplayer:setBufferSize(seconds: number): nil;
-fun playdate.sound.fileplayer:setFinishCallback(func: function, arg?: any): nil;
-fun playdate.sound.fileplayer:setLoopCallback(callback: function, arg?: any): nil;
-fun playdate.sound.fileplayer:setLoopRange(start: number, _end: number, loopCallback?: fun(arg?: any): nil, arg?: any): nil;
-fun playdate.sound.fileplayer:setOffset(seconds: number): nil;
-fun playdate.sound.fileplayer:setRate(rate: integer): nil;
-fun playdate.sound.fileplayer:setRateMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.fileplayer:setStopOnUnderrun(flag: boolean): nil;
-fun playdate.sound.fileplayer:setVolume(left: number, right?: number, fadeSeconds?: number, fadeCallback?: fun(self: playdate.sound.fileplayer, arg?: any), arg?: any): nil;
-fun playdate.sound.fileplayer:stop(): nil;
+fun playdate.simulator.writeToFile(image: Image, path: string): nil;
+
+tbl playdate.sound = {
+    kFormat8bitMono: integer = 0,
+    kFormat8bitStereo: integer = 1,
+    kFormat16bitMono: integer = 2,
+    kFormat16bitStereo: integer = 3,
+    kLFOSquare: integer = 0,
+    kLFOTriangle: integer = 1,
+    kLFOSine: integer = 2,
+    kLFOSampleAndHold: integer = 3,
+    kLFOSawtoothUp: integer = 4,
+    kLFOSawtoothDown: integer = 5,
+    kWaveSquare: integer = 0,
+    kWaveTriangle: integer = 1,
+    kWaveSine: integer = 2,
+    kWaveNoise: integer = 3,
+    kWaveSawtooth: integer = 4,
+    kWavePOPhase: integer = 5,
+    kWavePODigital: integer = 6,
+    kWavePOVosim: integer = 7,
+};
+fun playdate.sound.addEffect(effect: SoundEffect): nil;
+fun playdate.sound.playingSources(): SoundSource[];
+fun playdate.sound.removeEffect(effect: SoundEffect): nil;
+fun playdate.sound.resetTime(): nil;
+fun playdate.sound.setOutputsActive(headphones: boolean, speaker: boolean): nil;
 fun playdate.sound.getCurrentTime(): number;
-fun playdate.sound.getHeadphoneState(changeCallback: function): (headphone: boolean, mic: boolean?);
+fun playdate.sound.getHeadphoneState(changeCallback?: fun(): nil): (headphone: boolean, mic: boolean?);
 fun playdate.sound.getSampleRate(): integer;
-fun playdate.sound.instrument.new(synth?: playdate.sound.synth): playdate.sound.instrument;
-fun playdate.sound.instrument:addVoice(v: Vector2D, note?: integer, rangeend?: integer, transpose?: integer): nil;
-fun playdate.sound.instrument:allNotesOff(): nil;
-fun playdate.sound.instrument:getVolume(): (left_or_mono: number, right: number?);
-fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
-fun playdate.sound.instrument:playMIDINote(note: (number|string), vel?: number, length?: number, when?: number): nil;
-fun playdate.sound.instrument:playNote(frequency: number, vel?: number, length?: number, when?: number): nil;
-fun playdate.sound.instrument:setTranspose(halfsteps: number): nil;
-fun playdate.sound.instrument:setVolume(left: integer, right?: integer): nil;
-fun playdate.sound.lfo.new(type?: integer): playdate.sound.lfo;
-fun playdate.sound.lfo:setArpeggio(note1: number, ...: number): nil;
-fun playdate.sound.lfo:setCenter(center: number): nil;
-fun playdate.sound.lfo:setDelay(holdoff: number, ramp: number): nil;
-fun playdate.sound.lfo:setDepth(depth: number): nil;
-fun playdate.sound.lfo:setGlobal(flag: boolean): nil;
-fun playdate.sound.lfo:setPhase(phase: number): nil;
-fun playdate.sound.lfo:setRate(rate: number): nil;
-fun playdate.sound.lfo:setRetrigger(flag: boolean): nil;
-fun playdate.sound.lfo:setType(type: integer): nil;
+
+tbl playdate.sound.effect;
+tbl SoundEffect: playdate.sound.effect;
+
+tbl playdate.sound.bitcrusher: SoundEffect;
+fun playdate.sound.bitcrusher.new(): BitCrusher;
+tbl BitCrusher: playdate.sound.bitcrusher = {};
+fun BitCrusher:setAmount(amt: number): nil;
+fun BitCrusher:setAmountMod(signal: Signal): nil;
+fun BitCrusher:setMix(level: number): nil;
+fun BitCrusher:setMixMod(signal: Signal): nil;
+fun BitCrusher:setUndersampling(amt: number): nil;
+fun BitCrusher:setUndersamplingMod(signal: Signal): nil;
+
+tbl playdate.sound.onepolefilter: SoundEffect;
+fun playdate.sound.onepolefilter.new(): OnePoleFilter;
+tbl OnePoleFilter: playdate.sound.onepolefilter = {};
+fun OnePoleFilter:setMix(level: number): nil;
+fun OnePoleFilter:setMixMod(signal: Signal): nil;
+fun OnePoleFilter:setParameter(p: number): nil;
+fun OnePoleFilter:setParameterMod(m: Signal): nil;
+
+tbl playdate.sound.overdrive: SoundEffect;
+fun playdate.sound.overdrive.new(): OverDrive;
+tbl OverDrive: playdate.sound.overdrive = {};
+fun OverDrive:setGain(level: number): nil;
+fun OverDrive:setLimit(level: number): nil;
+fun OverDrive:setLimitMod(signal: Signal): nil;
+fun OverDrive:setMix(level: number): nil;
+fun OverDrive:setMixMod(signal: Signal): nil;
+fun OverDrive:setOffset(level: number): nil;
+fun OverDrive:setOffsetMod(signal: Signaly): nil;
+
+tbl playdate.sound.ringmod: SoundEffect;
+fun playdate.sound.ringmod.new(): RingMod;
+tbl RingMod: playdate.sound.ringmod = {};
+fun RingMod:setFrequency(f: number): nil;
+fun RingMod:setFrequencyMod(signal: Signal): nil;
+fun RingMod:setMix(level: number): nil;
+fun RingMod:setMixMod(signal: Signal): nil;
+
+tbl playdate.sound.delayline: SoundEffect;
+fun playdate.sound.delayline.new(length: number): DelayLine;
+tbl DelayLine: playdate.sound.delayline = {};
+fun DelayLine:addTap(delay: number): DelayLineTap;
+fun DelayLine:setFeedback(level: number): nil;
+fun DelayLine:setMix(level: number): nil;
+fun DelayLine:setMixMod(signal: Signal): nil;
+
+tbl playdate.sound.twopolefilter: SoundEffect;
+fun playdate.sound.twopolefilter.new(type: integer): TwoPoleFilter;
+tbl TwoPoleFilter: playdate.sound.twopolefilter = {};
+fun TwoPoleFilter:setFrequency(f: number): nil;
+fun TwoPoleFilter:setFrequencyMod(signal: Signal): nil;
+fun TwoPoleFilter:setGain(g: number): nil;
+fun TwoPoleFilter:setMix(level: number): nil;
+fun TwoPoleFilter:setMixMod(signal: Signal): nil;
+fun TwoPoleFilter:setResonance(r: Rect): nil;
+fun TwoPoleFilter:setResonanceMod(signal: Signal): nil;
+fun TwoPoleFilter:setType(type: integer): nil;
+
+tbl playdate.sound.channel;
+fun playdate.sound.channel.new(): Channel;
+tbl Channel: playdate.sound.channel = {};
+fun Channel:addEffect(effect: SoundEffect): nil;
+fun Channel:addSource(source: SoundSource): nil;
+fun Channel:getVolume(): number;
+fun Channel:remove(): nil;
+fun Channel:removeEffect(effect: SoundEffect): nil;
+fun Channel:removeSource(source: SoundSource): nil;
+fun Channel:setPan(pan: number): number;
+fun Channel:setPanMod(signal: Signal): nil;
+fun Channel:setVolume(volume: number): nil;
+fun Channel:setVolumeMod(signal: Signal): nil;
+
+tbl playdate.sound.signal;
+tbl Signal: playdate.sound.signal;
+fun Signal:setOffset(offset: number): nil;
+fun Signal:setScale(scale: integer): nil;
+
+tbl playdate.sound.controlsignal: Signal;
+fun playdate.sound.controlsignal.new(): ControlSignal;
+tbl ControlSignal: playdate.sound.controlsignal = {
+    events: SoundControlEvent
+};
+fun ControlSignal:addEvent(event: table): nil;
+fun ControlSignal:addEvent(step: integer, value: number, interpolate?: boolean): nil;
+fun ControlSignal:clearEvents(): nil;
+fun ControlSignal:getControllerType(): integer;
+fun ControlSignal:setControllerType(number: integer): nil;
+
+tbl playdate.sound.envelope: Signal;
+fun playdate.sound.envelope.new(attack?: number, decay?: number, sustain?: number, release?: number): Envelope;
+tbl Envelope: playdate.sound.envelope = {};
+fun Envelope:setAttack(attack: number): nil;
+fun Envelope:setCurvature(amount: number): nil;
+fun Envelope:setDecay(decay: number): nil;
+fun Envelope:setGlobal(flag: boolean): nil;
+fun Envelope:setLegato(flag: boolean): nil;
+fun Envelope:setOffset(offset: number): nil;
+fun Envelope:setRateScaling(scaling: number, start?: number, _end: number): nil;
+fun Envelope:setRelease(release: number): nil;
+fun Envelope:setRetrigger(flag: boolean): nil;
+fun Envelope:setScale(scale: integer): nil;
+fun Envelope:setSustain(sustain: number): nil;
+fun Envelope:setVelocitySensitivity(amount: number): nil;
+fun Envelope:trigger(velocity: number, length?: number): nil;
+
+tbl playdate.sound.lfo: Signal
+fun playdate.sound.lfo.new(type?: integer): LFO;
+tbl LFO: playdate.sound.lfo = {};
+fun LFO:setArpeggio(note1: number, ...: number): nil;
+fun LFO:setCenter(center: number): nil;
+fun LFO:setDelay(holdoff: number, ramp: number): nil;
+fun LFO:setDepth(depth: number): nil;
+fun LFO:setGlobal(flag: boolean): nil;
+fun LFO:setPhase(phase: number): nil;
+fun LFO:setRate(rate: number): nil;
+fun LFO:setRetrigger(flag: boolean): nil;
+fun LFO:setType(type: integer): nil;
+
+tbl playdate.sound.source;
+tbl SoundSource;
+
+tbl playdate.sound.delaylinetap: SoundSource;
+tbl DelayLineTap: playdate.sound.delaylinetap = {};
+fun DelayLineTap:getVolume(): number;
+fun DelayLineTap:setDelay(time: number): nil;
+fun DelayLineTap:setDelayMod(signal: Signal): nil;
+fun DelayLineTap:setFlipChannels(flag: boolean): nil;
+fun DelayLineTap:setVolume(level: number): nil;
+
+tbl playdate.sound.fileplayer: SoundSource;
+fun playdate.sound.fileplayer.new(buffersize?: number): FilePlayer;
+fun playdate.sound.fileplayer.new(path: string, buffersize?: number): FilePlayer;
+tbl FilePlayer: playdate.sound.fileplayer = {};
+fun FilePlayer:didUnderrun(): boolean;
+fun FilePlayer:getLength(): number;
+fun FilePlayer:getOffset(): number;
+fun FilePlayer:getRate(): number;
+fun FilePlayer:getVolume(): (left_or_mono: number, right: number?);
+fun FilePlayer:isPlaying(): boolean;
+fun FilePlayer:load(path: string): nil;
+fun FilePlayer:pause(): nil;
+fun FilePlayer:play(repeatCount?: integer): (success: boolean, error: string?);
+fun FilePlayer:setBufferSize(seconds: number): nil;
+fun FilePlayer:setFinishCallback(func: fun(self: FilePlayer, arg?: any), arg?: any): nil;
+fun FilePlayer:setLoopCallback(callback: fun(self: FilePlayer, arg?: any), arg?: any): nil;
+fun FilePlayer:setLoopRange(start: number, _end: number, loopCallback?: fun(arg?: any): nil, arg?: any): nil;
+fun FilePlayer:setOffset(seconds: number): nil;
+fun FilePlayer:setRate(rate: integer): nil;
+fun FilePlayer:setRateMod(signal: Signal): nil;
+fun FilePlayer:setStopOnUnderrun(flag: boolean): nil;
+fun FilePlayer:setVolume(left: number, right?: number, fadeSeconds?: number, fadeCallback?: fun(self: FilePlayer, arg?: any), arg?: any): nil;
+fun FilePlayer:stop(): nil;
+
+tbl playdate.sound.instrument: SoundSource;
+fun playdate.sound.instrument.new(synth?: Synth): Instrument;
+tbl Instrument: playdate.sound.instrument = {};
+fun Instrument:addVoice(v: Vector2D, note?: integer, rangeend?: integer, transpose?: integer): nil;
+fun Instrument:allNotesOff(): nil;
+fun Instrument:getVolume(): (left_or_mono: number, right: number?);
+fun Instrument:noteOff(note: integer, when?: number): nil;
+fun Instrument:playMIDINote(note: (number|string), vel?: number, length?: number, when?: number): nil;
+fun Instrument:playNote(frequency: number, vel?: number, length?: number, when?: number): nil;
+fun Instrument:setTranspose(halfsteps: number): nil;
+fun Instrument:setVolume(left: integer, right?: integer): nil;
+
+tbl playdate.sound.sampleplayer: SoundSource;
+fun playdate.sound.sampleplayer.new(path: string): SamplePlayer;
+fun playdate.sound.sampleplayer.new(sample: Sample): SamplePlayer;
+tbl SamplePlayer: playdate.sound.sampleplayer = {};
+fun SamplePlayer:copy(): SamplePlayer;
+fun SamplePlayer:getLength(): number;
+fun SamplePlayer:getOffset(): number;
+fun SamplePlayer:getRate(): number;
+fun SamplePlayer:getSample(): Sample;
+fun SamplePlayer:getVolume(): (left_or_mono: number, right: number?);
+fun SamplePlayer:isPlaying(): boolean;
+fun SamplePlayer:play(repeatCount?: integer, rate?: integer): nil;
+fun SamplePlayer:playAt(when: number, vol?: number, rightvol?: number, rate?: integer): nil;
+fun SamplePlayer:setFinishCallback(func: function, arg?: any): nil;
+fun SamplePlayer:setLoopCallback(callback: function, arg?: any): nil;
+fun SamplePlayer:setOffset(seconds: number): nil;
+fun SamplePlayer:setPaused(flag: boolean): nil;
+fun SamplePlayer:setPlayRange(start: integer, _end: integer): nil;
+fun SamplePlayer:setRate(rate: integer): nil;
+fun SamplePlayer:setRateMod(signal: Signal): nil;
+fun SamplePlayer:setSample(sample: Sample): nil;
+fun SamplePlayer:setVolume(left: integer, right?: integer): nil;
+fun SamplePlayer:stop(): nil;
+
+tbl playdate.sound.synth: SoundSource;
+fun playdate.sound.synth.new(sample: Sample, sustainStart?: number, sustainEnd?: number): Synth;
+fun playdate.sound.synth.new(waveform?: integer): Synth;
+tbl Synth: playdate.sound.synth = {};
+fun Synth:copy(): Synth;
+fun Synth:getEnvelope(): Envelope;
+fun Synth:getVolume(): (left_or_mono: number, right: number?);
+fun Synth:isPlaying(): boolean;
+fun Synth:noteOff(): nil;
+fun Synth:playMIDINote(note: (number|string), volume?: number, length?: number, when?: number): boolean;
+fun Synth:playNote(pitch: (number|string), volume?: number, length?: number, when?: number): boolean;
+fun Synth:setADSR(attack: number, decay: number, sustain: number, release: number, curvature: number): nil;
+fun Synth:setAmplitudeMod(signal: Signal): nil;
+fun Synth:setAttack(time: number): nil;
+fun Synth:setDecay(time: number): nil;
+fun Synth:setEnvelopeCurvature(amount: number): nil;
+fun Synth:setFinishCallback(_function: function): nil;
+fun Synth:setFrequencyMod(signal: Signal): nil;
+fun Synth:setLegato(flag: boolean): nil;
+fun Synth:setParameter(parameter: integer, value: number): nil;
+fun Synth:setParameterMod(parameter: integer, signal: Signal): nil;
+fun Synth:setRelease(time: number): nil;
+fun Synth:setSustain(level: number): nil;
+fun Synth:setVolume(left: integer, right?: integer): nil;
+fun Synth:setWaveform(waveform: integer): nil;
+fun Synth:stop(): nil;
+
+tbl playdate.sound.micinput;
 fun playdate.sound.micinput.getLevel(): number;
 fun playdate.sound.micinput.getSource(): string;
-fun playdate.sound.micinput.recordToSample(buffer: playdate.sound.sample, completionCallback: fun(sample: playdate.sound.sample): nil): nil;
+fun playdate.sound.micinput.recordToSample(buffer: Sample, completionCallback: fun(sample: Sample): nil): nil;
 fun playdate.sound.micinput.startListening(): nil;
 fun playdate.sound.micinput.stopListening(): nil;
 fun playdate.sound.micinput.stopRecording(): nil;
-fun playdate.sound.onepolefilter.new(): playdate.sound.onepolefilter;
-fun playdate.sound.onepolefilter:setMix(level: number): nil;
-fun playdate.sound.onepolefilter:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.onepolefilter:setParameter(p: number): nil;
-fun playdate.sound.onepolefilter:setParameterMod(m: playdate.sound.signal): nil;
-fun playdate.sound.overdrive.new(): playdate.sound.overdrive;
-fun playdate.sound.overdrive:setGain(level: number): nil;
-fun playdate.sound.overdrive:setLimit(level: number): nil;
-fun playdate.sound.overdrive:setLimitMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.overdrive:setMix(level: number): nil;
-fun playdate.sound.overdrive:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.overdrive:setOffset(level: number): nil;
-fun playdate.sound.overdrive:setOffsetMod(signal: playdate.sound.signaly): nil;
-fun playdate.sound.playingSources(): playdate.sound.source[];
-fun playdate.sound.removeEffect(effect: playdate.sound.effect): nil;
-fun playdate.sound.resetTime(): nil;
-fun playdate.sound.ringmod.new(): playdate.sound.ringmod;
-fun playdate.sound.ringmod:setFrequency(f: number): nil;
-fun playdate.sound.ringmod:setFrequencyMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.ringmod:setMix(level: number): nil;
-fun playdate.sound.ringmod:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.sample.new(path: string): playdate.sound.sample;
-fun playdate.sound.sample:getFormat(): integer;
-fun playdate.sound.sample:getLength(): (sample_seconds: number, buffer_size_seconds: number);
-fun playdate.sound.sample:getSampleRate(): integer;
-fun playdate.sound.sample:getSubsample(startOffset: integer, endOffset: integer): playdate.sound.sample;
-fun playdate.sound.sample:load(path: string): boolean;
-fun playdate.sound.sample:play(repeatCount?: integer, rate?: integer): nil;
-fun playdate.sound.sample:playAt(when: number, vol?: number, rightvol?: number, rate?: integer): nil;
-fun playdate.sound.sample:save(filename: string): nil;
-fun playdate.sound.sampleplayer.new(path: string): playdate.sound.sampleplayer;
-fun playdate.sound.sampleplayer.new(sample: playdate.sound.sample): playdate.sound.sampleplayer;
-fun playdate.sound.sampleplayer:copy(): playdate.sound.sampleplayer;
-fun playdate.sound.sampleplayer:getLength(): number;
-fun playdate.sound.sampleplayer:getOffset(): number;
-fun playdate.sound.sampleplayer:getRate(): number;
-fun playdate.sound.sampleplayer:getSample(): playdate.sound.sample;
-fun playdate.sound.sampleplayer:getVolume(): (left_or_mono: number, right: number?);
-fun playdate.sound.sampleplayer:isPlaying(): boolean;
-fun playdate.sound.sampleplayer:play(repeatCount?: integer, rate?: integer): nil;
-fun playdate.sound.sampleplayer:playAt(when: number, vol?: number, rightvol?: number, rate?: integer): nil;
-fun playdate.sound.sampleplayer:setFinishCallback(func: function, arg?: any): nil;
-fun playdate.sound.sampleplayer:setLoopCallback(callback: function, arg?: any): nil;
-fun playdate.sound.sampleplayer:setOffset(seconds: number): nil;
-fun playdate.sound.sampleplayer:setPaused(flag: boolean): nil;
-fun playdate.sound.sampleplayer:setPlayRange(start: integer, _end: integer): nil;
-fun playdate.sound.sampleplayer:setRate(rate: integer): nil;
-fun playdate.sound.sampleplayer:setRateMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.sampleplayer:setSample(sample: playdate.sound.sample): nil;
-fun playdate.sound.sampleplayer:setVolume(left: integer, right?: integer): nil;
-fun playdate.sound.sampleplayer:stop(): nil;
-fun playdate.sound.sequence.new(midi_path: string): playdate.sound.sequence;
-fun playdate.sound.sequence:addTrack(track?: playdate.sound.track): nil;
-fun playdate.sound.sequence:allNotesOff(): nil;
-fun playdate.sound.sequence:getCurrentStep(): number;
-fun playdate.sound.sequence:getLength(): number;
-fun playdate.sound.sequence:getTempo(): number;
-fun playdate.sound.sequence:getTrackAtIndex(n: integer): playdate.sound.track;
-fun playdate.sound.sequence:getTrackCount(): integer;
-fun playdate.sound.sequence:goToStep(step: integer, play?: boolean): nil;
-fun playdate.sound.sequence:isPlaying(): boolean;
-fun playdate.sound.sequence:play(finishCallback?: fun(self: playdate.sound.sequence): nil): nil;
-fun playdate.sound.sequence:setLoops(loopCount: integer): nil;
-fun playdate.sound.sequence:setLoops(startStep: integer, endStep: integer, loopCount?: integer): nil;
-fun playdate.sound.sequence:setTempo(stepsPerSecond: number): nil;
-fun playdate.sound.sequence:setTrackAtIndex(n: integer, track: playdate.sound.track): nil;
-fun playdate.sound.sequence:stop(): nil;
-fun playdate.sound.setOutputsActive(headphones: boolean, speaker: boolean): nil;
-fun playdate.sound.signal:setOffset(offset: number): nil;
-fun playdate.sound.signal:setScale(scale: integer): nil;
-fun playdate.sound.synth.new(sample: playdate.sound.sample, sustainStart?: number, sustainEnd?: number): playdate.sound.synth;
-fun playdate.sound.synth.new(waveform?: integer): playdate.sound.synth;
-fun playdate.sound.synth:copy(): playdate.sound.synth;
-fun playdate.sound.synth:getEnvelope(): playdate.sound.envelope;
-fun playdate.sound.synth:getVolume(): (left_or_mono: number, right: number?);
-fun playdate.sound.synth:isPlaying(): boolean;
-fun playdate.sound.synth:noteOff(): nil;
-fun playdate.sound.synth:playMIDINote(note: (number|string), volume?: number, length?: number, when?: number): boolean;
-fun playdate.sound.synth:playNote(pitch: (number|string), volume?: number, length?: number, when?: number): boolean;
-fun playdate.sound.synth:setADSR(attack: number, decay: number, sustain: number, release: number, curvature: number): nil;
-fun playdate.sound.synth:setAmplitudeMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.synth:setAttack(time: number): nil;
-fun playdate.sound.synth:setDecay(time: number): nil;
-fun playdate.sound.synth:setEnvelopeCurvature(amount: number): nil;
-fun playdate.sound.synth:setFinishCallback(_function: function): nil;
-fun playdate.sound.synth:setFrequencyMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.synth:setLegato(flag: boolean): nil;
-fun playdate.sound.synth:setParameter(parameter: integer, value: number): nil;
-fun playdate.sound.synth:setParameterMod(parameter: integer, signal: playdate.sound.signal): nil;
-fun playdate.sound.synth:setRelease(time: number): nil;
-fun playdate.sound.synth:setSustain(level: number): nil;
-fun playdate.sound.synth:setVolume(left: integer, right?: integer): nil;
-fun playdate.sound.synth:setWaveform(waveform: integer): nil;
-fun playdate.sound.synth:stop(): nil;
+
+tbl playdate.sound.sample;
+fun playdate.sound.sample.new(path: string): Sample;
+tbl Sample: playdate.sound.sample = {};
+fun Sample:getFormat(): integer;
+fun Sample:getLength(): (sample_seconds: number, buffer_size_seconds: number);
+fun Sample:getSampleRate(): integer;
+fun Sample:getSubsample(startOffset: integer, endOffset: integer): Sample;
+fun Sample:load(path: string): boolean;
+fun Sample:play(repeatCount?: integer, rate?: integer): nil;
+fun Sample:playAt(when: number, vol?: number, rightvol?: number, rate?: integer): nil;
+fun Sample:save(filename: string): nil;
+
+tbl playdate.sound.sequence;
+fun playdate.sound.sequence.new(midi_path: string): Sequence;
+tbl Sequence: playdate.sound.sequence = {};
+fun Sequence:addTrack(track?: Track): nil;
+fun Sequence:allNotesOff(): nil;
+fun Sequence:getCurrentStep(): number;
+fun Sequence:getLength(): number;
+fun Sequence:getTempo(): number;
+fun Sequence:getTrackAtIndex(n: integer): Track;
+fun Sequence:getTrackCount(): integer;
+fun Sequence:goToStep(step: integer, play?: boolean): nil;
+fun Sequence:isPlaying(): boolean;
+fun Sequence:play(finishCallback?: fun(self: Sequence): nil): nil;
+fun Sequence:setLoops(loopCount: integer): nil;
+fun Sequence:setLoops(startStep: integer, endStep: integer, loopCount?: integer): nil;
+fun Sequence:setTempo(stepsPerSecond: number): nil;
+fun Sequence:setTrackAtIndex(n: integer, track: Track): nil;
+fun Sequence:stop(): nil;
+
+tbl playdate.sound.track;
 fun playdate.sound.track.new(): playdate.sound.track;
-fun playdate.sound.track:addControlSignal(s: playdate.sound.controlsignal): nil;
-fun playdate.sound.track:addNote(step: integer, note: (string|integer), length: number, velocity?: number): nil;
-fun playdate.sound.track:addNote(table: (_SoundTrackNoteIn|_SoundTrackNote)): nil;
-fun playdate.sound.track:clearNotes(): nil;
-fun playdate.sound.track:getControlSignals(): playdate.sound.controlsignal[];
-fun playdate.sound.track:getInstrument(): playdate.sound.instrument;
-fun playdate.sound.track:getLength(): integer;
-fun playdate.sound.track:getNotes(step?: integer, endstep?: integer): _SoundTrackNote[];
-fun playdate.sound.track:getNotesActive(): integer;
-fun playdate.sound.track:getPolyphony(): integer;
-fun playdate.sound.track:removeNote(step: integer, note: integer): nil;
-fun playdate.sound.track:setInstrument(inst: playdate.sound.instrument): nil;
-fun playdate.sound.track:setMuted(flag: boolean): nil;
-fun playdate.sound.track:setNotes(list: table[]): nil;
-fun playdate.sound.twopolefilter.new(type: integer): playdate.sound.twopolefilter;
-fun playdate.sound.twopolefilter:setFrequency(f: number): nil;
-fun playdate.sound.twopolefilter:setFrequencyMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.twopolefilter:setGain(g: number): nil;
-fun playdate.sound.twopolefilter:setMix(level: number): nil;
-fun playdate.sound.twopolefilter:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.twopolefilter:setResonance(r: Rect): nil;
-fun playdate.sound.twopolefilter:setResonanceMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.twopolefilter:setType(type: integer): nil;
-fun playdate.start(): nil;
-fun playdate.startAccelerometer(): nil;
-fun playdate.stop(): nil;
-fun playdate.stopAccelerometer(): nil;
+tbl Track: playdate.sound.track;
+fun Track:addControlSignal(s: ControlSignal): nil;
+fun Track:addNote(step: integer, note: (string|integer), length: number, velocity?: number): nil;
+fun Track:addNote(table: (SoundTrackNoteIn|SoundTrackNote)): nil;
+fun Track:clearNotes(): nil;
+fun Track:getControlSignals(): ControlSignal[];
+fun Track:getInstrument(): Instrument;
+fun Track:getLength(): integer;
+fun Track:getNotes(step?: integer, endstep?: integer): SoundTrackNote[];
+fun Track:getNotesActive(): integer;
+fun Track:getPolyphony(): integer;
+fun Track:removeNote(step: integer, note: integer): nil;
+fun Track:setInstrument(inst: Instrument): nil;
+fun Track:setMuted(flag: boolean): nil;
+fun Track:setNotes(list: table[]): nil;
+
+tbl playdate.sound.track;
+tbl SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
+tbl SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
+
+tbl playdate.string;
 fun playdate.string.UUID(length: number): string;
 fun playdate.string.trimLeadingWhitespace(string: string): string;
 fun playdate.string.trimTrailingWhitespace(string: string): string;
 fun playdate.string.trimWhitespace(string: string): string;
-fun playdate.timeFromEpoch(seconds: integer, milliseconds: integer): _DateTime;
-fun playdate.timer.allTimers(): nil;
-fun playdate.timer.keyRepeatTimer(callback: function, ...: any): nil;
-fun playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring: integer, delayAfterSecondFiring: integer, callback: function, ...: any): nil;
-fun playdate.timer.new(duration: integer, callback: function, ...: any): playdate.timer;
-fun playdate.timer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: function): nil;
+
+tbl playdate.timer;
+fun playdate.timer.allTimers(): Timer[];
+fun playdate.timer.keyRepeatTimer(callback: function, ...: any): Timer;
+fun playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring: integer, delayAfterSecondFiring: integer, callback: function, ...: any): Timer;
+fun playdate.timer.new(duration: integer, callback: function, ...: any): Timer;
+fun playdate.timer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: function): Timer;
 fun playdate.timer.performAfterDelay(delay: integer, callback: function, ...: any): nil;
 fun playdate.timer.updateCallback(...: any): nil;
 fun playdate.timer.updateTimers(): nil;
-fun playdate.timer:pause(): nil;
-fun playdate.timer:remove(): nil;
-fun playdate.timer:reset(): nil;
-fun playdate.timer:start(): nil;
+tbl Timer: playdate.timer = {
+    currentTime: integer,
+    delay: integer,
+    discardOnCompletion: boolean,
+    duration: integer,
+    timeLeft: integer,
+    repeats: boolean,
+    reverses: boolean,
+    timerEndedArgs: any[]
+};
+fun Timer:pause(): nil;
+fun Timer:remove(): nil;
+fun Timer:reset(): nil;
+fun Timer:start(): nil;
+
+tbl playdate.ui;
+
+tbl playdate.ui.crankIndicator = {
+    clockwise: boolean,
+};
 fun playdate.ui.crankIndicator:start(): nil;
 fun playdate.ui.crankIndicator:update(): nil;
-fun playdate.ui.gridview.new(cellWidth: integer, cellHeight: integer): playdate.ui.gridview;
-fun playdate.ui.gridview:addHorizontalDividerAbove(section: integer, row: integer): nil;
-fun playdate.ui.gridview:drawCell(section: integer, row: integer, column: integer, selected: boolean, x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.ui.gridview:drawHorizontalDivider(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.ui.gridview:drawInRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.ui.gridview:drawSectionHeader(section: integer, x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.ui.gridview:getCellBounds(section: integer, row: integer, column: integer, gridWidth?: integer): (x: integer, y: integer, width: integer, height: integer);
-fun playdate.ui.gridview:getHorizontalDividerHeight(): integer;
-fun playdate.ui.gridview:getNumberOfColumns(): integer;
-fun playdate.ui.gridview:getNumberOfRowsInSection(section: integer): integer;
-fun playdate.ui.gridview:getNumberOfSections(): integer;
-fun playdate.ui.gridview:getScrollPosition(): (x: integer, y: integer);
-fun playdate.ui.gridview:getSectionHeaderHeight(): integer;
-fun playdate.ui.gridview:getSelectedRow(): integer;
-fun playdate.ui.gridview:getSelection(): (section: integer, row: integer, column: integer);
-fun playdate.ui.gridview:removeHorizontalDividers(): nil;
-fun playdate.ui.gridview:scrollCellToCenter(section: integer, row: integer, column: integer, animated?: boolean): nil;
-fun playdate.ui.gridview:scrollToCell(section: integer, row: integer, column: integer, animated?: boolean): nil;
-fun playdate.ui.gridview:scrollToRow(row: integer, animated?: boolean): nil;
-fun playdate.ui.gridview:scrollToTop(animated?: boolean): nil;
-fun playdate.ui.gridview:selectNextColumn(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
-fun playdate.ui.gridview:selectNextRow(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
-fun playdate.ui.gridview:selectPreviousColumn(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
-fun playdate.ui.gridview:selectPreviousRow(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
-fun playdate.ui.gridview:setCellPadding(left: integer, right: integer, top: integer, bottom: integer): nil;
-fun playdate.ui.gridview:setCellSize(cellWidth: integer, cellHeight: integer): nil;
-fun playdate.ui.gridview:setContentInset(left: integer, right: integer, top: integer, bottom: integer): nil;
-fun playdate.ui.gridview:setHorizontalDividerHeight(height: integer): nil;
-fun playdate.ui.gridview:setNumberOfColumns(num: integer): nil;
-fun playdate.ui.gridview:setNumberOfRows(...: integer): nil;
-fun playdate.ui.gridview:setNumberOfRowsInSection(section: integer, num: integer): nil;
-fun playdate.ui.gridview:setNumberOfSections(num: integer): nil;
-fun playdate.ui.gridview:setScrollDuration(ms: integer): nil;
-fun playdate.ui.gridview:setScrollPosition(x: integer, y: integer, animated?: boolean): nil;
-fun playdate.ui.gridview:setSectionHeaderHeight(height: integer): nil;
-fun playdate.ui.gridview:setSectionHeaderPadding(left: integer, right: integer, top: integer, bottom: integer): nil;
-fun playdate.ui.gridview:setSelectedRow(row: integer): nil;
-fun playdate.ui.gridview:setSelection(section: integer, row: integer, column: integer): nil;
-fun playdate.upButtonDown(): nil;
-fun playdate.upButtonUp(): nil;
-fun playdate.update(): nil;
-fun playdate.wait(milliseconds: integer): nil;
-fun print(...: any): nil;
-fun printTable(table: table): nil;
-fun sample(name: string, _function: function): nil;
+
+tbl playdate.ui.gridview;
+fun playdate.ui.gridview.new(cellWidth: integer, cellHeight: integer): GridView;
+tbl GridView: playdate.ui.gridview = {
+    needsDisplay:boolean,
+    backgroundImage: (Image|NineSlice),
+    isScrolling:boolean,
+    scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number,
+    easingAmplitude?: number, easingPeriod?: number,
+    changeRowOnColumnWrap: boolean,
+    scrollCellsToCenter: boolean,
+};
+fun GridView:addHorizontalDividerAbove(section: integer, row: integer): nil;
+fun GridView:drawCell(section: integer, row: integer, column: integer, selected: boolean, x: integer, y: integer, width: integer, height: integer): nil;
+fun GridView:drawHorizontalDivider(x: integer, y: integer, width: integer, height: integer): nil;
+fun GridView:drawInRect(x: integer, y: integer, width: integer, height: integer): nil;
+fun GridView:drawSectionHeader(section: integer, x: integer, y: integer, width: integer, height: integer): nil;
+fun GridView:getCellBounds(section: integer, row: integer, column: integer, gridWidth?: integer): (x: integer, y: integer, width: integer, height: integer);
+fun GridView:getHorizontalDividerHeight(): integer;
+fun GridView:getNumberOfColumns(): integer;
+fun GridView:getNumberOfRowsInSection(section: integer): integer;
+fun GridView:getNumberOfSections(): integer;
+fun GridView:getScrollPosition(): (x: integer, y: integer);
+fun GridView:getSectionHeaderHeight(): integer;
+fun GridView:getSelectedRow(): integer;
+fun GridView:getSelection(): (section: integer, row: integer, column: integer);
+fun GridView:removeHorizontalDividers(): nil;
+fun GridView:scrollCellToCenter(section: integer, row: integer, column: integer, animated?: boolean): nil;
+fun GridView:scrollToCell(section: integer, row: integer, column: integer, animated?: boolean): nil;
+fun GridView:scrollToRow(row: integer, animated?: boolean): nil;
+fun GridView:scrollToTop(animated?: boolean): nil;
+fun GridView:selectNextColumn(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
+fun GridView:selectNextRow(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
+fun GridView:selectPreviousColumn(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
+fun GridView:selectPreviousRow(wrapSelection: boolean, scrollToSelection?: boolean, animate?: boolean): nil;
+fun GridView:setCellPadding(left: integer, right: integer, top: integer, bottom: integer): nil;
+fun GridView:setCellSize(cellWidth: integer, cellHeight: integer): nil;
+fun GridView:setContentInset(left: integer, right: integer, top: integer, bottom: integer): nil;
+fun GridView:setHorizontalDividerHeight(height: integer): nil;
+fun GridView:setNumberOfColumns(num: integer): nil;
+fun GridView:setNumberOfRows(...: integer): nil;
+fun GridView:setNumberOfRowsInSection(section: integer, num: integer): nil;
+fun GridView:setNumberOfSections(num: integer): nil;
+fun GridView:setScrollDuration(ms: integer): nil;
+fun GridView:setScrollPosition(x: integer, y: integer, animated?: boolean): nil;
+fun GridView:setSectionHeaderHeight(height: integer): nil;
+fun GridView:setSectionHeaderPadding(left: integer, right: integer, top: integer, bottom: integer): nil;
+fun GridView:setSelectedRow(row: integer): nil;
+fun GridView:setSelection(section: integer, row: integer, column: integer): nil;
+
+tbl table;
 fun table.create(arrayCount: integer, hashCount: integer): table;
 fun table.deepcopy(source: table): table;
 fun table.getsize(table: table): (arrayCount: integer, hashCount: integer);
 fun table.indexOfElement(table: table, element: any): integer?;
 fun table.shallowcopy(source: table, destination?: table): table;
+
 fun where(): string;
+fun print(...: any): nil;
+fun printTable(table: table): nil;
+fun sample(name: string, _function: function): nil;
+
+tbl DateTime = {
+    year: integer,
+    month: integer,
+    day: integer,
+    weekday: integer,
+    hour: integer,
+    minute: integer,
+    second: integer,
+    millisecond: integer,
+};
+tbl InputHandler = {
+    AButtonDown?: fun(),
+    AButtonHeld?: fun(),
+    AButtonUp?: fun(),
+    BButtonDown?: fun(),
+    BButtonHeld?: fun(),
+    BButtonUp?: fun(),
+    downButtonDown?: fun(),
+    downButtonUp?: fun(),
+    leftButtonDown?: fun(),
+    leftButtonUp?: fun(),
+    rightButtonDown?: fun(),
+    rightButtonUp?: fun(),
+    upButtonDown?: fun(),
+    upButtonUp?: fun(),
+    cranked?: fun(change:number, acceleratedChange:number)
+};
+tbl Metadata = {
+    name: string,
+    author: string,
+    description: string,
+    bundleID: string,
+    version: string,
+    buildNumber: integer,
+    pdxversion: integer,
+    imagePath?: string,
+    launchSoundPath?: string,
+    contentWarning?: string,
+    contentWarning2?: string,
+    ...: string,
+};
+tbl ModTime = {
+    year: integer,
+    month: integer,
+    day: integer,
+    hour: integer,
+    minute: integer,
+    second: integer,
+};
+tbl PowerStatus = {
+    charging: boolean,
+    USB: boolean,
+    screws: boolean,
+};
+tbl SoundControlEvent: table = {
+    step: integer,
+    value: number,
+    interpolate?: boolean,
+};
+tbl SpriteCollisionData = {
+    sprite: Sprite,
+    other: Sprite,
+    type: integer,
+    overlaps: boolean,
+    ti: number,
+    move: Vector2D,
+    normal: Vector2D,
+    touch: Point,
+    spriteRect: Rect,
+    otherRect: Rect,
+    bounce?: Point,
+    slide?: Point,
+};
+tbl SpriteCollisionInfo = {
+    sprite: Sprite,
+    entryPoint: Point,
+    exitPoint: Point,
+    t1: number,
+    t2: number,
+};
+tbl SystemInfo = {
+    buildtime: string,
+    commit: string,
+    pdxcompatversion: integer,
+    pdxversion: integer,
+};
+tbl SystemStats = {
+    " kernel": number,
+    " game": number,
+    " audio": number,
+};
