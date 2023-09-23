@@ -262,7 +262,8 @@ function playdate.GMTTimeFromEpoch(seconds, milliseconds) end
 ---@return boolean
 function playdate.accelerometerIsRunning() end
 
-
+---@return api_version integer
+---@return runtime_minimum_api_version integer
 function playdate.apiVersion() end
 
 ---@param button integer
@@ -315,11 +316,13 @@ function playdate.downButtonUp() end
 function playdate.drawFPS(x, y) end
 
 ---@param time _DateTime
-
+---@return seconds integer
+---@return milliseconds integer
 function playdate.epochFromGMTTime(time) end
 
 ---@param time table
-
+---@return seconds integer
+---@return milliseconds integer
 function playdate.epochFromTime(time) end
 
 ---@return nil
@@ -337,7 +340,9 @@ function playdate.getBatteryPercentage() end
 ---@return number
 function playdate.getBatteryVoltage() end
 
-
+---@return current integer
+---@return pressed integer
+---@return released integer
 function playdate.getButtonState() end
 
 ---@return number
@@ -371,7 +376,8 @@ function playdate.getPowerStatus() end
 ---@return boolean
 function playdate.getReduceFlashing() end
 
-
+---@return seconds integer
+---@return milliseconds integer
 function playdate.getSecondsSinceEpoch() end
 
 ---@return _SystemStats
@@ -403,7 +409,9 @@ function playdate.leftButtonDown() end
 ---@return nil
 function playdate.leftButtonUp() end
 
-
+---@return x number
+---@return y number
+---@return z number
 function playdate.readAccelerometer() end
 
 ---@return nil
@@ -543,10 +551,12 @@ function playdate.display.getHeight() end
 ---@return boolean
 function playdate.display.getInverted() end
 
-
+---@return x integer
+---@return y integer
 function playdate.display.getMosaic() end
 
-
+---@return x integer
+---@return y integer
 function playdate.display.getOffset() end
 
 ---@return playdate.geometry.rect
@@ -558,7 +568,8 @@ function playdate.display.getRefreshRate() end
 ---@return integer
 function playdate.display.getScale() end
 
-
+---@return width integer
+---@return height integer
 function playdate.display.getSize() end
 
 ---@return integer
@@ -944,7 +955,8 @@ function playdate.file.modtime(path) end
 
 ---@param path string
 ---@param mode? integer
-
+---@return file playdate.file.file
+---@return error string
 function playdate.file.open(path, mode) end
 
 ---@param path string
@@ -967,7 +979,8 @@ function playdate.file.file:close() end
 function playdate.file.file:flush() end
 
 ---@param numberOfBytes integer
-
+---@return numberOfBytes integer
+---@return error string
 function playdate.file.file:read(numberOfBytes) end
 
 ---@return string
@@ -981,7 +994,8 @@ function playdate.file.file:seek(offset) end
 function playdate.file.file:tell() end
 
 ---@param string string
-
+---@return bytes_written integer
+---@return error string
 function playdate.file.file:write(string) end
 
 ---@return playdate.frameTimer[]
@@ -1207,7 +1221,8 @@ function playdate.geometry.affineTransform:transformPolygon(p) end
 
 ---@param x integer
 ---@param y integer
-
+---@return x number
+---@return y number
 function playdate.geometry.affineTransform:transformXY(x, y) end
 
 ---@param r playdate.geometry.rect
@@ -1271,7 +1286,9 @@ function playdate.geometry.arc:setIsClockwise(flag) end
 ---@param y3 integer
 ---@param x4 integer
 ---@param y4 integer
-
+---@return intersects boolean
+---@return x number
+---@return y number
 function playdate.geometry.lineSegment.fast_intersection(x1, y1, x2, y2, x3, y3, x4, y4) end
 
 ---@param x1 integer
@@ -1289,15 +1306,18 @@ function playdate.geometry.lineSegment:closestPointOnLineToPoint(p) end
 function playdate.geometry.lineSegment:copy() end
 
 ---@param ls playdate.geometry.lineSegment
-
+---@return intersects boolean
+---@return intersection playdate.geometry.point
 function playdate.geometry.lineSegment:intersectsLineSegment(ls) end
 
 ---@param poly playdate.geometry.polygon
-
+---@return intersects boolean
+---@return intersectionPoints playdate.geometry.point[]
 function playdate.geometry.lineSegment:intersectsPolygon(poly) end
 
 ---@param rect playdate.geometry.rect
-
+---@return intersects boolean
+---@return intersectionPoints playdate.geometry.point[]
 function playdate.geometry.lineSegment:intersectsRect(rect) end
 
 ---@return number
@@ -1324,7 +1344,10 @@ function playdate.geometry.lineSegment:pointOnLine(distance, extend) end
 ---@return playdate.geometry.vector2D
 function playdate.geometry.lineSegment:segmentVector() end
 
-
+---@return x1 number
+---@return y1 number
+---@return x2 number
+---@return y2 number
 function playdate.geometry.lineSegment:unpack() end
 
 ---@param x integer
@@ -1369,7 +1392,8 @@ function playdate.geometry.point:offsetBy(dx, dy) end
 ---@return number
 function playdate.geometry.point:squaredDistanceToPoint(p) end
 
-
+---@return x number
+---@return y number
 function playdate.geometry.point:unpack() end
 
 ---@param numberOfVertices integer
@@ -1414,7 +1438,10 @@ function playdate.geometry.polygon:copy() end
 ---@return integer
 function playdate.geometry.polygon:count() end
 
-
+---@return x number
+---@return y number
+---@return width number
+---@return height number
 function playdate.geometry.polygon:getBounds() end
 
 ---@return playdate.geometry.rect
@@ -1458,7 +1485,10 @@ function playdate.geometry.polygon:translate(dx, dy) end
 ---@param y2 integer
 ---@param w2 integer
 ---@param h2 integer
-
+---@return x number
+---@return y number
+---@return width number
+---@return height number
 function playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2) end
 
 ---@param x1 integer
@@ -1469,7 +1499,10 @@ function playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2
 ---@param y2 integer
 ---@param w2 integer
 ---@param h2 integer
-
+---@return x number
+---@return y number
+---@return width number
+---@return height number
 function playdate.geometry.rect.fast_union(x1, y1, w1, h1, x2, y2, w2, h2) end
 
 ---@param x integer
@@ -1552,7 +1585,10 @@ function playdate.geometry.rect:toPolygon() end
 ---@return playdate.geometry.rect
 function playdate.geometry.rect:union(r2) end
 
-
+---@return x number
+---@return y number
+---@return width number
+---@return height number
 function playdate.geometry.rect:unpack() end
 
 ---@param width integer
@@ -1563,7 +1599,8 @@ function playdate.geometry.size.new(width, height) end
 ---@return playdate.geometry.size
 function playdate.geometry.size:copy() end
 
-
+---@return width number
+---@return height number
 function playdate.geometry.size:unpack() end
 
 ---@param x integer
@@ -1652,7 +1689,8 @@ function playdate.geometry.vector2D:scale(s) end
 ---@return playdate.geometry.vector2D
 function playdate.geometry.vector2D:scaledBy(s) end
 
-
+---@return x number
+---@return y number
 function playdate.geometry.vector2D:unpack() end
 
 ---@class playdate.graphics.animation
@@ -2033,7 +2071,10 @@ function playdate.graphics.generateQRCode(stringToEncode, desiredEdgeDimension, 
 ---@return integer
 function playdate.graphics.getBackgroundColor() end
 
-
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
 function playdate.graphics.getClipRect() end
 
 ---@return integer
@@ -2042,7 +2083,8 @@ function playdate.graphics.getColor() end
 ---@return playdate.graphics.image
 function playdate.graphics.getDisplayImage() end
 
-
+---@return x integer
+---@return y integer
 function playdate.graphics.getDrawOffset() end
 
 ---@param variant? (integer|string)
@@ -2063,7 +2105,10 @@ function playdate.graphics.getLineWidth() end
 ---@return string
 function playdate.graphics.getLocalizedText(key, language) end
 
-
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
 function playdate.graphics.getScreenClipRect() end
 
 ---@return integer
@@ -2076,21 +2121,24 @@ function playdate.graphics.getSystemFont(variant) end
 ---@param str string
 ---@param fontFamily? table<integer, playdate.graphics.font>
 ---@param leadingAdjustment? integer
-
+---@return width integer
+---@return height integer
 function playdate.graphics.getTextSize(str, fontFamily, leadingAdjustment) end
 
 ---@param text string
 ---@param maxWidth integer
 ---@param leadingAdjustment? integer
 ---@param font? playdate.graphics.font
-
+---@return width integer
+---@return height integer
 function playdate.graphics.getTextSizeForMaxWidth(text, maxWidth, leadingAdjustment, font) end
 
 ---@return playdate.graphics.image
 function playdate.graphics.getWorkingImage() end
 
 ---@param path string
-
+---@return width integer
+---@return height integer
 function playdate.graphics.imageSizeAtPath(path) end
 
 ---@param text string
@@ -2101,7 +2149,8 @@ function playdate.graphics.imageSizeAtPath(path) end
 ---@param truncationString? string
 ---@param alignment? integer
 ---@param font? playdate.graphics.font
-
+---@return image playdate.graphics.image
+---@return textWasTruncated boolean
 function playdate.graphics.imageWithText(text, maxWidth, maxHeight, backgroundColor, leadingAdjustment, truncationString, alignment, font) end
 
 ---@param image playdate.graphics.image
@@ -2497,7 +2546,8 @@ playdate.graphics.image.kDitherTypeScreen = 4
 ---@type integer
 playdate.graphics.image.kDitherTypeVerticalLine = 2
 ---@param path string
-
+---@return image playdate.graphics.image
+---@return error string
 function playdate.graphics.image.new(path) end
 
 ---@param width integer
@@ -2652,7 +2702,8 @@ function playdate.graphics.image:fadedImage(alpha, ditherType) end
 ---@return playdate.graphics.image
 function playdate.graphics.image:getMaskImage() end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.image:getSize() end
 
 ---@return boolean
@@ -2662,7 +2713,8 @@ function playdate.graphics.image:hasMask() end
 function playdate.graphics.image:invertedImage() end
 
 ---@param path string
-
+---@return success boolean
+---@return error string
 function playdate.graphics.image:load(path) end
 
 ---@return nil
@@ -2732,11 +2784,13 @@ function playdate.graphics.imagetable:getImage(x, y) end
 ---@return integer
 function playdate.graphics.imagetable:getLength() end
 
-
+---@return cellsWide integer
+---@return cellsHigh integer
 function playdate.graphics.imagetable:getSize() end
 
 ---@param path string
-
+---@return success boolean
+---@return error string
 function playdate.graphics.imagetable:load(path) end
 
 ---@param n integer
@@ -2763,10 +2817,12 @@ function playdate.graphics.nineSlice:drawInRect(rect) end
 ---@return nil
 function playdate.graphics.nineSlice:drawInRect(x, y, width, height) end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.nineSlice:getMinSize() end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.nineSlice:getSize() end
 
 ---@type integer
@@ -2932,12 +2988,18 @@ function playdate.graphics.sprite:add() end
 function playdate.graphics.sprite:alphaCollision(anotherSprite) end
 
 ---@param point playdate.geometry.point
-
+---@return actualX integer
+---@return actualY integer
+---@return collisions _CollisionData
+---@return length integer
 function playdate.graphics.sprite:checkCollisions(point) end
 
 ---@param x integer
 ---@param y integer
-
+---@return actualX integer
+---@return actualY integer
+---@return collisions _CollisionData
+---@return length integer
 function playdate.graphics.sprite:checkCollisions(x, y) end
 
 ---@return nil
@@ -2966,19 +3028,26 @@ function playdate.graphics.sprite:copy() end
 ---@return nil
 function playdate.graphics.sprite:draw(x, y, width, height) end
 
-
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
 function playdate.graphics.sprite:getBounds() end
 
 ---@return playdate.geometry.rect
 function playdate.graphics.sprite:getBoundsRect() end
 
-
+---@return x number
+---@return y number
 function playdate.graphics.sprite:getCenter() end
 
 ---@return playdate.geometry.point
 function playdate.graphics.sprite:getCenterPoint() end
 
-
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
 function playdate.graphics.sprite:getCollideBounds() end
 
 ---@return playdate.geometry.rect
@@ -2996,16 +3065,19 @@ function playdate.graphics.sprite:getImage() end
 ---@return integer
 function playdate.graphics.sprite:getImageFlip() end
 
-
+---@return x integer
+---@return y integer
 function playdate.graphics.sprite:getPosition() end
 
 ---@return number
 function playdate.graphics.sprite:getRotation() end
 
-
+---@return xScale integer
+---@return yScale integer
 function playdate.graphics.sprite:getScale() end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.sprite:getSize() end
 
 ---@return integer
@@ -3034,12 +3106,18 @@ function playdate.graphics.sprite:moveBy(x, y) end
 function playdate.graphics.sprite:moveTo(x, y) end
 
 ---@param goalPoint playdate.geometry.point
-
+---@return actualX integer
+---@return actualY integer
+---@return collisions _CollisionData
+---@return length integer
 function playdate.graphics.sprite:moveWithCollisions(goalPoint) end
 
 ---@param goalX integer
 ---@param goalY integer
-
+---@return actualX integer
+---@return actualY integer
+---@return collisions _CollisionData
+---@return length integer
 function playdate.graphics.sprite:moveWithCollisions(goalX, goalY) end
 
 ---@return playdate.graphics.sprite[]
@@ -3224,10 +3302,12 @@ function playdate.graphics.tilemap:drawIgnoringOffset(x, y, sourceRect) end
 ---@return playdate.geometry.rect[]
 function playdate.graphics.tilemap:getCollisionRects(emptyIDs) end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.tilemap:getPixelSize() end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.tilemap:getSize() end
 
 ---@param x integer
@@ -3235,10 +3315,12 @@ function playdate.graphics.tilemap:getSize() end
 ---@return number
 function playdate.graphics.tilemap:getTileAtPosition(x, y) end
 
-
+---@return width integer
+---@return height integer
 function playdate.graphics.tilemap:getTileSize() end
 
-
+---@return data integer[]
+---@return width integer
 function playdate.graphics.tilemap:getTiles() end
 
 ---@param table table
@@ -3274,7 +3356,8 @@ function playdate.graphics.video:getFrameCount() end
 ---@return number
 function playdate.graphics.video:getFrameRate() end
 
-
+---@return x integer
+---@return y integer
 function playdate.graphics.video:getSize() end
 
 ---@param number integer
@@ -3672,7 +3755,8 @@ function playdate.sound.addEffect(effect) end
 function playdate.sound.getCurrentTime() end
 
 ---@param changeCallback function
-
+---@return headphone boolean
+---@return mic boolean
 function playdate.sound.getHeadphoneState(changeCallback) end
 
 ---@return integer
@@ -3969,7 +4053,8 @@ function playdate.sound.fileplayer:getOffset() end
 ---@return number
 function playdate.sound.fileplayer:getRate() end
 
-
+---@return left_or_mono number
+---@return right number
 function playdate.sound.fileplayer:getVolume() end
 
 ---@return boolean
@@ -3983,7 +4068,8 @@ function playdate.sound.fileplayer:load(path) end
 function playdate.sound.fileplayer:pause() end
 
 ---@param repeatCount? integer
-
+---@return success boolean
+---@return error string
 function playdate.sound.fileplayer:play(repeatCount) end
 
 ---@param seconds number
@@ -4048,7 +4134,8 @@ function playdate.sound.instrument:addVoice(v, note, rangeend, transpose) end
 ---@return nil
 function playdate.sound.instrument:allNotesOff() end
 
-
+---@return left_or_mono number
+---@return right number
 function playdate.sound.instrument:getVolume() end
 
 ---@param note integer
@@ -4217,7 +4304,8 @@ function playdate.sound.sample.new(path) end
 ---@return integer
 function playdate.sound.sample:getFormat() end
 
-
+---@return sample_seconds number
+---@return buffer_size_seconds number
 function playdate.sound.sample:getLength() end
 
 ---@return integer
@@ -4271,7 +4359,8 @@ function playdate.sound.sampleplayer:getRate() end
 ---@return playdate.sound.sample
 function playdate.sound.sampleplayer:getSample() end
 
-
+---@return left_or_mono number
+---@return right number
 function playdate.sound.sampleplayer:getVolume() end
 
 ---@return boolean
@@ -4417,7 +4506,8 @@ function playdate.sound.synth:copy() end
 ---@return playdate.sound.envelope
 function playdate.sound.synth:getEnvelope() end
 
-
+---@return left_or_mono number
+---@return right number
 function playdate.sound.synth:getVolume() end
 
 ---@return boolean
@@ -4741,7 +4831,10 @@ function playdate.ui.gridview:drawSectionHeader(section, x, y, width, height) en
 ---@param row integer
 ---@param column integer
 ---@param gridWidth? integer
-
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
 function playdate.ui.gridview:getCellBounds(section, row, column, gridWidth) end
 
 ---@return integer
@@ -4757,7 +4850,8 @@ function playdate.ui.gridview:getNumberOfRowsInSection(section) end
 ---@return integer
 function playdate.ui.gridview:getNumberOfSections() end
 
-
+---@return x integer
+---@return y integer
 function playdate.ui.gridview:getScrollPosition() end
 
 ---@return integer
@@ -4766,7 +4860,9 @@ function playdate.ui.gridview:getSectionHeaderHeight() end
 ---@return integer
 function playdate.ui.gridview:getSelectedRow() end
 
-
+---@return section integer
+---@return row integer
+---@return column integer
 function playdate.ui.gridview:getSelection() end
 
 ---@return nil
@@ -4900,7 +4996,8 @@ function table.create(arrayCount, hashCount) end
 function table.deepcopy(source) end
 
 ---@param table table
-
+---@return arrayCount integer
+---@return hashCount integer
 function table.getsize(table) end
 
 ---@param table table

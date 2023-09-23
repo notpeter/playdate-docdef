@@ -160,16 +160,28 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
                     }
                 }
                 let mut func_returns: Vec<(&str, &str)> = Vec::new();
-                let func_returns_iterator = iterator.next().unwrap().into_inner();
-                for ret in func_returns_iterator {
-                    if ret.as_rule() == Rule::TypeLua {
-                        func_returns.push(("", ret.as_str()));
+                let ret = iterator.next().unwrap();
+                if ret.as_rule() == Rule::Return {
+                    let ret_content = ret.into_inner().next().unwrap();
+                    if ret_content.as_rule() == Rule::TypeLua {
+                        func_returns.push(("", ret_content.as_str()));
+                    } else if ret_content.as_rule() == Rule::FunctionalParameters {
+                        let func_params_iterator = ret_content.into_inner();
+                        for param in func_params_iterator {
+                            let mut param_iterator = param.into_inner();
+                            let param_name: &str = param_iterator.next().unwrap().as_str();
+                            let param_type: &str = param_iterator.next().unwrap().as_str();
+                            func_returns.push((param_name, param_type));
+                        }
+                    } else {
+                        eprintln!("Rule: {:?}", ret_content.as_rule());
+                        unreachable!()
                     }
                 }
                 LuarsStatement::Function(func_name, func_params, func_returns)
             }
             _ => {
-                println!("Rule: {:?}", line.as_rule());
+                eprintln!("Rule: {:?}", line.as_rule());
                 unreachable!()
             }
         };
