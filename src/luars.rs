@@ -81,7 +81,7 @@ impl Display for LuarsStatement<'_> {
             LuarsStatement::Function(name, params, returns) => {
                 if params.len() == 0 {
                     let returns = &returns.iter().map(|(k, v)| format!("---@return {} {}", k, v)).collect::<Vec<String>>().join("\n").replace("  ", " ");
-                    write!(f, "{}\nfunction {}()\n", returns, name)
+                    write!(f, "{}\nfunction {}() end\n", returns, name)
                 } else {
                     let mut params_: Vec<&str> = Vec::new();
                     let mut params_out: Vec<String> = Vec::new();
@@ -94,7 +94,7 @@ impl Display for LuarsStatement<'_> {
                     // let params_ = &params.iter().map(|(k, _)| format!("{}", k)).collect::<Vec<String>>().join(", ");
                     // let params = &params.iter().map(|(k, v)| format!("---@param {} {}", k, v)).collect::<Vec<String>>().join("\n");
                     let returns = &returns.iter().map(|(k, v)| format!("---@return {} {}", k, v)).collect::<Vec<String>>().join("\n").replace("  ", " ");
-                    write!(f, "{}\n{}\nfunction {}({})\n", params_out.join("\n"), returns, name, params_.join(", "))
+                    write!(f, "{}\n{}\nfunction {}({}) end\n", params_out.join("\n"), returns, name, params_.join(", "))
                 }
 
             }
