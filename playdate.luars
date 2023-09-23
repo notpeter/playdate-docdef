@@ -1,5 +1,6 @@
-mod json;
-mod playdate = {
+class json;
+
+class playdate = {
     argv: string[],
     isSimulator: boolean,
     kButtonLeft: integer = 1,
@@ -8,34 +9,66 @@ mod playdate = {
     kButtonDown: integer = 8,
     kButtonB: integer = 16,
     kButtonA: integer = 32,
-    metadate: _Metadata,
-    systeminfo: _SystemInfo,
+    metadate: Metadata,
+    systeminfo: SystemInfo,
 };
-mod playdate.datastore;
-mod playdate.display;
-mod playdate.easingFunctions;
-mod playdate.file.file;
-mod playdate.file = {
+class DateTime: table = { year: integer, month: integer, day: integer, weekday: integer, hour: integer, minute: integer, second: integer, millisecond: integer, };
+class Metadata: table = { name: string, author: string, description: string, bundleID: string, version: string, buildNumber: integer, pdxversion: integer, imagePath?: string, launchSoundPath?: string, contentWarning?: string, contentWarning2?: string, ...: string, };
+class ModTime: table = { year: integer, month: integer, day: integer, hour: integer, minute: integer, second: integer, };
+class PowerStatus: table = { charging: boolean, USB: boolean, screws: boolean, };
+class SystemInfo: table = { buildtime: string, commit: string, pdxcompatversion: integer, pdxversion: integer, };
+class SystemStats: table = { " kernel": number, " game": number, " audio": number, };
+
+class playdate.datastore;
+
+class playdate.display;
+
+class playdate.easingFunctions;
+
+class playdate.file = {
     kFileRead: integer = 3,
     kFileAppend: integer = 8,
     kFileWrite: integer = 4,
 };
-mod playdate.frameTimer;
-mod playdate.geometry = {
+
+class playdate.file.file;
+class File: playdate.file.file = {};
+
+class playdate.frameTimer;
+class FrameTimer: playdate.frameTimer = { delay: integer, discardOnCompletion: boolean, duration: integer, frame: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any, };
+
+class playdate.geometry = {
     kUnflipped: integer = 0,
     kFlippedX: integer = 1,
     kFlippedY: integer = 2,
     kFlippedXY: integer = 3,
 };
-mod playdate.geometry.affineTransform;
-mod playdate.geometry.arc;
-mod playdate.geometry.lineSegment;
-mod playdate.geometry.point;
-mod playdate.geometry.polygon;
-mod playdate.geometry.rect;
-mod playdate.geometry.size;
-mod playdate.geometry.vector2D;
-mod playdate.graphics = {
+
+class playdate.geometry.affineTransform;
+class AffineTransform: playdate.geometry.affineTransform = {};
+
+class playdate.geometry.arc;
+class Arc: playdate.geometry.arc = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
+
+class playdate.geometry.lineSegment;
+class LineSegment: playdate.geometry.lineSegment = { x1: integer, y1: integer, x2: integer, y2: integer, };
+
+class playdate.geometry.point;
+class Point: playdate.geometry.point = { x: number, y: number, };
+
+class playdate.geometry.polygon;
+class Polygon: playdate.geometry.polygon = {};
+
+class playdate.geometry.rect;
+class Rect: playdate.geometry.rect = { x: number, y: number, width: number, height: number, top: number, bottom: number, left: number, right: number, size: Size, };
+
+class playdate.geometry.size;
+class Size: playdate.geometry.size = { width: number, height: number, };
+
+class playdate.geometry.vector2D;
+class Vector2D: playdate.geometry.vector2D = { dx: number, dy: number, };
+
+class playdate.graphics = {
     kColorBlack: integer = 0,
     kColorWhite: integer = 1,
     kColorClear: integer = 2,
@@ -58,18 +91,28 @@ mod playdate.graphics = {
     kStrokeInside: integer = 1,
     kStrokeOutside: integer = 2
 };
-mod playdate.graphics.animation;
-mod playdate.graphics.animation.blinker;
-mod playdate.graphics.animation.loop;
-mod playdate.graphics.animator;
-mod playdate.graphics.font = {
+
+class playdate.graphics.animation;
+
+class playdate.graphics.animation.blinker;
+class AnimationBlinker: playdate.graphics.animation.blinker = { onDuration: integer, offDuration: integer, loop: boolean, cycles: integer, default: boolean, counter: integer, on: boolean, running: boolean, };
+
+class playdate.graphics.animation.loop;
+class AnimationLoop: playdate.graphics.animation.loop = { delay: number, startFrame: integer, endFrame: integer, frame: integer, step: integer, shouldLoop: boolean, paused: boolean, };
+
+class playdate.graphics.animator;
+class Animator: playdate.graphics.animator = { repeatCount: integer, reverses: integer, easingAmplitude: number, easingPeriod: number, s?: number, a?: number, p?: number, };
+
+class playdate.graphics.font = {
     kLanguageEnglish: integer = 0,
     kLanguageJapanese: integer = 1,
     kVariantNormal: integer = 0,
     kVariantBold: integer = 1,
     kVariantItalic: integer = 2,
 };
-mod playdate.graphics.image = {
+class Font: playdate.graphics.font = {};
+
+class playdate.graphics.image = {
     kDitherTypeNone: integer = 0,
     kDitherTypeDiagonalLine: integer = 1,
     kDitherTypeHorizontalLine: integer = 3,
@@ -82,30 +125,57 @@ mod playdate.graphics.image = {
     kDitherTypeBurkes: integer = 9,
     kDitherTypeAtkinson: integer = 10,
 };
-mod playdate.graphics.imagetable;
-mod playdate.graphics.nineSlice;
-mod playdate.graphics.sprite = {
+class Image: playdate.graphics.image = { x: integer, y: integer, width: integer, height: integer, };
+
+class playdate.graphics.imagetable;
+class ImageTable: playdate.graphics.imagetable = {};
+
+class playdate.graphics.nineSlice;
+class NineSlice: playdate.graphics.nineSlice = { innerRect: playdate.geometry.rect, minWidth: integer, minHeight: integer, };
+
+class playdate.graphics.sprite = {
     kCollisionTypeSlide: integer = 0,
     kCollisionTypeFreeze: integer = 1,
     kCollisionTypeOverlap: integer = 2,
     kCollisionTypeBounce: integer = 3,
 };
-mod playdate.graphics.tilemap;
-mod playdate.graphics.video;
-mod playdate.inputHandlers;
-mod playdate.keyboard = {
+class Sprite: playdate.graphics.sprite = { x: integer, y: integer, width: integer, height: integer, collisionResponse?: (_CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite): _CollisionType?), update?: fun():nil, };
+class SpriteCollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: playdate.geometry.vector2D, normal: playdate.geometry.vector2D, touch: playdate.geometry.point, spriteRect: playdate.geometry.rect, otherRect: playdate.geometry.rect, bounce?: playdate.geometry.point, slide?: playdate.geometry.point, };
+class SpriteCollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: playdate.geometry.point, exitPoint: playdate.geometry.point, t1: number, t2: number, };
+
+class playdate.graphics.tilemap;
+class TileMap: playdate.graphics.tilemap = {};
+
+class playdate.graphics.video;
+class Video: playdate.graphics.video = {};
+
+class playdate.inputHandlers;
+class InputHandler: table = { AButtonDown?: fun(), AButtonHeld?: fun(), AButtonUp?: fun(), BButtonDown?: fun(), BButtonHeld?: fun(), BButtonUp?: fun(), downButtonDown?: fun(), downButtonUp?: fun(), leftButtonDown?: fun(), leftButtonUp?: fun(), rightButtonDown?: fun(), rightButtonUp?: fun(), upButtonDown?: fun(), upButtonUp?: fun(), cranked?: fun(change:number, acceleratedChange:number)};
+
+class playdate.keyboard = {
     kCapitalizationNormal: integer = 1,
     kCapitalizationSentences: integer = 3,
     kCapitalizationWords: integer = 2,
 };
-mod playdate.math;
-mod playdate.menu;
-mod playdate.menu.item;
-mod playdate.pathfinder;
-mod playdate.pathfinder.graph;
-mod playdate.pathfinder.node;
-mod playdate.simulator;
-mod playdate.sound = {
+class Keyboard: playdate.keyboard = { text: string, };
+
+class playdate.math;
+
+class playdate.menu;
+
+class playdate.menu.item;
+class MenuItem: playdate.menu.item = { title: string, value: (integer|boolean|string)};
+
+class playdate.pathfinder;
+
+class playdate.pathfinder.graph;
+class PathFinderGraph: playdate.pathfinder.graph = {};
+
+class playdate.pathfinder.node;
+class PathFinderNode: playdate.pathfinder.node = { x: integer, y: integer, id: integer, };
+
+class playdate.simulator;
+class playdate.sound = {
     kFormat8bitMono: integer = 0,
     kFormat8bitStereo: integer = 1,
     kFormat16bitMono: integer = 2,
@@ -125,96 +195,90 @@ mod playdate.sound = {
     kWavePODigital: integer = 6,
     kWavePOVosim: integer = 7,
 };
-mod playdate.sound.bitcrusher;
-mod playdate.sound.channel;
-mod playdate.sound.controlsignal;
-mod playdate.sound.delayline;
-mod playdate.sound.delaylinetap;
-mod playdate.sound.effect;
-mod playdate.sound.effect;
-mod playdate.sound.envelope;
-mod playdate.sound.fileplayer;
-mod playdate.sound.instrument;
-mod playdate.sound.lfo;
-mod playdate.sound.micinput;
-mod playdate.sound.onepolefilter;
-mod playdate.sound.overdrive;
-mod playdate.sound.ringmod;
-mod playdate.sound.sample;
-mod playdate.sound.sampleplayer;
-mod playdate.sound.sequence;
-mod playdate.sound.signal;
-mod playdate.sound.source;
-mod playdate.sound.synth;
-mod playdate.sound.track;
-mod playdate.sound.twopolefilter;
-mod playdate.string;
-mod playdate.timer;
-mod playdate.ui;
-mod playdate.ui.crankIndicator = {
+class playdate.sound.effect;
+
+class playdate.sound.bitcrusher: playdate.sound.effect;
+class SoundEffectBitCrusher: playdate.sound.bitcrusher = {};
+
+class playdate.sound.onepolefilter: playdate.sound.effect;
+class SoundEffectOnePoleFilter: playdate.sound.onepolefilter = {};
+
+class SoundEffectOverDrive: playdate.sound.overdrive = {};
+class playdate.sound.overdrive: playdate.sound.effect;
+
+class playdate.sound.ringmod: playdate.sound.effect;
+class SoundEffectRingMod: playdate.sound.ringmod = {};
+
+class playdate.sound.delayline: playdate.sound.effect;
+class SoundEffectDelayLine: playdate.sound.delayline = {};
+
+class playdate.sound.twopolefilter: playdate.sound.effect;
+class SoundEffectTwoPoleFilter: playdate.sound.twopolefilter = {};
+
+class playdate.sound.channel;
+class SoundChannel: playdate.sound.channel = {};
+
+class playdate.sound.signal;
+
+class playdate.sound.controlsignal: playdate.sound.signal;
+class ControlSignal: playdate.sound.controlsignal = { events: SoundControlEvent };
+class ControlEvent: table = { step: integer, value: number, interpolate?: boolean, };
+
+class playdate.sound.envelope: playdate.sound.signal;
+class Envelope: playdate.sound.envelope = {};
+
+class playdate.sound.lfo: playdate.sound.signal
+class SoundLFO: playdate.sound.lfo = {};
+
+class playdate.sound.source;
+
+class playdate.sound.delaylinetap: playdate.sound.source;
+class DelayLineTap: playdate.sound.delaylinetap = {};
+
+class playdate.sound.fileplayer: playdate.sound.source;
+class FilePlayer: playdate.sound.fileplayer = {};
+
+class playdate.sound.instrument: playdate.sound.source;
+class Instrument: playdate.sound.instrument = {};
+
+class playdate.sound.sampleplayer: playdate.sound.source;
+class SamplePlayer: playdate.sound.sampleplayer = {};
+
+class playdate.sound.synth: playdate.sound.source;
+class Synth: playdate.sound.synth = {};
+
+class playdate.sound.micinput;
+
+class playdate.sound.sample;
+class playdate.sound.sample: table = {};
+
+class playdate.sound.sequence;
+class playdate.sound.sequence: table = {};
+
+class playdate.sound.signal: table = {};
+
+class playdate.sound.track: table = {};
+
+class playdate.sound.track;
+class SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
+class SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
+
+class playdate.string;
+
+class playdate.timer;
+class Timer: playdate.timer = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
+
+class playdate.ui;
+
+class playdate.ui.crankIndicator = {
     clockwise: boolean,
 };
-mod playdate.ui.gridview;
-mod table;
-obj _CollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: playdate.geometry.vector2D, normal: playdate.geometry.vector2D, touch: playdate.geometry.point, spriteRect: playdate.geometry.rect, otherRect: playdate.geometry.rect, bounce?: playdate.geometry.point, slide?: playdate.geometry.point, };
-obj _CollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: playdate.geometry.point, exitPoint: playdate.geometry.point, t1: number, t2: number, };
-obj _ControlSignalEvent: table = { step: integer, value: number, interpolate?: boolean, };
-obj _DateTime: table = { year: integer, month: integer, day: integer, weekday: integer, hour: integer, minute: integer, second: integer, millisecond: integer, };
-obj _InputHandler: table = { AButtonDown?: fun(), AButtonHeld?: fun(), AButtonUp?: fun(), BButtonDown?: fun(), BButtonHeld?: fun(), BButtonUp?: fun(), downButtonDown?: fun(), downButtonUp?: fun(), leftButtonDown?: fun(), leftButtonUp?: fun(), rightButtonDown?: fun(), rightButtonUp?: fun(), upButtonDown?: fun(), upButtonUp?: fun(), cranked?: fun(change:number, acceleratedChange:number)};
-obj _Metadata: table = { name: string, author: string, description: string, bundleID: string, version: string, buildNumber: integer, pdxversion: integer, imagePath?: string, launchSoundPath?: string, contentWarning?: string, contentWarning2?: string, ...: string, };
-obj _ModTime: table = { year: integer, month: integer, day: integer, hour: integer, minute: integer, second: integer, };
-obj _PowerStatus: table = { charging: boolean, USB: boolean, screws: boolean, };
-obj _SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
-obj _SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
-obj _SystemInfo: table = { buildtime: string, commit: string, pdxcompatversion: integer, pdxversion: integer, };
-obj _SystemStats: table = { " kernel": number, " game": number, " audio": number, };
-obj playdate.file.file: table = {};
-obj playdate.frameTimer: table = { delay: integer, discardOnCompletion: boolean, duration: integer, frame: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any, };
-obj playdate.geometry.affineTransform: table = {};
-obj playdate.geometry.arc: table = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
-obj playdate.geometry.lineSegment: table = { x1: integer, y1: integer, x2: integer, y2: integer, };
-obj playdate.geometry.point: table = { x: number, y: number, };
-obj playdate.geometry.polygon: table = {};
-obj playdate.geometry.rect: table = { x: number, y: number, width: number, height: number, top: number, bottom: number, left: number, right: number, size: playdate.geometry.size, };
-obj playdate.geometry.size: table = { width: number, height: number, };
-obj playdate.geometry.vector2D: table = { dx: number, dy: number, };
-obj playdate.graphics.animation.blinker: table = { onDuration: integer, offDuration: integer, loop: boolean, cycles: integer, default: boolean, counter: integer, on: boolean, running: boolean, };
-obj playdate.graphics.animation.loop: table = { delay: number, startFrame: integer, endFrame: integer, frame: integer, step: integer, shouldLoop: boolean, paused: boolean, };
-obj playdate.graphics.animator: table = { repeatCount: integer, reverses: integer, easingAmplitude: number, easingPeriod: number, s?: number, a?: number, p?: number, };
-obj playdate.graphics.font: table = {};
-obj playdate.graphics.image: table = { x: integer, y: integer, width: integer, height: integer, };
-obj playdate.graphics.imagetable: table = {};
-obj playdate.graphics.nineSlice: table = { innerRect: playdate.geometry.rect, minWidth: integer, minHeight: integer, };
-obj playdate.graphics.sprite: table = { x: integer, y: integer, width: integer, height: integer, collisionResponse?: (_CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite): _CollisionType?), update?: fun():nil, };
-obj playdate.graphics.tilemap: table = {};
-obj playdate.graphics.video: table = {};
-obj playdate.keyboard: table = { text: string, };
-obj playdate.menu.item: table = { title: string, value: (integer|boolean|string)};
-obj playdate.pathfinder.graph: table = {};
-obj playdate.pathfinder.node: table = { x: integer, y: integer, id: integer, };
-obj playdate.sound.bitcrusher: playdate.sound.effect = {};
-obj playdate.sound.channel: table = {};
-obj playdate.sound.controlsignal: playdate.sound.signal = { events: _ControlSignalEvent };
-obj playdate.sound.delayline: playdate.sound.effect = {};
-obj playdate.sound.delaylinetap: playdate.sound.source = {};
-obj playdate.sound.effect: table = {};
-obj playdate.sound.envelope: playdate.sound.signal = {};
-obj playdate.sound.fileplayer: playdate.sound.source = {};
-obj playdate.sound.instrument: playdate.sound.source = {};
-obj playdate.sound.lfo: playdate.sound.signal = {};
-obj playdate.sound.onepolefilter: playdate.sound.effect = {};
-obj playdate.sound.overdrive: playdate.sound.effect = {};
-obj playdate.sound.ringmod: playdate.sound.effect = {};
-obj playdate.sound.sample: table = {};
-obj playdate.sound.sampleplayer: playdate.sound.source = {};
-obj playdate.sound.sequence: table = {};
-obj playdate.sound.signal: table = {};
-obj playdate.sound.source: table = {};
-obj playdate.sound.synth: playdate.sound.source = {};
-obj playdate.sound.track: table = {};
-obj playdate.sound.twopolefilter: playdate.sound.effect = {};
-obj playdate.timer: table = { currentTime: integer, delay: integer, discardOnCompletion: boolean, duration: integer, timeLeft: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any[]};
-obj playdate.ui.gridview: table = { needsDisplay:boolean, backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice), isScrolling:boolean, scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, easingAmplitude?: number, easingPeriod?: number, changeRowOnColumnWrap: boolean, scrollCellsToCenter: boolean, };
+
+class playdate.ui.gridview;
+class UIGridView: playdate.ui.gridview = { needsDisplay:boolean, backgroundImage: (playdate.graphics.image|playdate.graphics.nineSlice), isScrolling:boolean, scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number, easingAmplitude?: number, easingPeriod?: number, changeRowOnColumnWrap: boolean, scrollCellsToCenter: boolean, };
+
+class table;
+
 fun json.decode(str: string): table;
 fun json.decodeFile(file: playdate.file.file): table;
 fun json.decodeFile(path: string): table;
@@ -440,9 +504,9 @@ fun playdate.geometry.rect:offsetBy(dx: integer, dy: integer): playdate.geometry
 fun playdate.geometry.rect:toPolygon(): playdate.geometry.polygon;
 fun playdate.geometry.rect:union(r2: playdate.geometry.rect): playdate.geometry.rect;
 fun playdate.geometry.rect:unpack(): (x: number, y: number, width: number, height: number);
-fun playdate.geometry.size.new(width: integer, height: integer): playdate.geometry.size;
-fun playdate.geometry.size:copy(): playdate.geometry.size;
-fun playdate.geometry.size:unpack(): (width: number, height: number);
+fun playdate.geometry.size.new(width: integer, height: integer): Size;
+fun Size:copy(): Size;
+fun Size:unpack(): (width: number, height: number);
 fun playdate.geometry.squaredDistanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
 fun playdate.geometry.vector2D.new(x: integer, y: integer): playdate.geometry.vector2D;
 fun playdate.geometry.vector2D.newPolar(length: number, angle: number): playdate.geometry.vector2D;
