@@ -3,8 +3,6 @@
     * Handle tabs and " " (non-breaking space)
     * Handle comments
     * Re-evaluate Pest Implicit whitepsace: https://pest.rs/book/grammars/syntax.html#implicit-whitespace
-    * Handle newlines in W whitepsace
-    * Re-evlate
     * Switch from "\n" to NEWLINE ("\n" | "\r\n" | "\r")
     * Unicode support (not today satan)
 */
@@ -12,17 +10,12 @@ Document = { Statement* }
 Statement = _{
     (
         WHITE_LINE
-        | ((Module | Function | Object) ~ ";" ~ W ~ "\n"?)
+        | ((Function | Object) ~ ";" ~ W ~ "\n"?)
     )
 }
-Mod = _{ "mod " }
 Fun = _{ "fun " }
-Obj = _{ "obj " }
+Obj = _{ "tbl " }
 
-Module = {
-    Mod ~ W ~ Identifier ~ W
-    ~ ("=" ~ W ~ "{" ~ W ~ TableConstants ~ W ~ "}" ~ W)?
-}
 Function = {
     Fun ~ W
     ~ FunctionName ~ W
@@ -45,8 +38,8 @@ Return = {
 }
 Object = {
     Obj ~ W ~ Identifier ~ W
-    ~ (":" ~ W ~ TypeLua ~ W)
-    ~ ("=" ~ W ~ "{" ~ W ~ TablePrototype? ~ W ~ "}" ~ W)
+    ~ (":" ~ W ~ TypeLua ~ W)?
+    ~ ("=" ~ W ~ "{" ~ W ~ TableConstants? ~ W ~ "}" ~ W)?
 }
 FunctionName = {
     (Identifier ~ ":" ~ Identifier)
@@ -58,11 +51,6 @@ FunctionalParameters = {
     | ((FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?)
 }
 
-TablePrototype = {
-    TableKey ~ W ~ ":" ~ W ~ TypeLua
-    ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ TypeLua)*
-    ~ W ~ ","?
-}
 TableKey = !{
     ( DotDotDot | QuotedString | LuaIdentifier) ~ Optional?
 	| (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
