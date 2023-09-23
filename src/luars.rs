@@ -10,9 +10,7 @@ pub struct LuarsParser;
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
     Module(&'a str),
-    Constant(&'a str, &'a str, isize),
     Object(&'a str, &'a str, Vec<(&'a str, &'a str)>),
-    Variable(&'a str, &'a str),
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
 
@@ -28,8 +26,6 @@ impl LuarsStatement<'_> {
     fn id(&self) -> LuarsSortKey {
         let (name, id) = match self {
             LuarsStatement::Module(name) => (name, 1),
-            LuarsStatement::Constant(name, _, _) => (name, 2),
-            LuarsStatement::Variable(name, _) => (name, 2),
             LuarsStatement::Object(name, _, _) => (name, 4),
             LuarsStatement::Function(name, _, _) => {
                 if name.contains(":") {
@@ -68,15 +64,9 @@ impl Display for LuarsStatement<'_> {
             LuarsStatement::Module(name) => {
                 write!(f, "---@class {name}", name=name)
             }
-            LuarsStatement::Constant(name, cons_type, cons_integer) => {
-                write!(f, "---@type {}\n{} = {}", cons_type, name, cons_integer)
-            }
             LuarsStatement::Object(name, parent, tablekeys) => {
                 let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
                 write!(f, "---@class {} : {}\n{}\n", name, parent, fields)
-            }
-            LuarsStatement::Variable(name, var_type) => {
-                write!(f, "---@type {}\n{} = {{}}\n", var_type, name)
             }
             LuarsStatement::Function(name, params, returns) => {
                 if params.len() == 0 {
@@ -116,13 +106,6 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
                 let name = line.into_inner().next().unwrap().as_str();
                 LuarsStatement::Module(name)
             }
-            Rule::Constant => {
-                let mut iterator = line.into_inner();
-                let cons_name: &str = iterator.next().unwrap().as_str();
-                let cons_type: &str = iterator.next().unwrap().as_str();
-                let cons_value: isize = iterator.next().unwrap().as_str().parse::<isize>().unwrap();
-                LuarsStatement::Constant(cons_name, cons_type, cons_value)
-            }
             Rule::Object => {
                 let mut iterator = line.into_inner();
                 let obj_name: &str = iterator.next().unwrap().as_str();
@@ -139,12 +122,6 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
                 }
                 // println!("{} : {} = {:?}", obj_name, obj_type, obj_proto);
                 LuarsStatement::Object(obj_name, obj_type, obj_proto)
-            }
-            Rule::Variable => {
-                let mut iterator = line.into_inner();
-                let var_name: &str = iterator.next().unwrap().as_str();
-                let var_type: &str = iterator.next().unwrap().as_str();
-                LuarsStatement::Variable(var_name, var_type)
             }
             Rule::Function => {
                 let mut iterator = line.into_inner();
