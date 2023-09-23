@@ -4871,4 +4871,3 @@ function table.indexOfElement(table, element) end
 ---@param destination? table
 ---@return table
 function table.shallowcopy(source, destination) end
-

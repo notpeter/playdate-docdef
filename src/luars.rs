@@ -9,7 +9,6 @@ pub struct LuarsParser;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
-    Module(&'a str),
     Object(&'a str, &'a str, Vec<(&'a str, &'a str)>),
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
@@ -25,7 +24,6 @@ impl LuarsStatement<'_> {
 
     fn id(&self) -> LuarsSortKey {
         let (name, id) = match self {
-            LuarsStatement::Module(name) => (name, 1),
             LuarsStatement::Object(name, _, _) => (name, 4),
             LuarsStatement::Function(name, _, _) => {
                 if name.contains(":") {
@@ -61,9 +59,6 @@ impl Ord for LuarsStatement<'_> {
 impl Display for LuarsStatement<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            LuarsStatement::Module(name) => {
-                write!(f, "---@class {name}", name=name)
-            }
             LuarsStatement::Object(name, parent, tablekeys) => {
                 let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
                 write!(f, "---@class {} : {}\n{}\n", name, parent, fields)
@@ -102,16 +97,12 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
 
     for line in document.into_inner() {
         let f = match line.as_rule() {
-            Rule::Module => {
-                let name = line.into_inner().next().unwrap().as_str();
-                LuarsStatement::Module(name)
-            }
             Rule::Object => {
                 let mut iterator = line.into_inner();
                 let obj_name: &str = iterator.next().unwrap().as_str();
                 let obj_type: &str = iterator.next().unwrap().as_str();
                 let mut obj_proto: Vec<(&str, &str)> = Vec::new();
-                if iterator.peek().is_some() && iterator.peek().unwrap().as_rule() == Rule::TablePrototype {
+                if iterator.peek().is_some() && iterator.peek().unwrap().as_rule() == Rule::TableConstants {
                     let mut field = iterator.next().unwrap().into_inner();
                     while field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::TableKey {
                         let field_name: &str = field.next().unwrap().as_str();
