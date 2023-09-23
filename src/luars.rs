@@ -66,7 +66,7 @@ impl Display for LuarsStatement<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             LuarsStatement::Module(name) => {
-                write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
+                write!(f, "---@class {name}", name=name)
             }
             LuarsStatement::Constant(name, cons_type, cons_integer) => {
                 write!(f, "---@type {}\n{} = {}", cons_type, name, cons_integer)

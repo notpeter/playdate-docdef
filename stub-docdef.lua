@@ -1,12 +1,6 @@
 ---@class json
-json = {}
-
 ---@class playdate
-playdate = {}
-
 ---@class table
-table = {}
-
 ---@param ... any
 ---@return nil
 function print(...) end
@@ -159,59 +153,23 @@ function json.encodeToFile(file, pretty, table) end
 function json.encodeToFile(path, pretty, table) end
 
 ---@class playdate.datastore
-playdate.datastore = {}
-
 ---@class playdate.display
-playdate.display = {}
-
 ---@class playdate.easingFunctions
-playdate.easingFunctions = {}
-
 ---@class playdate.file
-playdate.file = {}
-
 ---@class playdate.frameTimer
-playdate.frameTimer = {}
-
 ---@class playdate.geometry
-playdate.geometry = {}
-
 ---@class playdate.graphics
-playdate.graphics = {}
-
 ---@class playdate.inputHandlers
-playdate.inputHandlers = {}
-
 ---@class playdate.inputHandlers
-playdate.inputHandlers = {}
-
 ---@class playdate.keyboard
-playdate.keyboard = {}
-
 ---@class playdate.math
-playdate.math = {}
-
 ---@class playdate.menu
-playdate.menu = {}
-
 ---@class playdate.pathfinder
-playdate.pathfinder = {}
-
 ---@class playdate.simulator
-playdate.simulator = {}
-
 ---@class playdate.sound
-playdate.sound = {}
-
 ---@class playdate.string
-playdate.string = {}
-
 ---@class playdate.timer
-playdate.timer = {}
-
 ---@class playdate.ui
-playdate.ui = {}
-
 ---@type string[]
 playdate.argv = {}
 
@@ -906,8 +864,6 @@ function playdate.easingFunctions.outQuint(t, b, c, d) end
 function playdate.easingFunctions.outSine(t, b, c, d) end
 
 ---@class playdate.file.file
-playdate.file.file = {}
-
 ---@type integer
 playdate.file.kFileAppend = 8
 ---@type integer
@@ -1036,29 +992,13 @@ function playdate.frameTimer:reset() end
 function playdate.frameTimer:start() end
 
 ---@class playdate.geometry.affineTransform
-playdate.geometry.affineTransform = {}
-
 ---@class playdate.geometry.arc
-playdate.geometry.arc = {}
-
 ---@class playdate.geometry.lineSegment
-playdate.geometry.lineSegment = {}
-
 ---@class playdate.geometry.point
-playdate.geometry.point = {}
-
 ---@class playdate.geometry.polygon
-playdate.geometry.polygon = {}
-
 ---@class playdate.geometry.rect
-playdate.geometry.rect = {}
-
 ---@class playdate.geometry.size
-playdate.geometry.size = {}
-
 ---@class playdate.geometry.vector2D
-playdate.geometry.vector2D = {}
-
 ---@type integer
 playdate.geometry.kFlippedX = 1
 ---@type integer
@@ -1694,32 +1634,14 @@ function playdate.geometry.vector2D:scaledBy(s) end
 function playdate.geometry.vector2D:unpack() end
 
 ---@class playdate.graphics.animation
-playdate.graphics.animation = {}
-
 ---@class playdate.graphics.animator
-playdate.graphics.animator = {}
-
 ---@class playdate.graphics.font
-playdate.graphics.font = {}
-
 ---@class playdate.graphics.image
-playdate.graphics.image = {}
-
 ---@class playdate.graphics.imagetable
-playdate.graphics.imagetable = {}
-
 ---@class playdate.graphics.nineSlice
-playdate.graphics.nineSlice = {}
-
 ---@class playdate.graphics.sprite
-playdate.graphics.sprite = {}
-
 ---@class playdate.graphics.tilemap
-playdate.graphics.tilemap = {}
-
 ---@class playdate.graphics.video
-playdate.graphics.video = {}
-
 ---@type integer
 playdate.graphics.kColorBlack = 0
 ---@type integer
@@ -2332,11 +2254,7 @@ function playdate.graphics.unlockFocus() end
 
 
 ---@class playdate.graphics.animation.blinker
-playdate.graphics.animation.blinker = {}
-
 ---@class playdate.graphics.animation.loop
-playdate.graphics.animation.loop = {}
-
 ---@class playdate.graphics.animation.blinker : table
 ---@field onDuration integer
 ---@field offDuration integer
@@ -3428,8 +3346,6 @@ function playdate.keyboard.width() end
 function playdate.math.lerp(min, max, t) end
 
 ---@class playdate.menu.item
-playdate.menu.item = {}
-
 ---@class playdate.menu.item : table
 ---@field title string
 ---@field value (integer|boolean|string)
@@ -3481,11 +3397,7 @@ function playdate.menu.item:setTitle(newTitle) end
 function playdate.menu.item:setValue(newValue) end
 
 ---@class playdate.pathfinder.graph
-playdate.pathfinder.graph = {}
-
 ---@class playdate.pathfinder.node
-playdate.pathfinder.node = {}
-
 ---@class playdate.pathfinder.graph : table
 
 
@@ -3643,74 +3555,28 @@ function playdate.simulator.getURL(url) end
 function playdate.simulator.writeToFile(image, path) end
 
 ---@class playdate.sound.bitcrusher
-playdate.sound.bitcrusher = {}
-
 ---@class playdate.sound.channel
-playdate.sound.channel = {}
-
 ---@class playdate.sound.controlsignal
-playdate.sound.controlsignal = {}
-
 ---@class playdate.sound.delayline
-playdate.sound.delayline = {}
-
 ---@class playdate.sound.delaylinetap
-playdate.sound.delaylinetap = {}
-
 ---@class playdate.sound.effect
-playdate.sound.effect = {}
-
 ---@class playdate.sound.effect
-playdate.sound.effect = {}
-
 ---@class playdate.sound.envelope
-playdate.sound.envelope = {}
-
 ---@class playdate.sound.fileplayer
-playdate.sound.fileplayer = {}
-
 ---@class playdate.sound.instrument
-playdate.sound.instrument = {}
-
 ---@class playdate.sound.lfo
-playdate.sound.lfo = {}
-
 ---@class playdate.sound.micinput
-playdate.sound.micinput = {}
-
 ---@class playdate.sound.onepolefilter
-playdate.sound.onepolefilter = {}
-
 ---@class playdate.sound.overdrive
-playdate.sound.overdrive = {}
-
 ---@class playdate.sound.ringmod
-playdate.sound.ringmod = {}
-
 ---@class playdate.sound.sample
-playdate.sound.sample = {}
-
 ---@class playdate.sound.sampleplayer
-playdate.sound.sampleplayer = {}
-
 ---@class playdate.sound.sequence
-playdate.sound.sequence = {}
-
 ---@class playdate.sound.signal
-playdate.sound.signal = {}
-
 ---@class playdate.sound.source
-playdate.sound.source = {}
-
 ---@class playdate.sound.synth
-playdate.sound.synth = {}
-
 ---@class playdate.sound.track
-playdate.sound.track = {}
-
 ---@class playdate.sound.twopolefilter
-playdate.sound.twopolefilter = {}
-
 ---@type integer
 playdate.sound.kFormat16bitMono = 2
 ---@type integer
@@ -4760,11 +4626,7 @@ function playdate.timer:reset() end
 function playdate.timer:start() end
 
 ---@class playdate.ui.crankIndicator
-playdate.ui.crankIndicator = {}
-
 ---@class playdate.ui.gridview
-playdate.ui.gridview = {}
-
 ---@class playdate.ui.gridview : table
 ---@field needsDisplay boolean
 ---@field backgroundImage (playdate.graphics.image|playdate.graphics.nineSlice)
