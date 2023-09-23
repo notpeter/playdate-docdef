@@ -12,12 +12,54 @@ class playdate = {
     metadate: Metadata,
     systeminfo: SystemInfo,
 };
-class DateTime: table = { year: integer, month: integer, day: integer, weekday: integer, hour: integer, minute: integer, second: integer, millisecond: integer, };
-class Metadata: table = { name: string, author: string, description: string, bundleID: string, version: string, buildNumber: integer, pdxversion: integer, imagePath?: string, launchSoundPath?: string, contentWarning?: string, contentWarning2?: string, ...: string, };
-class ModTime: table = { year: integer, month: integer, day: integer, hour: integer, minute: integer, second: integer, };
-class PowerStatus: table = { charging: boolean, USB: boolean, screws: boolean, };
-class SystemInfo: table = { buildtime: string, commit: string, pdxcompatversion: integer, pdxversion: integer, };
-class SystemStats: table = { " kernel": number, " game": number, " audio": number, };
+class DateTime = {
+    year: integer,
+    month: integer,
+    day: integer,
+    weekday: integer,
+    hour: integer,
+    minute: integer,
+    second: integer,
+    millisecond: integer,
+};
+class Metadata = {
+    name: string,
+    author: string,
+    description: string,
+    bundleID: string,
+    version: string,
+    buildNumber: integer,
+    pdxversion: integer,
+    imagePath?: string,
+    launchSoundPath?: string,
+    contentWarning?: string,
+    contentWarning2?: string,
+    ...: string,
+};
+class ModTime = {
+    year: integer,
+    month: integer,
+    day: integer,
+    hour: integer,
+    minute: integer,
+    second: integer,
+};
+class PowerStatus = {
+    charging: boolean,
+    USB: boolean,
+    screws: boolean,
+};
+class SystemInfo = {
+    buildtime: string,
+    commit: string,
+    pdxcompatversion: integer,
+    pdxversion: integer,
+};
+class SystemStats = {
+    " kernel": number,
+    " game": number,
+    " audio": number,
+};
 
 class playdate.datastore;
 
@@ -33,9 +75,28 @@ class playdate.file = {
 
 class playdate.file.file;
 class File: playdate.file.file = {};
+fun File:close(): nil;
+fun File:flush(): nil;
+fun File:read(numberOfBytes: integer): (numberOfBytes: integer, error: string?);
+fun File:readline(): string;
+fun File:seek(offset: integer): nil;
+fun File:tell(): integer;
+fun File:write(string: string): (bytes_written: integer, error: string?);
 
 class playdate.frameTimer;
-class FrameTimer: playdate.frameTimer = { delay: integer, discardOnCompletion: boolean, duration: integer, frame: integer, repeats: boolean, reverses: boolean, timerEndedArgs: any, };
+class FrameTimer: playdate.frameTimer = {
+    delay: integer,
+    discardOnCompletion: boolean,
+    duration: integer,
+    frame: integer,
+    repeats: boolean,
+    reverses: boolean,
+    timerEndedArgs: any,
+};
+fun FrameTimer:pause(): nil;
+fun FrameTimer:remove(): nil;
+fun FrameTimer:reset(): nil;
+fun FrameTimer:start(): nil;
 
 class playdate.geometry = {
     kUnflipped: integer = 0,
@@ -45,13 +106,62 @@ class playdate.geometry = {
 };
 
 class playdate.geometry.affineTransform;
-class AffineTransform: playdate.geometry.affineTransform = {};
+class AffineTransform: playdate.geometry.affineTransform;
+fun AffineTransform:__mul(p: Point): Point;
+fun AffineTransform:__mul(t: AffineTransform): AffineTransform;
+fun AffineTransform:__mul(v: Vector2D): Vector2D;
+fun AffineTransform:concat(af: AffineTransform): nil;
+fun AffineTransform:copy(): AffineTransform;
+fun AffineTransform:invert(): nil;
+fun AffineTransform:reset(): nil;
+fun AffineTransform:rotate(angle: number, point?: Point): nil;
+fun AffineTransform:rotate(angle: number, x?: integer, y?: integer): nil;
+fun AffineTransform:rotatedBy(angle: number, point?: Point): AffineTransform;
+fun AffineTransform:rotatedBy(angle: number, x?: integer, y?: integer): AffineTransform;
+fun AffineTransform:scale(sx: number, sy?: number): nil;
+fun AffineTransform:scaledBy(sx: number, sy?: number): AffineTransform;
+fun AffineTransform:skew(sx: number, sy: number): nil;
+fun AffineTransform:skewedBy(sx: number, sy: number): AffineTransform;
+fun AffineTransform:transformAABB(r: Rect): nil;
+fun AffineTransform:transformLineSegment(ls: LineSegment): nil;
+fun AffineTransform:transformPoint(p: Point): nil;
+fun AffineTransform:transformPolygon(p: Polygon): nil;
+fun AffineTransform:transformXY(x: integer, y: integer): (x: number, y: number);
+fun AffineTransform:transformedAABB(r: Rect): Rect;
+fun AffineTransform:transformedLineSegment(ls: LineSegment): LineSegment;
+fun AffineTransform:transformedPoint(p: Point): Point;
+fun AffineTransform:transformedPolygon(p: Polygon): Polygon;
+fun AffineTransform:translate(dx: integer, dy: integer): nil;
+fun AffineTransform:translatedBy(dx: integer, dy: integer): AffineTransform;
 
 class playdate.geometry.arc;
 class Arc: playdate.geometry.arc = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
+fun Arc:copy(): Arc;
+fun Arc:isClockwise(): boolean;
+fun Arc:length(): number;
+fun Arc:pointOnArc(distance: integer, extend: boolean): Point;
+fun Arc:setIsClockwise(flag: boolean): nil;
 
 class playdate.geometry.lineSegment;
-class LineSegment: playdate.geometry.lineSegment = { x1: integer, y1: integer, x2: integer, y2: integer, };
+class LineSegment: playdate.geometry.lineSegment = {
+    x1: integer,
+    y1: integer,
+    x2: integer,
+    y2: integer,
+};
+fun LineSegment:closestPointOnLineToPoint(p: Point): Point;
+fun LineSegment:copy(): LineSegment;
+fun LineSegment:intersectsLineSegment(ls: LineSegment): (intersects: boolean, intersection: Point?);
+fun LineSegment:intersectsPolygon(poly: Polygon): (intersects: boolean, intersectionPoints: Point[]?);
+fun LineSegment:intersectsRect(rect: Rect): (intersects: boolean, intersectionPoints: Point[]?);
+fun LineSegment:length(): number;
+fun LineSegment:midPoint(): Point;
+fun LineSegment:offset(dx: integer, dy: integer): nil;
+fun LineSegment:offsetBy(dx: integer, dy: integer): LineSegment;
+fun LineSegment:pointOnLine(distance: integer, extend?: boolean): Point;
+fun LineSegment:segmentVector(): Vector2D;
+fun LineSegment:unpack(): (x1: number, y1: number, x2: number, y2: number);
+
 
 class playdate.geometry.point;
 class Point: playdate.geometry.point = { x: number, y: number, };
@@ -60,10 +170,23 @@ class playdate.geometry.polygon;
 class Polygon: playdate.geometry.polygon = {};
 
 class playdate.geometry.rect;
-class Rect: playdate.geometry.rect = { x: number, y: number, width: number, height: number, top: number, bottom: number, left: number, right: number, size: Size, };
+class Rect: playdate.geometry.rect = {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    top: number,
+    bottom: number,
+    left: number,
+    right: number,
+    size: Size,
+};
 
 class playdate.geometry.size;
+fun playdate.geometry.size.new(width: integer, height: integer): Size;
 class Size: playdate.geometry.size = { width: number, height: number, };
+fun Size:copy(): Size;
+fun Size:unpack(): (width: number, height: number);
 
 class playdate.geometry.vector2D;
 class Vector2D: playdate.geometry.vector2D = { dx: number, dy: number, };
@@ -131,7 +254,7 @@ class playdate.graphics.imagetable;
 class ImageTable: playdate.graphics.imagetable = {};
 
 class playdate.graphics.nineSlice;
-class NineSlice: playdate.graphics.nineSlice = { innerRect: playdate.geometry.rect, minWidth: integer, minHeight: integer, };
+class NineSlice: playdate.graphics.nineSlice = { innerRect: Rect, minWidth: integer, minHeight: integer, };
 
 class playdate.graphics.sprite = {
     kCollisionTypeSlide: integer = 0,
@@ -140,8 +263,8 @@ class playdate.graphics.sprite = {
     kCollisionTypeBounce: integer = 3,
 };
 class Sprite: playdate.graphics.sprite = { x: integer, y: integer, width: integer, height: integer, collisionResponse?: (_CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite): _CollisionType?), update?: fun():nil, };
-class SpriteCollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: playdate.geometry.vector2D, normal: playdate.geometry.vector2D, touch: playdate.geometry.point, spriteRect: playdate.geometry.rect, otherRect: playdate.geometry.rect, bounce?: playdate.geometry.point, slide?: playdate.geometry.point, };
-class SpriteCollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: playdate.geometry.point, exitPoint: playdate.geometry.point, t1: number, t2: number, };
+class SpriteCollisionData: table = { sprite: playdate.graphics.sprite, other: playdate.graphics.sprite, type: _CollisionType, overlaps: boolean, ti: number, move: Vector2D, normal: Vector2D, touch: Point, spriteRect: Rect, otherRect: Rect, bounce?: Point, slide?: Point, };
+class SpriteCollisionInfo: table = { sprite: playdate.graphics.sprite, entryPoint: Point, exitPoint: Point, t1: number, t2: number, };
 
 class playdate.graphics.tilemap;
 class TileMap: playdate.graphics.tilemap = {};
@@ -316,7 +439,7 @@ fun playdate.display.getHeight(): integer;
 fun playdate.display.getInverted(): boolean;
 fun playdate.display.getMosaic(): (x: integer, y: integer);
 fun playdate.display.getOffset(): (x: integer, y: integer);
-fun playdate.display.getRect(): playdate.geometry.rect;
+fun playdate.display.getRect(): Rect;
 fun playdate.display.getRefreshRate(): integer;
 fun playdate.display.getScale(): integer;
 fun playdate.display.getSize(): (width: integer, height: integer);
@@ -376,13 +499,6 @@ fun playdate.epochFromGMTTime(time: _DateTime): (seconds: integer, milliseconds:
 fun playdate.epochFromTime(time: table): (seconds: integer, milliseconds: integer);
 fun playdate.file.delete(path: string, recursive?: boolean): boolean;
 fun playdate.file.exists(path: string): boolean;
-fun playdate.file.file:close(): nil;
-fun playdate.file.file:flush(): nil;
-fun playdate.file.file:read(numberOfBytes: integer): (numberOfBytes: integer, error: string?);
-fun playdate.file.file:readline(): string;
-fun playdate.file.file:seek(offset: integer): nil;
-fun playdate.file.file:tell(): integer;
-fun playdate.file.file:write(string: string): (bytes_written: integer, error: string?);
 fun playdate.file.getSize(path: string): integer;
 fun playdate.file.getType(path: string): string;
 fun playdate.file.isdir(path: string): boolean;
@@ -398,139 +514,89 @@ fun playdate.frameTimer.new(duration: integer, callback: function, ...: any): pl
 fun playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: function): playdate.frameTimer;
 fun playdate.frameTimer.performAfterDelay(delay: integer, callback: function, ...: any): nil;
 fun playdate.frameTimer.updateTimers(): nil;
-fun playdate.frameTimer:pause(): nil;
-fun playdate.frameTimer:remove(): nil;
-fun playdate.frameTimer:reset(): nil;
-fun playdate.frameTimer:start(): nil;
 fun playdate.gameWillPause(): nil;
 fun playdate.gameWillResume(): nil;
 fun playdate.gameWillTerminate(): nil;
-fun playdate.geometry.affineTransform.new(): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform.new(m11: number, m12: number, m21: number, m22: number, tx: number, ty: number): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:__mul(p: playdate.geometry.point): playdate.geometry.point;
-fun playdate.geometry.affineTransform:__mul(t: playdate.geometry.affineTransform): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:__mul(v: playdate.geometry.vector2D): playdate.geometry.vector2D;
-fun playdate.geometry.affineTransform:concat(af: playdate.geometry.affineTransform): nil;
-fun playdate.geometry.affineTransform:copy(): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:invert(): nil;
-fun playdate.geometry.affineTransform:reset(): nil;
-fun playdate.geometry.affineTransform:rotate(angle: number, point?: playdate.geometry.point): nil;
-fun playdate.geometry.affineTransform:rotate(angle: number, x?: integer, y?: integer): nil;
-fun playdate.geometry.affineTransform:rotatedBy(angle: number, point?: playdate.geometry.point): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:rotatedBy(angle: number, x?: integer, y?: integer): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:scale(sx: number, sy?: number): nil;
-fun playdate.geometry.affineTransform:scaledBy(sx: number, sy?: number): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:skew(sx: number, sy: number): nil;
-fun playdate.geometry.affineTransform:skewedBy(sx: number, sy: number): playdate.geometry.affineTransform;
-fun playdate.geometry.affineTransform:transformAABB(r: playdate.geometry.rect): nil;
-fun playdate.geometry.affineTransform:transformLineSegment(ls: playdate.geometry.lineSegment): nil;
-fun playdate.geometry.affineTransform:transformPoint(p: playdate.geometry.point): nil;
-fun playdate.geometry.affineTransform:transformPolygon(p: playdate.geometry.polygon): nil;
-fun playdate.geometry.affineTransform:transformXY(x: integer, y: integer): (x: number, y: number);
-fun playdate.geometry.affineTransform:transformedAABB(r: playdate.geometry.rect): playdate.geometry.rect;
-fun playdate.geometry.affineTransform:transformedLineSegment(ls: playdate.geometry.lineSegment): playdate.geometry.lineSegment;
-fun playdate.geometry.affineTransform:transformedPoint(p: playdate.geometry.point): playdate.geometry.point;
-fun playdate.geometry.affineTransform:transformedPolygon(p: playdate.geometry.polygon): playdate.geometry.polygon;
-fun playdate.geometry.affineTransform:translate(dx: integer, dy: integer): nil;
-fun playdate.geometry.affineTransform:translatedBy(dx: integer, dy: integer): playdate.geometry.affineTransform;
-fun playdate.geometry.arc.new(x: integer, y: integer, radius: number, startAngle: number, endAngle: number, direction?: boolean): playdate.geometry.arc;
-fun playdate.geometry.arc:copy(): playdate.geometry.arc;
-fun playdate.geometry.arc:isClockwise(): boolean;
-fun playdate.geometry.arc:length(): number;
-fun playdate.geometry.arc:pointOnArc(distance: integer, extend: boolean): playdate.geometry.point;
-fun playdate.geometry.arc:setIsClockwise(flag: boolean): nil;
+fun playdate.geometry.affineTransform.new(): AffineTransform;
+fun playdate.geometry.affineTransform.new(m11: number, m12: number, m21: number, m22: number, tx: number, ty: number): AffineTransform;
+fun playdate.geometry.arc.new(x: integer, y: integer, radius: number, startAngle: number, endAngle: number, direction?: boolean): Arc;
 fun playdate.geometry.distanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
 fun playdate.geometry.lineSegment.fast_intersection(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer, x4: integer, y4: integer): (intersects: boolean, x: number?, y: number?);
-fun playdate.geometry.lineSegment.new(x1: integer, y1: integer, x2: integer, y2: integer): playdate.geometry.lineSegment;
-fun playdate.geometry.lineSegment:closestPointOnLineToPoint(p: playdate.geometry.point): playdate.geometry.point;
-fun playdate.geometry.lineSegment:copy(): playdate.geometry.lineSegment;
-fun playdate.geometry.lineSegment:intersectsLineSegment(ls: playdate.geometry.lineSegment): (intersects: boolean, intersection: playdate.geometry.point?);
-fun playdate.geometry.lineSegment:intersectsPolygon(poly: playdate.geometry.polygon): (intersects: boolean, intersectionPoints: playdate.geometry.point[]?);
-fun playdate.geometry.lineSegment:intersectsRect(rect: playdate.geometry.rect): (intersects: boolean, intersectionPoints: playdate.geometry.point[]?);
-fun playdate.geometry.lineSegment:length(): number;
-fun playdate.geometry.lineSegment:midPoint(): playdate.geometry.point;
-fun playdate.geometry.lineSegment:offset(dx: integer, dy: integer): nil;
-fun playdate.geometry.lineSegment:offsetBy(dx: integer, dy: integer): playdate.geometry.lineSegment;
-fun playdate.geometry.lineSegment:pointOnLine(distance: integer, extend?: boolean): playdate.geometry.point;
-fun playdate.geometry.lineSegment:segmentVector(): playdate.geometry.vector2D;
-fun playdate.geometry.lineSegment:unpack(): (x1: number, y1: number, x2: number, y2: number);
-fun playdate.geometry.point.new(x: integer, y: integer): playdate.geometry.point;
-fun playdate.geometry.point:__add(v: playdate.geometry.vector2D): playdate.geometry.point;
-fun playdate.geometry.point:__concat(p2: playdate.geometry.point): playdate.geometry.lineSegment;
-fun playdate.geometry.point:__mul(t: playdate.geometry.affineTransform): playdate.geometry.point;
-fun playdate.geometry.point:__sub(p2: playdate.geometry.point): playdate.geometry.vector2D;
-fun playdate.geometry.point:copy(): playdate.geometry.point;
-fun playdate.geometry.point:distanceToPoint(p: playdate.geometry.point): number;
+fun playdate.geometry.lineSegment.new(x1: integer, y1: integer, x2: integer, y2: integer): LineSegment;
+fun playdate.geometry.point.new(x: integer, y: integer): Point;
+fun playdate.geometry.point:__add(v: Vector2D): Point;
+fun playdate.geometry.point:__concat(p2: Point): LineSegment;
+fun playdate.geometry.point:__mul(t: AffineTransform): Point;
+fun playdate.geometry.point:__sub(p2: Point): Vector2D;
+fun playdate.geometry.point:copy(): Point;
+fun playdate.geometry.point:distanceToPoint(p: Point): number;
 fun playdate.geometry.point:offset(dx: integer, dy: integer): nil;
-fun playdate.geometry.point:offsetBy(dx: integer, dy: integer): playdate.geometry.point;
-fun playdate.geometry.point:squaredDistanceToPoint(p: playdate.geometry.point): number;
+fun playdate.geometry.point:offsetBy(dx: integer, dy: integer): Point;
+fun playdate.geometry.point:squaredDistanceToPoint(p: Point): number;
 fun playdate.geometry.point:unpack(): (x: number, y: number);
-fun playdate.geometry.polygon.new(numberOfVertices: integer): playdate.geometry.polygon;
-fun playdate.geometry.polygon.new(p1: playdate.geometry.point, p2: playdate.geometry.point, ...: integer): playdate.geometry.polygon;
-fun playdate.geometry.polygon.new(x1: integer, y1: integer, x2: integer, y2: integer, ...: integer): playdate.geometry.polygon;
-fun playdate.geometry.polygon:__mul(t: playdate.geometry.affineTransform): playdate.geometry.polygon;
+fun playdate.geometry.polygon.new(numberOfVertices: integer): Polygon;
+fun playdate.geometry.polygon.new(p1: Point, p2: Point, ...: integer): Polygon;
+fun playdate.geometry.polygon.new(x1: integer, y1: integer, x2: integer, y2: integer, ...: integer): Polygon;
+fun playdate.geometry.polygon:__mul(t: AffineTransform): Polygon;
 fun playdate.geometry.polygon:close(): nil;
-fun playdate.geometry.polygon:containsPoint(p: playdate.geometry.point, fillRule?: integer): boolean;
+fun playdate.geometry.polygon:containsPoint(p: Point, fillRule?: integer): boolean;
 fun playdate.geometry.polygon:containsPoint(x: integer, y: integer, fillRule?: integer): boolean;
-fun playdate.geometry.polygon:copy(): playdate.geometry.polygon;
+fun playdate.geometry.polygon:copy(): Polygon;
 fun playdate.geometry.polygon:count(): integer;
 fun playdate.geometry.polygon:getBounds(): (x: number, y: number, width: number, height: number);
-fun playdate.geometry.polygon:getBoundsRect(): playdate.geometry.rect;
-fun playdate.geometry.polygon:getPointAt(n: integer): playdate.geometry.point;
-fun playdate.geometry.polygon:intersects(p: playdate.geometry.point): boolean;
+fun playdate.geometry.polygon:getBoundsRect(): Rect;
+fun playdate.geometry.polygon:getPointAt(n: integer): Point;
+fun playdate.geometry.polygon:intersects(p: Point): boolean;
 fun playdate.geometry.polygon:isClosed(): boolean;
 fun playdate.geometry.polygon:length(): number;
-fun playdate.geometry.polygon:pointOnPolygon(distance: integer, extend?: boolean): playdate.geometry.point;
+fun playdate.geometry.polygon:pointOnPolygon(distance: integer, extend?: boolean): Point;
 fun playdate.geometry.polygon:setPointAt(n: integer, x: integer, y: integer): nil;
 fun playdate.geometry.polygon:translate(dx: integer, dy: integer): nil;
 fun playdate.geometry.rect.fast_intersection(x1: integer, y1: integer, w1: integer, h1: integer, x2: integer, y2: integer, w2: integer, h2: integer): (x: number, y: number, width: number, height: number);
 fun playdate.geometry.rect.fast_union(x1: integer, y1: integer, w1: integer, h1: integer, x2: integer, y2: integer, w2: integer, h2: integer): (x: number, y: number, width: number, height: number);
-fun playdate.geometry.rect.new(x: integer, y: integer, width: integer, height: integer): playdate.geometry.rect;
-fun playdate.geometry.rect:centerPoint(): playdate.geometry.point;
-fun playdate.geometry.rect:containsPoint(p: playdate.geometry.point): boolean;
+fun playdate.geometry.rect.new(x: integer, y: integer, width: integer, height: integer): Rect;
+fun playdate.geometry.rect:centerPoint(): Point;
+fun playdate.geometry.rect:containsPoint(p: Point): boolean;
 fun playdate.geometry.rect:containsPoint(x: integer, y: integer): boolean;
-fun playdate.geometry.rect:containsRect(r2: playdate.geometry.rect): boolean;
+fun playdate.geometry.rect:containsRect(r2: Rect): boolean;
 fun playdate.geometry.rect:containsRect(x: integer, y: integer, width: integer, height: integer): boolean;
-fun playdate.geometry.rect:copy(): playdate.geometry.rect;
-fun playdate.geometry.rect:flipRelativeToRect(r2: playdate.geometry.rect, flip: (integer|string)): nil;
+fun playdate.geometry.rect:copy(): Rect;
+fun playdate.geometry.rect:flipRelativeToRect(r2: Rect, flip: (integer|string)): nil;
 fun playdate.geometry.rect:inset(dx: integer, dy: integer): nil;
-fun playdate.geometry.rect:insetBy(dx: integer, dy: integer): playdate.geometry.rect;
-fun playdate.geometry.rect:intersection(r2: playdate.geometry.rect): playdate.geometry.rect;
-fun playdate.geometry.rect:intersects(r2: playdate.geometry.rect): boolean;
+fun playdate.geometry.rect:insetBy(dx: integer, dy: integer): Rect;
+fun playdate.geometry.rect:intersection(r2: Rect): Rect;
+fun playdate.geometry.rect:intersects(r2: Rect): boolean;
 fun playdate.geometry.rect:isEmpty(): boolean;
-fun playdate.geometry.rect:isEqual(r2: playdate.geometry.rect): boolean;
+fun playdate.geometry.rect:isEqual(r2: Rect): boolean;
 fun playdate.geometry.rect:offset(dx: integer, dy: integer): nil;
-fun playdate.geometry.rect:offsetBy(dx: integer, dy: integer): playdate.geometry.rect;
-fun playdate.geometry.rect:toPolygon(): playdate.geometry.polygon;
-fun playdate.geometry.rect:union(r2: playdate.geometry.rect): playdate.geometry.rect;
+fun playdate.geometry.rect:offsetBy(dx: integer, dy: integer): Rect;
+fun playdate.geometry.rect:toPolygon(): Polygon;
+fun playdate.geometry.rect:union(r2: Rect): Rect;
 fun playdate.geometry.rect:unpack(): (x: number, y: number, width: number, height: number);
-fun playdate.geometry.size.new(width: integer, height: integer): Size;
-fun Size:copy(): Size;
-fun Size:unpack(): (width: number, height: number);
 fun playdate.geometry.squaredDistanceToPoint(x1: integer, y1: integer, x2: integer, y2: integer): number;
-fun playdate.geometry.vector2D.new(x: integer, y: integer): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D.newPolar(length: number, angle: number): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__add(v2: playdate.geometry.vector2D): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__div(s: number): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__mul(s: number): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__mul(t: playdate.geometry.affineTransform): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__mul(v2: playdate.geometry.vector2D): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__sub(v2: playdate.geometry.vector2D): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:__unm(): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:addVector(v: playdate.geometry.vector2D): nil;
-fun playdate.geometry.vector2D:angleBetween(v: playdate.geometry.vector2D): number;
-fun playdate.geometry.vector2D:copy(): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:dotProduct(v: playdate.geometry.vector2D): number;
-fun playdate.geometry.vector2D:leftNormal(): playdate.geometry.vector2D;
+fun playdate.geometry.vector2D.new(x: integer, y: integer): Vector2D;
+fun playdate.geometry.vector2D.newPolar(length: number, angle: number): Vector2D;
+fun playdate.geometry.vector2D:__add(v2: Vector2D): Vector2D;
+fun playdate.geometry.vector2D:__div(s: number): Vector2D;
+fun playdate.geometry.vector2D:__mul(s: number): Vector2D;
+fun playdate.geometry.vector2D:__mul(t: AffineTransform): Vector2D;
+fun playdate.geometry.vector2D:__mul(v2: Vector2D): Vector2D;
+fun playdate.geometry.vector2D:__sub(v2: Vector2D): Vector2D;
+fun playdate.geometry.vector2D:__unm(): Vector2D;
+fun playdate.geometry.vector2D:addVector(v: Vector2D): nil;
+fun playdate.geometry.vector2D:angleBetween(v: Vector2D): number;
+fun playdate.geometry.vector2D:copy(): Vector2D;
+fun playdate.geometry.vector2D:dotProduct(v: Vector2D): number;
+fun playdate.geometry.vector2D:leftNormal(): Vector2D;
 fun playdate.geometry.vector2D:magnitude(): number;
 fun playdate.geometry.vector2D:magnitudeSquared(): number;
 fun playdate.geometry.vector2D:normalize(): nil;
-fun playdate.geometry.vector2D:normalized(): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:projectAlong(v: playdate.geometry.vector2D): nil;
-fun playdate.geometry.vector2D:projectedAlong(v: playdate.geometry.vector2D): playdate.geometry.vector2D;
-fun playdate.geometry.vector2D:rightNormal(): playdate.geometry.vector2D;
+fun playdate.geometry.vector2D:normalized(): Vector2D;
+fun playdate.geometry.vector2D:projectAlong(v: Vector2D): nil;
+fun playdate.geometry.vector2D:projectedAlong(v: Vector2D): Vector2D;
+fun playdate.geometry.vector2D:rightNormal(): Vector2D;
 fun playdate.geometry.vector2D:scale(s: number): nil;
-fun playdate.geometry.vector2D:scaledBy(s: number): playdate.geometry.vector2D;
+fun playdate.geometry.vector2D:scaledBy(s: number): Vector2D;
 fun playdate.geometry.vector2D:unpack(): (x: number, y: number);
 fun playdate.getBatteryPercentage(): integer;
 fun playdate.getBatteryVoltage(): number;
@@ -563,9 +629,9 @@ fun playdate.graphics.animation.loop:draw(x: integer, y: integer, flip?: (intege
 fun playdate.graphics.animation.loop:image(): playdate.graphics.image;
 fun playdate.graphics.animation.loop:isValid(): boolean;
 fun playdate.graphics.animation.loop:setImageTable(imageTable: playdate.graphics.imagetable): nil;
-fun playdate.graphics.animator.new(duration: integer, arc: playdate.geometry.arc, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator.new(duration: integer, lineSegment: playdate.geometry.lineSegment, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
-fun playdate.graphics.animator.new(duration: integer, polygon: playdate.geometry.polygon, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
+fun playdate.graphics.animator.new(duration: integer, arc: Arc, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
+fun playdate.graphics.animator.new(duration: integer, lineSegment: LineSegment, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
+fun playdate.graphics.animator.new(duration: integer, polygon: Polygon, easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
 fun playdate.graphics.animator.new(duration: integer, startValue: (number|playdate.geometry.point), endValue: (number|playdate.geometry.point), easingFunction?: function, startTimeOffset?: integer): playdate.graphics.animator;
 fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFunctions: function[], startTimeOffset?: integer): playdate.graphics.animator;
 fun playdate.graphics.animator:currentValue(): (number|playdate.geometry.point);
@@ -578,43 +644,43 @@ fun playdate.graphics.clear(color?: integer): nil;
 fun playdate.graphics.clearClipRect(): nil;
 fun playdate.graphics.clearStencil(): nil;
 fun playdate.graphics.clearStencilImage(): nil;
-fun playdate.graphics.drawArc(arc: playdate.geometry.arc): nil;
+fun playdate.graphics.drawArc(arc: Arc): nil;
 fun playdate.graphics.drawArc(x: integer, y: integer, radius: number, startAngle: number, endAngle: number): nil;
-fun playdate.graphics.drawCircleAtPoint(p: playdate.geometry.point, radius: number): nil;
+fun playdate.graphics.drawCircleAtPoint(p: Point, radius: number): nil;
 fun playdate.graphics.drawCircleAtPoint(x: integer, y: integer, radius: number): nil;
-fun playdate.graphics.drawCircleInRect(r: playdate.geometry.rect): nil;
+fun playdate.graphics.drawCircleInRect(r: Rect): nil;
 fun playdate.graphics.drawCircleInRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.drawEllipseInRect(rect: playdate.geometry.rect, startAngle?: number, endAngle?: number): nil;
+fun playdate.graphics.drawEllipseInRect(rect: Rect, startAngle?: number, endAngle?: number): nil;
 fun playdate.graphics.drawEllipseInRect(x: integer, y: integer, width: integer, height: integer, startAngle?: number, endAngle?: number): nil;
 fun playdate.graphics.drawLine(x1: integer, y1: integer, x2: integer, y2: integer): nil;
 fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
-fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string)): nil;
+fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string)): nil;
 fun playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string)): nil;
 fun playdate.graphics.drawPixel(x: integer, y: integer): nil;
-fun playdate.graphics.drawPolygon(p: playdate.geometry.polygon): nil;
+fun playdate.graphics.drawPolygon(p: Polygon): nil;
 fun playdate.graphics.drawPolygon(x1: integer, y1: integer, x2: integer, y2: integer, ...?: integer): nil;
-fun playdate.graphics.drawRect(r: playdate.geometry.rect): nil;
+fun playdate.graphics.drawRect(r: Rect): nil;
 fun playdate.graphics.drawRect(x: integer, y: integer, w: integer, h: integer): nil;
-fun playdate.graphics.drawRoundRect(r: playdate.geometry.rect, radius: number): nil;
+fun playdate.graphics.drawRoundRect(r: Rect, radius: number): nil;
 fun playdate.graphics.drawRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.drawSineWave(startX: integer, startY: integer, endX: integer, endY: integer, startAmplitude: integer, endAmplitude: integer, period: integer, phaseShift?: integer): nil;
 fun playdate.graphics.drawText(text: string, x: integer, y: integer, fontFamily?: table<integer, playdate.graphics.font>, leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer): nil;
-fun playdate.graphics.drawTextInRect(text: string, rect: playdate.geometry.rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): nil;
+fun playdate.graphics.drawTextInRect(text: string, rect: Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): nil;
 fun playdate.graphics.drawTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): nil;
 fun playdate.graphics.drawTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
-fun playdate.graphics.fillCircleAtPoint(p: playdate.geometry.point, radius: number): nil;
+fun playdate.graphics.fillCircleAtPoint(p: Point, radius: number): nil;
 fun playdate.graphics.fillCircleAtPoint(x: integer, y: integer, radius: number): nil;
-fun playdate.graphics.fillCircleInRect(r: playdate.geometry.rect): nil;
+fun playdate.graphics.fillCircleInRect(r: Rect): nil;
 fun playdate.graphics.fillCircleInRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.fillEllipseInRect(rect: playdate.geometry.rect, startAngle?: number, endAngle?: number): nil;
+fun playdate.graphics.fillEllipseInRect(rect: Rect, startAngle?: number, endAngle?: number): nil;
 fun playdate.graphics.fillEllipseInRect(x: integer, y: integer, width: integer, height: integer, startAngle?: number, endAngle?: number): nil;
-fun playdate.graphics.fillPolygon(p: playdate.geometry.polygon): nil;
+fun playdate.graphics.fillPolygon(p: Polygon): nil;
 fun playdate.graphics.fillPolygon(x1: integer, y1: integer, x2: integer, y2: integer, ...?: integer): nil;
-fun playdate.graphics.fillRect(r: playdate.geometry.rect): nil;
+fun playdate.graphics.fillRect(r: Rect): nil;
 fun playdate.graphics.fillRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.fillRoundRect(r: playdate.geometry.rect, radius: number): nil;
+fun playdate.graphics.fillRoundRect(r: Rect, radius: number): nil;
 fun playdate.graphics.fillRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.fillTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
 fun playdate.graphics.font.new(path: string): playdate.graphics.font;
@@ -653,20 +719,20 @@ fun playdate.graphics.image:blurredImage(radius: number, numPasses: integer, dit
 fun playdate.graphics.image:clear(color: integer): nil;
 fun playdate.graphics.image:clearMask(opaque?: boolean): nil;
 fun playdate.graphics.image:copy(): playdate.graphics.image;
-fun playdate.graphics.image:draw(p: playdate.geometry.point, flip?: (integer|string), sourceRect?: playdate.geometry.rect): nil;
-fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|string), sourceRect?: playdate.geometry.rect): nil;
+fun playdate.graphics.image:draw(p: Point, flip?: (integer|string), sourceRect?: Rect): nil;
+fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|string), sourceRect?: Rect): nil;
 fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (integer|string), xPhase?: integer, yPhase?: integer): nil;
 fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer): nil;
-fun playdate.graphics.image:drawIgnoringOffset(p: playdate.geometry.point, flip?: (integer|string)): nil;
+fun playdate.graphics.image:drawIgnoringOffset(p: Point, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: integer, yscale?: integer): nil;
 fun playdate.graphics.image:drawSampled(x: integer, y: integer, width: integer, height: integer, centerx: number, centery: number, dxx: number, dyx: number, dxy: number, dyy: number, dx: integer, dy: integer, z: integer, tiltAngle: number, tile: boolean): nil;
 fun playdate.graphics.image:drawScaled(x: integer, y: integer, scale: integer, yscale?: integer): nil;
-fun playdate.graphics.image:drawTiled(rect: playdate.geometry.rect, flip?: (integer|string)): nil;
+fun playdate.graphics.image:drawTiled(rect: Rect, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (integer|string)): nil;
-fun playdate.graphics.image:drawWithTransform(xform: playdate.geometry.affineTransform, x: integer, y: integer): nil;
+fun playdate.graphics.image:drawWithTransform(xform: AffineTransform, x: integer, y: integer): nil;
 fun playdate.graphics.image:fadedImage(alpha: number, ditherType: integer): playdate.graphics.image;
 fun playdate.graphics.image:getMaskImage(): playdate.graphics.image;
 fun playdate.graphics.image:getSize(): (width: integer, height: integer);
@@ -679,7 +745,7 @@ fun playdate.graphics.image:sample(x: integer, y: integer): integer;
 fun playdate.graphics.image:scaledImage(scale: integer, yscale?: integer): playdate.graphics.image;
 fun playdate.graphics.image:setInverted(flag: boolean): nil;
 fun playdate.graphics.image:setMaskImage(maskImage: playdate.graphics.image): nil;
-fun playdate.graphics.image:transformedImage(xform: playdate.geometry.affineTransform): playdate.graphics.image;
+fun playdate.graphics.image:transformedImage(xform: AffineTransform): playdate.graphics.image;
 fun playdate.graphics.image:vcrPauseFilterImage(): playdate.graphics.image;
 fun playdate.graphics.imageSizeAtPath(path: string): (width: integer, height: integer);
 fun playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): (image: playdate.graphics.image, textWasTruncated: boolean);
@@ -695,7 +761,7 @@ fun playdate.graphics.imagetable:load(path: string): (success: boolean, error: s
 fun playdate.graphics.imagetable:setImage(n: integer, image: playdate.graphics.image): nil;
 fun playdate.graphics.lockFocus(image: playdate.graphics.image): nil;
 fun playdate.graphics.nineSlice.new(imagePath: string, innerX: integer, innerY: integer, innerWidth: integer, innerHeight: integer): playdate.graphics.nineSlice;
-fun playdate.graphics.nineSlice:drawInRect(rect: playdate.geometry.rect): nil;
+fun playdate.graphics.nineSlice:drawInRect(rect: Rect): nil;
 fun playdate.graphics.nineSlice:drawInRect(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.nineSlice:getMinSize(): (width: integer, height: integer);
 fun playdate.graphics.nineSlice:getSize(): (width: integer, height: integer);
@@ -704,7 +770,7 @@ fun playdate.graphics.perlinArray(count: integer, x: integer, dx: integer, y?: i
 fun playdate.graphics.popContext(): nil;
 fun playdate.graphics.pushContext(image?: playdate.graphics.image): nil;
 fun playdate.graphics.setBackgroundColor(color: integer): nil;
-fun playdate.graphics.setClipRect(rect: playdate.geometry.rect): nil;
+fun playdate.graphics.setClipRect(rect: Rect): nil;
 fun playdate.graphics.setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.setColor(color: integer): nil;
 fun playdate.graphics.setDitherPattern(alpha: number, ditherType?: integer): nil;
@@ -717,7 +783,7 @@ fun playdate.graphics.setLineCapStyle(style: integer): nil;
 fun playdate.graphics.setLineWidth(width: integer): nil;
 fun playdate.graphics.setPattern(pattern: integer[]): nil;
 fun playdate.graphics.setPolygonFillRule(rule: integer): nil;
-fun playdate.graphics.setScreenClipRect(rect: playdate.geometry.rect): nil;
+fun playdate.graphics.setScreenClipRect(rect: Rect): nil;
 fun playdate.graphics.setScreenClipRect(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.setStencilImage(image: playdate.graphics.image, tile?: boolean): nil;
 fun playdate.graphics.setStencilPattern(level: any, ditherType?: integer): nil;
@@ -725,7 +791,7 @@ fun playdate.graphics.setStencilPattern(pattern: integer[]): nil;
 fun playdate.graphics.setStencilPattern(row1: integer, row2: integer, row3: integer, row4: integer, row5: integer, row6: integer, row7: integer, row8: integer): nil;
 fun playdate.graphics.setStrokeLocation(location: integer): nil;
 fun playdate.graphics.sprite.addDirtyRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite.addEmptyCollisionSprite(r: playdate.geometry.rect): nil;
+fun playdate.graphics.sprite.addEmptyCollisionSprite(r: Rect): nil;
 fun playdate.graphics.sprite.addEmptyCollisionSprite(x: integer, y: integer, w: integer, h: integer): nil;
 fun playdate.graphics.sprite.addSprite(sprite: playdate.graphics.sprite): nil;
 fun playdate.graphics.sprite.addWallSprites(tilemap: playdate.graphics.tilemap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer): nil;
@@ -735,13 +801,13 @@ fun playdate.graphics.sprite.getAllSprites(): playdate.graphics.sprite[];
 fun playdate.graphics.sprite.getAlwaysRedraw(): boolean;
 fun playdate.graphics.sprite.new(image_or_tilemap?: (playdate.graphics.image|playdate.graphics.tilemap)): playdate.graphics.sprite;
 fun playdate.graphics.sprite.performOnAllSprites(f: fun(sprite: playdate.graphics.sprite)): nil;
-fun playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment: playdate.geometry.lineSegment): CollisionInfo[];
+fun playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment: LineSegment): CollisionInfo[];
 fun playdate.graphics.sprite.querySpriteInfoAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): CollisionInfo[];
-fun playdate.graphics.sprite.querySpritesAlongLine(lineSegment: playdate.geometry.lineSegment): playdate.graphics.sprite[];
+fun playdate.graphics.sprite.querySpritesAlongLine(lineSegment: LineSegment): playdate.graphics.sprite[];
 fun playdate.graphics.sprite.querySpritesAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesAtPoint(p: playdate.geometry.point): playdate.graphics.sprite[];
+fun playdate.graphics.sprite.querySpritesAtPoint(p: Point): playdate.graphics.sprite[];
 fun playdate.graphics.sprite.querySpritesAtPoint(x: integer, y: integer): playdate.graphics.sprite[];
-fun playdate.graphics.sprite.querySpritesInRect(rect: playdate.geometry.rect): playdate.graphics.sprite[];
+fun playdate.graphics.sprite.querySpritesInRect(rect: Rect): playdate.graphics.sprite[];
 fun playdate.graphics.sprite.querySpritesInRect(x: integer, y: integer, width: integer, height: integer): playdate.graphics.sprite[];
 fun playdate.graphics.sprite.redrawBackground(): nil;
 fun playdate.graphics.sprite.removeAll(): nil;
@@ -749,14 +815,14 @@ fun playdate.graphics.sprite.removeSprite(sprite: playdate.graphics.sprite): nil
 fun playdate.graphics.sprite.removeSprites(spriteArray: playdate.graphics.sprite[]): nil;
 fun playdate.graphics.sprite.setAlwaysRedraw(flag: boolean): nil;
 fun playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback: fun(x: integer, y: integer, width: integer, height: integer): nil): nil;
-fun playdate.graphics.sprite.setClipRectsInRange(rect: playdate.geometry.rect, startz: integer, endz: integer): nil;
+fun playdate.graphics.sprite.setClipRectsInRange(rect: Rect, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.setClipRectsInRange(x: integer, y: integer, width: integer, height: integer, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.spriteCount(): integer;
 fun playdate.graphics.sprite.spriteWithText(text: string, maxWidth: integer, maxHeight: integer, backgroundColor?: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): playdate.graphics.sprite;
 fun playdate.graphics.sprite.update(): nil;
 fun playdate.graphics.sprite:add(): nil;
 fun playdate.graphics.sprite:alphaCollision(anotherSprite: playdate.graphics.sprite): boolean;
-fun playdate.graphics.sprite:checkCollisions(point: playdate.geometry.point): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
+fun playdate.graphics.sprite:checkCollisions(point: Point): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
 fun playdate.graphics.sprite:checkCollisions(x: integer, y: integer): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
 fun playdate.graphics.sprite:clearClipRect(): nil;
 fun playdate.graphics.sprite:clearCollideRect(): nil;
@@ -766,11 +832,11 @@ fun playdate.graphics.sprite:collisionsEnabled(): boolean;
 fun playdate.graphics.sprite:copy(): playdate.graphics.sprite;
 fun playdate.graphics.sprite:draw(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.sprite:getBounds(): (x: integer, y: integer, width: integer, height: integer);
-fun playdate.graphics.sprite:getBoundsRect(): playdate.geometry.rect;
+fun playdate.graphics.sprite:getBoundsRect(): Rect;
 fun playdate.graphics.sprite:getCenter(): (x: number, y: number);
-fun playdate.graphics.sprite:getCenterPoint(): playdate.geometry.point;
+fun playdate.graphics.sprite:getCenterPoint(): Point;
 fun playdate.graphics.sprite:getCollideBounds(): (x: integer, y: integer, width: integer, height: integer);
-fun playdate.graphics.sprite:getCollideRect(): playdate.geometry.rect;
+fun playdate.graphics.sprite:getCollideRect(): Rect;
 fun playdate.graphics.sprite:getCollidesWithGroupsMask(): integer;
 fun playdate.graphics.sprite:getGroupMask(): integer;
 fun playdate.graphics.sprite:getImage(): playdate.graphics.image;
@@ -786,7 +852,7 @@ fun playdate.graphics.sprite:isVisible(): boolean;
 fun playdate.graphics.sprite:markDirty(): nil;
 fun playdate.graphics.sprite:moveBy(x: integer, y: integer): nil;
 fun playdate.graphics.sprite:moveTo(x: integer, y: integer): nil;
-fun playdate.graphics.sprite:moveWithCollisions(goalPoint: playdate.geometry.point): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
+fun playdate.graphics.sprite:moveWithCollisions(goalPoint: Point): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
 fun playdate.graphics.sprite:moveWithCollisions(goalX: integer, goalY: integer): (actualX: integer, actualY: integer, collisions: _CollisionData, length: integer);
 fun playdate.graphics.sprite:overlappingSprites(): playdate.graphics.sprite[];
 fun playdate.graphics.sprite:remove(): nil;
@@ -794,12 +860,12 @@ fun playdate.graphics.sprite:removeAnimator(): nil;
 fun playdate.graphics.sprite:resetCollidesWithGroupsMask(): nil;
 fun playdate.graphics.sprite:resetGroupMask(): nil;
 fun playdate.graphics.sprite:setAnimator(animator: playdate.graphics.animator, moveWithCollisions?: boolean, removeOnCollision?: boolean): nil;
-fun playdate.graphics.sprite:setBounds(rect: playdate.geometry.rect): nil;
+fun playdate.graphics.sprite:setBounds(rect: Rect): nil;
 fun playdate.graphics.sprite:setBounds(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.sprite:setCenter(x: integer, y: integer): nil;
-fun playdate.graphics.sprite:setClipRect(rect: playdate.geometry.rect): nil;
+fun playdate.graphics.sprite:setClipRect(rect: Rect): nil;
 fun playdate.graphics.sprite:setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite:setCollideRect(rect: playdate.geometry.rect): nil;
+fun playdate.graphics.sprite:setCollideRect(rect: Rect): nil;
 fun playdate.graphics.sprite:setCollideRect(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.sprite:setCollidesWithGroups(groups: (integer|integer[])): nil;
 fun playdate.graphics.sprite:setCollidesWithGroupsMask(mask: integer): nil;
@@ -826,9 +892,9 @@ fun playdate.graphics.sprite:setZIndex(z: integer): nil;
 fun playdate.graphics.sprite:update(): nil;
 fun playdate.graphics.sprite:updatesEnabled(): boolean;
 fun playdate.graphics.tilemap.new(): playdate.graphics.tilemap;
-fun playdate.graphics.tilemap:draw(x: integer, y: integer, sourceRect?: playdate.geometry.rect): nil;
-fun playdate.graphics.tilemap:drawIgnoringOffset(x: integer, y: integer, sourceRect?: playdate.geometry.rect): nil;
-fun playdate.graphics.tilemap:getCollisionRects(emptyIDs: integer[]): playdate.geometry.rect[];
+fun playdate.graphics.tilemap:draw(x: integer, y: integer, sourceRect?: Rect): nil;
+fun playdate.graphics.tilemap:drawIgnoringOffset(x: integer, y: integer, sourceRect?: Rect): nil;
+fun playdate.graphics.tilemap:getCollisionRects(emptyIDs: integer[]): Rect[];
 fun playdate.graphics.tilemap:getPixelSize(): (width: integer, height: integer);
 fun playdate.graphics.tilemap:getSize(): (width: integer, height: integer);
 fun playdate.graphics.tilemap:getTileAtPosition(x: integer, y: integer): number?;
@@ -994,7 +1060,7 @@ fun playdate.sound.getCurrentTime(): number;
 fun playdate.sound.getHeadphoneState(changeCallback: function): (headphone: boolean, mic: boolean?);
 fun playdate.sound.getSampleRate(): integer;
 fun playdate.sound.instrument.new(synth?: playdate.sound.synth): playdate.sound.instrument;
-fun playdate.sound.instrument:addVoice(v: playdate.geometry.vector2D, note?: integer, rangeend?: integer, transpose?: integer): nil;
+fun playdate.sound.instrument:addVoice(v: Vector2D, note?: integer, rangeend?: integer, transpose?: integer): nil;
 fun playdate.sound.instrument:allNotesOff(): nil;
 fun playdate.sound.instrument:getVolume(): (left_or_mono: number, right: number?);
 fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
@@ -1133,7 +1199,7 @@ fun playdate.sound.twopolefilter:setFrequencyMod(signal: playdate.sound.signal):
 fun playdate.sound.twopolefilter:setGain(g: number): nil;
 fun playdate.sound.twopolefilter:setMix(level: number): nil;
 fun playdate.sound.twopolefilter:setMixMod(signal: playdate.sound.signal): nil;
-fun playdate.sound.twopolefilter:setResonance(r: playdate.geometry.rect): nil;
+fun playdate.sound.twopolefilter:setResonance(r: Rect): nil;
 fun playdate.sound.twopolefilter:setResonanceMod(signal: playdate.sound.signal): nil;
 fun playdate.sound.twopolefilter:setType(type: integer): nil;
 fun playdate.start(): nil;
