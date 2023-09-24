@@ -1,6 +1,6 @@
 use std::{fmt::Display, cmp::Ordering};
 
-use pest::Parser;
+use pest::{Parser, iterators::Pair};
 use pest_derive::Parser;
 
 #[derive(Parser)]
@@ -88,6 +88,37 @@ impl Display for LuarsStatement<'_> {
     }
 }
 
+pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
+    let iterator = pair.into_inner();
+    let mut obj_name: &str = "INVALID";
+    let mut obj_type: &str = "";
+    let mut obj_proto: Vec<(&str, &str)> = Vec::new();
+    for field in iterator {
+        match field.as_rule() {
+            Rule::Identifier => {
+                obj_name = field.as_str();
+            }
+            Rule::TypeLua => {
+                obj_type = field.as_str();
+            }
+            Rule::TableConstants => {
+                let mut field = field.into_inner();
+                while field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::TableKey {
+                    let field_name: &str = field.next().unwrap().as_str();
+                    let field_type: &str = field.next().unwrap().as_str();
+                    //     println!("{:#?}", field);
+                    obj_proto.push((field_name, field_type));
+                }
+            }
+            _ => {
+                eprintln!("Rule: {:?}", field.as_rule());
+                unreachable!()
+            }
+        }
+    }
+    LuarsStatement::Object(obj_name, obj_type, obj_proto)
+}
+
 pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
     let document = LuarsParser::parse(Rule::Document, &unparsed_file)
     .expect("unsuccessful parse")
@@ -158,4 +189,34 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
     }
     statements.sort();
     statements
+}
+
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+    #[test]
+    fn test_tbl_simple() {
+        let document = LuarsParser::parse(Rule::Object, "tbl json;\n")
+            .expect("unsuccessful parse")
+            .next().unwrap();
+        assert_eq!(parse_tbl(document), LuarsStatement::Object("json", "", Vec::new()));
+    }
+    #[test]
+    fn tbl_type() {
+        let document = LuarsParser::parse(Rule::Object, "tbl File: playdate.file.file;")
+            .expect("unsuccessful parse")
+            .next().unwrap();
+        assert_eq!(parse_tbl(document), LuarsStatement::Object("File", "playdate.file.file", Vec::new()));
+    }
+    #[test]
+    fn tbl_literal() {
+        let document = LuarsParser::parse(
+            Rule::Object, "tbl Size: playdate.geometry.size = { width: number, height: number, };"
+        ).expect("unsuccessful parse").next().unwrap();
+        assert_eq!(parse_tbl(document), LuarsStatement::Object("Size", "playdate.geometry.size", vec![
+            ("width", "number"),
+            ("height", "number"),
+        ]));
+    }
 }
