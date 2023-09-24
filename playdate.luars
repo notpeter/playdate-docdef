@@ -253,7 +253,14 @@ fun AffineTransform:translatedBy(dx: integer, dy: integer): AffineTransform;
 
 tbl playdate.geometry.arc;
 fun playdate.geometry.arc.new(x: integer, y: integer, radius: number, startAngle: number, endAngle: number, direction?: boolean): Arc;
-tbl Arc: playdate.geometry.arc = { x: integer, y: integer, radius: integer, startAngle: number, endAngle: number, direction: boolean, };
+tbl Arc: playdate.geometry.arc = {
+    x: integer,
+    y: integer,
+    radius: integer,
+    startAngle: number,
+    endAngle: number,
+    direction: boolean,
+};
 fun Arc:copy(): Arc;
 fun Arc:isClockwise(): boolean;
 fun Arc:length(): number;
@@ -356,7 +363,10 @@ fun Rect:unpack(): (x: number, y: number, width: number, height: number);
 
 tbl playdate.geometry.size;
 fun playdate.geometry.size.new(width: integer, height: integer): Size;
-tbl Size: playdate.geometry.size = { width: number, height: number, };
+tbl Size: playdate.geometry.size = {
+    width: number,
+    height: number,
+};
 fun Size:copy(): Size;
 fun Size:unpack(): (width: number, height: number);
 
@@ -594,7 +604,12 @@ tbl playdate.graphics.image = {
     kDitherTypeBurkes: integer = 9,
     kDitherTypeAtkinson: integer = 10,
 };
-tbl Image: playdate.graphics.image = { x: integer, y: integer, width: integer, height: integer, };
+tbl Image: playdate.graphics.image = {
+    x: integer,
+    y: integer,
+    width: integer,
+    height: integer,
+};
 fun playdate.graphics.image.new(path: string): (image: Image?, error: string?);
 fun playdate.graphics.image.new(width: integer, height: integer, bgcolor?: integer): Image;
 fun playdate.graphics.image:addMask(opaque?: boolean): nil;
@@ -837,7 +852,10 @@ fun Menu:removeAllMenuItems(): nil;
 fun Menu:removeMenuItem(menuItem: Menu): nil;
 
 tbl playdate.menu.item;
-tbl MenuItem: playdate.menu.item = { title: string, value: (integer|boolean|string)};
+tbl MenuItem: playdate.menu.item = {
+    title: string,
+    value: (integer|boolean|string)
+};
 fun MenuItem:getTitle(): string;
 fun MenuItem:getValue(): (integer|boolean|string);
 fun MenuItem:setCallback(callback: function): nil;
@@ -869,7 +887,11 @@ fun PathFinderGraph:removeNodeWithXY(x: integer, y: integer): nil;
 fun PathFinderGraph:setXYForNodeWithID(id: integer, x: integer, y: integer): nil;
 
 tbl playdate.pathfinder.node;
-tbl PathFinderNode: playdate.pathfinder.node = { x: integer, y: integer, id: integer, };
+tbl PathFinderNode: playdate.pathfinder.node = {
+    x: integer,
+    y: integer,
+    id: integer,
+};
 fun PathFinderNode:addConnection(node: PathFinderNode, weight: number, addReciprocalConnection: boolean): nil;
 fun PathFinderNode:addConnectionToNodeWithXY(x: integer, y: integer, weight: number, addReciprocalConnection: boolean): nil;
 fun PathFinderNode:addConnections(nodes: PathFinderNode[], weights: number[], addReciprocalConnections: boolean): nil;
@@ -1188,8 +1210,18 @@ fun Track:setMuted(flag: boolean): nil;
 fun Track:setNotes(list: table[]): nil;
 
 tbl playdate.sound.track;
-tbl SoundTrackNote: table = { step: integer, note: number, length: integer, velocity: number, };
-tbl SoundTrackNoteIn: table = { step: integer, note: (number|string), length: integer, velocity: number,};
+tbl SoundTrackNote: table = {
+    step: integer,
+    note: number,
+    length: integer,
+    velocity: number,
+};
+tbl SoundTrackNoteIn: table = {
+    step: integer,
+    note: (number|string),
+    length: integer,
+    velocity: number,
+};
 
 tbl playdate.string;
 fun playdate.string.UUID(length: number): string;
