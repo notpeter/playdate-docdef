@@ -25,8 +25,8 @@ Function = {
     ~ Return?
 }
 TableConstants = {
-    TableKey ~ W ~ ":" ~ W ~ TypeLua ~ W ~ ("=" ~ W ~ IntegerValue ~ W)?
-    ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ TypeLua ~ W ~ ("=" ~ W ~ IntegerValue ~W)?)*
+    TableKey ~ W ~ ":" ~ W ~ CaptureType ~ W ~ ("=" ~ W ~ IntegerValue ~ W)?
+    ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ CaptureType ~ W ~ ("=" ~ W ~ IntegerValue ~W)?)*
     ~ W ~ ","?
 }
 Return = {
@@ -74,7 +74,7 @@ LuaIdentifier = _{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
 
-CaptureType = { TypeLua }
+CaptureType = @{ TypeLua }
 TypeLua = _{
     LT
     | "(" ~ W ~ LT ~ W ~ ("|" ~ W ~ LT ~ W)+ ~ ")"

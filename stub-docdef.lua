@@ -118,7 +118,13 @@ FrameTimer = {}
 
 ---@class GridView : playdate.ui.gridview
 ---@field needsDisplay boolean
----@field backgroundImage Image
+---@field backgroundImage (Image|NineSlice)
+---@field isScrolling boolean
+---@field scrollEasingFunction fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number
+---@field easingAmplitude? number
+---@field easingPeriod? number
+---@field changeRowOnColumnWrap boolean
+---@field scrollCellsToCenter boolean
 GridView = {}
 
 ---@class Image : playdate.graphics.image
@@ -132,14 +138,22 @@ Image = {}
 ImageTable = {}
 
 ---@class InputHandler
----@field AButtonDown? AButtonHeld?
----@field AButtonUp? BButtonDown?
----@field BButtonHeld? BButtonUp?
----@field downButtonDown? downButtonUp?
----@field leftButtonDown? leftButtonUp?
----@field rightButtonDown? rightButtonUp?
----@field upButtonDown? upButtonUp?
----@field cranked? change:number, acceleratedChange:number
+---@field AButtonDown? fun()
+---@field AButtonHeld? fun()
+---@field AButtonUp? fun()
+---@field BButtonDown? fun()
+---@field BButtonHeld? fun()
+---@field BButtonUp? fun()
+---@field downButtonDown? fun()
+---@field downButtonUp? fun()
+---@field leftButtonDown? fun()
+---@field leftButtonUp? fun()
+---@field rightButtonDown? fun()
+---@field rightButtonUp? fun()
+---@field upButtonDown? fun()
+---@field upButtonUp? fun()
+---@field cranked? fun(change:number, acceleratedChange:number)
+
 InputHandler = {}
 
 ---@class Instrument : playdate.sound.instrument
@@ -160,7 +174,7 @@ Menu = {}
 
 ---@class MenuItem : playdate.menu.item
 ---@field title string
----@field value integer
+---@field value (integer|boolean|string)
 MenuItem = {}
 
 ---@class Metadata
@@ -275,7 +289,9 @@ SoundTrackNote = {}
 
 ---@class SoundTrackNoteIn : table
 ---@field step integer
----@field note number
+---@field note (number|string)
+---@field length integer
+---@field velocity number
 SoundTrackNoteIn = {}
 
 ---@class Sprite : playdate.graphics.sprite
@@ -283,7 +299,8 @@ SoundTrackNoteIn = {}
 ---@field y integer
 ---@field width integer
 ---@field height integer
----@field collisionResponse? integer
+---@field collisionResponse? (integer|fun(self: Sprite, other: Sprite): integer?)
+---@field update? fun():nil
 Sprite = {}
 
 ---@class SpriteCollisionData
@@ -336,7 +353,7 @@ TileMap = {}
 ---@field timeLeft integer
 ---@field repeats boolean
 ---@field reverses boolean
----@field timerEndedArgs any
+---@field timerEndedArgs any[]
 Timer = {}
 
 ---@class Track : playdate.sound.track
@@ -357,9 +374,16 @@ Video = {}
 json = {}
 
 ---@class playdate
----@field argv string
+---@field argv string[]
 ---@field isSimulator boolean
----@field kButtonLeft integer
+---@field kButtonLeft integer 1
+---@field kButtonRight integer 2
+---@field kButtonUp integer 4
+---@field kButtonDown integer 8
+---@field kButtonB integer 16
+---@field kButtonA integer 32
+---@field metadate Metadata
+---@field systeminfo SystemInfo
 playdate = {}
 
 ---@class table
@@ -2828,25 +2852,53 @@ playdate.display = {}
 playdate.easingFunctions = {}
 
 ---@class playdate.file
----@field kFileRead integer
+---@field kFileRead integer 3
+---@field kFileAppend integer 8
+---@field kFileWrite integer 4
 playdate.file = {}
 
 ---@class playdate.frameTimer
 playdate.frameTimer = {}
 
 ---@class playdate.geometry
----@field kUnflipped integer
+---@field kUnflipped integer 0
+---@field kFlippedX integer 1
+---@field kFlippedY integer 2
+---@field kFlippedXY integer 3
 playdate.geometry = {}
 
 ---@class playdate.graphics
----@field kColorBlack integer
+---@field kColorBlack integer 0
+---@field kColorWhite integer 1
+---@field kColorClear integer 2
+---@field kColorXOR integer 3
+---@field kDrawModeCopy integer 0
+---@field kDrawModeWhiteTransparent integer 1
+---@field kDrawModeBlackTransparent integer 2
+---@field kDrawModeFillWhite integer 3
+---@field kDrawModeFillBlack integer 4
+---@field kDrawModeXOR integer 5
+---@field kDrawModeNXOR integer 6
+---@field kDrawModeInverted integer 7
+---@field kImageUnflipped integer 0
+---@field kImageFlippedX integer 1
+---@field kImageFlippedY integer 2
+---@field kImageFlippedXY integer 3
+---@field kPolygonFillNonZero integer 0
+---@field kPolygonFillEvenOdd integer 1
+---@field kStrokeCentered integer 0
+---@field kStrokeInside integer 1
+---@field kStrokeOutside integer 2
 playdate.graphics = {}
 
 ---@class playdate.inputHandlers
 playdate.inputHandlers = {}
 
 ---@class playdate.keyboard
----@field kCapitalizationNormal integer
+---@field kCapitalizationNormal integer 1
+---@field kCapitalizationSentences integer 3
+---@field kCapitalizationWords integer 2
+---@field text string
 playdate.keyboard = {}
 
 ---@class playdate.math
@@ -2862,7 +2914,24 @@ playdate.pathfinder = {}
 playdate.simulator = {}
 
 ---@class playdate.sound
----@field kFormat8bitMono integer
+---@field kFormat8bitMono integer 0
+---@field kFormat8bitStereo integer 1
+---@field kFormat16bitMono integer 2
+---@field kFormat16bitStereo integer 3
+---@field kLFOSquare integer 0
+---@field kLFOTriangle integer 1
+---@field kLFOSine integer 2
+---@field kLFOSampleAndHold integer 3
+---@field kLFOSawtoothUp integer 4
+---@field kLFOSawtoothDown integer 5
+---@field kWaveSquare integer 0
+---@field kWaveTriangle integer 1
+---@field kWaveSine integer 2
+---@field kWaveNoise integer 3
+---@field kWaveSawtooth integer 4
+---@field kWavePOPhase integer 5
+---@field kWavePODigital integer 6
+---@field kWavePOVosim integer 7
 playdate.sound = {}
 
 ---@class playdate.string
@@ -4031,11 +4100,25 @@ playdate.graphics.animation = {}
 playdate.graphics.animator = {}
 
 ---@class playdate.graphics.font
----@field kLanguageEnglish integer
+---@field kLanguageEnglish integer 0
+---@field kLanguageJapanese integer 1
+---@field kVariantNormal integer 0
+---@field kVariantBold integer 1
+---@field kVariantItalic integer 2
 playdate.graphics.font = {}
 
 ---@class playdate.graphics.image
----@field kDitherTypeNone integer
+---@field kDitherTypeNone integer 0
+---@field kDitherTypeDiagonalLine integer 1
+---@field kDitherTypeHorizontalLine integer 3
+---@field kDitherTypeVerticalLine integer 2
+---@field kDitherTypeScreen integer 4
+---@field kDitherTypeBayer2x2 integer 5
+---@field kDitherTypeBayer4x4 integer 6
+---@field kDitherTypeBayer8x8 integer 7
+---@field kDitherTypeFloydSteinberg integer 8
+---@field kDitherTypeBurkes integer 9
+---@field kDitherTypeAtkinson integer 10
 playdate.graphics.image = {}
 
 ---@class playdate.graphics.imagetable
@@ -4045,7 +4128,10 @@ playdate.graphics.imagetable = {}
 playdate.graphics.nineSlice = {}
 
 ---@class playdate.graphics.sprite
----@field kCollisionTypeSlide integer
+---@field kCollisionTypeSlide integer 0
+---@field kCollisionTypeFreeze integer 1
+---@field kCollisionTypeOverlap integer 2
+---@field kCollisionTypeBounce integer 3
 playdate.graphics.sprite = {}
 
 ---@class playdate.graphics.tilemap

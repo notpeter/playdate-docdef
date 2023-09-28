@@ -9,7 +9,7 @@ pub struct LuarsParser;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
-    Table(&'a str, &'a str, Vec<(&'a str, &'a str)>),
+    Table(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
 
@@ -60,7 +60,15 @@ impl Display for LuarsStatement<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             LuarsStatement::Table(name, parent, tablekeys) => {
-                let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
+                let fields = &tablekeys.iter().map(
+                    |(_name, _type, _value)|
+                        if _value.to_string() != "" {
+                            format!("---@field {} {} {}", _name, _type, _value)
+                        } else {
+                            format!("---@field {} {}", _name, _type)
+                        }
+                ).collect::<Vec<String>>().join("\n");
+
                 if parent.to_string() == "" && fields.len() == 0 {
                     write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
                 } else if parent.to_string() == "" {
@@ -104,7 +112,7 @@ pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
     let iterator = pair.into_inner();
     let mut obj_name: &str = "INVALID";
     let mut obj_type: &str = "";
-    let mut obj_proto: Vec<(&str, &str)> = Vec::new();
+    let mut obj_proto: Vec<(&str, &str, &str)> = Vec::new();
     for field in iterator {
         match field.as_rule() {
             Rule::Identifier => {
@@ -115,10 +123,29 @@ pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
             }
             Rule::TableConstants => {
                 let mut field = field.into_inner();
-                while field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::TableKey {
-                    let field_name: &str = field.next().unwrap().as_str();
-                    let field_type: &str = field.next().unwrap().as_str();
-                    obj_proto.push((field_name, field_type));
+                let mut field_name: &str;
+                let mut field_type: &str;
+                let mut field_value: &str;
+                while field.peek().is_some() {
+                    let obj = field.next().unwrap();
+                    if obj.as_rule() == Rule::TableKey {
+                        field_name = obj.as_str();
+                        if field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::CaptureType {
+                            field_type = field.next().unwrap().as_str();
+                            if field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::IntegerValue {
+                                field_value = field.next().unwrap().as_str();
+                                obj_proto.push((field_name, field_type, field_value));
+                            } else {
+                                obj_proto.push((field_name, field_type, ""));
+                            }
+                        } else {
+                            eprint!("Unexpected parse: {:?} {:#?}", obj.as_rule(), obj);
+                            unreachable!()
+                        }
+                    } else {
+                        eprintln!("Unexpected parse: {:?} {:#?}", obj.as_rule(), obj);
+                        unreachable!()
+                    }
                 }
             }
             _ => {
@@ -229,8 +256,8 @@ mod tests {
             Rule::Table, "tbl Size: playdate.geometry.size = { width: number, height: number, };"
         ).expect("unsuccessful parse").next().unwrap();
         assert_eq!(parse_tbl(document), LuarsStatement::Table("Size", "playdate.geometry.size", vec![
-            ("width", "number"),
-            ("height", "number"),
+            ("width", "number", ""),
+            ("height", "number", ""),
         ]));
     }
     #[test]
