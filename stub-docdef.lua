@@ -373,6 +373,12 @@ Video = {}
 ---@class json
 json = {}
 
+---@class kTextAlignment
+---@field left integer 0
+---@field right integer 1
+---@field center integer 2
+kTextAlignment = {}
+
 ---@class playdate
 ---@field argv string[]
 ---@field isSimulator boolean

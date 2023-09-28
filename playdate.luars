@@ -7,6 +7,12 @@ fun json.encodePretty(table: table): string;
 fun json.encodeToFile(file: File, pretty: boolean, table: table): nil;
 fun json.encodeToFile(path: string, pretty?: boolean, table?: table): nil;
 
+tbl kTextAlignment = {
+    left: integer = 0,
+    right: integer = 1,
+    center: integer = 2,
+};
+
 tbl playdate = {
     argv: string[],
     isSimulator: boolean,
