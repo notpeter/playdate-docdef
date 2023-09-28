@@ -1,6 +1,6 @@
----@class json
----@class playdate
----@class table
+---@return Class
+function class() end
+
 ---@param ... any
 ---@return nil
 function print(...) end
@@ -17,33 +17,58 @@ function sample(name, _function) end
 ---@return string
 function where() end
 
----@class _CollisionData : table
----@field sprite playdate.graphics.sprite
----@field other playdate.graphics.sprite
----@field type _CollisionType
----@field overlaps boolean
----@field ti number
----@field move playdate.geometry.vector2D
----@field normal playdate.geometry.vector2D
----@field touch playdate.geometry.point
----@field spriteRect playdate.geometry.rect
----@field otherRect playdate.geometry.rect
----@field bounce? playdate.geometry.point
----@field slide? playdate.geometry.point
+---@class AffineTransform : playdate.geometry.affineTransform
 
----@class _CollisionInfo : table
----@field sprite playdate.graphics.sprite
----@field entryPoint playdate.geometry.point
----@field exitPoint playdate.geometry.point
----@field t1 number
----@field t2 number
 
----@class _ControlSignalEvent : table
+---@class AnimationLoop : playdate.graphics.animation.loop
+---@field delay number
+---@field startFrame integer
+---@field endFrame integer
+---@field frame integer
 ---@field step integer
----@field value number
----@field interpolate? boolean
+---@field shouldLoop boolean
+---@field paused boolean
 
----@class _DateTime : table
+---@class Animator : playdate.graphics.animator
+---@field repeatCount integer
+---@field reverses integer
+---@field easingAmplitude number
+---@field easingPeriod number
+---@field s? number
+---@field a? number
+---@field p? number
+
+---@class Arc : playdate.geometry.arc
+---@field x integer
+---@field y integer
+---@field radius integer
+---@field startAngle number
+---@field endAngle number
+---@field direction boolean
+
+---@class BitCrusher : playdate.sound.bitcrusher
+
+
+---@class Blinker : playdate.graphics.animation.blinker
+---@field onDuration integer
+---@field offDuration integer
+---@field loop boolean
+---@field cycles integer
+---@field default boolean
+---@field counter integer
+---@field on boolean
+---@field running boolean
+
+---@class Channel : playdate.sound.channel
+
+
+---@class Class
+
+
+---@class ControlSignal : playdate.sound.controlsignal
+---@field events SoundControlEvent
+
+---@class DateTime
 ---@field year integer
 ---@field month integer
 ---@field day integer
@@ -53,24 +78,76 @@ function where() end
 ---@field second integer
 ---@field millisecond integer
 
----@class _InputHandler : table
----@field AButtonDown? fun()
----@field AButtonHeld? fun()
----@field AButtonUp? fun()
----@field BButtonDown? fun()
----@field BButtonHeld? fun()
----@field BButtonUp? fun()
----@field downButtonDown? fun()
----@field downButtonUp? fun()
----@field leftButtonDown? fun()
----@field leftButtonUp? fun()
----@field rightButtonDown? fun()
----@field rightButtonUp? fun()
----@field upButtonDown? fun()
----@field upButtonUp? fun()
----@field cranked? fun(change:number, acceleratedChange:number)
+---@class DelayLine : playdate.sound.delayline
 
----@class _Metadata : table
+
+---@class DelayLineTap : playdate.sound.delaylinetap
+
+
+---@class Envelope : playdate.sound.envelope
+
+
+---@class File : playdate.file.file
+
+
+---@class FilePlayer : playdate.sound.fileplayer
+
+
+---@class Font : playdate.graphics.font
+
+
+---@class FrameTimer : playdate.frameTimer
+---@field delay integer
+---@field discardOnCompletion boolean
+---@field duration integer
+---@field frame integer
+---@field repeats boolean
+---@field reverses boolean
+---@field timerEndedArgs any
+
+---@class GridView : playdate.ui.gridview
+---@field needsDisplay boolean
+---@field backgroundImage Image
+
+---@class Image : playdate.graphics.image
+---@field x integer
+---@field y integer
+---@field width integer
+---@field height integer
+
+---@class ImageTable : playdate.graphics.imagetable
+
+
+---@class InputHandler
+---@field AButtonDown? AButtonHeld?
+---@field AButtonUp? BButtonDown?
+---@field BButtonHeld? BButtonUp?
+---@field downButtonDown? downButtonUp?
+---@field leftButtonDown? leftButtonUp?
+---@field rightButtonDown? rightButtonUp?
+---@field upButtonDown? upButtonUp?
+---@field cranked? change:number, acceleratedChange:number
+
+---@class Instrument : playdate.sound.instrument
+
+
+---@class LFO : playdate.sound.lfo
+
+
+---@class LineSegment : playdate.geometry.lineSegment
+---@field x1 integer
+---@field y1 integer
+---@field x2 integer
+---@field y2 integer
+
+---@class Menu : playdate.menu
+
+
+---@class MenuItem : playdate.menu.item
+---@field title string
+---@field value integer
+
+---@class Metadata
 ---@field name string
 ---@field author string
 ---@field description string
@@ -84,7 +161,7 @@ function where() end
 ---@field contentWarning2? string
 ---@field ... string
 
----@class _ModTime : table
+---@class ModTime
 ---@field year integer
 ---@field month integer
 ---@field day integer
@@ -92,39 +169,2332 @@ function where() end
 ---@field minute integer
 ---@field second integer
 
----@class _PowerStatus : table
+---@class NineSlice : playdate.graphics.nineSlice
+---@field innerRect Rect
+---@field minWidth integer
+---@field minHeight integer
+
+---@class OnePoleFilter : playdate.sound.onepolefilter
+
+
+---@class OverDrive : playdate.sound.overdrive
+
+
+---@class PathFinderGraph : playdate.pathfinder.graph
+
+
+---@class PathFinderNode : playdate.pathfinder.node
+---@field x integer
+---@field y integer
+---@field id integer
+
+---@class Point : playdate.geometry.point
+---@field x number
+---@field y number
+
+---@class Polygon : playdate.geometry.polygon
+
+
+---@class PowerStatus
 ---@field charging boolean
 ---@field USB boolean
 ---@field screws boolean
 
----@class _SoundTrackNote : table
+---@class Rect : playdate.geometry.rect
+---@field x number
+---@field y number
+---@field width number
+---@field height number
+---@field top number
+---@field bottom number
+---@field left number
+---@field right number
+---@field size Size
+
+---@class RingMod : playdate.sound.ringmod
+
+
+---@class Sample : playdate.sound.sample
+
+
+---@class SamplePlayer : playdate.sound.sampleplayer
+
+
+---@class Sequence : playdate.sound.sequence
+
+
+---@class Signal : playdate.sound.signal
+
+
+---@class Size : playdate.geometry.size
+---@field width number
+---@field height number
+
+---@class SoundControlEvent : table
+---@field step integer
+---@field value number
+---@field interpolate? boolean
+
+---@class SoundEffect : playdate.sound.effect
+
+
+---@class SoundSource
+
+
+---@class SoundTrackNote : table
 ---@field step integer
 ---@field note number
 ---@field length integer
 ---@field velocity number
 
----@class _SoundTrackNoteIn : table
+---@class SoundTrackNoteIn : table
 ---@field step integer
----@field note (number|string)
----@field length integer
----@field velocity number
+---@field note number
 
----@class _SystemStats : table
----@field " kernel" number
----@field " game" number
----@field " audio" number
+---@class Sprite : playdate.graphics.sprite
+---@field x integer
+---@field y integer
+---@field width integer
+---@field height integer
+---@field collisionResponse? integer
 
----@class _Systeminfo : table
+---@class SpriteCollisionData
+---@field sprite Sprite
+---@field other Sprite
+---@field type integer
+---@field overlaps boolean
+---@field ti number
+---@field move Vector2D
+---@field normal Vector2D
+---@field touch Point
+---@field spriteRect Rect
+---@field otherRect Rect
+---@field bounce? Point
+---@field slide? Point
+
+---@class SpriteCollisionInfo
+---@field sprite Sprite
+---@field entryPoint Point
+---@field exitPoint Point
+---@field t1 number
+---@field t2 number
+
+---@class Synth : playdate.sound.synth
+
+
+---@class SystemInfo
 ---@field buildtime string
 ---@field commit string
 ---@field pdxcompatversion integer
 ---@field pdxversion integer
 
+---@class SystemStats
+---@field " kernel" number
+---@field " game" number
+---@field " audio" number
+
+---@class TileMap : playdate.graphics.tilemap
+
+
+---@class Timer : playdate.timer
+---@field currentTime integer
+---@field delay integer
+---@field discardOnCompletion boolean
+---@field duration integer
+---@field timeLeft integer
+---@field repeats boolean
+---@field reverses boolean
+---@field timerEndedArgs any
+
+---@class Track : playdate.sound.track
+
+
+---@class TwoPoleFilter : playdate.sound.twopolefilter
+
+
+---@class Vector2D : playdate.geometry.vector2D
+---@field dx number
+---@field dy number
+
+---@class Video : playdate.graphics.video
+
+
+---@class json
+
+
+---@class playdate
+---@field argv string
+---@field isSimulator boolean
+---@field kButtonLeft integer
+
+---@class table
+
+
+---@param p Point
+---@return Point
+function AffineTransform:__mul(p) end
+
+---@param t AffineTransform
+---@return AffineTransform
+function AffineTransform:__mul(t) end
+
+---@param v Vector2D
+---@return Vector2D
+function AffineTransform:__mul(v) end
+
+---@param af AffineTransform
+---@return nil
+function AffineTransform:concat(af) end
+
+---@return AffineTransform
+function AffineTransform:copy() end
+
+---@return nil
+function AffineTransform:invert() end
+
+---@return nil
+function AffineTransform:reset() end
+
+---@param angle number
+---@param point? Point
+---@return nil
+function AffineTransform:rotate(angle, point) end
+
+---@param angle number
+---@param x? integer
+---@param y? integer
+---@return nil
+function AffineTransform:rotate(angle, x, y) end
+
+---@param angle number
+---@param point? Point
+---@return AffineTransform
+function AffineTransform:rotatedBy(angle, point) end
+
+---@param angle number
+---@param x? integer
+---@param y? integer
+---@return AffineTransform
+function AffineTransform:rotatedBy(angle, x, y) end
+
+---@param sx number
+---@param sy? number
+---@return nil
+function AffineTransform:scale(sx, sy) end
+
+---@param sx number
+---@param sy? number
+---@return AffineTransform
+function AffineTransform:scaledBy(sx, sy) end
+
+---@param sx number
+---@param sy number
+---@return nil
+function AffineTransform:skew(sx, sy) end
+
+---@param sx number
+---@param sy number
+---@return AffineTransform
+function AffineTransform:skewedBy(sx, sy) end
+
+---@param r Rect
+---@return nil
+function AffineTransform:transformAABB(r) end
+
+---@param ls LineSegment
+---@return nil
+function AffineTransform:transformLineSegment(ls) end
+
+---@param p Point
+---@return nil
+function AffineTransform:transformPoint(p) end
+
+---@param p Polygon
+---@return nil
+function AffineTransform:transformPolygon(p) end
+
+---@param x integer
+---@param y integer
+---@return x number
+---@return y number
+function AffineTransform:transformXY(x, y) end
+
+---@param r Rect
+---@return Rect
+function AffineTransform:transformedAABB(r) end
+
+---@param ls LineSegment
+---@return LineSegment
+function AffineTransform:transformedLineSegment(ls) end
+
+---@param p Point
+---@return Point
+function AffineTransform:transformedPoint(p) end
+
+---@param p Polygon
+---@return Polygon
+function AffineTransform:transformedPolygon(p) end
+
+---@param dx integer
+---@param dy integer
+---@return nil
+function AffineTransform:translate(dx, dy) end
+
+---@param dx integer
+---@param dy integer
+---@return AffineTransform
+function AffineTransform:translatedBy(dx, dy) end
+
+---@param x integer
+---@param y integer
+---@param flip? (integer|string)
+---@return nil
+function AnimationLoop:draw(x, y, flip) end
+
+---@return Image
+function AnimationLoop:image() end
+
+---@return boolean
+function AnimationLoop:isValid() end
+
+---@param imageTable ImageTable
+---@return nil
+function AnimationLoop:setImageTable(imageTable) end
+
+---@return (number|Point)
+function Animator:currentValue() end
+
+---@return boolean
+function Animator:ended() end
+
+---@return number
+function Animator:progress() end
+
+---@param duration? integer
+---@return nil
+function Animator:reset(duration) end
+
+---@param time number
+---@return (number|Point)
+function Animator:valueAtTime(time) end
+
+---@return Arc
+function Arc:copy() end
+
+---@return boolean
+function Arc:isClockwise() end
+
+---@return number
+function Arc:length() end
+
+---@param distance integer
+---@param extend boolean
+---@return Point
+function Arc:pointOnArc(distance, extend) end
+
+---@param flag boolean
+---@return nil
+function Arc:setIsClockwise(flag) end
+
+---@param amt number
+---@return nil
+function BitCrusher:setAmount(amt) end
+
+---@param signal Signal
+---@return nil
+function BitCrusher:setAmountMod(signal) end
+
+---@param level number
+---@return nil
+function BitCrusher:setMix(level) end
+
+---@param signal Signal
+---@return nil
+function BitCrusher:setMixMod(signal) end
+
+---@param amt number
+---@return nil
+function BitCrusher:setUndersampling(amt) end
+
+---@param signal Signal
+---@return nil
+function BitCrusher:setUndersamplingMod(signal) end
+
+---@return nil
+function Blinker:remove() end
+
+---@param onDuration? integer
+---@param offDuration? integer
+---@param loop? boolean
+---@param cycles? integer
+---@param default? boolean
+---@return nil
+function Blinker:start(onDuration, offDuration, loop, cycles, default) end
+
+---@return nil
+function Blinker:startLoop() end
+
+---@return nil
+function Blinker:stop() end
+
+---@return nil
+function Blinker:update() end
+
+---@param effect SoundEffect
+---@return nil
+function Channel:addEffect(effect) end
+
+---@param source SoundSource
+---@return nil
+function Channel:addSource(source) end
+
+---@return number
+function Channel:getVolume() end
+
+---@return nil
+function Channel:remove() end
+
+---@param effect SoundEffect
+---@return nil
+function Channel:removeEffect(effect) end
+
+---@param source SoundSource
+---@return nil
+function Channel:removeSource(source) end
+
+---@param pan number
+---@return number
+function Channel:setPan(pan) end
+
+---@param signal Signal
+---@return nil
+function Channel:setPanMod(signal) end
+
+---@param volume number
+---@return nil
+function Channel:setVolume(volume) end
+
+---@param signal Signal
+---@return nil
+function Channel:setVolumeMod(signal) end
+
+---@param parentClass table
+---@return nil
+function Class.extends(parentClass) end
+
+---@param event table
+---@return nil
+function ControlSignal:addEvent(event) end
+
+---@param step integer
+---@param value number
+---@param interpolate? boolean
+---@return nil
+function ControlSignal:addEvent(step, value, interpolate) end
+
+---@return nil
+function ControlSignal:clearEvents() end
+
+---@return integer
+function ControlSignal:getControllerType() end
+
+---@param number integer
+---@return nil
+function ControlSignal:setControllerType(number) end
+
+---@param delay number
+---@return DelayLineTap
+function DelayLine:addTap(delay) end
+
+---@param level number
+---@return nil
+function DelayLine:setFeedback(level) end
+
+---@param level number
+---@return nil
+function DelayLine:setMix(level) end
+
+---@param signal Signal
+---@return nil
+function DelayLine:setMixMod(signal) end
+
+---@return number
+function DelayLineTap:getVolume() end
+
+---@param time number
+---@return nil
+function DelayLineTap:setDelay(time) end
+
+---@param signal Signal
+---@return nil
+function DelayLineTap:setDelayMod(signal) end
+
+---@param flag boolean
+---@return nil
+function DelayLineTap:setFlipChannels(flag) end
+
+---@param level number
+---@return nil
+function DelayLineTap:setVolume(level) end
+
+---@param attack number
+---@return nil
+function Envelope:setAttack(attack) end
+
+---@param amount number
+---@return nil
+function Envelope:setCurvature(amount) end
+
+---@param decay number
+---@return nil
+function Envelope:setDecay(decay) end
+
+---@param flag boolean
+---@return nil
+function Envelope:setGlobal(flag) end
+
+---@param flag boolean
+---@return nil
+function Envelope:setLegato(flag) end
+
+---@param offset number
+---@return nil
+function Envelope:setOffset(offset) end
+
+---@param scaling number
+---@param start? number
+---@param _end number
+---@return nil
+function Envelope:setRateScaling(scaling, start, _end) end
+
+---@param release number
+---@return nil
+function Envelope:setRelease(release) end
+
+---@param flag boolean
+---@return nil
+function Envelope:setRetrigger(flag) end
+
+---@param scale integer
+---@return nil
+function Envelope:setScale(scale) end
+
+---@param sustain number
+---@return nil
+function Envelope:setSustain(sustain) end
+
+---@param amount number
+---@return nil
+function Envelope:setVelocitySensitivity(amount) end
+
+---@param velocity number
+---@param length? number
+---@return nil
+function Envelope:trigger(velocity, length) end
+
+---@return nil
+function File:close() end
+
+---@return nil
+function File:flush() end
+
+---@param numberOfBytes integer
+---@return numberOfBytes integer
+---@return error string?
+function File:read(numberOfBytes) end
+
+---@return string
+function File:readline() end
+
+---@param offset integer
+---@return nil
+function File:seek(offset) end
+
+---@return integer
+function File:tell() end
+
+---@param string string
+---@return bytes_written integer
+---@return error string?
+function File:write(string) end
+
+---@return boolean
+function FilePlayer:didUnderrun() end
+
+---@return number
+function FilePlayer:getLength() end
+
+---@return number
+function FilePlayer:getOffset() end
+
+---@return number
+function FilePlayer:getRate() end
+
+---@return left_or_mono number
+---@return right number?
+function FilePlayer:getVolume() end
+
+---@return boolean
+function FilePlayer:isPlaying() end
+
+---@param path string
+---@return nil
+function FilePlayer:load(path) end
+
+---@return nil
+function FilePlayer:pause() end
+
+---@param repeatCount? integer
+---@return success boolean
+---@return error string?
+function FilePlayer:play(repeatCount) end
+
+---@param seconds number
+---@return nil
+function FilePlayer:setBufferSize(seconds) end
+
+---@param func fun(self: FilePlayer, arg?: any)
+---@param arg? any
+---@return nil
+function FilePlayer:setFinishCallback(func, arg) end
+
+---@param callback fun(self: FilePlayer, arg?: any)
+---@param arg? any
+---@return nil
+function FilePlayer:setLoopCallback(callback, arg) end
+
+---@param start number
+---@param _end number
+---@param loopCallback? fun(arg?: any): nil
+---@param arg? any
+---@return nil
+function FilePlayer:setLoopRange(start, _end, loopCallback, arg) end
+
+---@param seconds number
+---@return nil
+function FilePlayer:setOffset(seconds) end
+
+---@param rate integer
+---@return nil
+function FilePlayer:setRate(rate) end
+
+---@param signal Signal
+---@return nil
+function FilePlayer:setRateMod(signal) end
+
+---@param flag boolean
+---@return nil
+function FilePlayer:setStopOnUnderrun(flag) end
+
+---@param left number
+---@param right? number
+---@param fadeSeconds? number
+---@param fadeCallback? fun(self: FilePlayer, arg?: any)
+---@param arg? any
+---@return nil
+function FilePlayer:setVolume(left, right, fadeSeconds, fadeCallback, arg) end
+
+---@return nil
+function FilePlayer:stop() end
+
+---@param text string
+---@param x integer
+---@param y integer
+---@param leadingAdjustment? integer
+---@return nil
+function Font:drawText(text, x, y, leadingAdjustment) end
+
+---@param text string
+---@param x integer
+---@param y integer
+---@param alignment integer
+---@param leadingAdjustment? integer
+---@return nil
+function Font:drawTextAligned(text, x, y, alignment, leadingAdjustment) end
+
+---@param character string
+---@return Image
+function Font:getGlyph(character) end
+
+---@return integer
+function Font:getHeight() end
+
+---@return integer
+function Font:getLeading() end
+
+---@param text string
+---@return integer
+function Font:getTextWidth(text) end
+
+---@return integer
+function Font:getTracking() end
+
+---@param pixels integer
+---@return nil
+function Font:setLeading(pixels) end
+
+---@param pixels integer
+---@return nil
+function Font:setTracking(pixels) end
+
+---@return nil
+function FrameTimer:pause() end
+
+---@return nil
+function FrameTimer:remove() end
+
+---@return nil
+function FrameTimer:reset() end
+
+---@return nil
+function FrameTimer:start() end
+
+---@param section integer
+---@param row integer
+---@return nil
+function GridView:addHorizontalDividerAbove(section, row) end
+
+---@param section integer
+---@param row integer
+---@param column integer
+---@param selected boolean
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function GridView:drawCell(section, row, column, selected, x, y, width, height) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function GridView:drawHorizontalDivider(x, y, width, height) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function GridView:drawInRect(x, y, width, height) end
+
+---@param section integer
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function GridView:drawSectionHeader(section, x, y, width, height) end
+
+---@param section integer
+---@param row integer
+---@param column integer
+---@param gridWidth? integer
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
+function GridView:getCellBounds(section, row, column, gridWidth) end
+
+---@return integer
+function GridView:getHorizontalDividerHeight() end
+
+---@return integer
+function GridView:getNumberOfColumns() end
+
+---@param section integer
+---@return integer
+function GridView:getNumberOfRowsInSection(section) end
+
+---@return integer
+function GridView:getNumberOfSections() end
+
+---@return x integer
+---@return y integer
+function GridView:getScrollPosition() end
+
+---@return integer
+function GridView:getSectionHeaderHeight() end
+
+---@return integer
+function GridView:getSelectedRow() end
+
+---@return section integer
+---@return row integer
+---@return column integer
+function GridView:getSelection() end
+
+---@return nil
+function GridView:removeHorizontalDividers() end
+
+---@param section integer
+---@param row integer
+---@param column integer
+---@param animated? boolean
+---@return nil
+function GridView:scrollCellToCenter(section, row, column, animated) end
+
+---@param section integer
+---@param row integer
+---@param column integer
+---@param animated? boolean
+---@return nil
+function GridView:scrollToCell(section, row, column, animated) end
+
+---@param row integer
+---@param animated? boolean
+---@return nil
+function GridView:scrollToRow(row, animated) end
+
+---@param animated? boolean
+---@return nil
+function GridView:scrollToTop(animated) end
+
+---@param wrapSelection boolean
+---@param scrollToSelection? boolean
+---@param animate? boolean
+---@return nil
+function GridView:selectNextColumn(wrapSelection, scrollToSelection, animate) end
+
+---@param wrapSelection boolean
+---@param scrollToSelection? boolean
+---@param animate? boolean
+---@return nil
+function GridView:selectNextRow(wrapSelection, scrollToSelection, animate) end
+
+---@param wrapSelection boolean
+---@param scrollToSelection? boolean
+---@param animate? boolean
+---@return nil
+function GridView:selectPreviousColumn(wrapSelection, scrollToSelection, animate) end
+
+---@param wrapSelection boolean
+---@param scrollToSelection? boolean
+---@param animate? boolean
+---@return nil
+function GridView:selectPreviousRow(wrapSelection, scrollToSelection, animate) end
+
+---@param left integer
+---@param right integer
+---@param top integer
+---@param bottom integer
+---@return nil
+function GridView:setCellPadding(left, right, top, bottom) end
+
+---@param cellWidth integer
+---@param cellHeight integer
+---@return nil
+function GridView:setCellSize(cellWidth, cellHeight) end
+
+---@param left integer
+---@param right integer
+---@param top integer
+---@param bottom integer
+---@return nil
+function GridView:setContentInset(left, right, top, bottom) end
+
+---@param height integer
+---@return nil
+function GridView:setHorizontalDividerHeight(height) end
+
+---@param num integer
+---@return nil
+function GridView:setNumberOfColumns(num) end
+
+---@param ... integer
+---@return nil
+function GridView:setNumberOfRows(...) end
+
+---@param section integer
+---@param num integer
+---@return nil
+function GridView:setNumberOfRowsInSection(section, num) end
+
+---@param num integer
+---@return nil
+function GridView:setNumberOfSections(num) end
+
+---@param ms integer
+---@return nil
+function GridView:setScrollDuration(ms) end
+
+---@param x integer
+---@param y integer
+---@param animated? boolean
+---@return nil
+function GridView:setScrollPosition(x, y, animated) end
+
+---@param height integer
+---@return nil
+function GridView:setSectionHeaderHeight(height) end
+
+---@param left integer
+---@param right integer
+---@param top integer
+---@param bottom integer
+---@return nil
+function GridView:setSectionHeaderPadding(left, right, top, bottom) end
+
+---@param row integer
+---@return nil
+function GridView:setSelectedRow(row) end
+
+---@param section integer
+---@param row integer
+---@param column integer
+---@return nil
+function GridView:setSelection(section, row, column) end
+
+---@param n integer
+---@return nil
+function ImageTable:__index(n) end
+
+---@param n integer
+---@param x integer
+---@param y integer
+---@param flip? (integer|string)
+---@return nil
+function ImageTable:drawImage(n, x, y, flip) end
+
+---@param n integer
+---@return Image
+function ImageTable:getImage(n) end
+
+---@param x integer
+---@param y integer
+---@return Image
+function ImageTable:getImage(x, y) end
+
+---@return integer
+function ImageTable:getLength() end
+
+---@return cellsWide integer
+---@return cellsHigh integer
+function ImageTable:getSize() end
+
+---@param path string
+---@return success boolean
+---@return error string?
+function ImageTable:load(path) end
+
+---@param n integer
+---@param image Image
+---@return nil
+function ImageTable:setImage(n, image) end
+
+---@param v Vector2D
+---@param note? integer
+---@param rangeend? integer
+---@param transpose? integer
+---@return nil
+function Instrument:addVoice(v, note, rangeend, transpose) end
+
+---@return nil
+function Instrument:allNotesOff() end
+
+---@return left_or_mono number
+---@return right number?
+function Instrument:getVolume() end
+
+---@param note integer
+---@param when? number
+---@return nil
+function Instrument:noteOff(note, when) end
+
+---@param note (number|string)
+---@param vel? number
+---@param length? number
+---@param when? number
+---@return nil
+function Instrument:playMIDINote(note, vel, length, when) end
+
+---@param frequency number
+---@param vel? number
+---@param length? number
+---@param when? number
+---@return nil
+function Instrument:playNote(frequency, vel, length, when) end
+
+---@param halfsteps number
+---@return nil
+function Instrument:setTranspose(halfsteps) end
+
+---@param left integer
+---@param right? integer
+---@return nil
+function Instrument:setVolume(left, right) end
+
+---@param note1 number
+---@param ... number
+---@return nil
+function LFO:setArpeggio(note1, ...) end
+
+---@param center number
+---@return nil
+function LFO:setCenter(center) end
+
+---@param holdoff number
+---@param ramp number
+---@return nil
+function LFO:setDelay(holdoff, ramp) end
+
+---@param depth number
+---@return nil
+function LFO:setDepth(depth) end
+
+---@param flag boolean
+---@return nil
+function LFO:setGlobal(flag) end
+
+---@param phase number
+---@return nil
+function LFO:setPhase(phase) end
+
+---@param rate number
+---@return nil
+function LFO:setRate(rate) end
+
+---@param flag boolean
+---@return nil
+function LFO:setRetrigger(flag) end
+
+---@param type integer
+---@return nil
+function LFO:setType(type) end
+
+---@param p Point
+---@return Point
+function LineSegment:closestPointOnLineToPoint(p) end
+
+---@return LineSegment
+function LineSegment:copy() end
+
+---@param ls LineSegment
+---@return intersects boolean
+---@return intersection Point?
+function LineSegment:intersectsLineSegment(ls) end
+
+---@param poly Polygon
+---@return intersects boolean
+---@return intersectionPoints Point[]?
+function LineSegment:intersectsPolygon(poly) end
+
+---@param rect Rect
+---@return intersects boolean
+---@return intersectionPoints Point[]?
+function LineSegment:intersectsRect(rect) end
+
+---@return number
+function LineSegment:length() end
+
+---@return Point
+function LineSegment:midPoint() end
+
+---@param dx integer
+---@param dy integer
+---@return nil
+function LineSegment:offset(dx, dy) end
+
+---@param dx integer
+---@param dy integer
+---@return LineSegment
+function LineSegment:offsetBy(dx, dy) end
+
+---@param distance integer
+---@param extend? boolean
+---@return Point
+function LineSegment:pointOnLine(distance, extend) end
+
+---@return Vector2D
+function LineSegment:segmentVector() end
+
+---@return x1 number
+---@return y1 number
+---@return x2 number
+---@return y2 number
+function LineSegment:unpack() end
+
+---@param title string
+---@param initialValue? boolean
+---@param callback? function
+---@return nil
+function Menu:addCheckmarkMenuItem(title, initialValue, callback) end
+
+---@param title string
+---@param callback function
+---@return nil
+function Menu:addMenuItem(title, callback) end
+
+---@param title string
+---@param options string[]
+---@param initalValue? string
+---@param callback? function
+---@return nil
+function Menu:addOptionsMenuItem(title, options, initalValue, callback) end
+
+---@return MenuItem[]
+function Menu:getMenuItems() end
+
+---@return nil
+function Menu:removeAllMenuItems() end
+
+---@param menuItem Menu
+---@return nil
+function Menu:removeMenuItem(menuItem) end
+
+---@return string
+function MenuItem:getTitle() end
+
+---@return (integer|boolean|string)
+function MenuItem:getValue() end
+
+---@param callback function
+---@return nil
+function MenuItem:setCallback(callback) end
+
+---@param newTitle string
+---@return nil
+function MenuItem:setTitle(newTitle) end
+
+---@param newValue (integer|boolean|string)
+---@return nil
+function MenuItem:setValue(newValue) end
+
+---@param rect Rect
+---@return nil
+function NineSlice:drawInRect(rect) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function NineSlice:drawInRect(x, y, width, height) end
+
+---@return width integer
+---@return height integer
+function NineSlice:getMinSize() end
+
+---@return width integer
+---@return height integer
+function NineSlice:getSize() end
+
+---@param level number
+---@return nil
+function OnePoleFilter:setMix(level) end
+
+---@param signal Signal
+---@return nil
+function OnePoleFilter:setMixMod(signal) end
+
+---@param p number
+---@return nil
+function OnePoleFilter:setParameter(p) end
+
+---@param m Signal
+---@return nil
+function OnePoleFilter:setParameterMod(m) end
+
+---@param level number
+---@return nil
+function OverDrive:setGain(level) end
+
+---@param level number
+---@return nil
+function OverDrive:setLimit(level) end
+
+---@param signal Signal
+---@return nil
+function OverDrive:setLimitMod(signal) end
+
+---@param level number
+---@return nil
+function OverDrive:setMix(level) end
+
+---@param signal Signal
+---@return nil
+function OverDrive:setMixMod(signal) end
+
+---@param level number
+---@return nil
+function OverDrive:setOffset(level) end
+
+---@param signal Signaly
+---@return nil
+function OverDrive:setOffsetMod(signal) end
+
+---@param fromNodeID integer
+---@param toNodeID integer
+---@param weight number
+---@param addReciprocalConnection boolean
+---@return nil
+function PathFinderGraph:addConnectionToNodeWithID(fromNodeID, toNodeID, weight, addReciprocalConnection) end
+
+---@param connections integer[][]
+---@return nil
+function PathFinderGraph:addConnections(connections) end
+
+---@param id integer
+---@param x? integer
+---@param y? integer
+---@param connectedNodes? PathFinderNode[]
+---@param weights? number[]
+---@param addReciprocalConnections? boolean
+---@return nil
+function PathFinderGraph:addNewNode(id, x, y, connectedNodes, weights, addReciprocalConnections) end
+
+---@param count integer
+---@return nil
+function PathFinderGraph:addNewNodes(count) end
+
+---@param node PathFinderNode
+---@param connectedNodes? PathFinderNode[]
+---@param weights? number[]
+---@param addReciprocalConnections? boolean
+---@return nil
+function PathFinderGraph:addNode(node, connectedNodes, weights, addReciprocalConnections) end
+
+---@param nodes PathFinderNode[]
+---@return nil
+function PathFinderGraph:addNodes(nodes) end
+
+---@return PathFinderNode[]
+function PathFinderGraph:allNodes() end
+
+---@param startNode PathFinderNode
+---@param goalNode PathFinderNode
+---@param heuristicFunction? fun(startNode: PathFinderNode, goalNode: PathFinderNode): integer
+---@param findPathToGoalAdjacentNodes? boolean
+---@return PathFinderNode[]
+function PathFinderGraph:findPath(startNode, goalNode, heuristicFunction, findPathToGoalAdjacentNodes) end
+
+---@param startNodeID integer
+---@param goalNodeID integer
+---@param heuristicFunction? fun(startNode: PathFinderNode, goalNode: PathFinderNode): integer
+---@param findPathToGoalAdjacentNodes? boolean
+---@return integer[]
+function PathFinderGraph:findPathWithIDs(startNodeID, goalNodeID, heuristicFunction, findPathToGoalAdjacentNodes) end
+
+---@param id integer
+---@return PathFinderNode?
+function PathFinderGraph:nodeWithID(id) end
+
+---@param x integer
+---@param y integer
+---@return PathFinderNode?
+function PathFinderGraph:nodeWithXY(x, y) end
+
+---@return nil
+function PathFinderGraph:removeAllConnections() end
+
+---@param id integer
+---@param removeIncoming? boolean
+---@return nil
+function PathFinderGraph:removeAllConnectionsFromNodeWithID(id, removeIncoming) end
+
+---@param node PathFinderNode
+---@return nil
+function PathFinderGraph:removeNode(node) end
+
+---@param id integer
+---@return nil
+function PathFinderGraph:removeNodeWithID(id) end
+
+---@param x integer
+---@param y integer
+---@return nil
+function PathFinderGraph:removeNodeWithXY(x, y) end
+
+---@param id integer
+---@param x integer
+---@param y integer
+---@return nil
+function PathFinderGraph:setXYForNodeWithID(id, x, y) end
+
+---@param node PathFinderNode
+---@param weight number
+---@param addReciprocalConnection boolean
+---@return nil
+function PathFinderNode:addConnection(node, weight, addReciprocalConnection) end
+
+---@param x integer
+---@param y integer
+---@param weight number
+---@param addReciprocalConnection boolean
+---@return nil
+function PathFinderNode:addConnectionToNodeWithXY(x, y, weight, addReciprocalConnection) end
+
+---@param nodes PathFinderNode[]
+---@param weights number[]
+---@param addReciprocalConnections boolean
+---@return nil
+function PathFinderNode:addConnections(nodes, weights, addReciprocalConnections) end
+
+---@return PathFinderNode[]
+function PathFinderNode:connectedNodes() end
+
+---@param removeIncoming? boolean
+---@return nil
+function PathFinderNode:removeAllConnections(removeIncoming) end
+
+---@param node PathFinderNode
+---@param removeReciprocal? boolean
+---@return nil
+function PathFinderNode:removeConnection(node, removeReciprocal) end
+
+---@param x integer
+---@param y integer
+---@return nil
+function PathFinderNode:setXY(x, y) end
+
+---@param v Vector2D
+---@return Point
+function Point:__add(v) end
+
+---@param p2 Point
+---@return LineSegment
+function Point:__concat(p2) end
+
+---@param t AffineTransform
+---@return Point
+function Point:__mul(t) end
+
+---@param p2 Point
+---@return Vector2D
+function Point:__sub(p2) end
+
+---@return Point
+function Point:copy() end
+
+---@param p Point
+---@return number
+function Point:distanceToPoint(p) end
+
+---@param dx integer
+---@param dy integer
+---@return nil
+function Point:offset(dx, dy) end
+
+---@param dx integer
+---@param dy integer
+---@return Point
+function Point:offsetBy(dx, dy) end
+
+---@param p Point
+---@return number
+function Point:squaredDistanceToPoint(p) end
+
+---@return x number
+---@return y number
+function Point:unpack() end
+
+---@param t AffineTransform
+---@return Polygon
+function Polygon:__mul(t) end
+
+---@return nil
+function Polygon:close() end
+
+---@param p Point
+---@param fillRule? integer
+---@return boolean
+function Polygon:containsPoint(p, fillRule) end
+
+---@param x integer
+---@param y integer
+---@param fillRule? integer
+---@return boolean
+function Polygon:containsPoint(x, y, fillRule) end
+
+---@return Polygon
+function Polygon:copy() end
+
+---@return integer
+function Polygon:count() end
+
+---@return x number
+---@return y number
+---@return width number
+---@return height number
+function Polygon:getBounds() end
+
+---@return Rect
+function Polygon:getBoundsRect() end
+
+---@param n integer
+---@return Point
+function Polygon:getPointAt(n) end
+
+---@param p Point
+---@return boolean
+function Polygon:intersects(p) end
+
+---@return boolean
+function Polygon:isClosed() end
+
+---@return number
+function Polygon:length() end
+
+---@param distance integer
+---@param extend? boolean
+---@return Point
+function Polygon:pointOnPolygon(distance, extend) end
+
+---@param n integer
+---@param x integer
+---@param y integer
+---@return nil
+function Polygon:setPointAt(n, x, y) end
+
+---@param dx integer
+---@param dy integer
+---@return nil
+function Polygon:translate(dx, dy) end
+
+---@return Point
+function Rect:centerPoint() end
+
+---@param p Point
+---@return boolean
+function Rect:containsPoint(p) end
+
+---@param x integer
+---@param y integer
+---@return boolean
+function Rect:containsPoint(x, y) end
+
+---@param r2 Rect
+---@return boolean
+function Rect:containsRect(r2) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return boolean
+function Rect:containsRect(x, y, width, height) end
+
+---@return Rect
+function Rect:copy() end
+
+---@param r2 Rect
+---@param flip (integer|string)
+---@return nil
+function Rect:flipRelativeToRect(r2, flip) end
+
+---@param dx integer
+---@param dy integer
+---@return nil
+function Rect:inset(dx, dy) end
+
+---@param dx integer
+---@param dy integer
+---@return Rect
+function Rect:insetBy(dx, dy) end
+
+---@param r2 Rect
+---@return Rect
+function Rect:intersection(r2) end
+
+---@param r2 Rect
+---@return boolean
+function Rect:intersects(r2) end
+
+---@return boolean
+function Rect:isEmpty() end
+
+---@param r2 Rect
+---@return boolean
+function Rect:isEqual(r2) end
+
+---@param dx integer
+---@param dy integer
+---@return nil
+function Rect:offset(dx, dy) end
+
+---@param dx integer
+---@param dy integer
+---@return Rect
+function Rect:offsetBy(dx, dy) end
+
+---@return Polygon
+function Rect:toPolygon() end
+
+---@param r2 Rect
+---@return Rect
+function Rect:union(r2) end
+
+---@return x number
+---@return y number
+---@return width number
+---@return height number
+function Rect:unpack() end
+
+---@param f number
+---@return nil
+function RingMod:setFrequency(f) end
+
+---@param signal Signal
+---@return nil
+function RingMod:setFrequencyMod(signal) end
+
+---@param level number
+---@return nil
+function RingMod:setMix(level) end
+
+---@param signal Signal
+---@return nil
+function RingMod:setMixMod(signal) end
+
+---@return integer
+function Sample:getFormat() end
+
+---@return sample_seconds number
+---@return buffer_size_seconds number
+function Sample:getLength() end
+
+---@return integer
+function Sample:getSampleRate() end
+
+---@param startOffset integer
+---@param endOffset integer
+---@return Sample
+function Sample:getSubsample(startOffset, endOffset) end
+
+---@param path string
+---@return boolean
+function Sample:load(path) end
+
+---@param repeatCount? integer
+---@param rate? integer
+---@return nil
+function Sample:play(repeatCount, rate) end
+
+---@param when number
+---@param vol? number
+---@param rightvol? number
+---@param rate? integer
+---@return nil
+function Sample:playAt(when, vol, rightvol, rate) end
+
+---@param filename string
+---@return nil
+function Sample:save(filename) end
+
+---@return SamplePlayer
+function SamplePlayer:copy() end
+
+---@return number
+function SamplePlayer:getLength() end
+
+---@return number
+function SamplePlayer:getOffset() end
+
+---@return number
+function SamplePlayer:getRate() end
+
+---@return Sample
+function SamplePlayer:getSample() end
+
+---@return left_or_mono number
+---@return right number?
+function SamplePlayer:getVolume() end
+
+---@return boolean
+function SamplePlayer:isPlaying() end
+
+---@param repeatCount? integer
+---@param rate? integer
+---@return nil
+function SamplePlayer:play(repeatCount, rate) end
+
+---@param when number
+---@param vol? number
+---@param rightvol? number
+---@param rate? integer
+---@return nil
+function SamplePlayer:playAt(when, vol, rightvol, rate) end
+
+---@param func function
+---@param arg? any
+---@return nil
+function SamplePlayer:setFinishCallback(func, arg) end
+
+---@param callback function
+---@param arg? any
+---@return nil
+function SamplePlayer:setLoopCallback(callback, arg) end
+
+---@param seconds number
+---@return nil
+function SamplePlayer:setOffset(seconds) end
+
+---@param flag boolean
+---@return nil
+function SamplePlayer:setPaused(flag) end
+
+---@param start integer
+---@param _end integer
+---@return nil
+function SamplePlayer:setPlayRange(start, _end) end
+
+---@param rate integer
+---@return nil
+function SamplePlayer:setRate(rate) end
+
+---@param signal Signal
+---@return nil
+function SamplePlayer:setRateMod(signal) end
+
+---@param sample Sample
+---@return nil
+function SamplePlayer:setSample(sample) end
+
+---@param left integer
+---@param right? integer
+---@return nil
+function SamplePlayer:setVolume(left, right) end
+
+---@return nil
+function SamplePlayer:stop() end
+
+---@param track? Track
+---@return nil
+function Sequence:addTrack(track) end
+
+---@return nil
+function Sequence:allNotesOff() end
+
+---@return number
+function Sequence:getCurrentStep() end
+
+---@return number
+function Sequence:getLength() end
+
+---@return number
+function Sequence:getTempo() end
+
+---@param n integer
+---@return Track
+function Sequence:getTrackAtIndex(n) end
+
+---@return integer
+function Sequence:getTrackCount() end
+
+---@param step integer
+---@param play? boolean
+---@return nil
+function Sequence:goToStep(step, play) end
+
+---@return boolean
+function Sequence:isPlaying() end
+
+---@param finishCallback? fun(self: Sequence): nil
+---@return nil
+function Sequence:play(finishCallback) end
+
+---@param loopCount integer
+---@return nil
+function Sequence:setLoops(loopCount) end
+
+---@param startStep integer
+---@param endStep integer
+---@param loopCount? integer
+---@return nil
+function Sequence:setLoops(startStep, endStep, loopCount) end
+
+---@param stepsPerSecond number
+---@return nil
+function Sequence:setTempo(stepsPerSecond) end
+
+---@param n integer
+---@param track Track
+---@return nil
+function Sequence:setTrackAtIndex(n, track) end
+
+---@return nil
+function Sequence:stop() end
+
+---@param offset number
+---@return nil
+function Signal:setOffset(offset) end
+
+---@param scale integer
+---@return nil
+function Signal:setScale(scale) end
+
+---@return Size
+function Size:copy() end
+
+---@return width number
+---@return height number
+function Size:unpack() end
+
+---@return nil
+function Sprite:add() end
+
+---@param anotherSprite Sprite
+---@return boolean
+function Sprite:alphaCollision(anotherSprite) end
+
+---@param point Point
+---@return actualX integer
+---@return actualY integer
+---@return collisions SpriteCollisionData
+---@return length integer
+function Sprite:checkCollisions(point) end
+
+---@param x integer
+---@param y integer
+---@return actualX integer
+---@return actualY integer
+---@return collisions SpriteCollisionData
+---@return length integer
+function Sprite:checkCollisions(x, y) end
+
+---@return nil
+function Sprite:clearClipRect() end
+
+---@return nil
+function Sprite:clearCollideRect() end
+
+---@return nil
+function Sprite:clearStencil() end
+
+---@param other Sprite
+---@return integer
+function Sprite:collisionResponse(other) end
+
+---@return boolean
+function Sprite:collisionsEnabled() end
+
+---@return Sprite
+function Sprite:copy() end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function Sprite:draw(x, y, width, height) end
+
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
+function Sprite:getBounds() end
+
+---@return Rect
+function Sprite:getBoundsRect() end
+
+---@return x number
+---@return y number
+function Sprite:getCenter() end
+
+---@return Point
+function Sprite:getCenterPoint() end
+
+---@return x integer
+---@return y integer
+---@return width integer
+---@return height integer
+function Sprite:getCollideBounds() end
+
+---@return Rect
+function Sprite:getCollideRect() end
+
+---@return integer
+function Sprite:getCollidesWithGroupsMask() end
+
+---@return integer
+function Sprite:getGroupMask() end
+
+---@return Image
+function Sprite:getImage() end
+
+---@return integer
+function Sprite:getImageFlip() end
+
+---@return x integer
+---@return y integer
+function Sprite:getPosition() end
+
+---@return number
+function Sprite:getRotation() end
+
+---@return xScale integer
+---@return yScale integer
+function Sprite:getScale() end
+
+---@return width integer
+---@return height integer
+function Sprite:getSize() end
+
+---@return integer
+function Sprite:getTag() end
+
+---@return integer
+function Sprite:getZIndex() end
+
+---@return boolean
+function Sprite:isOpaque() end
+
+---@return boolean
+function Sprite:isVisible() end
+
+---@return nil
+function Sprite:markDirty() end
+
+---@param x integer
+---@param y integer
+---@return nil
+function Sprite:moveBy(x, y) end
+
+---@param x integer
+---@param y integer
+---@return nil
+function Sprite:moveTo(x, y) end
+
+---@param goalPoint Point
+---@return actualX integer
+---@return actualY integer
+---@return collisions SpriteCollisionData
+---@return length integer
+function Sprite:moveWithCollisions(goalPoint) end
+
+---@param goalX integer
+---@param goalY integer
+---@return actualX integer
+---@return actualY integer
+---@return collisions SpriteCollisionData
+---@return length integer
+function Sprite:moveWithCollisions(goalX, goalY) end
+
+---@return Sprite[]
+function Sprite:overlappingSprites() end
+
+---@return nil
+function Sprite:remove() end
+
+---@return nil
+function Sprite:removeAnimator() end
+
+---@return nil
+function Sprite:resetCollidesWithGroupsMask() end
+
+---@return nil
+function Sprite:resetGroupMask() end
+
+---@param animator Animator
+---@param moveWithCollisions? boolean
+---@param removeOnCollision? boolean
+---@return nil
+function Sprite:setAnimator(animator, moveWithCollisions, removeOnCollision) end
+
+---@param rect Rect
+---@return nil
+function Sprite:setBounds(rect) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function Sprite:setBounds(x, y, width, height) end
+
+---@param x integer
+---@param y integer
+---@return nil
+function Sprite:setCenter(x, y) end
+
+---@param rect Rect
+---@return nil
+function Sprite:setClipRect(rect) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function Sprite:setClipRect(x, y, width, height) end
+
+---@param rect Rect
+---@return nil
+function Sprite:setCollideRect(rect) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function Sprite:setCollideRect(x, y, width, height) end
+
+---@param groups (integer|integer[])
+---@return nil
+function Sprite:setCollidesWithGroups(groups) end
+
+---@param mask integer
+---@return nil
+function Sprite:setCollidesWithGroupsMask(mask) end
+
+---@param flag boolean
+---@return nil
+function Sprite:setCollisionsEnabled(flag) end
+
+---@param mask integer
+---@return nil
+function Sprite:setGroupMask(mask) end
+
+---@param groups (integer|integer[])
+---@return nil
+function Sprite:setGroups(groups) end
+
+---@param flag boolean
+---@return nil
+function Sprite:setIgnoresDrawOffset(flag) end
+
+---@param image Image
+---@param flip? (integer|string)
+---@param scale? integer
+---@param yscale? integer
+---@return nil
+function Sprite:setImage(image, flip, scale, yscale) end
+
+---@param mode integer
+---@return nil
+function Sprite:setImageDrawMode(mode) end
+
+---@param flip (integer|string)
+---@param flipCollideRect? integer
+---@return nil
+function Sprite:setImageFlip(flip, flipCollideRect) end
+
+---@param flag boolean
+---@return nil
+function Sprite:setOpaque(flag) end
+
+---@param flag boolean
+---@return nil
+function Sprite:setRedrawsOnImageChange(flag) end
+
+---@param angle number
+---@param scale? integer
+---@param yScale? integer
+---@return nil
+function Sprite:setRotation(angle, scale, yScale) end
+
+---@param scale integer
+---@param yScale? integer
+---@return nil
+function Sprite:setScale(scale, yScale) end
+
+---@param width integer
+---@param height integer
+---@return nil
+function Sprite:setSize(width, height) end
+
+---@param stencil Image
+---@param tile? boolean
+---@return nil
+function Sprite:setStencilImage(stencil, tile) end
+
+---@param level any
+---@param ditherType? integer
+---@return nil
+function Sprite:setStencilPattern(level, ditherType) end
+
+---@param pattern integer[]
+---@return nil
+function Sprite:setStencilPattern(pattern) end
+
+---@param tag integer
+---@return nil
+function Sprite:setTag(tag) end
+
+---@param tilemap TileMap
+---@return nil
+function Sprite:setTilemap(tilemap) end
+
+---@param flag boolean
+---@return nil
+function Sprite:setUpdatesEnabled(flag) end
+
+---@param flag boolean
+---@return nil
+function Sprite:setVisible(flag) end
+
+---@param z integer
+---@return nil
+function Sprite:setZIndex(z) end
+
+---@return nil
+function Sprite:update() end
+
+---@return boolean
+function Sprite:updatesEnabled() end
+
+---@return Synth
+function Synth:copy() end
+
+---@return Envelope
+function Synth:getEnvelope() end
+
+---@return left_or_mono number
+---@return right number?
+function Synth:getVolume() end
+
+---@return boolean
+function Synth:isPlaying() end
+
+---@return nil
+function Synth:noteOff() end
+
+---@param note (number|string)
+---@param volume? number
+---@param length? number
+---@param when? number
+---@return boolean
+function Synth:playMIDINote(note, volume, length, when) end
+
+---@param pitch (number|string)
+---@param volume? number
+---@param length? number
+---@param when? number
+---@return boolean
+function Synth:playNote(pitch, volume, length, when) end
+
+---@param attack number
+---@param decay number
+---@param sustain number
+---@param release number
+---@param curvature number
+---@return nil
+function Synth:setADSR(attack, decay, sustain, release, curvature) end
+
+---@param signal Signal
+---@return nil
+function Synth:setAmplitudeMod(signal) end
+
+---@param time number
+---@return nil
+function Synth:setAttack(time) end
+
+---@param time number
+---@return nil
+function Synth:setDecay(time) end
+
+---@param amount number
+---@return nil
+function Synth:setEnvelopeCurvature(amount) end
+
+---@param _function function
+---@return nil
+function Synth:setFinishCallback(_function) end
+
+---@param signal Signal
+---@return nil
+function Synth:setFrequencyMod(signal) end
+
+---@param flag boolean
+---@return nil
+function Synth:setLegato(flag) end
+
+---@param parameter integer
+---@param value number
+---@return nil
+function Synth:setParameter(parameter, value) end
+
+---@param parameter integer
+---@param signal Signal
+---@return nil
+function Synth:setParameterMod(parameter, signal) end
+
+---@param time number
+---@return nil
+function Synth:setRelease(time) end
+
+---@param level number
+---@return nil
+function Synth:setSustain(level) end
+
+---@param left integer
+---@param right? integer
+---@return nil
+function Synth:setVolume(left, right) end
+
+---@param waveform integer
+---@return nil
+function Synth:setWaveform(waveform) end
+
+---@return nil
+function Synth:stop() end
+
+---@param x integer
+---@param y integer
+---@param sourceRect? Rect
+---@return nil
+function TileMap:draw(x, y, sourceRect) end
+
+---@param x integer
+---@param y integer
+---@param sourceRect? Rect
+---@return nil
+function TileMap:drawIgnoringOffset(x, y, sourceRect) end
+
+---@param emptyIDs integer[]
+---@return Rect[]
+function TileMap:getCollisionRects(emptyIDs) end
+
+---@return width integer
+---@return height integer
+function TileMap:getPixelSize() end
+
+---@return width integer
+---@return height integer
+function TileMap:getSize() end
+
+---@param x integer
+---@param y integer
+---@return number?
+function TileMap:getTileAtPosition(x, y) end
+
+---@return width integer
+---@return height integer
+function TileMap:getTileSize() end
+
+---@return data integer[]
+---@return width integer
+function TileMap:getTiles() end
+
+---@param table table
+---@return nil
+function TileMap:setImageTable(table) end
+
+---@param width integer
+---@param height integer
+---@return nil
+function TileMap:setSize(width, height) end
+
+---@param x integer
+---@param y integer
+---@param index integer
+---@return nil
+function TileMap:setTileAtPosition(x, y, index) end
+
+---@param data integer[]
+---@param width integer
+---@return nil
+function TileMap:setTiles(data, width) end
+
+---@return nil
+function Timer:pause() end
+
+---@return nil
+function Timer:remove() end
+
+---@return nil
+function Timer:reset() end
+
+---@return nil
+function Timer:start() end
+
+---@param s ControlSignal
+---@return nil
+function Track:addControlSignal(s) end
+
+---@param step integer
+---@param note (string|integer)
+---@param length number
+---@param velocity? number
+---@return nil
+function Track:addNote(step, note, length, velocity) end
+
+---@param table (SoundTrackNoteIn|SoundTrackNote)
+---@return nil
+function Track:addNote(table) end
+
+---@return nil
+function Track:clearNotes() end
+
+---@return ControlSignal[]
+function Track:getControlSignals() end
+
+---@return Instrument
+function Track:getInstrument() end
+
+---@return integer
+function Track:getLength() end
+
+---@param step? integer
+---@param endstep? integer
+---@return SoundTrackNote[]
+function Track:getNotes(step, endstep) end
+
+---@return integer
+function Track:getNotesActive() end
+
+---@return integer
+function Track:getPolyphony() end
+
+---@param step integer
+---@param note integer
+---@return nil
+function Track:removeNote(step, note) end
+
+---@param inst Instrument
+---@return nil
+function Track:setInstrument(inst) end
+
+---@param flag boolean
+---@return nil
+function Track:setMuted(flag) end
+
+---@param list table[]
+---@return nil
+function Track:setNotes(list) end
+
+---@param f number
+---@return nil
+function TwoPoleFilter:setFrequency(f) end
+
+---@param signal Signal
+---@return nil
+function TwoPoleFilter:setFrequencyMod(signal) end
+
+---@param g number
+---@return nil
+function TwoPoleFilter:setGain(g) end
+
+---@param level number
+---@return nil
+function TwoPoleFilter:setMix(level) end
+
+---@param signal Signal
+---@return nil
+function TwoPoleFilter:setMixMod(signal) end
+
+---@param r Rect
+---@return nil
+function TwoPoleFilter:setResonance(r) end
+
+---@param signal Signal
+---@return nil
+function TwoPoleFilter:setResonanceMod(signal) end
+
+---@param type integer
+---@return nil
+function TwoPoleFilter:setType(type) end
+
+---@param v2 Vector2D
+---@return Vector2D
+function Vector2D:__add(v2) end
+
+---@param s number
+---@return Vector2D
+function Vector2D:__div(s) end
+
+---@param s number
+---@return Vector2D
+function Vector2D:__mul(s) end
+
+---@param t AffineTransform
+---@return Vector2D
+function Vector2D:__mul(t) end
+
+---@param v2 Vector2D
+---@return Vector2D
+function Vector2D:__mul(v2) end
+
+---@param v2 Vector2D
+---@return Vector2D
+function Vector2D:__sub(v2) end
+
+---@return Vector2D
+function Vector2D:__unm() end
+
+---@param v Vector2D
+---@return nil
+function Vector2D:addVector(v) end
+
+---@param v Vector2D
+---@return number
+function Vector2D:angleBetween(v) end
+
+---@return Vector2D
+function Vector2D:copy() end
+
+---@param v Vector2D
+---@return number
+function Vector2D:dotProduct(v) end
+
+---@return Vector2D
+function Vector2D:leftNormal() end
+
+---@return number
+function Vector2D:magnitude() end
+
+---@return number
+function Vector2D:magnitudeSquared() end
+
+---@return nil
+function Vector2D:normalize() end
+
+---@return Vector2D
+function Vector2D:normalized() end
+
+---@param v Vector2D
+---@return nil
+function Vector2D:projectAlong(v) end
+
+---@param v Vector2D
+---@return Vector2D
+function Vector2D:projectedAlong(v) end
+
+---@return Vector2D
+function Vector2D:rightNormal() end
+
+---@param s number
+---@return nil
+function Vector2D:scale(s) end
+
+---@param s number
+---@return Vector2D
+function Vector2D:scaledBy(s) end
+
+---@return x number
+---@return y number
+function Vector2D:unpack() end
+
+---@return Image
+function Video:getContext() end
+
+---@return integer
+function Video:getFrameCount() end
+
+---@return number
+function Video:getFrameRate() end
+
+---@return x integer
+---@return y integer
+function Video:getSize() end
+
+---@param number integer
+---@return nil
+function Video:renderFrame(number) end
+
+---@param image Image
+---@return nil
+function Video:setContext(image) end
+
+---@return nil
+function Video:useScreenContext() end
+
 ---@param str string
 ---@return table
 function json.decode(str) end
 
----@param file playdate.file.file
+---@param file File
 ---@return table
 function json.decodeFile(file) end
 
@@ -140,7 +2510,7 @@ function json.encode(table) end
 ---@return string
 function json.encodePretty(table) end
 
----@param file playdate.file.file
+---@param file File
 ---@param pretty boolean
 ---@param table table
 ---@return nil
@@ -151,48 +2521,6 @@ function json.encodeToFile(file, pretty, table) end
 ---@param table? table
 ---@return nil
 function json.encodeToFile(path, pretty, table) end
-
----@class playdate.datastore
----@class playdate.display
----@class playdate.easingFunctions
----@class playdate.file
----@class playdate.frameTimer
----@class playdate.geometry
----@class playdate.graphics
----@class playdate.inputHandlers
----@class playdate.inputHandlers
----@class playdate.keyboard
----@class playdate.math
----@class playdate.menu
----@class playdate.pathfinder
----@class playdate.simulator
----@class playdate.sound
----@class playdate.string
----@class playdate.timer
----@class playdate.ui
----@type string[]
-playdate.argv = {}
-
----@type boolean
-playdate.isSimulator = {}
-
----@type integer
-playdate.kButtonA = 32
----@type integer
-playdate.kButtonB = 16
----@type integer
-playdate.kButtonDown = 8
----@type integer
-playdate.kButtonLeft = 1
----@type integer
-playdate.kButtonRight = 2
----@type integer
-playdate.kButtonUp = 4
----@type _Metadata
-playdate.metadata = {}
-
----@type _Systeminfo
-playdate.systeminfo = {}
 
 ---@return nil
 function playdate.AButtonDown() end
@@ -214,7 +2542,7 @@ function playdate.BButtonUp() end
 
 ---@param seconds integer
 ---@param milliseconds integer
----@return _DateTime
+---@return DateTime
 function playdate.GMTTimeFromEpoch(seconds, milliseconds) end
 
 ---@return boolean
@@ -273,12 +2601,12 @@ function playdate.downButtonUp() end
 ---@return nil
 function playdate.drawFPS(x, y) end
 
----@param time _DateTime
+---@param time DateTime
 ---@return seconds integer
 ---@return milliseconds integer
 function playdate.epochFromGMTTime(time) end
 
----@param time table
+---@param time DateTime
 ---@return seconds integer
 ---@return milliseconds integer
 function playdate.epochFromTime(time) end
@@ -325,10 +2653,10 @@ function playdate.getFPS() end
 ---@return boolean
 function playdate.getFlipped() end
 
----@return _DateTime
+---@return DateTime
 function playdate.getGMTTime() end
 
----@return _PowerStatus
+---@return PowerStatus
 function playdate.getPowerStatus() end
 
 ---@return boolean
@@ -338,16 +2666,16 @@ function playdate.getReduceFlashing() end
 ---@return milliseconds integer
 function playdate.getSecondsSinceEpoch() end
 
----@return _SystemStats
+---@return SystemStats
 function playdate.getStats() end
 
 ---@return integer
 function playdate.getSystemLanguage() end
 
----@return playdate.menu
+---@return Menu
 function playdate.getSystemMenu() end
 
----@return _DateTime
+---@return DateTime
 function playdate.getTime() end
 
 ---@return boolean
@@ -405,7 +2733,7 @@ function playdate.setDebugDrawColor(r, g, b, a) end
 ---@return nil
 function playdate.setGCScaling(min, max) end
 
----@param image playdate.graphics.image
+---@param image Image
 ---@param xOffset? integer
 ---@return nil
 function playdate.setMenuImage(image, xOffset) end
@@ -439,7 +2767,7 @@ function playdate.stopAccelerometer() end
 
 ---@param seconds integer
 ---@param milliseconds integer
----@return _DateTime
+---@return DateTime
 function playdate.timeFromEpoch(seconds, milliseconds) end
 
 ---@return nil
@@ -455,38 +2783,67 @@ function playdate.update() end
 ---@return nil
 function playdate.wait(milliseconds) end
 
----@class playdate.frameTimer : table
----@field delay integer
----@field discardOnCompletion boolean
----@field duration integer
----@field frame integer
----@field repeats boolean
----@field reverses boolean
----@field timerEndedArgs any
+---@class playdate.datastore
 
----@class playdate.keyboard : table
----@field text string
 
----@class playdate.timer : table
----@field currentTime integer
----@field delay integer
----@field discardOnCompletion boolean
----@field duration integer
----@field timeLeft integer
----@field repeats boolean
----@field reverses boolean
----@field timerEndedArgs any[]
+---@class playdate.display
+
+
+---@class playdate.easingFunctions
+
+
+---@class playdate.file
+---@field kFileRead integer
+
+---@class playdate.frameTimer
+
+
+---@class playdate.geometry
+---@field kUnflipped integer
+
+---@class playdate.graphics
+---@field kColorBlack integer
+
+---@class playdate.inputHandlers
+
+
+---@class playdate.keyboard
+---@field kCapitalizationNormal integer
+
+---@class playdate.math
+
+
+---@class playdate.menu
+
+
+---@class playdate.pathfinder
+
+
+---@class playdate.simulator
+
+
+---@class playdate.sound
+---@field kFormat8bitMono integer
+
+---@class playdate.string
+
+
+---@class playdate.timer
+
+
+---@class playdate.ui
+
 
 ---@param filename? string
 ---@return boolean
 function playdate.datastore.delete(filename) end
 
 ---@param filename? string
----@return table
+---@return table?
 function playdate.datastore.read(filename) end
 
 ---@param path string
----@return playdate.graphics.image
+---@return Image?
 function playdate.datastore.readImage(path) end
 
 ---@param table table
@@ -495,7 +2852,7 @@ function playdate.datastore.readImage(path) end
 ---@return nil
 function playdate.datastore.write(table, filename, pretty) end
 
----@param image playdate.graphics.image
+---@param image Image
 ---@param path string
 ---@return nil
 function playdate.datastore.writeImage(image, path) end
@@ -517,7 +2874,7 @@ function playdate.display.getMosaic() end
 ---@return y integer
 function playdate.display.getOffset() end
 
----@return playdate.geometry.rect
+---@return Rect
 function playdate.display.getRect() end
 
 ---@return integer
@@ -863,13 +3220,6 @@ function playdate.easingFunctions.outQuint(t, b, c, d) end
 ---@return number
 function playdate.easingFunctions.outSine(t, b, c, d) end
 
----@class playdate.file.file
----@type integer
-playdate.file.kFileAppend = 8
----@type integer
-playdate.file.kFileRead = 3
----@type integer
-playdate.file.kFileWrite = 4
 ---@param path string
 ---@param recursive? boolean
 ---@return boolean
@@ -906,13 +3256,13 @@ function playdate.file.load(path, env) end
 function playdate.file.mkdir(path) end
 
 ---@param path string
----@return _ModTime
+---@return ModTime
 function playdate.file.modtime(path) end
 
 ---@param path string
 ---@param mode? integer
----@return file playdate.file.file
----@return error string
+---@return file File?
+---@return error string?
 function playdate.file.open(path, mode) end
 
 ---@param path string
@@ -925,49 +3275,23 @@ function playdate.file.rename(path, newPath) end
 ---@return nil
 function playdate.file.run(path, env) end
 
----@class playdate.file.file : table
+---@class playdate.file.file
 
 
----@return nil
-function playdate.file.file:close() end
-
----@return nil
-function playdate.file.file:flush() end
-
----@param numberOfBytes integer
----@return numberOfBytes integer
----@return error string
-function playdate.file.file:read(numberOfBytes) end
-
----@return string
-function playdate.file.file:readline() end
-
----@param offset integer
----@return nil
-function playdate.file.file:seek(offset) end
-
----@return integer
-function playdate.file.file:tell() end
-
----@param string string
----@return bytes_written integer
----@return error string
-function playdate.file.file:write(string) end
-
----@return playdate.frameTimer[]
+---@return FrameTimer[]
 function playdate.frameTimer.allTimers() end
 
 ---@param duration integer
 ---@param callback function
 ---@param ... any
----@return playdate.frameTimer
+---@return FrameTimer
 function playdate.frameTimer.new(duration, callback, ...) end
 
 ---@param duration integer
 ---@param startValue? number
 ---@param endValue? number
 ---@param easingFunction? function
----@return playdate.frameTimer
+---@return FrameTimer
 function playdate.frameTimer.new(duration, startValue, endValue, easingFunction) end
 
 ---@param delay integer
@@ -979,34 +3303,6 @@ function playdate.frameTimer.performAfterDelay(delay, callback, ...) end
 ---@return nil
 function playdate.frameTimer.updateTimers() end
 
----@return nil
-function playdate.frameTimer:pause() end
-
----@return nil
-function playdate.frameTimer:remove() end
-
----@return nil
-function playdate.frameTimer:reset() end
-
----@return nil
-function playdate.frameTimer:start() end
-
----@class playdate.geometry.affineTransform
----@class playdate.geometry.arc
----@class playdate.geometry.lineSegment
----@class playdate.geometry.point
----@class playdate.geometry.polygon
----@class playdate.geometry.rect
----@class playdate.geometry.size
----@class playdate.geometry.vector2D
----@type integer
-playdate.geometry.kFlippedX = 1
----@type integer
-playdate.geometry.kFlippedXY = 3
----@type integer
-playdate.geometry.kFlippedY = 2
----@type integer
-playdate.geometry.kUnflipped = 0
 ---@param x1 integer
 ---@param y1 integer
 ---@param x2 integer
@@ -1021,50 +3317,31 @@ function playdate.geometry.distanceToPoint(x1, y1, x2, y2) end
 ---@return number
 function playdate.geometry.squaredDistanceToPoint(x1, y1, x2, y2) end
 
----@class playdate.geometry.affineTransform : table
+---@class playdate.geometry.affineTransform
 
 
----@class playdate.geometry.arc : table
----@field x integer
----@field y integer
----@field radius integer
----@field startAngle number
----@field endAngle number
----@field direction boolean
-
----@class playdate.geometry.lineSegment : table
----@field x1 integer
----@field y1 integer
----@field x2 integer
----@field y2 integer
-
----@class playdate.geometry.point : table
----@field x number
----@field y number
-
----@class playdate.geometry.polygon : table
+---@class playdate.geometry.arc
 
 
----@class playdate.geometry.rect : table
----@field x number
----@field y number
----@field width number
----@field height number
----@field top number
----@field bottom number
----@field left number
----@field right number
----@field size playdate.geometry.size
+---@class playdate.geometry.lineSegment
 
----@class playdate.geometry.size : table
----@field width number
----@field height number
 
----@class playdate.geometry.vector2D : table
----@field dx number
----@field dy number
+---@class playdate.geometry.point
 
----@return playdate.geometry.affineTransform
+
+---@class playdate.geometry.polygon
+
+
+---@class playdate.geometry.rect
+
+
+---@class playdate.geometry.size
+
+
+---@class playdate.geometry.vector2D
+
+
+---@return AffineTransform
 function playdate.geometry.affineTransform.new() end
 
 ---@param m11 number
@@ -1073,123 +3350,8 @@ function playdate.geometry.affineTransform.new() end
 ---@param m22 number
 ---@param tx number
 ---@param ty number
----@return playdate.geometry.affineTransform
+---@return AffineTransform
 function playdate.geometry.affineTransform.new(m11, m12, m21, m22, tx, ty) end
-
----@param p playdate.geometry.point
----@return playdate.geometry.point
-function playdate.geometry.affineTransform:__mul(p) end
-
----@param t playdate.geometry.affineTransform
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:__mul(t) end
-
----@param v playdate.geometry.vector2D
----@return playdate.geometry.vector2D
-function playdate.geometry.affineTransform:__mul(v) end
-
----@param af playdate.geometry.affineTransform
----@return nil
-function playdate.geometry.affineTransform:concat(af) end
-
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:copy() end
-
----@return nil
-function playdate.geometry.affineTransform:invert() end
-
----@return nil
-function playdate.geometry.affineTransform:reset() end
-
----@param angle number
----@param point? playdate.geometry.point
----@return nil
-function playdate.geometry.affineTransform:rotate(angle, point) end
-
----@param angle number
----@param x? integer
----@param y? integer
----@return nil
-function playdate.geometry.affineTransform:rotate(angle, x, y) end
-
----@param angle number
----@param point? playdate.geometry.point
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:rotatedBy(angle, point) end
-
----@param angle number
----@param x? integer
----@param y? integer
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:rotatedBy(angle, x, y) end
-
----@param sx number
----@param sy? number
----@return nil
-function playdate.geometry.affineTransform:scale(sx, sy) end
-
----@param sx number
----@param sy? number
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:scaledBy(sx, sy) end
-
----@param sx number
----@param sy number
----@return nil
-function playdate.geometry.affineTransform:skew(sx, sy) end
-
----@param sx number
----@param sy number
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:skewedBy(sx, sy) end
-
----@param r playdate.geometry.rect
----@return nil
-function playdate.geometry.affineTransform:transformAABB(r) end
-
----@param ls playdate.geometry.lineSegment
----@return nil
-function playdate.geometry.affineTransform:transformLineSegment(ls) end
-
----@param p playdate.geometry.point
----@return nil
-function playdate.geometry.affineTransform:transformPoint(p) end
-
----@param p playdate.geometry.polygon
----@return nil
-function playdate.geometry.affineTransform:transformPolygon(p) end
-
----@param x integer
----@param y integer
----@return x number
----@return y number
-function playdate.geometry.affineTransform:transformXY(x, y) end
-
----@param r playdate.geometry.rect
----@return playdate.geometry.rect
-function playdate.geometry.affineTransform:transformedAABB(r) end
-
----@param ls playdate.geometry.lineSegment
----@return playdate.geometry.lineSegment
-function playdate.geometry.affineTransform:transformedLineSegment(ls) end
-
----@param p playdate.geometry.point
----@return playdate.geometry.point
-function playdate.geometry.affineTransform:transformedPoint(p) end
-
----@param p playdate.geometry.polygon
----@return playdate.geometry.polygon
-function playdate.geometry.affineTransform:transformedPolygon(p) end
-
----@param dx integer
----@param dy integer
----@return nil
-function playdate.geometry.affineTransform:translate(dx, dy) end
-
----@param dx integer
----@param dy integer
----@return playdate.geometry.affineTransform
-function playdate.geometry.affineTransform:translatedBy(dx, dy) end
 
 ---@param x integer
 ---@param y integer
@@ -1197,26 +3359,8 @@ function playdate.geometry.affineTransform:translatedBy(dx, dy) end
 ---@param startAngle number
 ---@param endAngle number
 ---@param direction? boolean
----@return playdate.geometry.arc
+---@return Arc
 function playdate.geometry.arc.new(x, y, radius, startAngle, endAngle, direction) end
-
----@return playdate.geometry.arc
-function playdate.geometry.arc:copy() end
-
----@return boolean
-function playdate.geometry.arc:isClockwise() end
-
----@return number
-function playdate.geometry.arc:length() end
-
----@param distance integer
----@param extend boolean
----@return playdate.geometry.point
-function playdate.geometry.arc:pointOnArc(distance, extend) end
-
----@param flag boolean
----@return nil
-function playdate.geometry.arc:setIsClockwise(flag) end
 
 ---@param x1 integer
 ---@param y1 integer
@@ -1227,123 +3371,30 @@ function playdate.geometry.arc:setIsClockwise(flag) end
 ---@param x4 integer
 ---@param y4 integer
 ---@return intersects boolean
----@return x number
----@return y number
+---@return x number?
+---@return y number?
 function playdate.geometry.lineSegment.fast_intersection(x1, y1, x2, y2, x3, y3, x4, y4) end
 
 ---@param x1 integer
 ---@param y1 integer
 ---@param x2 integer
 ---@param y2 integer
----@return playdate.geometry.lineSegment
+---@return LineSegment
 function playdate.geometry.lineSegment.new(x1, y1, x2, y2) end
-
----@param p playdate.geometry.point
----@return playdate.geometry.point
-function playdate.geometry.lineSegment:closestPointOnLineToPoint(p) end
-
----@return playdate.geometry.lineSegment
-function playdate.geometry.lineSegment:copy() end
-
----@param ls playdate.geometry.lineSegment
----@return intersects boolean
----@return intersection playdate.geometry.point
-function playdate.geometry.lineSegment:intersectsLineSegment(ls) end
-
----@param poly playdate.geometry.polygon
----@return intersects boolean
----@return intersectionPoints playdate.geometry.point[]
-function playdate.geometry.lineSegment:intersectsPolygon(poly) end
-
----@param rect playdate.geometry.rect
----@return intersects boolean
----@return intersectionPoints playdate.geometry.point[]
-function playdate.geometry.lineSegment:intersectsRect(rect) end
-
----@return number
-function playdate.geometry.lineSegment:length() end
-
----@return playdate.geometry.point
-function playdate.geometry.lineSegment:midPoint() end
-
----@param dx integer
----@param dy integer
----@return nil
-function playdate.geometry.lineSegment:offset(dx, dy) end
-
----@param dx integer
----@param dy integer
----@return playdate.geometry.lineSegment
-function playdate.geometry.lineSegment:offsetBy(dx, dy) end
-
----@param distance integer
----@param extend? boolean
----@return playdate.geometry.point
-function playdate.geometry.lineSegment:pointOnLine(distance, extend) end
-
----@return playdate.geometry.vector2D
-function playdate.geometry.lineSegment:segmentVector() end
-
----@return x1 number
----@return y1 number
----@return x2 number
----@return y2 number
-function playdate.geometry.lineSegment:unpack() end
 
 ---@param x integer
 ---@param y integer
----@return playdate.geometry.point
+---@return Point
 function playdate.geometry.point.new(x, y) end
 
----@param v playdate.geometry.vector2D
----@return playdate.geometry.point
-function playdate.geometry.point:__add(v) end
-
----@param p2 playdate.geometry.point
----@return playdate.geometry.lineSegment
-function playdate.geometry.point:__concat(p2) end
-
----@param t playdate.geometry.affineTransform
----@return playdate.geometry.point
-function playdate.geometry.point:__mul(t) end
-
----@param p2 playdate.geometry.point
----@return playdate.geometry.vector2D
-function playdate.geometry.point:__sub(p2) end
-
----@return playdate.geometry.point
-function playdate.geometry.point:copy() end
-
----@param p playdate.geometry.point
----@return number
-function playdate.geometry.point:distanceToPoint(p) end
-
----@param dx integer
----@param dy integer
----@return nil
-function playdate.geometry.point:offset(dx, dy) end
-
----@param dx integer
----@param dy integer
----@return playdate.geometry.point
-function playdate.geometry.point:offsetBy(dx, dy) end
-
----@param p playdate.geometry.point
----@return number
-function playdate.geometry.point:squaredDistanceToPoint(p) end
-
----@return x number
----@return y number
-function playdate.geometry.point:unpack() end
-
 ---@param numberOfVertices integer
----@return playdate.geometry.polygon
+---@return Polygon
 function playdate.geometry.polygon.new(numberOfVertices) end
 
----@param p1 playdate.geometry.point
----@param p2 playdate.geometry.point
+---@param p1 Point
+---@param p2 Point
 ---@param ... integer
----@return playdate.geometry.polygon
+---@return Polygon
 function playdate.geometry.polygon.new(p1, p2, ...) end
 
 ---@param x1 integer
@@ -1351,71 +3402,8 @@ function playdate.geometry.polygon.new(p1, p2, ...) end
 ---@param x2 integer
 ---@param y2 integer
 ---@param ... integer
----@return playdate.geometry.polygon
+---@return Polygon
 function playdate.geometry.polygon.new(x1, y1, x2, y2, ...) end
-
----@param t playdate.geometry.affineTransform
----@return playdate.geometry.polygon
-function playdate.geometry.polygon:__mul(t) end
-
----@return nil
-function playdate.geometry.polygon:close() end
-
----@param p playdate.geometry.point
----@param fillRule? integer
----@return boolean
-function playdate.geometry.polygon:containsPoint(p, fillRule) end
-
----@param x integer
----@param y integer
----@param fillRule? integer
----@return boolean
-function playdate.geometry.polygon:containsPoint(x, y, fillRule) end
-
----@return playdate.geometry.polygon
-function playdate.geometry.polygon:copy() end
-
----@return integer
-function playdate.geometry.polygon:count() end
-
----@return x number
----@return y number
----@return width number
----@return height number
-function playdate.geometry.polygon:getBounds() end
-
----@return playdate.geometry.rect
-function playdate.geometry.polygon:getBoundsRect() end
-
----@param n integer
----@return playdate.geometry.point
-function playdate.geometry.polygon:getPointAt(n) end
-
----@param p playdate.geometry.point
----@return boolean
-function playdate.geometry.polygon:intersects(p) end
-
----@return boolean
-function playdate.geometry.polygon:isClosed() end
-
----@return number
-function playdate.geometry.polygon:length() end
-
----@param distance integer
----@param extend? boolean
----@return playdate.geometry.point
-function playdate.geometry.polygon:pointOnPolygon(distance, extend) end
-
----@param n integer
----@param x integer
----@param y integer
----@return nil
-function playdate.geometry.polygon:setPointAt(n, x, y) end
-
----@param dx integer
----@param dy integer
----@return nil
-function playdate.geometry.polygon:translate(dx, dy) end
 
 ---@param x1 integer
 ---@param y1 integer
@@ -1449,246 +3437,29 @@ function playdate.geometry.rect.fast_union(x1, y1, w1, h1, x2, y2, w2, h2) end
 ---@param y integer
 ---@param width integer
 ---@param height integer
----@return playdate.geometry.rect
+---@return Rect
 function playdate.geometry.rect.new(x, y, width, height) end
 
----@return playdate.geometry.point
-function playdate.geometry.rect:centerPoint() end
-
----@param p playdate.geometry.point
----@return boolean
-function playdate.geometry.rect:containsPoint(p) end
-
----@param x integer
----@param y integer
----@return boolean
-function playdate.geometry.rect:containsPoint(x, y) end
-
----@param r2 playdate.geometry.rect
----@return boolean
-function playdate.geometry.rect:containsRect(r2) end
-
----@param x integer
----@param y integer
 ---@param width integer
 ---@param height integer
----@return boolean
-function playdate.geometry.rect:containsRect(x, y, width, height) end
-
----@return playdate.geometry.rect
-function playdate.geometry.rect:copy() end
-
----@param r2 playdate.geometry.rect
----@param flip (integer|string)
----@return nil
-function playdate.geometry.rect:flipRelativeToRect(r2, flip) end
-
----@param dx integer
----@param dy integer
----@return nil
-function playdate.geometry.rect:inset(dx, dy) end
-
----@param dx integer
----@param dy integer
----@return playdate.geometry.rect
-function playdate.geometry.rect:insetBy(dx, dy) end
-
----@param r2 playdate.geometry.rect
----@return playdate.geometry.rect
-function playdate.geometry.rect:intersection(r2) end
-
----@param r2 playdate.geometry.rect
----@return boolean
-function playdate.geometry.rect:intersects(r2) end
-
----@return boolean
-function playdate.geometry.rect:isEmpty() end
-
----@param r2 playdate.geometry.rect
----@return boolean
-function playdate.geometry.rect:isEqual(r2) end
-
----@param dx integer
----@param dy integer
----@return nil
-function playdate.geometry.rect:offset(dx, dy) end
-
----@param dx integer
----@param dy integer
----@return playdate.geometry.rect
-function playdate.geometry.rect:offsetBy(dx, dy) end
-
----@return playdate.geometry.polygon
-function playdate.geometry.rect:toPolygon() end
-
----@param r2 playdate.geometry.rect
----@return playdate.geometry.rect
-function playdate.geometry.rect:union(r2) end
-
----@return x number
----@return y number
----@return width number
----@return height number
-function playdate.geometry.rect:unpack() end
-
----@param width integer
----@param height integer
----@return playdate.geometry.size
+---@return Size
 function playdate.geometry.size.new(width, height) end
 
----@return playdate.geometry.size
-function playdate.geometry.size:copy() end
-
----@return width number
----@return height number
-function playdate.geometry.size:unpack() end
-
 ---@param x integer
 ---@param y integer
----@return playdate.geometry.vector2D
+---@return Vector2D
 function playdate.geometry.vector2D.new(x, y) end
 
 ---@param length number
 ---@param angle number
----@return playdate.geometry.vector2D
+---@return Vector2D
 function playdate.geometry.vector2D.newPolar(length, angle) end
 
----@param v2 playdate.geometry.vector2D
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__add(v2) end
-
----@param s number
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__div(s) end
-
----@param s number
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__mul(s) end
-
----@param t playdate.geometry.affineTransform
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__mul(t) end
-
----@param v2 playdate.geometry.vector2D
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__mul(v2) end
-
----@param v2 playdate.geometry.vector2D
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__sub(v2) end
-
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:__unm() end
-
----@param v playdate.geometry.vector2D
----@return nil
-function playdate.geometry.vector2D:addVector(v) end
-
----@param v playdate.geometry.vector2D
----@return number
-function playdate.geometry.vector2D:angleBetween(v) end
-
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:copy() end
-
----@param v playdate.geometry.vector2D
----@return number
-function playdate.geometry.vector2D:dotProduct(v) end
-
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:leftNormal() end
-
----@return number
-function playdate.geometry.vector2D:magnitude() end
-
----@return number
-function playdate.geometry.vector2D:magnitudeSquared() end
-
----@return nil
-function playdate.geometry.vector2D:normalize() end
-
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:normalized() end
-
----@param v playdate.geometry.vector2D
----@return nil
-function playdate.geometry.vector2D:projectAlong(v) end
-
----@param v playdate.geometry.vector2D
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:projectedAlong(v) end
-
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:rightNormal() end
-
----@param s number
----@return nil
-function playdate.geometry.vector2D:scale(s) end
-
----@param s number
----@return playdate.geometry.vector2D
-function playdate.geometry.vector2D:scaledBy(s) end
-
----@return x number
----@return y number
-function playdate.geometry.vector2D:unpack() end
-
----@class playdate.graphics.animation
----@class playdate.graphics.animator
----@class playdate.graphics.font
----@class playdate.graphics.image
----@class playdate.graphics.imagetable
----@class playdate.graphics.nineSlice
----@class playdate.graphics.sprite
----@class playdate.graphics.tilemap
----@class playdate.graphics.video
----@type integer
-playdate.graphics.kColorBlack = 0
----@type integer
-playdate.graphics.kColorClear = 2
----@type integer
-playdate.graphics.kColorWhite = 1
----@type integer
-playdate.graphics.kColorXOR = 3
----@type integer
-playdate.graphics.kDrawModeBlackTransparent = 2
----@type integer
-playdate.graphics.kDrawModeCopy = 0
----@type integer
-playdate.graphics.kDrawModeFillBlack = 4
----@type integer
-playdate.graphics.kDrawModeFillWhite = 3
----@type integer
-playdate.graphics.kDrawModeInverted = 7
----@type integer
-playdate.graphics.kDrawModeNXOR = 6
----@type integer
-playdate.graphics.kDrawModeWhiteTransparent = 1
----@type integer
-playdate.graphics.kDrawModeXOR = 5
----@type integer
-playdate.graphics.kImageFlippedX = 1
----@type integer
-playdate.graphics.kImageFlippedXY = 3
----@type integer
-playdate.graphics.kImageFlippedY = 2
----@type integer
-playdate.graphics.kImageUnflipped = 0
----@type integer
-playdate.graphics.kPolygonFillEvenOdd = 1
----@type integer
-playdate.graphics.kPolygonFillNonZero = 0
----@type integer
-playdate.graphics.kStrokeCentered = 0
----@type integer
-playdate.graphics.kStrokeInside = 1
----@type integer
-playdate.graphics.kStrokeOutside = 2
----@param image1 playdate.graphics.image
+---@param image1 Image
 ---@param x1 integer
 ---@param y1 integer
 ---@param flip1 integer
----@param image2 playdate.graphics.image
+---@param image2 Image
 ---@param x2 integer
 ---@param y2 integer
 ---@param flip2 integer
@@ -1708,7 +3479,7 @@ function playdate.graphics.clearStencil() end
 ---@return nil
 function playdate.graphics.clearStencilImage() end
 
----@param arc playdate.geometry.arc
+---@param arc Arc
 ---@return nil
 function playdate.graphics.drawArc(arc) end
 
@@ -1720,7 +3491,7 @@ function playdate.graphics.drawArc(arc) end
 ---@return nil
 function playdate.graphics.drawArc(x, y, radius, startAngle, endAngle) end
 
----@param p playdate.geometry.point
+---@param p Point
 ---@param radius number
 ---@return nil
 function playdate.graphics.drawCircleAtPoint(p, radius) end
@@ -1731,7 +3502,7 @@ function playdate.graphics.drawCircleAtPoint(p, radius) end
 ---@return nil
 function playdate.graphics.drawCircleAtPoint(x, y, radius) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@return nil
 function playdate.graphics.drawCircleInRect(r) end
 
@@ -1742,7 +3513,7 @@ function playdate.graphics.drawCircleInRect(r) end
 ---@return nil
 function playdate.graphics.drawCircleInRect(x, y, width, height) end
 
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@param startAngle? number
 ---@param endAngle? number
 ---@return nil
@@ -1782,11 +3553,11 @@ function playdate.graphics.drawLocalizedText(key, x, y, language, leadingAdjustm
 function playdate.graphics.drawLocalizedTextAligned(text, x, y, alignment, language, leadingAdjustment) end
 
 ---@param text string
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@param leadingAdjustment? integer
 ---@param truncationString? string
 ---@param alignment? integer
----@param font? playdate.graphics.font
+---@param font? Font
 ---@param language? (integer|string)
 ---@return nil
 function playdate.graphics.drawLocalizedTextInRect(text, rect, leadingAdjustment, truncationString, alignment, font, language) end
@@ -1809,7 +3580,7 @@ function playdate.graphics.drawLocalizedTextInRect(text, x, y, width, height, le
 ---@return nil
 function playdate.graphics.drawPixel(x, y) end
 
----@param p playdate.geometry.polygon
+---@param p Polygon
 ---@return nil
 function playdate.graphics.drawPolygon(p) end
 
@@ -1821,7 +3592,7 @@ function playdate.graphics.drawPolygon(p) end
 ---@return nil
 function playdate.graphics.drawPolygon(x1, y1, x2, y2, ...) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@return nil
 function playdate.graphics.drawRect(r) end
 
@@ -1832,7 +3603,7 @@ function playdate.graphics.drawRect(r) end
 ---@return nil
 function playdate.graphics.drawRect(x, y, w, h) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@param radius number
 ---@return nil
 function playdate.graphics.drawRoundRect(r, radius) end
@@ -1859,7 +3630,7 @@ function playdate.graphics.drawSineWave(startX, startY, endX, endY, startAmplitu
 ---@param text string
 ---@param x integer
 ---@param y integer
----@param fontFamily? table<integer, playdate.graphics.font>
+---@param fontFamily? table<integer, Font>
 ---@param leadingAdjustment? integer
 ---@return nil
 function playdate.graphics.drawText(text, x, y, fontFamily, leadingAdjustment) end
@@ -1873,11 +3644,11 @@ function playdate.graphics.drawText(text, x, y, fontFamily, leadingAdjustment) e
 function playdate.graphics.drawTextAligned(text, x, y, alignment, leadingAdjustment) end
 
 ---@param text string
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@param leadingAdjustment? integer
 ---@param truncationString? string
 ---@param alignment? integer
----@param font? playdate.graphics.font
+---@param font? Font
 ---@return nil
 function playdate.graphics.drawTextInRect(text, rect, leadingAdjustment, truncationString, alignment, font) end
 
@@ -1902,7 +3673,7 @@ function playdate.graphics.drawTextInRect(text, x, y, width, height, leadingAdju
 ---@return nil
 function playdate.graphics.drawTriangle(x1, y1, x2, y2, x3, y3) end
 
----@param p playdate.geometry.point
+---@param p Point
 ---@param radius number
 ---@return nil
 function playdate.graphics.fillCircleAtPoint(p, radius) end
@@ -1913,7 +3684,7 @@ function playdate.graphics.fillCircleAtPoint(p, radius) end
 ---@return nil
 function playdate.graphics.fillCircleAtPoint(x, y, radius) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@return nil
 function playdate.graphics.fillCircleInRect(r) end
 
@@ -1924,7 +3695,7 @@ function playdate.graphics.fillCircleInRect(r) end
 ---@return nil
 function playdate.graphics.fillCircleInRect(x, y, width, height) end
 
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@param startAngle? number
 ---@param endAngle? number
 ---@return nil
@@ -1939,7 +3710,7 @@ function playdate.graphics.fillEllipseInRect(rect, startAngle, endAngle) end
 ---@return nil
 function playdate.graphics.fillEllipseInRect(x, y, width, height, startAngle, endAngle) end
 
----@param p playdate.geometry.polygon
+---@param p Polygon
 ---@return nil
 function playdate.graphics.fillPolygon(p) end
 
@@ -1951,7 +3722,7 @@ function playdate.graphics.fillPolygon(p) end
 ---@return nil
 function playdate.graphics.fillPolygon(x1, y1, x2, y2, ...) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@return nil
 function playdate.graphics.fillRect(r) end
 
@@ -1962,7 +3733,7 @@ function playdate.graphics.fillRect(r) end
 ---@return nil
 function playdate.graphics.fillRect(x, y, width, height) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@param radius number
 ---@return nil
 function playdate.graphics.fillRoundRect(r, radius) end
@@ -2002,7 +3773,7 @@ function playdate.graphics.getClipRect() end
 ---@return integer
 function playdate.graphics.getColor() end
 
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.getDisplayImage() end
 
 ---@return x integer
@@ -2010,7 +3781,7 @@ function playdate.graphics.getDisplayImage() end
 function playdate.graphics.getDrawOffset() end
 
 ---@param variant? (integer|string)
----@return playdate.graphics.font
+---@return Font
 function playdate.graphics.getFont(variant) end
 
 ---@return integer
@@ -2037,11 +3808,11 @@ function playdate.graphics.getScreenClipRect() end
 function playdate.graphics.getStrokeLocation() end
 
 ---@param variant? (integer|string)
----@return playdate.graphics.font
+---@return Font
 function playdate.graphics.getSystemFont(variant) end
 
 ---@param str string
----@param fontFamily? table<integer, playdate.graphics.font>
+---@param fontFamily? table<integer, Font>
 ---@param leadingAdjustment? integer
 ---@return width integer
 ---@return height integer
@@ -2050,12 +3821,12 @@ function playdate.graphics.getTextSize(str, fontFamily, leadingAdjustment) end
 ---@param text string
 ---@param maxWidth integer
 ---@param leadingAdjustment? integer
----@param font? playdate.graphics.font
+---@param font? Font
 ---@return width integer
 ---@return height integer
 function playdate.graphics.getTextSizeForMaxWidth(text, maxWidth, leadingAdjustment, font) end
 
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.getWorkingImage() end
 
 ---@param path string
@@ -2071,11 +3842,11 @@ function playdate.graphics.imageSizeAtPath(path) end
 ---@param truncationString? string
 ---@param alignment? integer
 ---@param font? playdate.graphics.font
----@return image playdate.graphics.image
+---@return image Image
 ---@return textWasTruncated boolean
 function playdate.graphics.imageWithText(text, maxWidth, maxHeight, backgroundColor, leadingAdjustment, truncationString, alignment, font) end
 
----@param image playdate.graphics.image
+---@param image Image
 ---@return nil
 function playdate.graphics.lockFocus(image) end
 
@@ -2104,7 +3875,7 @@ function playdate.graphics.perlinArray(count, x, dx, y, dy, z, dz, _repeat, octa
 ---@return nil
 function playdate.graphics.popContext() end
 
----@param image? playdate.graphics.image
+---@param image? Image
 ---@return nil
 function playdate.graphics.pushContext(image) end
 
@@ -2112,7 +3883,7 @@ function playdate.graphics.pushContext(image) end
 ---@return nil
 function playdate.graphics.setBackgroundColor(color) end
 
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@return nil
 function playdate.graphics.setClipRect(rect) end
 
@@ -2137,12 +3908,12 @@ function playdate.graphics.setDitherPattern(alpha, ditherType) end
 ---@return nil
 function playdate.graphics.setDrawOffset(x, y) end
 
----@param font playdate.graphics.font
+---@param font Font
 ---@param variant? (integer|string)
 ---@return nil
 function playdate.graphics.setFont(font, variant) end
 
----@param fontFamily table<integer, playdate.graphics.font>
+---@param fontFamily table<integer, Font>
 ---@return nil
 function playdate.graphics.setFontFamily(fontFamily) end
 
@@ -2170,7 +3941,7 @@ function playdate.graphics.setPattern(pattern) end
 ---@return nil
 function playdate.graphics.setPolygonFillRule(rule) end
 
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@return nil
 function playdate.graphics.setScreenClipRect(rect) end
 
@@ -2181,7 +3952,7 @@ function playdate.graphics.setScreenClipRect(rect) end
 ---@return nil
 function playdate.graphics.setScreenClipRect(x, y, width, height) end
 
----@param image playdate.graphics.image
+---@param image Image
 ---@param tile? boolean
 ---@return nil
 function playdate.graphics.setStencilImage(image, tile) end
@@ -2213,73 +3984,45 @@ function playdate.graphics.setStrokeLocation(location) end
 ---@return nil
 function playdate.graphics.unlockFocus() end
 
----@class playdate.graphics.animator : table
----@field repeatCount integer
----@field reverses integer
----@field easingAmplitude number
----@field easingPeriod number
----@field s? number
----@field a? number
----@field p? number
-
----@class playdate.graphics.font : table
+---@class playdate.graphics.animation
 
 
----@class playdate.graphics.image : table
----@field x integer
----@field y integer
----@field width integer
----@field height integer
-
----@class playdate.graphics.imagetable : table
+---@class playdate.graphics.animator
 
 
----@class playdate.graphics.nineSlice : table
----@field innerRect playdate.geometry.rect
----@field minWidth integer
----@field minHeight integer
+---@class playdate.graphics.font
+---@field kLanguageEnglish integer
 
----@class playdate.graphics.sprite : table
----@field x integer
----@field y integer
----@field width integer
----@field height integer
----@field collisionResponse? (_CollisionType|fun(self: playdate.graphics.sprite, other: playdate.graphics.sprite): _CollisionType?)
----@field update? fun():nil
+---@class playdate.graphics.image
+---@field kDitherTypeNone integer
 
----@class playdate.graphics.tilemap : table
+---@class playdate.graphics.imagetable
 
 
----@class playdate.graphics.video : table
+---@class playdate.graphics.nineSlice
+
+
+---@class playdate.graphics.sprite
+---@field kCollisionTypeSlide integer
+
+---@class playdate.graphics.tilemap
+
+
+---@class playdate.graphics.video
 
 
 ---@class playdate.graphics.animation.blinker
----@class playdate.graphics.animation.loop
----@class playdate.graphics.animation.blinker : table
----@field onDuration integer
----@field offDuration integer
----@field loop boolean
----@field cycles integer
----@field default boolean
----@field counter integer
----@field on boolean
----@field running boolean
 
----@class playdate.graphics.animation.loop : table
----@field delay number
----@field startFrame integer
----@field endFrame integer
----@field frame integer
----@field step integer
----@field shouldLoop boolean
----@field paused boolean
+
+---@class playdate.graphics.animation.loop
+
 
 ---@param onDuration? integer
 ---@param offDuration? integer
 ---@param loop? boolean
 ---@param cycles? integer
 ---@param default? boolean
----@return playdate.graphics.animation.blinker
+---@return Blinker
 function playdate.graphics.animation.blinker.new(onDuration, offDuration, loop, cycles, default) end
 
 ---@return nil
@@ -2288,200 +4031,75 @@ function playdate.graphics.animation.blinker.stopAll() end
 ---@return nil
 function playdate.graphics.animation.blinker.updateAll() end
 
----@return nil
-function playdate.graphics.animation.blinker:remove() end
-
----@param onDuration? integer
----@param offDuration? integer
----@param loop? boolean
----@param cycles? integer
----@param default? boolean
----@return nil
-function playdate.graphics.animation.blinker:start(onDuration, offDuration, loop, cycles, default) end
-
----@return nil
-function playdate.graphics.animation.blinker:startLoop() end
-
----@return nil
-function playdate.graphics.animation.blinker:stop() end
-
----@return nil
-function playdate.graphics.animation.blinker:update() end
-
 ---@param delay? number
----@param imageTable? playdate.graphics.imagetable
+---@param imageTable? ImageTable
 ---@param shouldLoop? boolean
----@return playdate.graphics.animation.loop
+---@return AnimationLoop
 function playdate.graphics.animation.loop.new(delay, imageTable, shouldLoop) end
 
----@param x integer
----@param y integer
----@param flip? (integer|string)
----@return nil
-function playdate.graphics.animation.loop:draw(x, y, flip) end
-
----@return playdate.graphics.image
-function playdate.graphics.animation.loop:image() end
-
----@return boolean
-function playdate.graphics.animation.loop:isValid() end
-
----@param imageTable playdate.graphics.imagetable
----@return nil
-function playdate.graphics.animation.loop:setImageTable(imageTable) end
-
 ---@param duration integer
----@param arc playdate.geometry.arc
+---@param arc Arc
 ---@param easingFunction? function
 ---@param startTimeOffset? integer
----@return playdate.graphics.animator
+---@return Animator
 function playdate.graphics.animator.new(duration, arc, easingFunction, startTimeOffset) end
 
 ---@param duration integer
----@param lineSegment playdate.geometry.lineSegment
+---@param lineSegment LineSegment
 ---@param easingFunction? function
 ---@param startTimeOffset? integer
----@return playdate.graphics.animator
+---@return Animator
 function playdate.graphics.animator.new(duration, lineSegment, easingFunction, startTimeOffset) end
 
 ---@param duration integer
----@param polygon playdate.geometry.polygon
+---@param polygon Polygon
 ---@param easingFunction? function
 ---@param startTimeOffset? integer
----@return playdate.graphics.animator
+---@return Animator
 function playdate.graphics.animator.new(duration, polygon, easingFunction, startTimeOffset) end
 
 ---@param duration integer
----@param startValue (number|playdate.geometry.point)
----@param endValue (number|playdate.geometry.point)
+---@param startValue (number|Point)
+---@param endValue (number|Point)
 ---@param easingFunction? function
 ---@param startTimeOffset? integer
----@return playdate.graphics.animator
+---@return Animator
 function playdate.graphics.animator.new(duration, startValue, endValue, easingFunction, startTimeOffset) end
 
 ---@param durations integer
 ---@param parts number[]
 ---@param easingFunctions function[]
 ---@param startTimeOffset? integer
----@return playdate.graphics.animator
+---@return Animator
 function playdate.graphics.animator.new(durations, parts, easingFunctions, startTimeOffset) end
 
----@return (number|playdate.geometry.point)
-function playdate.graphics.animator:currentValue() end
-
----@return boolean
-function playdate.graphics.animator:ended() end
-
----@return number
-function playdate.graphics.animator:progress() end
-
----@param duration? integer
----@return nil
-function playdate.graphics.animator:reset(duration) end
-
----@param time number
----@return (number|playdate.geometry.point)
-function playdate.graphics.animator:valueAtTime(time) end
-
----@type integer
-playdate.graphics.font.kLanguageEnglish = 0
----@type integer
-playdate.graphics.font.kLanguageJapanese = 1
----@type integer
-playdate.graphics.font.kVariantBold = 1
----@type integer
-playdate.graphics.font.kVariantItalic = 2
----@type integer
-playdate.graphics.font.kVariantNormal = 0
 ---@param path string
----@return playdate.graphics.font
+---@return Font
 function playdate.graphics.font.new(path) end
 
 ---@param fontPaths table<integer, string>
----@return playdate.graphics.font[]
+---@return Font[]
 function playdate.graphics.font.newFamily(fontPaths) end
 
----@param text string
----@param x integer
----@param y integer
----@param leadingAdjustment? integer
----@return nil
-function playdate.graphics.font:drawText(text, x, y, leadingAdjustment) end
-
----@param text string
----@param x integer
----@param y integer
----@param alignment integer
----@param leadingAdjustment? integer
----@return nil
-function playdate.graphics.font:drawTextAligned(text, x, y, alignment, leadingAdjustment) end
-
----@param character string
----@return playdate.graphics.image
-function playdate.graphics.font:getGlyph(character) end
-
----@return integer
-function playdate.graphics.font:getHeight() end
-
----@return integer
-function playdate.graphics.font:getLeading() end
-
----@param text string
----@return integer
-function playdate.graphics.font:getTextWidth(text) end
-
----@return integer
-function playdate.graphics.font:getTracking() end
-
----@param pixels integer
----@return nil
-function playdate.graphics.font:setLeading(pixels) end
-
----@param pixels integer
----@return nil
-function playdate.graphics.font:setTracking(pixels) end
-
----@type integer
-playdate.graphics.image.kDitherTypeAtkinson = 10
----@type integer
-playdate.graphics.image.kDitherTypeBayer2x2 = 5
----@type integer
-playdate.graphics.image.kDitherTypeBayer4x4 = 6
----@type integer
-playdate.graphics.image.kDitherTypeBayer8x8 = 7
----@type integer
-playdate.graphics.image.kDitherTypeBurkes = 9
----@type integer
-playdate.graphics.image.kDitherTypeDiagonalLine = 1
----@type integer
-playdate.graphics.image.kDitherTypeFloydSteinberg = 8
----@type integer
-playdate.graphics.image.kDitherTypeHorizontalLine = 3
----@type integer
-playdate.graphics.image.kDitherTypeNone = 0
----@type integer
-playdate.graphics.image.kDitherTypeScreen = 4
----@type integer
-playdate.graphics.image.kDitherTypeVerticalLine = 2
 ---@param path string
----@return image playdate.graphics.image
----@return error string
+---@return image Image?
+---@return error string?
 function playdate.graphics.image.new(path) end
 
 ---@param width integer
 ---@param height integer
 ---@param bgcolor? integer
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image.new(width, height, bgcolor) end
 
 ---@param opaque? boolean
 ---@return nil
 function playdate.graphics.image:addMask(opaque) end
 
----@param image playdate.graphics.image
+---@param image Image
 ---@param alpha number
 ---@param ditherType integer
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:blendWithImage(image, alpha, ditherType) end
 
 ---@param radius number
@@ -2490,7 +4108,7 @@ function playdate.graphics.image:blendWithImage(image, alpha, ditherType) end
 ---@param padEdges? boolean
 ---@param xPhase? integer
 ---@param yPhase? integer
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:blurredImage(radius, numPasses, ditherType, padEdges, xPhase, yPhase) end
 
 ---@param color integer
@@ -2501,19 +4119,19 @@ function playdate.graphics.image:clear(color) end
 ---@return nil
 function playdate.graphics.image:clearMask(opaque) end
 
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:copy() end
 
----@param p playdate.geometry.point
+---@param p Point
 ---@param flip? (integer|string)
----@param sourceRect? playdate.geometry.rect
+---@param sourceRect? Rect
 ---@return nil
 function playdate.graphics.image:draw(p, flip, sourceRect) end
 
 ---@param x integer
 ---@param y integer
 ---@param flip? (integer|string)
----@param sourceRect? playdate.geometry.rect
+---@param sourceRect? Rect
 ---@return nil
 function playdate.graphics.image:draw(x, y, flip, sourceRect) end
 
@@ -2549,7 +4167,7 @@ function playdate.graphics.image:drawCentered(x, y, flip) end
 ---@return nil
 function playdate.graphics.image:drawFaded(x, y, alpha, ditherType) end
 
----@param p playdate.geometry.point
+---@param p Point
 ---@param flip? (integer|string)
 ---@return nil
 function playdate.graphics.image:drawIgnoringOffset(p, flip) end
@@ -2593,7 +4211,7 @@ function playdate.graphics.image:drawSampled(x, y, width, height, centerx, cente
 ---@return nil
 function playdate.graphics.image:drawScaled(x, y, scale, yscale) end
 
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@param flip? (integer|string)
 ---@return nil
 function playdate.graphics.image:drawTiled(rect, flip) end
@@ -2606,7 +4224,7 @@ function playdate.graphics.image:drawTiled(rect, flip) end
 ---@return nil
 function playdate.graphics.image:drawTiled(x, y, width, height, flip) end
 
----@param xform playdate.geometry.affineTransform
+---@param xform AffineTransform
 ---@param x integer
 ---@param y integer
 ---@return nil
@@ -2614,10 +4232,10 @@ function playdate.graphics.image:drawWithTransform(xform, x, y) end
 
 ---@param alpha number
 ---@param ditherType integer
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:fadedImage(alpha, ditherType) end
 
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:getMaskImage() end
 
 ---@return width integer
@@ -2627,12 +4245,12 @@ function playdate.graphics.image:getSize() end
 ---@return boolean
 function playdate.graphics.image:hasMask() end
 
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:invertedImage() end
 
 ---@param path string
 ---@return success boolean
----@return error string
+---@return error string?
 function playdate.graphics.image:load(path) end
 
 ---@return nil
@@ -2641,7 +4259,7 @@ function playdate.graphics.image:removeMask() end
 ---@param angle number
 ---@param scale? integer
 ---@param yscale? integer
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:rotatedImage(angle, scale, yscale) end
 
 ---@param x integer
@@ -2651,106 +4269,42 @@ function playdate.graphics.image:sample(x, y) end
 
 ---@param scale integer
 ---@param yscale? integer
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:scaledImage(scale, yscale) end
 
 ---@param flag boolean
 ---@return nil
 function playdate.graphics.image:setInverted(flag) end
 
----@param maskImage playdate.graphics.image
+---@param maskImage Image
 ---@return nil
 function playdate.graphics.image:setMaskImage(maskImage) end
 
----@param xform playdate.geometry.affineTransform
----@return playdate.graphics.image
+---@param xform AffineTransform
+---@return Image
 function playdate.graphics.image:transformedImage(xform) end
 
----@return playdate.graphics.image
+---@return Image
 function playdate.graphics.image:vcrPauseFilterImage() end
 
 ---@param count integer
 ---@param cellsWide? integer
 ---@param cellSize? integer
----@return playdate.graphics.imagetable
+---@return ImageTable
 function playdate.graphics.imagetable.new(count, cellsWide, cellSize) end
 
 ---@param path string
----@return playdate.graphics.imagetable
+---@return ImageTable
 function playdate.graphics.imagetable.new(path) end
-
----@param n integer
----@return nil
-function playdate.graphics.imagetable:__index(n) end
-
----@param n integer
----@param x integer
----@param y integer
----@param flip? (integer|string)
----@return nil
-function playdate.graphics.imagetable:drawImage(n, x, y, flip) end
-
----@param n integer
----@return playdate.graphics.image
-function playdate.graphics.imagetable:getImage(n) end
-
----@param x integer
----@param y integer
----@return playdate.graphics.image
-function playdate.graphics.imagetable:getImage(x, y) end
-
----@return integer
-function playdate.graphics.imagetable:getLength() end
-
----@return cellsWide integer
----@return cellsHigh integer
-function playdate.graphics.imagetable:getSize() end
-
----@param path string
----@return success boolean
----@return error string
-function playdate.graphics.imagetable:load(path) end
-
----@param n integer
----@param image playdate.graphics.image
----@return nil
-function playdate.graphics.imagetable:setImage(n, image) end
 
 ---@param imagePath string
 ---@param innerX integer
 ---@param innerY integer
 ---@param innerWidth integer
 ---@param innerHeight integer
----@return playdate.graphics.nineSlice
+---@return NineSlice
 function playdate.graphics.nineSlice.new(imagePath, innerX, innerY, innerWidth, innerHeight) end
 
----@param rect playdate.geometry.rect
----@return nil
-function playdate.graphics.nineSlice:drawInRect(rect) end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.nineSlice:drawInRect(x, y, width, height) end
-
----@return width integer
----@return height integer
-function playdate.graphics.nineSlice:getMinSize() end
-
----@return width integer
----@return height integer
-function playdate.graphics.nineSlice:getSize() end
-
----@type integer
-playdate.graphics.sprite.kCollisionTypeBounce = 3
----@type integer
-playdate.graphics.sprite.kCollisionTypeFreeze = 1
----@type integer
-playdate.graphics.sprite.kCollisionTypeOverlap = 2
----@type integer
-playdate.graphics.sprite.kCollisionTypeSlide = 0
 ---@param x integer
 ---@param y integer
 ---@param width integer
@@ -2758,7 +4312,7 @@ playdate.graphics.sprite.kCollisionTypeSlide = 0
 ---@return nil
 function playdate.graphics.sprite.addDirtyRect(x, y, width, height) end
 
----@param r playdate.geometry.rect
+---@param r Rect
 ---@return nil
 function playdate.graphics.sprite.addEmptyCollisionSprite(r) end
 
@@ -2769,18 +4323,18 @@ function playdate.graphics.sprite.addEmptyCollisionSprite(r) end
 ---@return nil
 function playdate.graphics.sprite.addEmptyCollisionSprite(x, y, w, h) end
 
----@param sprite playdate.graphics.sprite
+---@param sprite Sprite
 ---@return nil
 function playdate.graphics.sprite.addSprite(sprite) end
 
----@param tilemap playdate.graphics.tilemap
+---@param tilemap TileMap
 ---@param emptyIDs integer[]
 ---@param xOffset? integer
 ---@param yOffset? integer
 ---@return nil
 function playdate.graphics.sprite.addWallSprites(tilemap, emptyIDs, xOffset, yOffset) end
 
----@return playdate.graphics.sprite[][]
+---@return Sprite[][]
 function playdate.graphics.sprite.allOverlappingSprites() end
 
 ---@param startz integer
@@ -2788,21 +4342,21 @@ function playdate.graphics.sprite.allOverlappingSprites() end
 ---@return nil
 function playdate.graphics.sprite.clearClipRectsInRange(startz, endz) end
 
----@return playdate.graphics.sprite[]
+---@return Sprite[]
 function playdate.graphics.sprite.getAllSprites() end
 
 ---@return boolean
 function playdate.graphics.sprite.getAlwaysRedraw() end
 
----@param image_or_tilemap? (playdate.graphics.image|playdate.graphics.tilemap)
----@return playdate.graphics.sprite
+---@param image_or_tilemap? (Image|TileMap)
+---@return Sprite
 function playdate.graphics.sprite.new(image_or_tilemap) end
 
----@param f fun(sprite: playdate.graphics.sprite)
+---@param f fun(sprite: Sprite)
 ---@return nil
 function playdate.graphics.sprite.performOnAllSprites(f) end
 
----@param lineSegment playdate.geometry.lineSegment
+---@param lineSegment LineSegment
 ---@return CollisionInfo[]
 function playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment) end
 
@@ -2813,35 +4367,35 @@ function playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment) end
 ---@return CollisionInfo[]
 function playdate.graphics.sprite.querySpriteInfoAlongLine(x1, y1, x2, y2) end
 
----@param lineSegment playdate.geometry.lineSegment
----@return playdate.graphics.sprite[]
+---@param lineSegment LineSegment
+---@return Sprite[]
 function playdate.graphics.sprite.querySpritesAlongLine(lineSegment) end
 
 ---@param x1 integer
 ---@param y1 integer
 ---@param x2 integer
 ---@param y2 integer
----@return playdate.graphics.sprite[]
+---@return Sprite[]
 function playdate.graphics.sprite.querySpritesAlongLine(x1, y1, x2, y2) end
 
----@param p playdate.geometry.point
----@return playdate.graphics.sprite[]
+---@param p Point
+---@return Sprite[]
 function playdate.graphics.sprite.querySpritesAtPoint(p) end
 
 ---@param x integer
 ---@param y integer
----@return playdate.graphics.sprite[]
+---@return Sprite[]
 function playdate.graphics.sprite.querySpritesAtPoint(x, y) end
 
----@param rect playdate.geometry.rect
----@return playdate.graphics.sprite[]
+---@param rect Rect
+---@return Sprite[]
 function playdate.graphics.sprite.querySpritesInRect(rect) end
 
 ---@param x integer
 ---@param y integer
 ---@param width integer
 ---@param height integer
----@return playdate.graphics.sprite[]
+---@return Sprite[]
 function playdate.graphics.sprite.querySpritesInRect(x, y, width, height) end
 
 ---@return nil
@@ -2850,11 +4404,11 @@ function playdate.graphics.sprite.redrawBackground() end
 ---@return nil
 function playdate.graphics.sprite.removeAll() end
 
----@param sprite playdate.graphics.sprite
+---@param sprite Sprite
 ---@return nil
 function playdate.graphics.sprite.removeSprite(sprite) end
 
----@param spriteArray playdate.graphics.sprite[]
+---@param spriteArray Sprite[]
 ---@return nil
 function playdate.graphics.sprite.removeSprites(spriteArray) end
 
@@ -2866,7 +4420,7 @@ function playdate.graphics.sprite.setAlwaysRedraw(flag) end
 ---@return nil
 function playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback) end
 
----@param rect playdate.geometry.rect
+---@param rect Rect
 ---@param startz integer
 ---@param endz integer
 ---@return nil
@@ -2891,403 +4445,19 @@ function playdate.graphics.sprite.spriteCount() end
 ---@param leadingAdjustment? integer
 ---@param truncationString? string
 ---@param alignment? integer
----@param font? playdate.graphics.font
----@return playdate.graphics.sprite
+---@param font? Font
+---@return Sprite
 function playdate.graphics.sprite.spriteWithText(text, maxWidth, maxHeight, backgroundColor, leadingAdjustment, truncationString, alignment, font) end
 
 ---@return nil
 function playdate.graphics.sprite.update() end
 
----@return nil
-function playdate.graphics.sprite:add() end
-
----@param anotherSprite playdate.graphics.sprite
----@return boolean
-function playdate.graphics.sprite:alphaCollision(anotherSprite) end
-
----@param point playdate.geometry.point
----@return actualX integer
----@return actualY integer
----@return collisions _CollisionData
----@return length integer
-function playdate.graphics.sprite:checkCollisions(point) end
-
----@param x integer
----@param y integer
----@return actualX integer
----@return actualY integer
----@return collisions _CollisionData
----@return length integer
-function playdate.graphics.sprite:checkCollisions(x, y) end
-
----@return nil
-function playdate.graphics.sprite:clearClipRect() end
-
----@return nil
-function playdate.graphics.sprite:clearCollideRect() end
-
----@return nil
-function playdate.graphics.sprite:clearStencil() end
-
----@param other playdate.graphics.sprite
----@return integer
-function playdate.graphics.sprite:collisionResponse(other) end
-
----@return boolean
-function playdate.graphics.sprite:collisionsEnabled() end
-
----@return playdate.graphics.sprite
-function playdate.graphics.sprite:copy() end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.sprite:draw(x, y, width, height) end
-
----@return x integer
----@return y integer
----@return width integer
----@return height integer
-function playdate.graphics.sprite:getBounds() end
-
----@return playdate.geometry.rect
-function playdate.graphics.sprite:getBoundsRect() end
-
----@return x number
----@return y number
-function playdate.graphics.sprite:getCenter() end
-
----@return playdate.geometry.point
-function playdate.graphics.sprite:getCenterPoint() end
-
----@return x integer
----@return y integer
----@return width integer
----@return height integer
-function playdate.graphics.sprite:getCollideBounds() end
-
----@return playdate.geometry.rect
-function playdate.graphics.sprite:getCollideRect() end
-
----@return integer
-function playdate.graphics.sprite:getCollidesWithGroupsMask() end
-
----@return integer
-function playdate.graphics.sprite:getGroupMask() end
-
----@return playdate.graphics.image
-function playdate.graphics.sprite:getImage() end
-
----@return integer
-function playdate.graphics.sprite:getImageFlip() end
-
----@return x integer
----@return y integer
-function playdate.graphics.sprite:getPosition() end
-
----@return number
-function playdate.graphics.sprite:getRotation() end
-
----@return xScale integer
----@return yScale integer
-function playdate.graphics.sprite:getScale() end
-
----@return width integer
----@return height integer
-function playdate.graphics.sprite:getSize() end
-
----@return integer
-function playdate.graphics.sprite:getTag() end
-
----@return integer
-function playdate.graphics.sprite:getZIndex() end
-
----@return boolean
-function playdate.graphics.sprite:isOpaque() end
-
----@return boolean
-function playdate.graphics.sprite:isVisible() end
-
----@return nil
-function playdate.graphics.sprite:markDirty() end
-
----@param x integer
----@param y integer
----@return nil
-function playdate.graphics.sprite:moveBy(x, y) end
-
----@param x integer
----@param y integer
----@return nil
-function playdate.graphics.sprite:moveTo(x, y) end
-
----@param goalPoint playdate.geometry.point
----@return actualX integer
----@return actualY integer
----@return collisions _CollisionData
----@return length integer
-function playdate.graphics.sprite:moveWithCollisions(goalPoint) end
-
----@param goalX integer
----@param goalY integer
----@return actualX integer
----@return actualY integer
----@return collisions _CollisionData
----@return length integer
-function playdate.graphics.sprite:moveWithCollisions(goalX, goalY) end
-
----@return playdate.graphics.sprite[]
-function playdate.graphics.sprite:overlappingSprites() end
-
----@return nil
-function playdate.graphics.sprite:remove() end
-
----@return nil
-function playdate.graphics.sprite:removeAnimator() end
-
----@return nil
-function playdate.graphics.sprite:resetCollidesWithGroupsMask() end
-
----@return nil
-function playdate.graphics.sprite:resetGroupMask() end
-
----@param animator playdate.graphics.animator
----@param moveWithCollisions? boolean
----@param removeOnCollision? boolean
----@return nil
-function playdate.graphics.sprite:setAnimator(animator, moveWithCollisions, removeOnCollision) end
-
----@param rect playdate.geometry.rect
----@return nil
-function playdate.graphics.sprite:setBounds(rect) end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.sprite:setBounds(x, y, width, height) end
-
----@param x integer
----@param y integer
----@return nil
-function playdate.graphics.sprite:setCenter(x, y) end
-
----@param rect playdate.geometry.rect
----@return nil
-function playdate.graphics.sprite:setClipRect(rect) end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.sprite:setClipRect(x, y, width, height) end
-
----@param rect playdate.geometry.rect
----@return nil
-function playdate.graphics.sprite:setCollideRect(rect) end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.sprite:setCollideRect(x, y, width, height) end
-
----@param groups (integer|integer[])
----@return nil
-function playdate.graphics.sprite:setCollidesWithGroups(groups) end
-
----@param mask integer
----@return nil
-function playdate.graphics.sprite:setCollidesWithGroupsMask(mask) end
-
----@param flag boolean
----@return nil
-function playdate.graphics.sprite:setCollisionsEnabled(flag) end
-
----@param mask integer
----@return nil
-function playdate.graphics.sprite:setGroupMask(mask) end
-
----@param groups (integer|integer[])
----@return nil
-function playdate.graphics.sprite:setGroups(groups) end
-
----@param flag boolean
----@return nil
-function playdate.graphics.sprite:setIgnoresDrawOffset(flag) end
-
----@param image playdate.graphics.image
----@param flip? (integer|string)
----@param scale? integer
----@param yscale? integer
----@return nil
-function playdate.graphics.sprite:setImage(image, flip, scale, yscale) end
-
----@param mode integer
----@return nil
-function playdate.graphics.sprite:setImageDrawMode(mode) end
-
----@param flip (integer|string)
----@param flipCollideRect? integer
----@return nil
-function playdate.graphics.sprite:setImageFlip(flip, flipCollideRect) end
-
----@param flag boolean
----@return nil
-function playdate.graphics.sprite:setOpaque(flag) end
-
----@param flag boolean
----@return nil
-function playdate.graphics.sprite:setRedrawsOnImageChange(flag) end
-
----@param angle number
----@param scale? integer
----@param yScale? integer
----@return nil
-function playdate.graphics.sprite:setRotation(angle, scale, yScale) end
-
----@param scale integer
----@param yScale? integer
----@return nil
-function playdate.graphics.sprite:setScale(scale, yScale) end
-
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.sprite:setSize(width, height) end
-
----@param stencil playdate.graphics.image
----@param tile? boolean
----@return nil
-function playdate.graphics.sprite:setStencilImage(stencil, tile) end
-
----@param level any
----@param ditherType? integer
----@return nil
-function playdate.graphics.sprite:setStencilPattern(level, ditherType) end
-
----@param pattern integer[]
----@return nil
-function playdate.graphics.sprite:setStencilPattern(pattern) end
-
----@param tag integer
----@return nil
-function playdate.graphics.sprite:setTag(tag) end
-
----@param tilemap playdate.graphics.tilemap
----@return nil
-function playdate.graphics.sprite:setTilemap(tilemap) end
-
----@param flag boolean
----@return nil
-function playdate.graphics.sprite:setUpdatesEnabled(flag) end
-
----@param flag boolean
----@return nil
-function playdate.graphics.sprite:setVisible(flag) end
-
----@param z integer
----@return nil
-function playdate.graphics.sprite:setZIndex(z) end
-
----@return nil
-function playdate.graphics.sprite:update() end
-
----@return boolean
-function playdate.graphics.sprite:updatesEnabled() end
-
----@return playdate.graphics.tilemap
+---@return TileMap
 function playdate.graphics.tilemap.new() end
 
----@param x integer
----@param y integer
----@param sourceRect? playdate.geometry.rect
----@return nil
-function playdate.graphics.tilemap:draw(x, y, sourceRect) end
-
----@param x integer
----@param y integer
----@param sourceRect? playdate.geometry.rect
----@return nil
-function playdate.graphics.tilemap:drawIgnoringOffset(x, y, sourceRect) end
-
----@param emptyIDs integer[]
----@return playdate.geometry.rect[]
-function playdate.graphics.tilemap:getCollisionRects(emptyIDs) end
-
----@return width integer
----@return height integer
-function playdate.graphics.tilemap:getPixelSize() end
-
----@return width integer
----@return height integer
-function playdate.graphics.tilemap:getSize() end
-
----@param x integer
----@param y integer
----@return number
-function playdate.graphics.tilemap:getTileAtPosition(x, y) end
-
----@return width integer
----@return height integer
-function playdate.graphics.tilemap:getTileSize() end
-
----@return data integer[]
----@return width integer
-function playdate.graphics.tilemap:getTiles() end
-
----@param table table
----@return nil
-function playdate.graphics.tilemap:setImageTable(table) end
-
----@param width integer
----@param height integer
----@return nil
-function playdate.graphics.tilemap:setSize(width, height) end
-
----@param x integer
----@param y integer
----@param index integer
----@return nil
-function playdate.graphics.tilemap:setTileAtPosition(x, y, index) end
-
----@param data integer[]
----@param width integer
----@return nil
-function playdate.graphics.tilemap:setTiles(data, width) end
-
 ---@param path string
----@return playdate.graphics.video
+---@return Video
 function playdate.graphics.video.new(path) end
-
----@return playdate.graphics.image
-function playdate.graphics.video:getContext() end
-
----@return integer
-function playdate.graphics.video:getFrameCount() end
-
----@return number
-function playdate.graphics.video:getFrameRate() end
-
----@return x integer
----@return y integer
-function playdate.graphics.video:getSize() end
-
----@param number integer
----@return nil
-function playdate.graphics.video:renderFrame(number) end
-
----@param image playdate.graphics.image
----@return nil
-function playdate.graphics.video:setContext(image) end
-
----@return nil
-function playdate.graphics.video:useScreenContext() end
 
 ---@return nil
 function playdate.inputHandlers.pop() end
@@ -3297,12 +4467,6 @@ function playdate.inputHandlers.pop() end
 ---@return nil
 function playdate.inputHandlers.push(handler, masksPreviousHandlers) end
 
----@type integer
-playdate.keyboard.kCapitalizationNormal = 1
----@type integer
-playdate.keyboard.kCapitalizationSentences = 3
----@type integer
-playdate.keyboard.kCapitalizationWords = 2
 ---@return nil
 function playdate.keyboard.hide() end
 
@@ -3346,201 +4510,25 @@ function playdate.keyboard.width() end
 function playdate.math.lerp(min, max, t) end
 
 ---@class playdate.menu.item
----@class playdate.menu.item : table
----@field title string
----@field value (integer|boolean|string)
 
----@param title string
----@param initialValue? boolean
----@param callback? function
----@return nil
-function playdate.menu:addCheckmarkMenuItem(title, initialValue, callback) end
-
----@param title string
----@param callback function
----@return nil
-function playdate.menu:addMenuItem(title, callback) end
-
----@param title string
----@param options string[]
----@param initalValue? string
----@param callback? function
----@return nil
-function playdate.menu:addOptionsMenuItem(title, options, initalValue, callback) end
-
----@return playdate.menu.item[]
-function playdate.menu:getMenuItems() end
-
----@return nil
-function playdate.menu:removeAllMenuItems() end
-
----@param menuItem playdate.menu.item
----@return nil
-function playdate.menu:removeMenuItem(menuItem) end
-
----@return string
-function playdate.menu.item:getTitle() end
-
----@return (integer|boolean|string)
-function playdate.menu.item:getValue() end
-
----@param callback function
----@return nil
-function playdate.menu.item:setCallback(callback) end
-
----@param newTitle string
----@return nil
-function playdate.menu.item:setTitle(newTitle) end
-
----@param newValue (integer|boolean|string)
----@return nil
-function playdate.menu.item:setValue(newValue) end
 
 ---@class playdate.pathfinder.graph
+
+
 ---@class playdate.pathfinder.node
----@class playdate.pathfinder.graph : table
 
-
----@class playdate.pathfinder.node : table
----@field x integer
----@field y integer
----@field id integer
 
 ---@param nodeCount? integer
 ---@param coordinates? integer[][]
----@return playdate.pathfinder.graph
+---@return PathFinderGraph
 function playdate.pathfinder.graph.new(nodeCount, coordinates) end
 
 ---@param width integer
 ---@param height integer
 ---@param allowDiagonals? boolean
 ---@param includedNodes? integer[]
----@return playdate.pathfinder.graph
+---@return PathFinderGraph
 function playdate.pathfinder.graph.new2DGrid(width, height, allowDiagonals, includedNodes) end
-
----@param fromNodeID integer
----@param toNodeID integer
----@param weight number
----@param addReciprocalConnection boolean
----@return nil
-function playdate.pathfinder.graph:addConnectionToNodeWithID(fromNodeID, toNodeID, weight, addReciprocalConnection) end
-
----@param connections integer[][]
----@return nil
-function playdate.pathfinder.graph:addConnections(connections) end
-
----@param id integer
----@param x? integer
----@param y? integer
----@param connectedNodes? playdate.pathfinder.node[]
----@param weights? number[]
----@param addReciprocalConnections? boolean
----@return nil
-function playdate.pathfinder.graph:addNewNode(id, x, y, connectedNodes, weights, addReciprocalConnections) end
-
----@param count integer
----@return nil
-function playdate.pathfinder.graph:addNewNodes(count) end
-
----@param node playdate.pathfinder.node
----@param connectedNodes? playdate.pathfinder.node[]
----@param weights? number[]
----@param addReciprocalConnections? boolean
----@return nil
-function playdate.pathfinder.graph:addNode(node, connectedNodes, weights, addReciprocalConnections) end
-
----@param nodes playdate.pathfinder.node[]
----@return nil
-function playdate.pathfinder.graph:addNodes(nodes) end
-
----@return playdate.pathfinder.node[]
-function playdate.pathfinder.graph:allNodes() end
-
----@param startNode playdate.pathfinder.node
----@param goalNode playdate.pathfinder.node
----@param heuristicFunction? fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node): integer
----@param findPathToGoalAdjacentNodes? boolean
----@return playdate.pathfinder.node[]
-function playdate.pathfinder.graph:findPath(startNode, goalNode, heuristicFunction, findPathToGoalAdjacentNodes) end
-
----@param startNodeID integer
----@param goalNodeID integer
----@param heuristicFunction? fun(startNode: playdate.pathfinder.node, goalNode: playdate.pathfinder.node): integer
----@param findPathToGoalAdjacentNodes? boolean
----@return integer[]
-function playdate.pathfinder.graph:findPathWithIDs(startNodeID, goalNodeID, heuristicFunction, findPathToGoalAdjacentNodes) end
-
----@param id integer
----@return playdate.pathfinder.node
-function playdate.pathfinder.graph:nodeWithID(id) end
-
----@param x integer
----@param y integer
----@return playdate.pathfinder.node
-function playdate.pathfinder.graph:nodeWithXY(x, y) end
-
----@return nil
-function playdate.pathfinder.graph:removeAllConnections() end
-
----@param id integer
----@param removeIncoming? boolean
----@return nil
-function playdate.pathfinder.graph:removeAllConnectionsFromNodeWithID(id, removeIncoming) end
-
----@param node playdate.pathfinder.node
----@return nil
-function playdate.pathfinder.graph:removeNode(node) end
-
----@param id integer
----@return nil
-function playdate.pathfinder.graph:removeNodeWithID(id) end
-
----@param x integer
----@param y integer
----@return nil
-function playdate.pathfinder.graph:removeNodeWithXY(x, y) end
-
----@param id integer
----@param x integer
----@param y integer
----@return nil
-function playdate.pathfinder.graph:setXYForNodeWithID(id, x, y) end
-
----@param node playdate.pathfinder.node
----@param weight number
----@param addReciprocalConnection boolean
----@return nil
-function playdate.pathfinder.node:addConnection(node, weight, addReciprocalConnection) end
-
----@param x integer
----@param y integer
----@param weight number
----@param addReciprocalConnection boolean
----@return nil
-function playdate.pathfinder.node:addConnectionToNodeWithXY(x, y, weight, addReciprocalConnection) end
-
----@param nodes playdate.pathfinder.node[]
----@param weights number[]
----@param addReciprocalConnections boolean
----@return nil
-function playdate.pathfinder.node:addConnections(nodes, weights, addReciprocalConnections) end
-
----@return playdate.pathfinder.node[]
-function playdate.pathfinder.node:connectedNodes() end
-
----@param removeIncoming? boolean
----@return nil
-function playdate.pathfinder.node:removeAllConnections(removeIncoming) end
-
----@param node playdate.pathfinder.node
----@param removeReciprocal? boolean
----@return nil
-function playdate.pathfinder.node:removeConnection(node, removeReciprocal) end
-
----@param x integer
----@param y integer
----@return nil
-function playdate.pathfinder.node:setXY(x, y) end
 
 ---@return nil
 function playdate.simulator.exit() end
@@ -3549,89 +4537,30 @@ function playdate.simulator.exit() end
 ---@return string
 function playdate.simulator.getURL(url) end
 
----@param image playdate.graphics.image
+---@param image Image
 ---@param path string
 ---@return nil
 function playdate.simulator.writeToFile(image, path) end
 
----@class playdate.sound.bitcrusher
----@class playdate.sound.channel
----@class playdate.sound.controlsignal
----@class playdate.sound.delayline
----@class playdate.sound.delaylinetap
----@class playdate.sound.effect
----@class playdate.sound.effect
----@class playdate.sound.envelope
----@class playdate.sound.fileplayer
----@class playdate.sound.instrument
----@class playdate.sound.lfo
----@class playdate.sound.micinput
----@class playdate.sound.onepolefilter
----@class playdate.sound.overdrive
----@class playdate.sound.ringmod
----@class playdate.sound.sample
----@class playdate.sound.sampleplayer
----@class playdate.sound.sequence
----@class playdate.sound.signal
----@class playdate.sound.source
----@class playdate.sound.synth
----@class playdate.sound.track
----@class playdate.sound.twopolefilter
----@type integer
-playdate.sound.kFormat16bitMono = 2
----@type integer
-playdate.sound.kFormat16bitStereo = 3
----@type integer
-playdate.sound.kFormat8bitMono = 0
----@type integer
-playdate.sound.kFormat8bitStereo = 1
----@type integer
-playdate.sound.kLFOSampleAndHold = 3
----@type integer
-playdate.sound.kLFOSawtoothDown = 5
----@type integer
-playdate.sound.kLFOSawtoothUp = 4
----@type integer
-playdate.sound.kLFOSine = 2
----@type integer
-playdate.sound.kLFOSquare = 0
----@type integer
-playdate.sound.kLFOTriangle = 1
----@type integer
-playdate.sound.kWaveNoise = 3
----@type integer
-playdate.sound.kWavePODigital = 6
----@type integer
-playdate.sound.kWavePOPhase = 5
----@type integer
-playdate.sound.kWavePOVosim = 7
----@type integer
-playdate.sound.kWaveSawtooth = 4
----@type integer
-playdate.sound.kWaveSine = 2
----@type integer
-playdate.sound.kWaveSquare = 0
----@type integer
-playdate.sound.kWaveTriangle = 1
----@param effect playdate.sound.effect
+---@param effect SoundEffect
 ---@return nil
 function playdate.sound.addEffect(effect) end
 
 ---@return number
 function playdate.sound.getCurrentTime() end
 
----@param changeCallback function
+---@param changeCallback? fun(): nil
 ---@return headphone boolean
----@return mic boolean
+---@return mic boolean?
 function playdate.sound.getHeadphoneState(changeCallback) end
 
 ---@return integer
 function playdate.sound.getSampleRate() end
 
----@return playdate.sound.source[]
+---@return SoundSource[]
 function playdate.sound.playingSources() end
 
----@param effect playdate.sound.effect
+---@param effect SoundEffect
 ---@return nil
 function playdate.sound.removeEffect(effect) end
 
@@ -3643,436 +4572,111 @@ function playdate.sound.resetTime() end
 ---@return nil
 function playdate.sound.setOutputsActive(headphones, speaker) end
 
----@class playdate.sound.bitcrusher : playdate.sound.effect
+---@class playdate.sound.bitcrusher : SoundEffect
 
 
----@class playdate.sound.channel : table
+---@class playdate.sound.channel
 
 
----@class playdate.sound.controlsignal : playdate.sound.signal
----@field events _ControlSignalEvent
-
----@class playdate.sound.delayline : playdate.sound.effect
+---@class playdate.sound.controlsignal : Signal
 
 
----@class playdate.sound.delaylinetap : playdate.sound.source
+---@class playdate.sound.delayline : SoundEffect
 
 
----@class playdate.sound.effect : table
+---@class playdate.sound.delaylinetap : SoundSource
 
 
----@class playdate.sound.envelope : playdate.sound.signal
+---@class playdate.sound.effect
 
 
----@class playdate.sound.fileplayer : playdate.sound.source
+---@class playdate.sound.envelope : Signal
 
 
----@class playdate.sound.instrument : playdate.sound.source
+---@class playdate.sound.fileplayer : SoundSource
 
 
----@class playdate.sound.lfo : playdate.sound.signal
+---@class playdate.sound.instrument : SoundSource
 
 
----@class playdate.sound.onepolefilter : playdate.sound.effect
+---@class playdate.sound.lfo : Signal
 
 
----@class playdate.sound.overdrive : playdate.sound.effect
+---@class playdate.sound.micinput
 
 
----@class playdate.sound.ringmod : playdate.sound.effect
+---@class playdate.sound.onepolefilter : SoundEffect
 
 
----@class playdate.sound.sample : table
+---@class playdate.sound.overdrive : SoundEffect
 
 
----@class playdate.sound.sampleplayer : playdate.sound.source
+---@class playdate.sound.ringmod : SoundEffect
 
 
----@class playdate.sound.sequence : table
+---@class playdate.sound.sample
 
 
----@class playdate.sound.signal : table
+---@class playdate.sound.sampleplayer : SoundSource
 
 
----@class playdate.sound.source : table
+---@class playdate.sound.sequence
 
 
----@class playdate.sound.synth : playdate.sound.source
+---@class playdate.sound.signal
 
 
----@class playdate.sound.track : table
+---@class playdate.sound.source
 
 
----@class playdate.sound.twopolefilter : playdate.sound.effect
+---@class playdate.sound.synth : SoundSource
 
 
----@return playdate.sound.bitcrusher
+---@class playdate.sound.track
+
+
+---@class playdate.sound.track
+
+
+---@class playdate.sound.twopolefilter : SoundEffect
+
+
+---@return BitCrusher
 function playdate.sound.bitcrusher.new() end
 
----@param amt number
----@return nil
-function playdate.sound.bitcrusher:setAmount(amt) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.bitcrusher:setAmountMod(signal) end
-
----@param level number
----@return nil
-function playdate.sound.bitcrusher:setMix(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.bitcrusher:setMixMod(signal) end
-
----@param amt number
----@return nil
-function playdate.sound.bitcrusher:setUndersampling(amt) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.bitcrusher:setUndersamplingMod(signal) end
-
----@return playdate.sound.channel
+---@return Channel
 function playdate.sound.channel.new() end
 
----@param effect playdate.sound.effect
----@return nil
-function playdate.sound.channel:addEffect(effect) end
-
----@param source playdate.sound.source
----@return nil
-function playdate.sound.channel:addSource(source) end
-
----@return number
-function playdate.sound.channel:getVolume() end
-
----@return nil
-function playdate.sound.channel:remove() end
-
----@param effect playdate.sound.effect
----@return nil
-function playdate.sound.channel:removeEffect(effect) end
-
----@param source playdate.sound.source
----@return nil
-function playdate.sound.channel:removeSource(source) end
-
----@param pan number
----@return number
-function playdate.sound.channel:setPan(pan) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.channel:setPanMod(signal) end
-
----@param volume number
----@return nil
-function playdate.sound.channel:setVolume(volume) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.channel:setVolumeMod(signal) end
-
----@return playdate.sound.controlsignal
+---@return ControlSignal
 function playdate.sound.controlsignal.new() end
 
----@param event table
----@return nil
-function playdate.sound.controlsignal:addEvent(event) end
-
----@param step integer
----@param value number
----@param interpolate? boolean
----@return nil
-function playdate.sound.controlsignal:addEvent(step, value, interpolate) end
-
----@return nil
-function playdate.sound.controlsignal:clearEvents() end
-
----@return integer
-function playdate.sound.controlsignal:getControllerType() end
-
----@param number integer
----@return nil
-function playdate.sound.controlsignal:setControllerType(number) end
-
 ---@param length number
----@return playdate.sound.delayline
+---@return DelayLine
 function playdate.sound.delayline.new(length) end
-
----@param delay number
----@return nil
-function playdate.sound.delayline:addTap(delay) end
-
----@param level number
----@return nil
-function playdate.sound.delayline:setFeedback(level) end
-
----@param level number
----@return nil
-function playdate.sound.delayline:setMix(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.delayline:setMixMod(signal) end
-
----@return number
-function playdate.sound.delaylinetap:getVolume() end
-
----@param time number
----@return nil
-function playdate.sound.delaylinetap:setDelay(time) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.delaylinetap:setDelayMod(signal) end
-
----@param flag boolean
----@return nil
-function playdate.sound.delaylinetap:setFlipChannels(flag) end
-
----@param level number
----@return nil
-function playdate.sound.delaylinetap:setVolume(level) end
 
 ---@param attack? number
 ---@param decay? number
 ---@param sustain? number
 ---@param release? number
----@return playdate.sound.envelope
+---@return Envelope
 function playdate.sound.envelope.new(attack, decay, sustain, release) end
 
----@param attack number
----@return nil
-function playdate.sound.envelope:setAttack(attack) end
-
----@param amount number
----@return nil
-function playdate.sound.envelope:setCurvature(amount) end
-
----@param decay number
----@return nil
-function playdate.sound.envelope:setDecay(decay) end
-
----@param flag boolean
----@return nil
-function playdate.sound.envelope:setGlobal(flag) end
-
----@param flag boolean
----@return nil
-function playdate.sound.envelope:setLegato(flag) end
-
----@param offset number
----@return nil
-function playdate.sound.envelope:setOffset(offset) end
-
----@param scaling number
----@param start? number
----@param _end number
----@return nil
-function playdate.sound.envelope:setRateScaling(scaling, start, _end) end
-
----@param release number
----@return nil
-function playdate.sound.envelope:setRelease(release) end
-
----@param flag boolean
----@return nil
-function playdate.sound.envelope:setRetrigger(flag) end
-
----@param scale integer
----@return nil
-function playdate.sound.envelope:setScale(scale) end
-
----@param sustain number
----@return nil
-function playdate.sound.envelope:setSustain(sustain) end
-
----@param amount number
----@return nil
-function playdate.sound.envelope:setVelocitySensitivity(amount) end
-
----@param velocity number
----@param length? number
----@return nil
-function playdate.sound.envelope:trigger(velocity, length) end
-
 ---@param buffersize? number
----@return playdate.sound.fileplayer
+---@return FilePlayer
 function playdate.sound.fileplayer.new(buffersize) end
 
 ---@param path string
 ---@param buffersize? number
----@return playdate.sound.fileplayer
+---@return FilePlayer
 function playdate.sound.fileplayer.new(path, buffersize) end
 
----@return boolean
-function playdate.sound.fileplayer:didUnderrun() end
-
----@return number
-function playdate.sound.fileplayer:getLength() end
-
----@return number
-function playdate.sound.fileplayer:getOffset() end
-
----@return number
-function playdate.sound.fileplayer:getRate() end
-
----@return left_or_mono number
----@return right number
-function playdate.sound.fileplayer:getVolume() end
-
----@return boolean
-function playdate.sound.fileplayer:isPlaying() end
-
----@param path string
----@return nil
-function playdate.sound.fileplayer:load(path) end
-
----@return nil
-function playdate.sound.fileplayer:pause() end
-
----@param repeatCount? integer
----@return success boolean
----@return error string
-function playdate.sound.fileplayer:play(repeatCount) end
-
----@param seconds number
----@return nil
-function playdate.sound.fileplayer:setBufferSize(seconds) end
-
----@param func function
----@param arg? any
----@return nil
-function playdate.sound.fileplayer:setFinishCallback(func, arg) end
-
----@param callback function
----@param arg? any
----@return nil
-function playdate.sound.fileplayer:setLoopCallback(callback, arg) end
-
----@param start number
----@param _end number
----@param loopCallback? fun(arg?: any): nil
----@param arg? any
----@return nil
-function playdate.sound.fileplayer:setLoopRange(start, _end, loopCallback, arg) end
-
----@param seconds number
----@return nil
-function playdate.sound.fileplayer:setOffset(seconds) end
-
----@param rate integer
----@return nil
-function playdate.sound.fileplayer:setRate(rate) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.fileplayer:setRateMod(signal) end
-
----@param flag boolean
----@return nil
-function playdate.sound.fileplayer:setStopOnUnderrun(flag) end
-
----@param left number
----@param right? number
----@param fadeSeconds? number
----@param fadeCallback? fun(self: playdate.sound.fileplayer, arg?: any)
----@param arg? any
----@return nil
-function playdate.sound.fileplayer:setVolume(left, right, fadeSeconds, fadeCallback, arg) end
-
----@return nil
-function playdate.sound.fileplayer:stop() end
-
----@param synth? playdate.sound.synth
----@return playdate.sound.instrument
+---@param synth? Synth
+---@return Instrument
 function playdate.sound.instrument.new(synth) end
 
----@param v playdate.geometry.vector2D
----@param note? integer
----@param rangeend? integer
----@param transpose? integer
----@return nil
-function playdate.sound.instrument:addVoice(v, note, rangeend, transpose) end
-
----@return nil
-function playdate.sound.instrument:allNotesOff() end
-
----@return left_or_mono number
----@return right number
-function playdate.sound.instrument:getVolume() end
-
----@param note integer
----@param when? number
----@return nil
-function playdate.sound.instrument:noteOff(note, when) end
-
----@param note (number|string)
----@param vel? number
----@param length? number
----@param when? number
----@return nil
-function playdate.sound.instrument:playMIDINote(note, vel, length, when) end
-
----@param frequency number
----@param vel? number
----@param length? number
----@param when? number
----@return nil
-function playdate.sound.instrument:playNote(frequency, vel, length, when) end
-
----@param halfsteps number
----@return nil
-function playdate.sound.instrument:setTranspose(halfsteps) end
-
----@param left integer
----@param right? integer
----@return nil
-function playdate.sound.instrument:setVolume(left, right) end
-
 ---@param type? integer
----@return playdate.sound.lfo
+---@return LFO
 function playdate.sound.lfo.new(type) end
-
----@param note1 number
----@param ... number
----@return nil
-function playdate.sound.lfo:setArpeggio(note1, ...) end
-
----@param center number
----@return nil
-function playdate.sound.lfo:setCenter(center) end
-
----@param holdoff number
----@param ramp number
----@return nil
-function playdate.sound.lfo:setDelay(holdoff, ramp) end
-
----@param depth number
----@return nil
-function playdate.sound.lfo:setDepth(depth) end
-
----@param flag boolean
----@return nil
-function playdate.sound.lfo:setGlobal(flag) end
-
----@param phase number
----@return nil
-function playdate.sound.lfo:setPhase(phase) end
-
----@param rate number
----@return nil
-function playdate.sound.lfo:setRate(rate) end
-
----@param flag boolean
----@return nil
-function playdate.sound.lfo:setRetrigger(flag) end
-
----@param type integer
----@return nil
-function playdate.sound.lfo:setType(type) end
 
 ---@return number
 function playdate.sound.micinput.getLevel() end
@@ -4080,8 +4684,8 @@ function playdate.sound.micinput.getLevel() end
 ---@return string
 function playdate.sound.micinput.getSource() end
 
----@param buffer playdate.sound.sample
----@param completionCallback fun(sample: playdate.sound.sample): nil
+---@param buffer Sample
+---@param completionCallback fun(sample: Sample): nil
 ---@return nil
 function playdate.sound.micinput.recordToSample(buffer, completionCallback) end
 
@@ -4094,467 +4698,47 @@ function playdate.sound.micinput.stopListening() end
 ---@return nil
 function playdate.sound.micinput.stopRecording() end
 
----@return playdate.sound.onepolefilter
+---@return OnePoleFilter
 function playdate.sound.onepolefilter.new() end
 
----@param level number
----@return nil
-function playdate.sound.onepolefilter:setMix(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.onepolefilter:setMixMod(signal) end
-
----@param p number
----@return nil
-function playdate.sound.onepolefilter:setParameter(p) end
-
----@param m playdate.sound.signal
----@return nil
-function playdate.sound.onepolefilter:setParameterMod(m) end
-
----@return playdate.sound.overdrive
+---@return OverDrive
 function playdate.sound.overdrive.new() end
 
----@param level number
----@return nil
-function playdate.sound.overdrive:setGain(level) end
-
----@param level number
----@return nil
-function playdate.sound.overdrive:setLimit(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.overdrive:setLimitMod(signal) end
-
----@param level number
----@return nil
-function playdate.sound.overdrive:setMix(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.overdrive:setMixMod(signal) end
-
----@param level number
----@return nil
-function playdate.sound.overdrive:setOffset(level) end
-
----@param signal playdate.sound.signaly
----@return nil
-function playdate.sound.overdrive:setOffsetMod(signal) end
-
----@return playdate.sound.ringmod
+---@return RingMod
 function playdate.sound.ringmod.new() end
 
----@param f number
----@return nil
-function playdate.sound.ringmod:setFrequency(f) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.ringmod:setFrequencyMod(signal) end
-
----@param level number
----@return nil
-function playdate.sound.ringmod:setMix(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.ringmod:setMixMod(signal) end
-
 ---@param path string
----@return playdate.sound.sample
+---@return Sample
 function playdate.sound.sample.new(path) end
 
----@return integer
-function playdate.sound.sample:getFormat() end
-
----@return sample_seconds number
----@return buffer_size_seconds number
-function playdate.sound.sample:getLength() end
-
----@return integer
-function playdate.sound.sample:getSampleRate() end
-
----@param startOffset integer
----@param endOffset integer
----@return playdate.sound.sample
-function playdate.sound.sample:getSubsample(startOffset, endOffset) end
-
 ---@param path string
----@return boolean
-function playdate.sound.sample:load(path) end
-
----@param repeatCount? integer
----@param rate? integer
----@return nil
-function playdate.sound.sample:play(repeatCount, rate) end
-
----@param when number
----@param vol? number
----@param rightvol? number
----@param rate? integer
----@return nil
-function playdate.sound.sample:playAt(when, vol, rightvol, rate) end
-
----@param filename string
----@return nil
-function playdate.sound.sample:save(filename) end
-
----@param path string
----@return playdate.sound.sampleplayer
+---@return SamplePlayer
 function playdate.sound.sampleplayer.new(path) end
 
----@param sample playdate.sound.sample
----@return playdate.sound.sampleplayer
+---@param sample Sample
+---@return SamplePlayer
 function playdate.sound.sampleplayer.new(sample) end
 
----@return playdate.sound.sampleplayer
-function playdate.sound.sampleplayer:copy() end
-
----@return number
-function playdate.sound.sampleplayer:getLength() end
-
----@return number
-function playdate.sound.sampleplayer:getOffset() end
-
----@return number
-function playdate.sound.sampleplayer:getRate() end
-
----@return playdate.sound.sample
-function playdate.sound.sampleplayer:getSample() end
-
----@return left_or_mono number
----@return right number
-function playdate.sound.sampleplayer:getVolume() end
-
----@return boolean
-function playdate.sound.sampleplayer:isPlaying() end
-
----@param repeatCount? integer
----@param rate? integer
----@return nil
-function playdate.sound.sampleplayer:play(repeatCount, rate) end
-
----@param when number
----@param vol? number
----@param rightvol? number
----@param rate? integer
----@return nil
-function playdate.sound.sampleplayer:playAt(when, vol, rightvol, rate) end
-
----@param func function
----@param arg? any
----@return nil
-function playdate.sound.sampleplayer:setFinishCallback(func, arg) end
-
----@param callback function
----@param arg? any
----@return nil
-function playdate.sound.sampleplayer:setLoopCallback(callback, arg) end
-
----@param seconds number
----@return nil
-function playdate.sound.sampleplayer:setOffset(seconds) end
-
----@param flag boolean
----@return nil
-function playdate.sound.sampleplayer:setPaused(flag) end
-
----@param start integer
----@param _end integer
----@return nil
-function playdate.sound.sampleplayer:setPlayRange(start, _end) end
-
----@param rate integer
----@return nil
-function playdate.sound.sampleplayer:setRate(rate) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.sampleplayer:setRateMod(signal) end
-
----@param sample playdate.sound.sample
----@return nil
-function playdate.sound.sampleplayer:setSample(sample) end
-
----@param left integer
----@param right? integer
----@return nil
-function playdate.sound.sampleplayer:setVolume(left, right) end
-
----@return nil
-function playdate.sound.sampleplayer:stop() end
-
 ---@param midi_path string
----@return playdate.sound.sequence
+---@return Sequence
 function playdate.sound.sequence.new(midi_path) end
 
----@param track? playdate.sound.track
----@return nil
-function playdate.sound.sequence:addTrack(track) end
-
----@return nil
-function playdate.sound.sequence:allNotesOff() end
-
----@return number
-function playdate.sound.sequence:getCurrentStep() end
-
----@return number
-function playdate.sound.sequence:getLength() end
-
----@return number
-function playdate.sound.sequence:getTempo() end
-
----@param n integer
----@return playdate.sound.track
-function playdate.sound.sequence:getTrackAtIndex(n) end
-
----@return integer
-function playdate.sound.sequence:getTrackCount() end
-
----@param step integer
----@param play? boolean
----@return nil
-function playdate.sound.sequence:goToStep(step, play) end
-
----@return boolean
-function playdate.sound.sequence:isPlaying() end
-
----@param finishCallback? fun(self: playdate.sound.sequence): nil
----@return nil
-function playdate.sound.sequence:play(finishCallback) end
-
----@param loopCount integer
----@return nil
-function playdate.sound.sequence:setLoops(loopCount) end
-
----@param startStep integer
----@param endStep integer
----@param loopCount? integer
----@return nil
-function playdate.sound.sequence:setLoops(startStep, endStep, loopCount) end
-
----@param stepsPerSecond number
----@return nil
-function playdate.sound.sequence:setTempo(stepsPerSecond) end
-
----@param n integer
----@param track playdate.sound.track
----@return nil
-function playdate.sound.sequence:setTrackAtIndex(n, track) end
-
----@return nil
-function playdate.sound.sequence:stop() end
-
----@param offset number
----@return nil
-function playdate.sound.signal:setOffset(offset) end
-
----@param scale integer
----@return nil
-function playdate.sound.signal:setScale(scale) end
-
----@param sample playdate.sound.sample
+---@param sample Sample
 ---@param sustainStart? number
 ---@param sustainEnd? number
----@return playdate.sound.synth
+---@return Synth
 function playdate.sound.synth.new(sample, sustainStart, sustainEnd) end
 
 ---@param waveform? integer
----@return playdate.sound.synth
+---@return Synth
 function playdate.sound.synth.new(waveform) end
-
----@return playdate.sound.synth
-function playdate.sound.synth:copy() end
-
----@return playdate.sound.envelope
-function playdate.sound.synth:getEnvelope() end
-
----@return left_or_mono number
----@return right number
-function playdate.sound.synth:getVolume() end
-
----@return boolean
-function playdate.sound.synth:isPlaying() end
-
----@return nil
-function playdate.sound.synth:noteOff() end
-
----@param note (number|string)
----@param volume? number
----@param length? number
----@param when? number
----@return boolean
-function playdate.sound.synth:playMIDINote(note, volume, length, when) end
-
----@param pitch (number|string)
----@param volume? number
----@param length? number
----@param when? number
----@return boolean
-function playdate.sound.synth:playNote(pitch, volume, length, when) end
-
----@param attack number
----@param decay number
----@param sustain number
----@param release number
----@param curvature number
----@return nil
-function playdate.sound.synth:setADSR(attack, decay, sustain, release, curvature) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.synth:setAmplitudeMod(signal) end
-
----@param time number
----@return nil
-function playdate.sound.synth:setAttack(time) end
-
----@param time number
----@return nil
-function playdate.sound.synth:setDecay(time) end
-
----@param amount number
----@return nil
-function playdate.sound.synth:setEnvelopeCurvature(amount) end
-
----@param _function function
----@return nil
-function playdate.sound.synth:setFinishCallback(_function) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.synth:setFrequencyMod(signal) end
-
----@param flag boolean
----@return nil
-function playdate.sound.synth:setLegato(flag) end
-
----@param parameter integer
----@param value number
----@return nil
-function playdate.sound.synth:setParameter(parameter, value) end
-
----@param parameter integer
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.synth:setParameterMod(parameter, signal) end
-
----@param time number
----@return nil
-function playdate.sound.synth:setRelease(time) end
-
----@param level number
----@return nil
-function playdate.sound.synth:setSustain(level) end
-
----@param left integer
----@param right? integer
----@return nil
-function playdate.sound.synth:setVolume(left, right) end
-
----@param waveform integer
----@return nil
-function playdate.sound.synth:setWaveform(waveform) end
-
----@return nil
-function playdate.sound.synth:stop() end
 
 ---@return playdate.sound.track
 function playdate.sound.track.new() end
 
----@param s playdate.sound.controlsignal
----@return nil
-function playdate.sound.track:addControlSignal(s) end
-
----@param step integer
----@param note (string|integer)
----@param length number
----@param velocity? number
----@return nil
-function playdate.sound.track:addNote(step, note, length, velocity) end
-
----@param table (_SoundTrackNoteIn|_SoundTrackNote)
----@return nil
-function playdate.sound.track:addNote(table) end
-
----@return nil
-function playdate.sound.track:clearNotes() end
-
----@return playdate.sound.controlsignal[]
-function playdate.sound.track:getControlSignals() end
-
----@return playdate.sound.instrument
-function playdate.sound.track:getInstrument() end
-
----@return integer
-function playdate.sound.track:getLength() end
-
----@param step? integer
----@param endstep? integer
----@return _SoundTrackNote[]
-function playdate.sound.track:getNotes(step, endstep) end
-
----@return integer
-function playdate.sound.track:getNotesActive() end
-
----@return integer
-function playdate.sound.track:getPolyphony() end
-
----@param step integer
----@param note integer
----@return nil
-function playdate.sound.track:removeNote(step, note) end
-
----@param inst playdate.sound.instrument
----@return nil
-function playdate.sound.track:setInstrument(inst) end
-
----@param flag boolean
----@return nil
-function playdate.sound.track:setMuted(flag) end
-
----@param list table[]
----@return nil
-function playdate.sound.track:setNotes(list) end
-
 ---@param type integer
----@return playdate.sound.twopolefilter
+---@return TwoPoleFilter
 function playdate.sound.twopolefilter.new(type) end
-
----@param f number
----@return nil
-function playdate.sound.twopolefilter:setFrequency(f) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.twopolefilter:setFrequencyMod(signal) end
-
----@param g number
----@return nil
-function playdate.sound.twopolefilter:setGain(g) end
-
----@param level number
----@return nil
-function playdate.sound.twopolefilter:setMix(level) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.twopolefilter:setMixMod(signal) end
-
----@param r playdate.geometry.rect
----@return nil
-function playdate.sound.twopolefilter:setResonance(r) end
-
----@param signal playdate.sound.signal
----@return nil
-function playdate.sound.twopolefilter:setResonanceMod(signal) end
-
----@param type integer
----@return nil
-function playdate.sound.twopolefilter:setType(type) end
 
 ---@param length number
 ---@return string
@@ -4572,32 +4756,32 @@ function playdate.string.trimTrailingWhitespace(string) end
 ---@return string
 function playdate.string.trimWhitespace(string) end
 
----@return nil
+---@return Timer[]
 function playdate.timer.allTimers() end
 
 ---@param callback function
 ---@param ... any
----@return nil
+---@return Timer
 function playdate.timer.keyRepeatTimer(callback, ...) end
 
 ---@param delayAfterInitialFiring integer
 ---@param delayAfterSecondFiring integer
 ---@param callback function
 ---@param ... any
----@return nil
+---@return Timer
 function playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring, delayAfterSecondFiring, callback, ...) end
 
 ---@param duration integer
 ---@param callback function
 ---@param ... any
----@return playdate.timer
+---@return Timer
 function playdate.timer.new(duration, callback, ...) end
 
 ---@param duration integer
 ---@param startValue? number
 ---@param endValue? number
 ---@param easingFunction? function
----@return nil
+---@return Timer
 function playdate.timer.new(duration, startValue, endValue, easingFunction) end
 
 ---@param delay integer
@@ -4613,32 +4797,11 @@ function playdate.timer.updateCallback(...) end
 ---@return nil
 function playdate.timer.updateTimers() end
 
----@return nil
-function playdate.timer:pause() end
-
----@return nil
-function playdate.timer:remove() end
-
----@return nil
-function playdate.timer:reset() end
-
----@return nil
-function playdate.timer:start() end
-
 ---@class playdate.ui.crankIndicator
----@class playdate.ui.gridview
----@class playdate.ui.gridview : table
----@field needsDisplay boolean
----@field backgroundImage (playdate.graphics.image|playdate.graphics.nineSlice)
----@field isScrolling boolean
----@field scrollEasingFunction fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number
----@field easingAmplitude? number
----@field easingPeriod? number
----@field changeRowOnColumnWrap boolean
----@field scrollCellsToCenter boolean
+---@field clockwise boolean
 
----@type boolean
-playdate.ui.crankIndicator.clockwise = {}
+---@class playdate.ui.gridview
+
 
 ---@return nil
 function playdate.ui.crankIndicator:start() end
@@ -4648,205 +4811,8 @@ function playdate.ui.crankIndicator:update() end
 
 ---@param cellWidth integer
 ---@param cellHeight integer
----@return playdate.ui.gridview
+---@return GridView
 function playdate.ui.gridview.new(cellWidth, cellHeight) end
-
----@param section integer
----@param row integer
----@return nil
-function playdate.ui.gridview:addHorizontalDividerAbove(section, row) end
-
----@param section integer
----@param row integer
----@param column integer
----@param selected boolean
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.ui.gridview:drawCell(section, row, column, selected, x, y, width, height) end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.ui.gridview:drawHorizontalDivider(x, y, width, height) end
-
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.ui.gridview:drawInRect(x, y, width, height) end
-
----@param section integer
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@return nil
-function playdate.ui.gridview:drawSectionHeader(section, x, y, width, height) end
-
----@param section integer
----@param row integer
----@param column integer
----@param gridWidth? integer
----@return x integer
----@return y integer
----@return width integer
----@return height integer
-function playdate.ui.gridview:getCellBounds(section, row, column, gridWidth) end
-
----@return integer
-function playdate.ui.gridview:getHorizontalDividerHeight() end
-
----@return integer
-function playdate.ui.gridview:getNumberOfColumns() end
-
----@param section integer
----@return integer
-function playdate.ui.gridview:getNumberOfRowsInSection(section) end
-
----@return integer
-function playdate.ui.gridview:getNumberOfSections() end
-
----@return x integer
----@return y integer
-function playdate.ui.gridview:getScrollPosition() end
-
----@return integer
-function playdate.ui.gridview:getSectionHeaderHeight() end
-
----@return integer
-function playdate.ui.gridview:getSelectedRow() end
-
----@return section integer
----@return row integer
----@return column integer
-function playdate.ui.gridview:getSelection() end
-
----@return nil
-function playdate.ui.gridview:removeHorizontalDividers() end
-
----@param section integer
----@param row integer
----@param column integer
----@param animated? boolean
----@return nil
-function playdate.ui.gridview:scrollCellToCenter(section, row, column, animated) end
-
----@param section integer
----@param row integer
----@param column integer
----@param animated? boolean
----@return nil
-function playdate.ui.gridview:scrollToCell(section, row, column, animated) end
-
----@param row integer
----@param animated? boolean
----@return nil
-function playdate.ui.gridview:scrollToRow(row, animated) end
-
----@param animated? boolean
----@return nil
-function playdate.ui.gridview:scrollToTop(animated) end
-
----@param wrapSelection boolean
----@param scrollToSelection? boolean
----@param animate? boolean
----@return nil
-function playdate.ui.gridview:selectNextColumn(wrapSelection, scrollToSelection, animate) end
-
----@param wrapSelection boolean
----@param scrollToSelection? boolean
----@param animate? boolean
----@return nil
-function playdate.ui.gridview:selectNextRow(wrapSelection, scrollToSelection, animate) end
-
----@param wrapSelection boolean
----@param scrollToSelection? boolean
----@param animate? boolean
----@return nil
-function playdate.ui.gridview:selectPreviousColumn(wrapSelection, scrollToSelection, animate) end
-
----@param wrapSelection boolean
----@param scrollToSelection? boolean
----@param animate? boolean
----@return nil
-function playdate.ui.gridview:selectPreviousRow(wrapSelection, scrollToSelection, animate) end
-
----@param left integer
----@param right integer
----@param top integer
----@param bottom integer
----@return nil
-function playdate.ui.gridview:setCellPadding(left, right, top, bottom) end
-
----@param cellWidth integer
----@param cellHeight integer
----@return nil
-function playdate.ui.gridview:setCellSize(cellWidth, cellHeight) end
-
----@param left integer
----@param right integer
----@param top integer
----@param bottom integer
----@return nil
-function playdate.ui.gridview:setContentInset(left, right, top, bottom) end
-
----@param height integer
----@return nil
-function playdate.ui.gridview:setHorizontalDividerHeight(height) end
-
----@param num integer
----@return nil
-function playdate.ui.gridview:setNumberOfColumns(num) end
-
----@param ... integer
----@return nil
-function playdate.ui.gridview:setNumberOfRows(...) end
-
----@param section integer
----@param num integer
----@return nil
-function playdate.ui.gridview:setNumberOfRowsInSection(section, num) end
-
----@param num integer
----@return nil
-function playdate.ui.gridview:setNumberOfSections(num) end
-
----@param ms integer
----@return nil
-function playdate.ui.gridview:setScrollDuration(ms) end
-
----@param x integer
----@param y integer
----@param animated? boolean
----@return nil
-function playdate.ui.gridview:setScrollPosition(x, y, animated) end
-
----@param height integer
----@return nil
-function playdate.ui.gridview:setSectionHeaderHeight(height) end
-
----@param left integer
----@param right integer
----@param top integer
----@param bottom integer
----@return nil
-function playdate.ui.gridview:setSectionHeaderPadding(left, right, top, bottom) end
-
----@param row integer
----@return nil
-function playdate.ui.gridview:setSelectedRow(row) end
-
----@param section integer
----@param row integer
----@param column integer
----@return nil
-function playdate.ui.gridview:setSelection(section, row, column) end
 
 ---@param arrayCount integer
 ---@param hashCount integer
@@ -4864,10 +4830,11 @@ function table.getsize(table) end
 
 ---@param table table
 ---@param element any
----@return integer
+---@return integer?
 function table.indexOfElement(table, element) end
 
 ---@param source table
 ---@param destination? table
 ---@return table
 function table.shallowcopy(source, destination) end
+
