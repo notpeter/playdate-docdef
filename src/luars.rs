@@ -9,7 +9,7 @@ pub struct LuarsParser;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
-    Object(&'a str, &'a str, Vec<(&'a str, &'a str)>),
+    Table(&'a str, &'a str, Vec<(&'a str, &'a str)>),
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
 
@@ -24,7 +24,7 @@ impl LuarsStatement<'_> {
 
     fn id(&self) -> LuarsSortKey {
         let (name, id) = match self {
-            LuarsStatement::Object(name, _, _) => (name, 4),
+            LuarsStatement::Table(name, _, _) => (name, 4),
             LuarsStatement::Function(name, _, _) => {
                 if name.contains(":") {
                     (name, 5) // instance methods
@@ -59,7 +59,7 @@ impl Ord for LuarsStatement<'_> {
 impl Display for LuarsStatement<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            LuarsStatement::Object(name, parent, tablekeys) => {
+            LuarsStatement::Table(name, parent, tablekeys) => {
                 let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
                 write!(f, "---@class {} : {}\n{}\n", name, parent, fields)
             }
@@ -98,7 +98,7 @@ pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
             Rule::Identifier => {
                 obj_name = field.as_str();
             }
-            Rule::TypeLua => {
+            Rule::CaptureType => {
                 obj_type = field.as_str();
             }
             Rule::TableConstants => {
@@ -106,7 +106,6 @@ pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
                 while field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::TableKey {
                     let field_name: &str = field.next().unwrap().as_str();
                     let field_type: &str = field.next().unwrap().as_str();
-                    //     println!("{:#?}", field);
                     obj_proto.push((field_name, field_type));
                 }
             }
@@ -116,9 +115,55 @@ pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
             }
         }
     }
-    LuarsStatement::Object(obj_name, obj_type, obj_proto)
+    LuarsStatement::Table(obj_name, obj_type, obj_proto)
 }
 
+pub fn parse_function(pair: Pair<Rule>) -> LuarsStatement {
+    let iterator = pair.into_inner();
+    let mut name: &str = "INVALID";
+    let mut params: Vec<(&str, &str)> = Vec::new();
+    let mut returns: Vec<(&str, &str)> = Vec::new();
+    for chunk in iterator {
+        match chunk.as_rule() {
+            Rule::FunctionName => {
+                name = chunk.as_str();
+            }
+            Rule::FunctionalParameters => {
+                let mut field = chunk.into_inner();
+                while field.peek().is_some() {
+                    let field_name: &str = field.next().unwrap().as_str();
+                    let field_type: &str = field.next().unwrap().as_str();
+                    params.push((field_name, field_type));
+                }
+            }
+            Rule::Return => {
+                let mut field = chunk.into_inner();
+                match field.peek().unwrap().as_rule() {
+                    Rule::OptionalType => {
+                        returns.push(("", field.next().unwrap().as_str()));
+                    }
+                    Rule::FunctionalParameters => {
+                        let mut field = field.next().unwrap().into_inner();
+                        while field.peek().is_some() {
+                            let field_name: &str = field.next().unwrap().as_str();
+                            let field_type: &str = field.next().unwrap().as_str();
+                            returns.push((field_name, field_type));
+                        }
+                    }
+                    _ => {
+                        eprintln!("Rule: {:?}", field.peek());
+                        unreachable!()
+                    }
+                }
+            }
+            _ => {
+                eprintln!("Rule: {:?}", chunk.as_rule());
+                unreachable!()
+            }
+        }
+    }
+    LuarsStatement::Function(name, params, returns)
+}
 pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
     let document = LuarsParser::parse(Rule::Document, &unparsed_file)
     .expect("unsuccessful parse")
@@ -128,56 +173,11 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
 
     for line in document.into_inner() {
         let f = match line.as_rule() {
-            Rule::Object => {
-                let mut iterator = line.into_inner();
-                let obj_name: &str = iterator.next().unwrap().as_str();
-                let obj_type: &str = iterator.next().unwrap().as_str();
-                let mut obj_proto: Vec<(&str, &str)> = Vec::new();
-                if iterator.peek().is_some() && iterator.peek().unwrap().as_rule() == Rule::TableConstants {
-                    let mut field = iterator.next().unwrap().into_inner();
-                    while field.peek().is_some() && field.peek().unwrap().as_rule() == Rule::TableKey {
-                        let field_name: &str = field.next().unwrap().as_str();
-                        let field_type: &str = field.next().unwrap().as_str();
-                        //     println!("{:#?}", field);
-                        obj_proto.push((field_name, field_type));
-                    }
-                }
-                // println!("{} : {} = {:?}", obj_name, obj_type, obj_proto);
-                LuarsStatement::Object(obj_name, obj_type, obj_proto)
+            Rule::Table => {
+                parse_tbl(line)
             }
             Rule::Function => {
-                let mut iterator = line.into_inner();
-                let func_name: &str = iterator.next().unwrap().as_str();
-                let mut func_params: Vec<(&str, &str)> = Vec::new();
-                if iterator.peek().unwrap().as_rule() != Rule::Return {
-                    let func_params_iterator = iterator.next().unwrap().into_inner();
-                    for param in func_params_iterator {
-                        let mut param_iterator = param.into_inner();
-                        let param_name: &str = param_iterator.next().unwrap().as_str();
-                        let param_type: &str = param_iterator.next().unwrap().as_str();
-                        func_params.push((param_name, param_type));
-                    }
-                }
-                let mut func_returns: Vec<(&str, &str)> = Vec::new();
-                let ret = iterator.next().unwrap();
-                if ret.as_rule() == Rule::Return {
-                    let ret_content = ret.into_inner().next().unwrap();
-                    if ret_content.as_rule() == Rule::TypeLua {
-                        func_returns.push(("", ret_content.as_str()));
-                    } else if ret_content.as_rule() == Rule::FunctionalParameters {
-                        let func_params_iterator = ret_content.into_inner();
-                        for param in func_params_iterator {
-                            let mut param_iterator = param.into_inner();
-                            let param_name: &str = param_iterator.next().unwrap().as_str();
-                            let param_type: &str = param_iterator.next().unwrap().as_str();
-                            func_returns.push((param_name, param_type));
-                        }
-                    } else {
-                        eprintln!("Rule: {:?}", ret_content.as_rule());
-                        unreachable!()
-                    }
-                }
-                LuarsStatement::Function(func_name, func_params, func_returns)
+                parse_function(line)
             }
             _ => {
                 eprintln!("Rule: {:?}", line.as_rule());
@@ -193,30 +193,75 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
     #[test]
     fn test_tbl_simple() {
-        let document = LuarsParser::parse(Rule::Object, "tbl json;\n")
+        let document = LuarsParser::parse(Rule::Table, "tbl json;\n")
             .expect("unsuccessful parse")
             .next().unwrap();
-        assert_eq!(parse_tbl(document), LuarsStatement::Object("json", "", Vec::new()));
+        assert_eq!(parse_tbl(document), LuarsStatement::Table("json", "", Vec::new()));
     }
     #[test]
     fn tbl_type() {
-        let document = LuarsParser::parse(Rule::Object, "tbl File: playdate.file.file;")
+        let document = LuarsParser::parse(Rule::Table, "tbl File: playdate.file.file;")
             .expect("unsuccessful parse")
             .next().unwrap();
-        assert_eq!(parse_tbl(document), LuarsStatement::Object("File", "playdate.file.file", Vec::new()));
+        assert_eq!(parse_tbl(document), LuarsStatement::Table("File", "playdate.file.file", Vec::new()));
     }
     #[test]
     fn tbl_literal() {
         let document = LuarsParser::parse(
-            Rule::Object, "tbl Size: playdate.geometry.size = { width: number, height: number, };"
+            Rule::Table, "tbl Size: playdate.geometry.size = { width: number, height: number, };"
         ).expect("unsuccessful parse").next().unwrap();
-        assert_eq!(parse_tbl(document), LuarsStatement::Object("Size", "playdate.geometry.size", vec![
+        assert_eq!(parse_tbl(document), LuarsStatement::Table("Size", "playdate.geometry.size", vec![
             ("width", "number"),
             ("height", "number"),
         ]));
+    }
+    #[test]
+    fn playdate_grammar() {
+        let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
+        let playdate_luars = parse_document(&unparsed_file);
+        assert_eq!(playdate_luars.len(), unparsed_file.matches(";").count());
+    }
+    #[test]
+    fn funcs() {
+        let document = LuarsParser::parse(Rule::Function, "fun where(): nil;")
+            .expect("unsuccessful parse").next().unwrap();
+        assert_eq!(
+            parse_function(document),
+            LuarsStatement::Function("where", Vec::new(), vec![("", "nil"),]),
+        )
+    }
+    #[test]
+    fn funcs2() {
+        let document = LuarsParser::parse(Rule::Function, "fun playdate.timer.new(duration: integer, callback: function, ...?: any): Timer;")
+            .expect("unsuccessful parse").next().unwrap();
+        assert_eq!(
+            parse_function(document),
+            LuarsStatement::Function(
+                "playdate.timer.new",
+                vec![("duration", "integer"), ("callback", "function"), ("...?", "any"),],
+                vec![("", "Timer"),]
+            ),
+        )
+    }
+    #[test]
+    fn funcs3() {
+        let document = LuarsParser::parse(
+            Rule::Function,
+            "fun GridView:getScrollPosition(): (x: integer, y: integer);"
+        ).expect("bad parse").next().unwrap();
+        assert_eq!(
+            parse_function(document),
+            LuarsStatement::Function(
+                "GridView:getScrollPosition",
+                vec![],
+                vec![("x", "integer"), ("y", "integer"),]
+            ),
+        )
     }
 }

@@ -10,11 +10,11 @@ Document = { Statement* }
 Statement = _{
     (
         WHITE_LINE
-        | ((Function | Object) ~ ";" ~ W ~ "\n"?)
+        | ((Function | Table) ~ ";" ~ W ~ "\n"?)
     )
 }
 Fun = _{ "fun " }
-Obj = _{ "tbl " }
+Tbl = _{ "tbl " }
 
 Function = {
     Fun ~ W
@@ -31,14 +31,15 @@ TableConstants = {
 }
 Return = {
     (
-        (":" ~ W ~ TypeLua ~ W)
+        (":" ~ W ~ OptionalType ~ W)
         | (":" ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen ~ W)
     )
     ~ Optional?
 }
-Object = {
-    Obj ~ W ~ Identifier ~ W
-    ~ (":" ~ W ~ TypeLua ~ W)?
+OptionalType = { TypeLua ~ Optional? }
+Table = {
+    Tbl ~ W ~ Identifier ~ W
+    ~ (":" ~ W ~ CaptureType ~ W)?
     ~ ("=" ~ W ~ "{" ~ W ~ TableConstants? ~ W ~ "}" ~ W)?
 }
 FunctionName = {
@@ -47,7 +48,7 @@ FunctionName = {
 }
 
 FunctionalParameters = {
-    VariableParameter
+    (VariableParameter ~ W ~ ":" ~ W ~ OptionalType)
     | ((FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?)
 }
 
@@ -55,17 +56,17 @@ TableKey = !{
     ( DotDotDot | QuotedString | LuaIdentifier) ~ Optional?
 	| (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
 }
-DotDotDot = { "..." }
+DotDotDot = _{ "..." }
 // these optionals and ... are overly friendly
 // foo(bar?: integer): (baz:integer?, boop:string?)
-FunctionalParameter  = { ParameterIdentifier ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
+FunctionalParameter  = _{ ParameterIdentifier ~ W ~ ":" ~ W ~ OptionalType}
 ParameterIdentifier = { ("..." | LuaIdentifier) ~ Optional? }
-VariableParameter = { DotDotDot ~ Optional? ~ W ~ ":" ~ W ~ TypeLua ~ Optional?}
+VariableParameter = { DotDotDot ~ Optional? }
 
 oParen = _{ "(" }
 cParen = _{ ")" }
 
-Optional = { "?" }
+Optional = _{ "?" }
 Identifier = @{
     LuaIdentifier ~ ("." ~ LuaIdentifier)*
 }
@@ -73,7 +74,8 @@ LuaIdentifier = _{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
 
-TypeLua = @{
+CaptureType = { TypeLua }
+TypeLua = _{
     LT
     | "(" ~ W ~ LT ~ W ~ ("|" ~ W ~ LT ~ W)+ ~ ")"
 }
