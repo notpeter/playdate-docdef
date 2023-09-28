@@ -61,8 +61,12 @@ impl Display for LuarsStatement<'_> {
         match self {
             LuarsStatement::Table(name, parent, tablekeys) => {
                 let fields = &tablekeys.iter().map(|(k, v)| format!("---@field {} {}", k, v)).collect::<Vec<String>>().join("\n");
-                if parent.to_string() == "" {
+                if parent.to_string() == "" && fields.len() == 0 {
+                    write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
+                } else if parent.to_string() == "" {
                     write!(f, "---@class {name}\n{fields}\n{name} = {{}}\n", name=name, fields=fields)
+                } else if fields.len() == 0 {
+                    write!(f, "---@class {name} : {parent}\n{name} = {{}}\n", name=name, parent=parent)
                 } else {
                     write!(f, "---@class {name} : {parent}\n{fields}\n{name} = {{}}\n", name=name, parent=parent, fields=fields)
                 }

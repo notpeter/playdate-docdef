@@ -1,5 +1,6 @@
 ---@meta
 --- This file contains function stubs for autocompletion. DO NOT include it in your game.
+
 ---@param name string
 ---@return Class
 function class(name) end
@@ -21,7 +22,6 @@ function sample(name, _function) end
 function where() end
 
 ---@class AffineTransform : playdate.geometry.affineTransform
-
 AffineTransform = {}
 
 ---@class AnimationLoop : playdate.graphics.animation.loop
@@ -54,7 +54,6 @@ Animator = {}
 Arc = {}
 
 ---@class BitCrusher : playdate.sound.bitcrusher
-
 BitCrusher = {}
 
 ---@class Blinker : playdate.graphics.animation.blinker
@@ -69,11 +68,9 @@ BitCrusher = {}
 Blinker = {}
 
 ---@class Channel : playdate.sound.channel
-
 Channel = {}
 
 ---@class Class
-
 Class = {}
 
 ---@class ControlSignal : playdate.sound.controlsignal
@@ -92,27 +89,21 @@ ControlSignal = {}
 DateTime = {}
 
 ---@class DelayLine : playdate.sound.delayline
-
 DelayLine = {}
 
 ---@class DelayLineTap : playdate.sound.delaylinetap
-
 DelayLineTap = {}
 
 ---@class Envelope : playdate.sound.envelope
-
 Envelope = {}
 
 ---@class File : playdate.file.file
-
 File = {}
 
 ---@class FilePlayer : playdate.sound.fileplayer
-
 FilePlayer = {}
 
 ---@class Font : playdate.graphics.font
-
 Font = {}
 
 ---@class FrameTimer : playdate.frameTimer
@@ -138,7 +129,6 @@ GridView = {}
 Image = {}
 
 ---@class ImageTable : playdate.graphics.imagetable
-
 ImageTable = {}
 
 ---@class InputHandler
@@ -153,11 +143,9 @@ ImageTable = {}
 InputHandler = {}
 
 ---@class Instrument : playdate.sound.instrument
-
 Instrument = {}
 
 ---@class LFO : playdate.sound.lfo
-
 LFO = {}
 
 ---@class LineSegment : playdate.geometry.lineSegment
@@ -168,7 +156,6 @@ LFO = {}
 LineSegment = {}
 
 ---@class Menu : playdate.menu
-
 Menu = {}
 
 ---@class MenuItem : playdate.menu.item
@@ -207,15 +194,12 @@ ModTime = {}
 NineSlice = {}
 
 ---@class OnePoleFilter : playdate.sound.onepolefilter
-
 OnePoleFilter = {}
 
 ---@class OverDrive : playdate.sound.overdrive
-
 OverDrive = {}
 
 ---@class PathFinderGraph : playdate.pathfinder.graph
-
 PathFinderGraph = {}
 
 ---@class PathFinderNode : playdate.pathfinder.node
@@ -230,7 +214,6 @@ PathFinderNode = {}
 Point = {}
 
 ---@class Polygon : playdate.geometry.polygon
-
 Polygon = {}
 
 ---@class PowerStatus
@@ -252,23 +235,18 @@ PowerStatus = {}
 Rect = {}
 
 ---@class RingMod : playdate.sound.ringmod
-
 RingMod = {}
 
 ---@class Sample : playdate.sound.sample
-
 Sample = {}
 
 ---@class SamplePlayer : playdate.sound.sampleplayer
-
 SamplePlayer = {}
 
 ---@class Sequence : playdate.sound.sequence
-
 Sequence = {}
 
 ---@class Signal : playdate.sound.signal
-
 Signal = {}
 
 ---@class Size : playdate.geometry.size
@@ -283,11 +261,9 @@ Size = {}
 SoundControlEvent = {}
 
 ---@class SoundEffect : playdate.sound.effect
-
 SoundEffect = {}
 
 ---@class SoundSource
-
 SoundSource = {}
 
 ---@class SoundTrackNote : table
@@ -334,7 +310,6 @@ SpriteCollisionData = {}
 SpriteCollisionInfo = {}
 
 ---@class Synth : playdate.sound.synth
-
 Synth = {}
 
 ---@class SystemInfo
@@ -351,7 +326,6 @@ SystemInfo = {}
 SystemStats = {}
 
 ---@class TileMap : playdate.graphics.tilemap
-
 TileMap = {}
 
 ---@class Timer : playdate.timer
@@ -366,11 +340,9 @@ TileMap = {}
 Timer = {}
 
 ---@class Track : playdate.sound.track
-
 Track = {}
 
 ---@class TwoPoleFilter : playdate.sound.twopolefilter
-
 TwoPoleFilter = {}
 
 ---@class Vector2D : playdate.geometry.vector2D
@@ -379,11 +351,9 @@ TwoPoleFilter = {}
 Vector2D = {}
 
 ---@class Video : playdate.graphics.video
-
 Video = {}
 
 ---@class json
-
 json = {}
 
 ---@class playdate
@@ -393,7 +363,6 @@ json = {}
 playdate = {}
 
 ---@class table
-
 table = {}
 
 ---@param p Point
@@ -2850,15 +2819,12 @@ function playdate.update() end
 function playdate.wait(milliseconds) end
 
 ---@class playdate.datastore
-
 playdate.datastore = {}
 
 ---@class playdate.display
-
 playdate.display = {}
 
 ---@class playdate.easingFunctions
-
 playdate.easingFunctions = {}
 
 ---@class playdate.file
@@ -2866,7 +2832,6 @@ playdate.easingFunctions = {}
 playdate.file = {}
 
 ---@class playdate.frameTimer
-
 playdate.frameTimer = {}
 
 ---@class playdate.geometry
@@ -2878,7 +2843,6 @@ playdate.geometry = {}
 playdate.graphics = {}
 
 ---@class playdate.inputHandlers
-
 playdate.inputHandlers = {}
 
 ---@class playdate.keyboard
@@ -2886,19 +2850,15 @@ playdate.inputHandlers = {}
 playdate.keyboard = {}
 
 ---@class playdate.math
-
 playdate.math = {}
 
 ---@class playdate.menu
-
 playdate.menu = {}
 
 ---@class playdate.pathfinder
-
 playdate.pathfinder = {}
 
 ---@class playdate.simulator
-
 playdate.simulator = {}
 
 ---@class playdate.sound
@@ -2906,15 +2866,12 @@ playdate.simulator = {}
 playdate.sound = {}
 
 ---@class playdate.string
-
 playdate.string = {}
 
 ---@class playdate.timer
-
 playdate.timer = {}
 
 ---@class playdate.ui
-
 playdate.ui = {}
 
 ---@param filename? string
@@ -3359,7 +3316,6 @@ function playdate.file.rename(path, newPath) end
 function playdate.file.run(path, env) end
 
 ---@class playdate.file.file
-
 playdate.file.file = {}
 
 ---@return FrameTimer[]
@@ -3402,35 +3358,27 @@ function playdate.geometry.distanceToPoint(x1, y1, x2, y2) end
 function playdate.geometry.squaredDistanceToPoint(x1, y1, x2, y2) end
 
 ---@class playdate.geometry.affineTransform
-
 playdate.geometry.affineTransform = {}
 
 ---@class playdate.geometry.arc
-
 playdate.geometry.arc = {}
 
 ---@class playdate.geometry.lineSegment
-
 playdate.geometry.lineSegment = {}
 
 ---@class playdate.geometry.point
-
 playdate.geometry.point = {}
 
 ---@class playdate.geometry.polygon
-
 playdate.geometry.polygon = {}
 
 ---@class playdate.geometry.rect
-
 playdate.geometry.rect = {}
 
 ---@class playdate.geometry.size
-
 playdate.geometry.size = {}
 
 ---@class playdate.geometry.vector2D
-
 playdate.geometry.vector2D = {}
 
 ---@return AffineTransform
@@ -4077,11 +4025,9 @@ function playdate.graphics.setStrokeLocation(location) end
 function playdate.graphics.unlockFocus() end
 
 ---@class playdate.graphics.animation
-
 playdate.graphics.animation = {}
 
 ---@class playdate.graphics.animator
-
 playdate.graphics.animator = {}
 
 ---@class playdate.graphics.font
@@ -4093,11 +4039,9 @@ playdate.graphics.font = {}
 playdate.graphics.image = {}
 
 ---@class playdate.graphics.imagetable
-
 playdate.graphics.imagetable = {}
 
 ---@class playdate.graphics.nineSlice
-
 playdate.graphics.nineSlice = {}
 
 ---@class playdate.graphics.sprite
@@ -4105,19 +4049,15 @@ playdate.graphics.nineSlice = {}
 playdate.graphics.sprite = {}
 
 ---@class playdate.graphics.tilemap
-
 playdate.graphics.tilemap = {}
 
 ---@class playdate.graphics.video
-
 playdate.graphics.video = {}
 
 ---@class playdate.graphics.animation.blinker
-
 playdate.graphics.animation.blinker = {}
 
 ---@class playdate.graphics.animation.loop
-
 playdate.graphics.animation.loop = {}
 
 ---@param onDuration? integer
@@ -4613,15 +4553,12 @@ function playdate.keyboard.width() end
 function playdate.math.lerp(min, max, t) end
 
 ---@class playdate.menu.item
-
 playdate.menu.item = {}
 
 ---@class playdate.pathfinder.graph
-
 playdate.pathfinder.graph = {}
 
 ---@class playdate.pathfinder.node
-
 playdate.pathfinder.node = {}
 
 ---@param nodeCount? integer
@@ -4679,95 +4616,72 @@ function playdate.sound.resetTime() end
 function playdate.sound.setOutputsActive(headphones, speaker) end
 
 ---@class playdate.sound.bitcrusher : SoundEffect
-
 playdate.sound.bitcrusher = {}
 
 ---@class playdate.sound.channel
-
 playdate.sound.channel = {}
 
 ---@class playdate.sound.controlsignal : Signal
-
 playdate.sound.controlsignal = {}
 
 ---@class playdate.sound.delayline : SoundEffect
-
 playdate.sound.delayline = {}
 
 ---@class playdate.sound.delaylinetap : SoundSource
-
 playdate.sound.delaylinetap = {}
 
 ---@class playdate.sound.effect
-
 playdate.sound.effect = {}
 
 ---@class playdate.sound.envelope : Signal
-
 playdate.sound.envelope = {}
 
 ---@class playdate.sound.fileplayer : SoundSource
-
 playdate.sound.fileplayer = {}
 
 ---@class playdate.sound.instrument : SoundSource
-
 playdate.sound.instrument = {}
 
 ---@class playdate.sound.lfo : Signal
-
 playdate.sound.lfo = {}
 
 ---@class playdate.sound.micinput
-
 playdate.sound.micinput = {}
 
 ---@class playdate.sound.onepolefilter : SoundEffect
-
 playdate.sound.onepolefilter = {}
 
 ---@class playdate.sound.overdrive : SoundEffect
-
 playdate.sound.overdrive = {}
 
 ---@class playdate.sound.ringmod : SoundEffect
-
 playdate.sound.ringmod = {}
 
 ---@class playdate.sound.sample
-
 playdate.sound.sample = {}
 
 ---@class playdate.sound.sampleplayer : SoundSource
-
 playdate.sound.sampleplayer = {}
 
 ---@class playdate.sound.sequence
-
 playdate.sound.sequence = {}
 
 ---@class playdate.sound.signal
-
 playdate.sound.signal = {}
 
 ---@class playdate.sound.source
-
 playdate.sound.source = {}
 
 ---@class playdate.sound.synth : SoundSource
-
 playdate.sound.synth = {}
 
 ---@class playdate.sound.track
-
 playdate.sound.track = {}
 
 ---@class playdate.sound.track
-
 playdate.sound.track = {}
 
 ---@class playdate.sound.twopolefilter : SoundEffect
-
 playdate.sound.twopolefilter = {}
 
 ---@return BitCrusher
@@ -4931,7 +4845,6 @@ function playdate.timer.updateTimers() end
 playdate.ui.crankIndicator = {}
 
 ---@class playdate.ui.gridview
-
 playdate.ui.gridview = {}
 
 ---@return nil
