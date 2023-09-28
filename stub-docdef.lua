@@ -1,5 +1,8 @@
+---@meta
+--- This file contains function stubs for autocompletion. DO NOT include it in your game.
+---@param name string
 ---@return Class
-function class() end
+function class(name) end
 
 ---@param ... any
 ---@return nil
@@ -478,8 +481,8 @@ function AffineTransform:transformPolygon(p) end
 
 ---@param x integer
 ---@param y integer
----@return x number
----@return y number
+---@return number x
+---@return number y
 function AffineTransform:transformXY(x, y) end
 
 ---@param r Rect
@@ -762,8 +765,8 @@ function File:close() end
 function File:flush() end
 
 ---@param numberOfBytes integer
----@return numberOfBytes integer
----@return error string?
+---@return integer numberOfBytes
+---@return string? error
 function File:read(numberOfBytes) end
 
 ---@return string
@@ -777,8 +780,8 @@ function File:seek(offset) end
 function File:tell() end
 
 ---@param string string
----@return bytes_written integer
----@return error string?
+---@return integer bytes_written
+---@return string? error
 function File:write(string) end
 
 ---@return boolean
@@ -793,8 +796,8 @@ function FilePlayer:getOffset() end
 ---@return number
 function FilePlayer:getRate() end
 
----@return left_or_mono number
----@return right number?
+---@return number left_or_mono
+---@return number? right
 function FilePlayer:getVolume() end
 
 ---@return boolean
@@ -808,8 +811,8 @@ function FilePlayer:load(path) end
 function FilePlayer:pause() end
 
 ---@param repeatCount? integer
----@return success boolean
----@return error string?
+---@return boolean success
+---@return string? error
 function FilePlayer:play(repeatCount) end
 
 ---@param seconds number
@@ -954,10 +957,10 @@ function GridView:drawSectionHeader(section, x, y, width, height) end
 ---@param row integer
 ---@param column integer
 ---@param gridWidth? integer
----@return x integer
----@return y integer
----@return width integer
----@return height integer
+---@return integer x
+---@return integer y
+---@return integer width
+---@return integer height
 function GridView:getCellBounds(section, row, column, gridWidth) end
 
 ---@return integer
@@ -973,8 +976,8 @@ function GridView:getNumberOfRowsInSection(section) end
 ---@return integer
 function GridView:getNumberOfSections() end
 
----@return x integer
----@return y integer
+---@return integer x
+---@return integer y
 function GridView:getScrollPosition() end
 
 ---@return integer
@@ -983,9 +986,9 @@ function GridView:getSectionHeaderHeight() end
 ---@return integer
 function GridView:getSelectedRow() end
 
----@return section integer
----@return row integer
----@return column integer
+---@return integer section
+---@return integer row
+---@return integer column
 function GridView:getSelection() end
 
 ---@return nil
@@ -1132,13 +1135,13 @@ function ImageTable:getImage(x, y) end
 ---@return integer
 function ImageTable:getLength() end
 
----@return cellsWide integer
----@return cellsHigh integer
+---@return integer cellsWide
+---@return integer cellsHigh
 function ImageTable:getSize() end
 
 ---@param path string
----@return success boolean
----@return error string?
+---@return boolean success
+---@return string? error
 function ImageTable:load(path) end
 
 ---@param n integer
@@ -1156,8 +1159,8 @@ function Instrument:addVoice(v, note, rangeend, transpose) end
 ---@return nil
 function Instrument:allNotesOff() end
 
----@return left_or_mono number
----@return right number?
+---@return number left_or_mono
+---@return number? right
 function Instrument:getVolume() end
 
 ---@param note integer
@@ -1234,18 +1237,18 @@ function LineSegment:closestPointOnLineToPoint(p) end
 function LineSegment:copy() end
 
 ---@param ls LineSegment
----@return intersects boolean
----@return intersection Point?
+---@return boolean intersects
+---@return Point? intersection
 function LineSegment:intersectsLineSegment(ls) end
 
 ---@param poly Polygon
----@return intersects boolean
----@return intersectionPoints Point[]?
+---@return boolean intersects
+---@return Point[]? intersectionPoints
 function LineSegment:intersectsPolygon(poly) end
 
 ---@param rect Rect
----@return intersects boolean
----@return intersectionPoints Point[]?
+---@return boolean intersects
+---@return Point[]? intersectionPoints
 function LineSegment:intersectsRect(rect) end
 
 ---@return number
@@ -1272,10 +1275,10 @@ function LineSegment:pointOnLine(distance, extend) end
 ---@return Vector2D
 function LineSegment:segmentVector() end
 
----@return x1 number
----@return y1 number
----@return x2 number
----@return y2 number
+---@return number x1
+---@return number y1
+---@return number x2
+---@return number y2
 function LineSegment:unpack() end
 
 ---@param title string
@@ -1335,12 +1338,12 @@ function NineSlice:drawInRect(rect) end
 ---@return nil
 function NineSlice:drawInRect(x, y, width, height) end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function NineSlice:getMinSize() end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function NineSlice:getSize() end
 
 ---@param level number
@@ -1548,8 +1551,8 @@ function Point:offsetBy(dx, dy) end
 ---@return number
 function Point:squaredDistanceToPoint(p) end
 
----@return x number
----@return y number
+---@return number x
+---@return number y
 function Point:unpack() end
 
 ---@param t AffineTransform
@@ -1576,10 +1579,10 @@ function Polygon:copy() end
 ---@return integer
 function Polygon:count() end
 
----@return x number
----@return y number
----@return width number
----@return height number
+---@return number x
+---@return number y
+---@return number width
+---@return number height
 function Polygon:getBounds() end
 
 ---@return Rect
@@ -1688,10 +1691,10 @@ function Rect:toPolygon() end
 ---@return Rect
 function Rect:union(r2) end
 
----@return x number
----@return y number
----@return width number
----@return height number
+---@return number x
+---@return number y
+---@return number width
+---@return number height
 function Rect:unpack() end
 
 ---@param f number
@@ -1713,8 +1716,8 @@ function RingMod:setMixMod(signal) end
 ---@return integer
 function Sample:getFormat() end
 
----@return sample_seconds number
----@return buffer_size_seconds number
+---@return number sample_seconds
+---@return number buffer_size_seconds
 function Sample:getLength() end
 
 ---@return integer
@@ -1760,8 +1763,8 @@ function SamplePlayer:getRate() end
 ---@return Sample
 function SamplePlayer:getSample() end
 
----@return left_or_mono number
----@return right number?
+---@return number left_or_mono
+---@return number? right
 function SamplePlayer:getVolume() end
 
 ---@return boolean
@@ -1890,8 +1893,8 @@ function Signal:setScale(scale) end
 ---@return Size
 function Size:copy() end
 
----@return width number
----@return height number
+---@return number width
+---@return number height
 function Size:unpack() end
 
 ---@return nil
@@ -1902,18 +1905,18 @@ function Sprite:add() end
 function Sprite:alphaCollision(anotherSprite) end
 
 ---@param point Point
----@return actualX integer
----@return actualY integer
----@return collisions SpriteCollisionData
----@return length integer
+---@return integer actualX
+---@return integer actualY
+---@return SpriteCollisionData collisions
+---@return integer length
 function Sprite:checkCollisions(point) end
 
 ---@param x integer
 ---@param y integer
----@return actualX integer
----@return actualY integer
----@return collisions SpriteCollisionData
----@return length integer
+---@return integer actualX
+---@return integer actualY
+---@return SpriteCollisionData collisions
+---@return integer length
 function Sprite:checkCollisions(x, y) end
 
 ---@return nil
@@ -1942,26 +1945,26 @@ function Sprite:copy() end
 ---@return nil
 function Sprite:draw(x, y, width, height) end
 
----@return x integer
----@return y integer
----@return width integer
----@return height integer
+---@return integer x
+---@return integer y
+---@return integer width
+---@return integer height
 function Sprite:getBounds() end
 
 ---@return Rect
 function Sprite:getBoundsRect() end
 
----@return x number
----@return y number
+---@return number x
+---@return number y
 function Sprite:getCenter() end
 
 ---@return Point
 function Sprite:getCenterPoint() end
 
----@return x integer
----@return y integer
----@return width integer
----@return height integer
+---@return integer x
+---@return integer y
+---@return integer width
+---@return integer height
 function Sprite:getCollideBounds() end
 
 ---@return Rect
@@ -1979,19 +1982,19 @@ function Sprite:getImage() end
 ---@return integer
 function Sprite:getImageFlip() end
 
----@return x integer
----@return y integer
+---@return integer x
+---@return integer y
 function Sprite:getPosition() end
 
 ---@return number
 function Sprite:getRotation() end
 
----@return xScale integer
----@return yScale integer
+---@return integer xScale
+---@return integer yScale
 function Sprite:getScale() end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function Sprite:getSize() end
 
 ---@return integer
@@ -2020,18 +2023,18 @@ function Sprite:moveBy(x, y) end
 function Sprite:moveTo(x, y) end
 
 ---@param goalPoint Point
----@return actualX integer
----@return actualY integer
----@return collisions SpriteCollisionData
----@return length integer
+---@return integer actualX
+---@return integer actualY
+---@return SpriteCollisionData collisions
+---@return integer length
 function Sprite:moveWithCollisions(goalPoint) end
 
 ---@param goalX integer
 ---@param goalY integer
----@return actualX integer
----@return actualY integer
----@return collisions SpriteCollisionData
----@return length integer
+---@return integer actualX
+---@return integer actualY
+---@return SpriteCollisionData collisions
+---@return integer length
 function Sprite:moveWithCollisions(goalX, goalY) end
 
 ---@return Sprite[]
@@ -2203,8 +2206,8 @@ function Synth:copy() end
 ---@return Envelope
 function Synth:getEnvelope() end
 
----@return left_or_mono number
----@return right number?
+---@return number left_or_mono
+---@return number? right
 function Synth:getVolume() end
 
 ---@return boolean
@@ -2309,12 +2312,12 @@ function TileMap:drawIgnoringOffset(x, y, sourceRect) end
 ---@return Rect[]
 function TileMap:getCollisionRects(emptyIDs) end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function TileMap:getPixelSize() end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function TileMap:getSize() end
 
 ---@param x integer
@@ -2322,12 +2325,12 @@ function TileMap:getSize() end
 ---@return number?
 function TileMap:getTileAtPosition(x, y) end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function TileMap:getTileSize() end
 
----@return data integer[]
----@return width integer
+---@return integer[] data
+---@return integer width
 function TileMap:getTiles() end
 
 ---@param table table
@@ -2525,8 +2528,8 @@ function Vector2D:scale(s) end
 ---@return Vector2D
 function Vector2D:scaledBy(s) end
 
----@return x number
----@return y number
+---@return number x
+---@return number y
 function Vector2D:unpack() end
 
 ---@return Image
@@ -2538,8 +2541,8 @@ function Video:getFrameCount() end
 ---@return number
 function Video:getFrameRate() end
 
----@return x integer
----@return y integer
+---@return integer x
+---@return integer y
 function Video:getSize() end
 
 ---@param number integer
@@ -2611,8 +2614,8 @@ function playdate.GMTTimeFromEpoch(seconds, milliseconds) end
 ---@return boolean
 function playdate.accelerometerIsRunning() end
 
----@return api_version integer
----@return runtime_minimum_api_version integer
+---@return integer api_version
+---@return integer runtime_minimum_api_version
 function playdate.apiVersion() end
 
 ---@param button integer
@@ -2665,13 +2668,13 @@ function playdate.downButtonUp() end
 function playdate.drawFPS(x, y) end
 
 ---@param time DateTime
----@return seconds integer
----@return milliseconds integer
+---@return integer seconds
+---@return integer milliseconds
 function playdate.epochFromGMTTime(time) end
 
 ---@param time DateTime
----@return seconds integer
----@return milliseconds integer
+---@return integer seconds
+---@return integer milliseconds
 function playdate.epochFromTime(time) end
 
 ---@return nil
@@ -2689,9 +2692,9 @@ function playdate.getBatteryPercentage() end
 ---@return number
 function playdate.getBatteryVoltage() end
 
----@return current integer
----@return pressed integer
----@return released integer
+---@return integer current
+---@return integer pressed
+---@return integer released
 function playdate.getButtonState() end
 
 ---@return number
@@ -2725,8 +2728,8 @@ function playdate.getPowerStatus() end
 ---@return boolean
 function playdate.getReduceFlashing() end
 
----@return seconds integer
----@return milliseconds integer
+---@return integer seconds
+---@return integer milliseconds
 function playdate.getSecondsSinceEpoch() end
 
 ---@return SystemStats
@@ -2758,9 +2761,9 @@ function playdate.leftButtonDown() end
 ---@return nil
 function playdate.leftButtonUp() end
 
----@return x number
----@return y number
----@return z number
+---@return number x
+---@return number y
+---@return number z
 function playdate.readAccelerometer() end
 
 ---@return nil
@@ -2946,12 +2949,12 @@ function playdate.display.getHeight() end
 ---@return boolean
 function playdate.display.getInverted() end
 
----@return x integer
----@return y integer
+---@return integer x
+---@return integer y
 function playdate.display.getMosaic() end
 
----@return x integer
----@return y integer
+---@return integer x
+---@return integer y
 function playdate.display.getOffset() end
 
 ---@return Rect
@@ -2963,8 +2966,8 @@ function playdate.display.getRefreshRate() end
 ---@return integer
 function playdate.display.getScale() end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function playdate.display.getSize() end
 
 ---@return integer
@@ -3341,8 +3344,8 @@ function playdate.file.modtime(path) end
 
 ---@param path string
 ---@param mode? integer
----@return file File?
----@return error string?
+---@return File? file
+---@return string? error
 function playdate.file.open(path, mode) end
 
 ---@param path string
@@ -3459,9 +3462,9 @@ function playdate.geometry.arc.new(x, y, radius, startAngle, endAngle, direction
 ---@param y3 integer
 ---@param x4 integer
 ---@param y4 integer
----@return intersects boolean
----@return x number?
----@return y number?
+---@return boolean intersects
+---@return number? x
+---@return number? y
 function playdate.geometry.lineSegment.fast_intersection(x1, y1, x2, y2, x3, y3, x4, y4) end
 
 ---@param x1 integer
@@ -3502,10 +3505,10 @@ function playdate.geometry.polygon.new(x1, y1, x2, y2, ...) end
 ---@param y2 integer
 ---@param w2 integer
 ---@param h2 integer
----@return x number
----@return y number
----@return width number
----@return height number
+---@return number x
+---@return number y
+---@return number width
+---@return number height
 function playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2) end
 
 ---@param x1 integer
@@ -3516,10 +3519,10 @@ function playdate.geometry.rect.fast_intersection(x1, y1, w1, h1, x2, y2, w2, h2
 ---@param y2 integer
 ---@param w2 integer
 ---@param h2 integer
----@return x number
----@return y number
----@return width number
----@return height number
+---@return number x
+---@return number y
+---@return number width
+---@return number height
 function playdate.geometry.rect.fast_union(x1, y1, w1, h1, x2, y2, w2, h2) end
 
 ---@param x integer
@@ -3853,10 +3856,10 @@ function playdate.graphics.generateQRCode(stringToEncode, desiredEdgeDimension, 
 ---@return integer
 function playdate.graphics.getBackgroundColor() end
 
----@return x integer
----@return y integer
----@return width integer
----@return height integer
+---@return integer x
+---@return integer y
+---@return integer width
+---@return integer height
 function playdate.graphics.getClipRect() end
 
 ---@return integer
@@ -3865,8 +3868,8 @@ function playdate.graphics.getColor() end
 ---@return Image
 function playdate.graphics.getDisplayImage() end
 
----@return x integer
----@return y integer
+---@return integer x
+---@return integer y
 function playdate.graphics.getDrawOffset() end
 
 ---@param variant? (integer|string)
@@ -3887,10 +3890,10 @@ function playdate.graphics.getLineWidth() end
 ---@return string
 function playdate.graphics.getLocalizedText(key, language) end
 
----@return x integer
----@return y integer
----@return width integer
----@return height integer
+---@return integer x
+---@return integer y
+---@return integer width
+---@return integer height
 function playdate.graphics.getScreenClipRect() end
 
 ---@return integer
@@ -3903,24 +3906,24 @@ function playdate.graphics.getSystemFont(variant) end
 ---@param str string
 ---@param fontFamily? table<integer, Font>
 ---@param leadingAdjustment? integer
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function playdate.graphics.getTextSize(str, fontFamily, leadingAdjustment) end
 
 ---@param text string
 ---@param maxWidth integer
 ---@param leadingAdjustment? integer
 ---@param font? Font
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function playdate.graphics.getTextSizeForMaxWidth(text, maxWidth, leadingAdjustment, font) end
 
 ---@return Image
 function playdate.graphics.getWorkingImage() end
 
 ---@param path string
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function playdate.graphics.imageSizeAtPath(path) end
 
 ---@param text string
@@ -3931,8 +3934,8 @@ function playdate.graphics.imageSizeAtPath(path) end
 ---@param truncationString? string
 ---@param alignment? integer
 ---@param font? playdate.graphics.font
----@return image Image
----@return textWasTruncated boolean
+---@return Image image
+---@return boolean textWasTruncated
 function playdate.graphics.imageWithText(text, maxWidth, maxHeight, backgroundColor, leadingAdjustment, truncationString, alignment, font) end
 
 ---@param image Image
@@ -4182,8 +4185,8 @@ function playdate.graphics.font.new(path) end
 function playdate.graphics.font.newFamily(fontPaths) end
 
 ---@param path string
----@return image Image?
----@return error string?
+---@return Image? image
+---@return string? error
 function playdate.graphics.image.new(path) end
 
 ---@param width integer
@@ -4338,8 +4341,8 @@ function playdate.graphics.image:fadedImage(alpha, ditherType) end
 ---@return Image
 function playdate.graphics.image:getMaskImage() end
 
----@return width integer
----@return height integer
+---@return integer width
+---@return integer height
 function playdate.graphics.image:getSize() end
 
 ---@return boolean
@@ -4349,8 +4352,8 @@ function playdate.graphics.image:hasMask() end
 function playdate.graphics.image:invertedImage() end
 
 ---@param path string
----@return success boolean
----@return error string?
+---@return boolean success
+---@return string? error
 function playdate.graphics.image:load(path) end
 
 ---@return nil
@@ -4653,8 +4656,8 @@ function playdate.sound.addEffect(effect) end
 function playdate.sound.getCurrentTime() end
 
 ---@param changeCallback? fun(): nil
----@return headphone boolean
----@return mic boolean?
+---@return boolean headphone
+---@return boolean? mic
 function playdate.sound.getHeadphoneState(changeCallback) end
 
 ---@return integer
@@ -4952,8 +4955,8 @@ function table.create(arrayCount, hashCount) end
 function table.deepcopy(source) end
 
 ---@param table table
----@return arrayCount integer
----@return hashCount integer
+---@return integer arrayCount
+---@return integer hashCount
 function table.getsize(table) end
 
 ---@param table table
@@ -4966,3 +4969,4 @@ function table.indexOfElement(table, element) end
 ---@return table
 function table.shallowcopy(source, destination) end
 
+--- End of LuaCATS stubs.

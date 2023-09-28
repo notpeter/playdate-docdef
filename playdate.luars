@@ -1317,7 +1317,7 @@ fun table.getsize(table: table): (arrayCount: integer, hashCount: integer);
 fun table.indexOfElement(table: table, element: any): integer?;
 fun table.shallowcopy(source: table, destination?: table): table;
 
-fun class(): Class;
+fun class(name: string): Class;
 tbl Class = {};
 fun Class.extends(parentClass: table): nil;
 fun where(): string;
