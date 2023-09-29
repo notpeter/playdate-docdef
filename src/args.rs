@@ -4,7 +4,7 @@ use clap::{Parser, ValueEnum};
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
-    #[arg(value_enum, default_value="annotate")]
+    #[arg(value_enum, default_value="stub")]
     pub action: Action,
 
     /// Filename to load from

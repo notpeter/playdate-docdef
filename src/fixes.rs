@@ -1,8 +1,7 @@
-use indexmap::IndexMap;
 use regex::Regex;
 use lazy_static::lazy_static;
 
-use crate::config::{TYPO, INVALID, PARAM_TYPES, RETURN};
+use crate::config::{TYPO, INVALID};
 use crate::stub::Stub;
 
 lazy_static! {
@@ -14,37 +13,28 @@ lazy_static! {
     static ref LUA_FUNC: Regex = Regex::new(// Lua function signatures: function(a,b,c)
         &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
     ).unwrap();
-    // static ref LUA_FUNC_OPT: Regex = Regex::new(
-    //     &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
-    // ).unwrap();
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
 pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
     let fname: String;
-    let mut params: Vec<(String, String)>;
+    let params: Vec<(String, String)>;
     // TODO: Fix this. It's a hack to get around borrowing issues.
     let text = text.clone();
 
     // Apply overrides
     if TYPO.contains_key(anchor) {
         let fixed = TYPO.get(anchor).unwrap();
-        params = fixed.parameters.iter().map(|p| (p.clone(), "any".to_string())).collect();
+        params = fixed.parameters.iter().map(
+            |p| (p.clone(), "any".to_string())
+        ).collect();
         // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
     } else {
         (fname, params) = params_from_title(title);
     }
-    // Apply types from Types.toml
-    for (p, t) in params.iter_mut() {
-        let p_an = p.replace("?", ""); // without "?" at the the end for optional
-        if PARAM_TYPES.contains_key(p_an.as_str()) {
-            *t = PARAM_TYPES.get(p_an.as_str()).unwrap().to_string();
-        }
-    }
 
-    let f = crate::stub::func_signature(&fname, &params);
-    let returns: IndexMap<String, String> = RETURN.get(&f).unwrap_or(&IndexMap::new()).clone();
+    let returns: Vec<(String,String)> = Vec::new();
 
     Stub {
         title: fname,
@@ -86,7 +76,7 @@ pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
             }
         }
     }
-    (fname.to_string(), clean_parameters(&title, &params))
+    (fname.to_string(), clean_parameters(&params))
 }
 
 pub fn clean_text(text: String) -> String {
@@ -100,6 +90,7 @@ pub fn clean_text(text: String) -> String {
         .replace("<strong>", "**")
         .replace("</strong>", "**")
         .replace("\n", " ")
+        .replace("<br>", "\n---\n---")
         .trim()
         .to_string();
     let tn = RE_A.replace_all(&t0, "");
@@ -119,13 +110,13 @@ pub fn clean_code(text: String) -> Vec<String> {
     lines
 }
 
-fn clean_parameters(title: &String, params: &Vec<(String, String)>) -> Vec<(String, String)> {
+fn clean_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
     let mut v: Vec<(String, String)> = Vec::new();
     for (p_name, lua_type) in params {
         let p_an = p_name.replace("?", ""); // without "?" at the the end for optional
         if INVALID.contains_key(p_an.as_str()) {
             let fixed_name = INVALID.get(p_an.as_str()).unwrap().to_string();
-            eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
+            // eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
             v.push((fixed_name, lua_type.to_string()));
         } else {
             v.push((p_name.to_string(), lua_type.to_string()));
