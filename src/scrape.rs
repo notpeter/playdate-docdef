@@ -18,13 +18,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
     let sel_content = Selector::parse("div.content").unwrap();
 
     let sel_docs = Selector::parse(
-        concat!(
-            "div.paragraph", ",",
-            "div.ulist", ",",
-            "div.admonitionblock", ",",
-            "div.literalblock", ",",
-            "div.listingblock"
-        )
+        vec!("div.paragraph", "div.ulist", "div.admonitionblock", "div.literalblock", "div.listingblock").join(",").as_str()
     ).unwrap();
     let sel_docs_text = Selector::parse("p").unwrap();
     let sel_docs_list = Selector::parse("ul>li").unwrap();
@@ -54,8 +48,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
                 let dv = div.value();
                 if dv.has_class("paragraph", CaseSensitivity::CaseSensitive) {
                     div.select(&sel_docs_text).for_each(|p| {
-                        let t = clean_text(p.text().collect::<String>());
-                        // println!("p: {}", t);
+                        let t = clean_text(p.inner_html());
                         text.push(t);
                     });
                 } else if dv.has_class("listingblock", CaseSensitivity::CaseSensitive) {

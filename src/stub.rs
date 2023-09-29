@@ -51,24 +51,25 @@ impl Stub {
         if self.anchor == "" {
             Vec::new()
         } else {
-            let url = format!("---\n--- https://sdk.play.date/Inside%20Playdate.html#{}", self.anchor);
-            vec!(self.text2comments(), url)
+            self.text2comments()
         }
     }
     pub fn to_stub(&self) -> String {
         String::from(format!("function {} end", self.func_signature()))
     }
-    fn text2comments(&self) -> String {
-        let mut s = String::new();
+    fn text2comments(&self) -> Vec<String> {
+        let mut s = Vec::new();
         let mut i = 0;
         let mut in_code = false;
         while i < self.text.len() {
             let line = self.text[i].clone();
             // Bulleted list and code get fewer newlines. Everything else needs empty lines for proper markdown rendering.
-            if in_code || line.starts_with("```") || (line.starts_with("*") && i < self.text.len() - 1 && self.text[i + 1].starts_with("*")) {
-                s.push_str(&format!("--- {}\n", line));
+            if in_code
+            || line.starts_with("```")
+            || (line.starts_with("* ") && i < self.text.len() - 1 && self.text[i + 1].starts_with("* ")) {
+                s.push(format!("--- {}", line));
             } else {
-                s.push_str(&format!("--- {}\n---\n", line));
+                s.push(format!("--- {}\n---", line));
             }
             // this is hacky as hell
             if line == "```" {
@@ -76,6 +77,7 @@ impl Stub {
             }
             i = i + 1;
         }
+        s.push(format!("--- https://sdk.play.date/Inside%20Playdate.html#{}", self.anchor));
         s
     }
 }

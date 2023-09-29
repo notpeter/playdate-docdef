@@ -90,6 +90,7 @@ pub fn clean_text(text: String) -> String {
         .replace("<strong>", "**")
         .replace("</strong>", "**")
         .replace("\n", " ")
+        .replace("<br>", "\n---\n---")
         .trim()
         .to_string();
     let tn = RE_A.replace_all(&t0, "");
