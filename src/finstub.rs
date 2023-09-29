@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::luars::LuarsStatement;
 use crate::stub::Stub;
 
@@ -126,6 +127,11 @@ impl FinStub {
         }
     }
     pub fn generate_stub(&self) -> Vec<String> {
+        // Returns the complete stub for a class or function.
+        let notes = HashMap::from([ // TODO: maybe make this lazy_static (how?)
+            ("playdate.ui.crankIndicator:start()", "---@deprecated since 2.1.0-beta1"),
+            ("playdate.ui.crankIndicator:update()", "---@deprecated since 2.1.0-beta1"),
+        ]);
         let mut out: Vec<String> = Vec::new();
         match self {
             FinStub::Variable(_) => {
@@ -134,6 +140,9 @@ impl FinStub {
                 out.push(self.lua_statement());
             },
             FinStub::Stub(stub) => {
+                if notes.contains_key(stub.func_signature().as_str()) {
+                    out.push(notes.get(stub.func_signature().as_str()).unwrap().to_string());
+                }
                 out.extend(stub.text_comments());
                 out.extend(self.luacats_params());
                 out.extend(self.luacats_returns());

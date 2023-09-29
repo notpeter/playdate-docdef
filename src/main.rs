@@ -6,7 +6,7 @@ mod stub;
 mod scrape;
 mod finstub;
 
-use std::fs;
+use std::{fs, collections::HashSet};
 use crate::{args::Action, finstub::FinStub};
 
 fn go_out(fin_stubs: Vec<FinStub>) {
@@ -26,6 +26,7 @@ fn main() {
     let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
     let statements: Vec<luars::LuarsStatement<'_>> = luars::parse_document(&unparsed_file);
     let mut fin_stubs: Vec<FinStub> = Vec::new();
+    let mut both: HashSet<String> = HashSet::new();
     for s in &statements {
         match s {
             luars::LuarsStatement::Global(_, _, _) |
@@ -40,6 +41,17 @@ fn main() {
             let stubs = scrape::scrape(response, &statements);
             for stub in stubs {
                 fin_stubs.push(FinStub::from_stub(&stub));
+                both.insert(stub.func_signature());
+            }
+            for s in &statements {
+                match s {
+                    luars::LuarsStatement::Function(_, _, _) => {
+                        if !both.contains(s.func_sig().as_str()) {
+                            fin_stubs.push(FinStub::from_luars(s));
+                        }
+                    },
+                    _ => {},
+                }
             }
             go_out(fin_stubs);
         },

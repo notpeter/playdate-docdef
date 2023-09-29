@@ -4737,10 +4737,6 @@ function playdate.timer.new(duration, callback, ...) end
 ---@return nil
 function playdate.timer.performAfterDelay(delay, callback, ...) end
 
----@param ... any
----@return nil
-function playdate.timer.updateCallback(...) end
-
 ---@return nil
 function playdate.timer.updateTimers() end
 
@@ -4767,9 +4763,11 @@ function playdate.ui.crankIndicator:draw(xOffset, yOffset) end
 ---@return integer height
 function playdate.ui.crankIndicator:getBounds() end
 
+---@deprecated since 2.1.0-beta1
 ---@return nil
 function playdate.ui.crankIndicator:start() end
 
+---@deprecated since 2.1.0-beta1
 ---@return nil
 function playdate.ui.crankIndicator:update() end
 

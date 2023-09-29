@@ -1247,7 +1247,6 @@ fun playdate.timer.keyRepeatTimerWithDelay(delayAfterInitialFiring: integer, del
 fun playdate.timer.new(duration: integer, callback: function, ...: any): _Timer;
 fun playdate.timer.new(duration: integer, startValue?: number, endValue?: number, easingFunction?: function): _Timer;
 fun playdate.timer.performAfterDelay(delay: integer, callback: function, ...: any): nil;
-fun playdate.timer.updateCallback(...: any): nil;
 fun playdate.timer.updateTimers(): nil;
 local _Timer: playdate.timer = {
     currentTime: integer,
