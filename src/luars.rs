@@ -9,7 +9,8 @@ pub struct LuarsParser;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
-    Table(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
+    Global(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
+    Local(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
 
@@ -24,7 +25,8 @@ struct LuarsSortKey<'a> {
 impl LuarsStatement<'_> {
     fn id(&self) -> LuarsSortKey {
         let (name, id, sub_id) = match self {
-            LuarsStatement::Table(name, _, _) => (name, 4, 0),
+            LuarsStatement::Local(name, _, _) => (name, 4, 0),
+            LuarsStatement::Global(name, _, _) => (name, 4, 0),
             LuarsStatement::Function(name, params, _) => {
                 if name.contains(":") {
                     (name, 5, -1 * params.len() as isize) // instance methods
@@ -59,7 +61,7 @@ impl Ord for LuarsStatement<'_> {
 impl Display for LuarsStatement<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            LuarsStatement::Table(name, parent, tablekeys) => {
+            LuarsStatement::Global(name, parent, tablekeys) | LuarsStatement::Local(name, parent, tablekeys) => {
                 let fields = &tablekeys.iter().map(
                     |(_name, _type, _value)|
                         if _value.to_string() != "" {
@@ -68,15 +70,19 @@ impl Display for LuarsStatement<'_> {
                             format!("---@field {} {}", _name, _type)
                         }
                 ).collect::<Vec<String>>().join("\n");
-
+                let local: &str = match self {
+                    LuarsStatement::Local(_, _, _) => "local ",
+                    LuarsStatement::Global(_, _, _) => "",
+                    _ => unreachable!(),
+                };
                 if parent.to_string() == "" && fields.len() == 0 {
-                    write!(f, "---@class {name}\n{name} = {{}}\n", name=name)
+                    write!(f, "---@class {name}\n{local}{name} = {{}}\n", name=name, local=local)
                 } else if parent.to_string() == "" {
-                    write!(f, "---@class {name}\n{fields}\n{name} = {{}}\n", name=name, fields=fields)
+                    write!(f, "---@class {name}\n{fields}\n{local}{name} = {{}}\n", name=name, fields=fields, local=local)
                 } else if fields.len() == 0 {
-                    write!(f, "---@class {name} : {parent}\n{name} = {{}}\n", name=name, parent=parent)
+                    write!(f, "---@class {name} : {parent}\n{local}{name} = {{}}\n", name=name, parent=parent, local=local)
                 } else {
-                    write!(f, "---@class {name} : {parent}\n{fields}\n{name} = {{}}\n", name=name, parent=parent, fields=fields)
+                    write!(f, "---@class {name} : {parent}\n{fields}\n{local}{name} = {{}}\n", name=name, parent=parent, fields=fields, local=local)
                 }
             }
             LuarsStatement::Function(name, params, returns) => {
@@ -113,20 +119,29 @@ impl Display for LuarsStatement<'_> {
 }
 
 pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
-    let iterator = pair.into_inner();
+    let localglobal = match pair.as_rule() {
+        Rule::Global => LuarsStatement::Global,
+        Rule::Local => LuarsStatement::Local,
+        _ => {
+            eprintln!("Unexpected Rule: {:?}. Was expecting Local or Global.", pair.as_rule());
+            unreachable!()
+        }
+    };
+    let mut iterator = pair.into_inner();
     let mut obj_name: &str = "INVALID";
     let mut obj_type: &str = "";
     let mut obj_proto: Vec<(&str, &str, &str)> = Vec::new();
-    for field in iterator {
-        match field.as_rule() {
+    while iterator.peek().is_some() {
+        let chunk = iterator.next().unwrap();
+        match chunk.as_rule() {
             Rule::Identifier => {
-                obj_name = field.as_str();
+                obj_name = chunk.as_str();
             }
             Rule::CaptureType => {
-                obj_type = field.as_str();
+                obj_type = chunk.as_str();
             }
             Rule::TableConstants => {
-                let mut field = field.into_inner();
+                let mut field = chunk.into_inner();
                 let mut field_name: &str;
                 let mut field_type: &str;
                 let mut field_value: &str;
@@ -153,12 +168,12 @@ pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
                 }
             }
             _ => {
-                eprintln!("Rule: {:?}", field.as_rule());
+                eprintln!("Rule: {:?}", chunk.as_rule());
                 unreachable!()
             }
         }
     }
-    LuarsStatement::Table(obj_name, obj_type, obj_proto)
+    localglobal(obj_name, obj_type, obj_proto)
 }
 
 pub fn parse_function(pair: Pair<Rule>) -> LuarsStatement {
@@ -216,7 +231,10 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
 
     for line in document.into_inner() {
         let f = match line.as_rule() {
-            Rule::Table => {
+            Rule::Global => {
+                parse_tbl(line)
+            }
+            Rule::Local => {
                 parse_tbl(line)
             }
             Rule::Function => {
@@ -241,25 +259,32 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
     #[test]
-    fn test_tbl_simple() {
-        let document = LuarsParser::parse(Rule::Table, "tbl json;\n")
+    fn global_simple() {
+        let document = LuarsParser::parse(Rule::Global, "global json;\n")
             .expect("unsuccessful parse")
             .next().unwrap();
-        assert_eq!(parse_tbl(document), LuarsStatement::Table("json", "", Vec::new()));
+        assert_eq!(parse_tbl(document), LuarsStatement::Global("json", "", Vec::new()));
     }
     #[test]
-    fn tbl_type() {
-        let document = LuarsParser::parse(Rule::Table, "tbl File: playdate.file.file;")
+    fn global_table() {
+        let document = LuarsParser::parse(Rule::Global, "global playdate.sound.twopolefilter: SoundEffect;")
             .expect("unsuccessful parse")
             .next().unwrap();
-        assert_eq!(parse_tbl(document), LuarsStatement::Table("File", "playdate.file.file", Vec::new()));
+        assert_eq!(parse_tbl(document), LuarsStatement::Global("playdate.sound.twopolefilter", "SoundEffect", Vec::new()));
     }
     #[test]
-    fn tbl_literal() {
+    fn local_type() {
+        let document = LuarsParser::parse(Rule::Local, "local File: playdate.file.file;")
+            .expect("unsuccessful parse")
+            .next().unwrap();
+        assert_eq!(parse_tbl(document), LuarsStatement::Local("File", "playdate.file.file", Vec::new()));
+    }
+    #[test]
+    fn local_literal() {
         let document = LuarsParser::parse(
-            Rule::Table, "tbl Size: playdate.geometry.size = { width: number, height: number, };"
+            Rule::Local, "local Size: playdate.geometry.size = { width: number, height: number, };"
         ).expect("unsuccessful parse").next().unwrap();
-        assert_eq!(parse_tbl(document), LuarsStatement::Table("Size", "playdate.geometry.size", vec![
+        assert_eq!(parse_tbl(document), LuarsStatement::Local("Size", "playdate.geometry.size", vec![
             ("width", "number", ""),
             ("height", "number", ""),
         ]));

@@ -22,7 +22,7 @@ function sample(name, _function) end
 function where() end
 
 ---@class AffineTransform : playdate.geometry.affineTransform
-AffineTransform = {}
+local AffineTransform = {}
 
 ---@class AnimationLoop : playdate.graphics.animation.loop
 ---@field delay number
@@ -32,7 +32,7 @@ AffineTransform = {}
 ---@field step integer
 ---@field shouldLoop boolean
 ---@field paused boolean
-AnimationLoop = {}
+local AnimationLoop = {}
 
 ---@class Animator : playdate.graphics.animator
 ---@field repeatCount integer
@@ -42,7 +42,7 @@ AnimationLoop = {}
 ---@field s? number
 ---@field a? number
 ---@field p? number
-Animator = {}
+local Animator = {}
 
 ---@class Arc : playdate.geometry.arc
 ---@field x integer
@@ -51,10 +51,10 @@ Animator = {}
 ---@field startAngle number
 ---@field endAngle number
 ---@field direction boolean
-Arc = {}
+local Arc = {}
 
 ---@class BitCrusher : playdate.sound.bitcrusher
-BitCrusher = {}
+local BitCrusher = {}
 
 ---@class Blinker : playdate.graphics.animation.blinker
 ---@field onDuration integer
@@ -65,17 +65,17 @@ BitCrusher = {}
 ---@field counter integer
 ---@field on boolean
 ---@field running boolean
-Blinker = {}
+local Blinker = {}
 
 ---@class Channel : playdate.sound.channel
-Channel = {}
+local Channel = {}
 
 ---@class Class
-Class = {}
+local Class = {}
 
 ---@class ControlSignal : playdate.sound.controlsignal
 ---@field events SoundControlEvent
-ControlSignal = {}
+local ControlSignal = {}
 
 ---@class DateTime
 ---@field year integer
@@ -86,25 +86,25 @@ ControlSignal = {}
 ---@field minute integer
 ---@field second integer
 ---@field millisecond integer
-DateTime = {}
+local DateTime = {}
 
 ---@class DelayLine : playdate.sound.delayline
-DelayLine = {}
+local DelayLine = {}
 
 ---@class DelayLineTap : playdate.sound.delaylinetap
-DelayLineTap = {}
+local DelayLineTap = {}
 
 ---@class Envelope : playdate.sound.envelope
-Envelope = {}
+local Envelope = {}
 
 ---@class File : playdate.file.file
-File = {}
+local File = {}
 
 ---@class FilePlayer : playdate.sound.fileplayer
-FilePlayer = {}
+local FilePlayer = {}
 
 ---@class Font : playdate.graphics.font
-Font = {}
+local Font = {}
 
 ---@class FrameTimer : playdate.frameTimer
 ---@field delay integer
@@ -114,7 +114,7 @@ Font = {}
 ---@field repeats boolean
 ---@field reverses boolean
 ---@field timerEndedArgs any
-FrameTimer = {}
+local FrameTimer = {}
 
 ---@class GridView : playdate.ui.gridview
 ---@field needsDisplay boolean
@@ -125,17 +125,17 @@ FrameTimer = {}
 ---@field easingPeriod? number
 ---@field changeRowOnColumnWrap boolean
 ---@field scrollCellsToCenter boolean
-GridView = {}
+local GridView = {}
 
 ---@class Image : playdate.graphics.image
 ---@field x integer
 ---@field y integer
 ---@field width integer
 ---@field height integer
-Image = {}
+local Image = {}
 
 ---@class ImageTable : playdate.graphics.imagetable
-ImageTable = {}
+local ImageTable = {}
 
 ---@class InputHandler
 ---@field AButtonDown? fun()
@@ -154,28 +154,28 @@ ImageTable = {}
 ---@field upButtonUp? fun()
 ---@field cranked? fun(change:number, acceleratedChange:number)
 
-InputHandler = {}
+local InputHandler = {}
 
 ---@class Instrument : playdate.sound.instrument
-Instrument = {}
+local Instrument = {}
 
 ---@class LFO : playdate.sound.lfo
-LFO = {}
+local LFO = {}
 
 ---@class LineSegment : playdate.geometry.lineSegment
 ---@field x1 integer
 ---@field y1 integer
 ---@field x2 integer
 ---@field y2 integer
-LineSegment = {}
+local LineSegment = {}
 
 ---@class Menu : playdate.menu
-Menu = {}
+local Menu = {}
 
 ---@class MenuItem : playdate.menu.item
 ---@field title string
 ---@field value (integer|boolean|string)
-MenuItem = {}
+local MenuItem = {}
 
 ---@class Metadata
 ---@field name string
@@ -190,7 +190,7 @@ MenuItem = {}
 ---@field contentWarning? string
 ---@field contentWarning2? string
 ---@field ... string
-Metadata = {}
+local Metadata = {}
 
 ---@class ModTime
 ---@field year integer
@@ -199,42 +199,42 @@ Metadata = {}
 ---@field hour integer
 ---@field minute integer
 ---@field second integer
-ModTime = {}
+local ModTime = {}
 
 ---@class NineSlice : playdate.graphics.nineSlice
 ---@field innerRect Rect
 ---@field minWidth integer
 ---@field minHeight integer
-NineSlice = {}
+local NineSlice = {}
 
 ---@class OnePoleFilter : playdate.sound.onepolefilter
-OnePoleFilter = {}
+local OnePoleFilter = {}
 
 ---@class OverDrive : playdate.sound.overdrive
-OverDrive = {}
+local OverDrive = {}
 
 ---@class PathFinderGraph : playdate.pathfinder.graph
-PathFinderGraph = {}
+local PathFinderGraph = {}
 
 ---@class PathFinderNode : playdate.pathfinder.node
 ---@field x integer
 ---@field y integer
 ---@field id integer
-PathFinderNode = {}
+local PathFinderNode = {}
 
 ---@class Point : playdate.geometry.point
 ---@field x number
 ---@field y number
-Point = {}
+local Point = {}
 
 ---@class Polygon : playdate.geometry.polygon
-Polygon = {}
+local Polygon = {}
 
 ---@class PowerStatus
 ---@field charging boolean
 ---@field USB boolean
 ---@field screws boolean
-PowerStatus = {}
+local PowerStatus = {}
 
 ---@class Rect : playdate.geometry.rect
 ---@field x number
@@ -246,53 +246,53 @@ PowerStatus = {}
 ---@field left number
 ---@field right number
 ---@field size Size
-Rect = {}
+local Rect = {}
 
 ---@class RingMod : playdate.sound.ringmod
-RingMod = {}
+local RingMod = {}
 
 ---@class Sample : playdate.sound.sample
-Sample = {}
+local Sample = {}
 
 ---@class SamplePlayer : playdate.sound.sampleplayer
-SamplePlayer = {}
+local SamplePlayer = {}
 
 ---@class Sequence : playdate.sound.sequence
-Sequence = {}
+local Sequence = {}
 
 ---@class Signal : playdate.sound.signal
-Signal = {}
+local Signal = {}
 
 ---@class Size : playdate.geometry.size
 ---@field width number
 ---@field height number
-Size = {}
+local Size = {}
 
 ---@class SoundControlEvent : table
 ---@field step integer
 ---@field value number
 ---@field interpolate? boolean
-SoundControlEvent = {}
+local SoundControlEvent = {}
 
 ---@class SoundEffect : playdate.sound.effect
-SoundEffect = {}
+local SoundEffect = {}
 
 ---@class SoundSource
-SoundSource = {}
+local SoundSource = {}
 
 ---@class SoundTrackNote : table
 ---@field step integer
 ---@field note number
 ---@field length integer
 ---@field velocity number
-SoundTrackNote = {}
+local SoundTrackNote = {}
 
 ---@class SoundTrackNoteIn : table
 ---@field step integer
 ---@field note (number|string)
 ---@field length integer
 ---@field velocity number
-SoundTrackNoteIn = {}
+local SoundTrackNoteIn = {}
 
 ---@class Sprite : playdate.graphics.sprite
 ---@field x integer
@@ -301,7 +301,7 @@ SoundTrackNoteIn = {}
 ---@field height integer
 ---@field collisionResponse? (integer|fun(self: Sprite, other: Sprite): integer?)
 ---@field update? fun():nil
-Sprite = {}
+local Sprite = {}
 
 ---@class SpriteCollisionData
 ---@field sprite Sprite
@@ -316,7 +316,7 @@ Sprite = {}
 ---@field otherRect Rect
 ---@field bounce? Point
 ---@field slide? Point
-SpriteCollisionData = {}
+local SpriteCollisionData = {}
 
 ---@class SpriteCollisionInfo
 ---@field sprite Sprite
@@ -324,26 +324,26 @@ SpriteCollisionData = {}
 ---@field exitPoint Point
 ---@field t1 number
 ---@field t2 number
-SpriteCollisionInfo = {}
+local SpriteCollisionInfo = {}
 
 ---@class Synth : playdate.sound.synth
-Synth = {}
+local Synth = {}
 
 ---@class SystemInfo
 ---@field buildtime string
 ---@field commit string
 ---@field pdxcompatversion integer
 ---@field pdxversion integer
-SystemInfo = {}
+local SystemInfo = {}
 
 ---@class SystemStats
 ---@field " kernel" number
 ---@field " game" number
 ---@field " audio" number
-SystemStats = {}
+local SystemStats = {}
 
 ---@class TileMap : playdate.graphics.tilemap
-TileMap = {}
+local TileMap = {}
 
 ---@class Timer : playdate.timer
 ---@field currentTime integer
@@ -354,21 +354,21 @@ TileMap = {}
 ---@field repeats boolean
 ---@field reverses boolean
 ---@field timerEndedArgs any[]
-Timer = {}
+local Timer = {}
 
 ---@class Track : playdate.sound.track
-Track = {}
+local Track = {}
 
 ---@class TwoPoleFilter : playdate.sound.twopolefilter
-TwoPoleFilter = {}
+local TwoPoleFilter = {}
 
 ---@class Vector2D : playdate.geometry.vector2D
 ---@field dx number
 ---@field dy number
-Vector2D = {}
+local Vector2D = {}
 
 ---@class Video : playdate.graphics.video
-Video = {}
+local Video = {}
 
 ---@class json
 json = {}
@@ -648,7 +648,7 @@ function Channel:setVolumeMod(signal) end
 function Class.extends(parentClass) end
 
 ---@class Class.super
-Class.super = {}
+local Class.super = {}
 
 ---@param self any
 ---@param ...? any

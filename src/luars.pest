@@ -10,14 +10,21 @@ Document = { Statement* }
 Statement = _{
     (
         WHITE_LINE
-        | ((Function | Table) ~ ";" ~ W ~ "\n"?)
+        | ((Function | Global | Local) ~ ";" ~ W ~ "\n"?)
     )
 }
-Fun = _{ "fun " }
-Tbl = _{ "tbl " }
+Fun_    = _{ "fun " }
+Local_  = _{ "local " }
+Global_ = _{ "global " }
 
+Local = {
+    Local_ ~ Table
+}
+Global = {
+    Global_ ~ Table
+}
 Function = {
-    Fun ~ W
+    Fun_ ~ W
     ~ FunctionName ~ W
     ~ oParen ~ W
     ~ FunctionalParameters? ~ W
@@ -37,8 +44,9 @@ Return = {
     ~ Optional?
 }
 OptionalType = { TypeLua ~ Optional? }
-Table = {
-    Tbl ~ W ~ Identifier ~ W
+
+Table = _{
+    Identifier ~ W
     ~ (":" ~ W ~ CaptureType ~ W)?
     ~ ("=" ~ W ~ "{" ~ W ~ TableConstants? ~ W ~ "}" ~ W)?
 }
