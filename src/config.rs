@@ -1,6 +1,5 @@
 use std::{collections::HashMap, fmt};
 
-use indexmap::IndexMap;
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
@@ -25,25 +24,4 @@ impl fmt::Display for TypoReplacement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}({})", self.fname, self.parameters.join(", "))
     }
-}
-
-fn load_return(tom_return: &str) -> IndexMap<String, IndexMap<String, String>> {
-    let r : IndexMap<String, IndexMap<String, IndexMap<String, String>>> = match toml::from_str(tom_return) {
-        Ok(v) => v, Err(e) => { panic!("ERROR: Loading Return.toml failed. {:?}", e); }
-    };
-    let mut out: IndexMap<String, IndexMap<String, String>> = IndexMap::new();
-    for (namespace, funcs) in r {
-        for (fname, returns) in funcs {
-            let mut r: IndexMap<String, String> = IndexMap::new();
-            if returns.is_empty() {
-                r.insert("".to_string(), "nil".to_string());
-            } else {
-                for (ret_name, ret_type) in returns {
-                    r.insert(ret_name, ret_type);
-                }
-            }
-            out.insert(format!("{namespace}{fname}"), r);
-        }
-    }
-    out
 }

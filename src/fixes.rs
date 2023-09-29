@@ -14,43 +14,27 @@ lazy_static! {
     static ref LUA_FUNC: Regex = Regex::new(// Lua function signatures: function(a,b,c)
         &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
     ).unwrap();
-    // static ref LUA_FUNC_OPT: Regex = Regex::new(
-    //     &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
-    // ).unwrap();
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
 pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
     let fname: String;
-    let mut params: Vec<(String, String)>;
+    let params: Vec<(String, String)>;
     // TODO: Fix this. It's a hack to get around borrowing issues.
     let text = text.clone();
 
     // Apply overrides
     if TYPO.contains_key(anchor) {
         let fixed = TYPO.get(anchor).unwrap();
-        params = fixed.parameters.iter().map(|p| (p.clone(), "any".to_string())).collect();
-        // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
+        params = fixed.parameters.iter().map(
+            |p| (p.clone(), "any".to_string())
+        ).collect();
+        eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
     } else {
         (fname, params) = params_from_title(title);
     }
-    // Apply types from Types.toml
-    for (p, t) in params.iter_mut() {
-        let p_an = p.replace("?", ""); // without "?" at the the end for optional
-        // if PARAM_TYPES.contains_key(p_an.as_str()) {
-        //     *t = PARAM_TYPES.get(p_an.as_str()).unwrap().to_string();
-        // }
-    }
 
-    // if anchor == "f-easingFunctions" {
-    //     println!("poop");
-    //     let q = RETURN.keys().collect::<Vec<&String>>();
-    //     println!("{:?}", q);
-    // }
-
-    let f = crate::stub::func_signature(&fname, &params);
-    // let returns: IndexMap<String, String> = RETURN.get(&f).unwrap_or(&IndexMap::new()).clone();
     let returns = IndexMap::new();
 
     Stub {
