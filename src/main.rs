@@ -28,7 +28,7 @@ fn main() {
             println!("--- This file contains function stubs for autocompletion. DO NOT include it in your game.");
             println!("");
             for p in statements {
-                println!("{}", p);
+                println!("{}\n", p.generate_stub().join("\n"));
             }
             println!("--- End of LuaCATS stubs.");
         },

@@ -1,4 +1,4 @@
-use std::{fmt::Display, cmp::Ordering};
+use std::cmp::Ordering;
 
 use pest::{Parser, iterators::Pair};
 use pest_derive::Parser;
@@ -46,6 +46,100 @@ impl LuarsStatement<'_> {
         };
         LuarsSortKey { namespace, id, name, i_or_c, sub_id }
     }
+    pub fn lua_statement(&self) -> String {
+        // Return a valid lua statement for the class or function.
+        match self {
+            LuarsStatement::Global(name, _, _) => { format!("{} = {{}}", name) },
+            LuarsStatement::Local(name, _, _) => { format!("local {} = {{}}", name) },
+            LuarsStatement::Function(name, params, _) => {
+                let func_params: Vec<String> = params.iter().map(
+                    |(fname, _)| fname.trim_matches('?').to_string()
+                ).collect::<Vec<String>>();
+                format!("function {}({}) end", name, func_params.join(", "))
+            }
+        }
+    }
+    fn luacats_params(&self) -> Vec<String> {
+        // Returns '---@param name type' for functions
+        match self {
+            LuarsStatement::Function(_, params, _) => {
+                params.iter().map(
+                    |(name, _type)|
+                        format!("---@param {} {}", name, _type)
+                ).collect::<Vec<String>>()
+            }
+            LuarsStatement::Global(_, _, _) | LuarsStatement::Local(_, _, _) => {
+                unreachable!("LuarsStatement::Global and LuarsStatement::Local should not be called with luacats_params()")
+            }
+        }
+    }
+    fn luacats_returns(&self) -> Vec<String> {
+        // Returns '---@return type [name]' for functions
+        match self {
+            LuarsStatement::Function(_, _, returns) => {
+                returns.iter().map(
+                    |(_name, _type)|
+                        if _name.to_string() == "" {
+                            format!("---@return {}", _type)
+                        } else {
+                            format!("---@return {_type} {_name}", _type=_type, _name=_name)
+                        }
+                ).collect::<Vec<String>>()
+            }
+            LuarsStatement::Global(_, _, _) | LuarsStatement::Local(_, _, _) => {
+                unreachable!("LuarsStatement::Global and LuarsStatement::Local should not be called with luacats_returns()")
+            }
+        }
+    }
+    fn luacats_class(&self) -> String {
+        // Returns '---@class name : parent' for classes
+        match self {
+            LuarsStatement::Global(name, parent, _) | LuarsStatement::Local(name, parent, _) => {
+                if parent.to_string() == "" {
+                    format!("---@class {}", name)
+                } else {
+                    format!("---@class {} : {}", name, parent)
+                }
+            }
+            LuarsStatement::Function(_, _, _) => {
+                unreachable!("LuarsStatement::Function should not be called with luacats_class()")
+            }
+        }
+    }
+    fn luacats_fields(&self) -> Vec<String> {
+        // Returns '---@field name type [value]' for class/instance attributes
+        match self {
+            LuarsStatement::Global(_, _, tablekeys) | LuarsStatement::Local(_, _, tablekeys) => {
+                tablekeys.iter().map(
+                    |(_name, _type, _value)|
+                        if _value.to_string() != "" {
+                            format!("---@field {} {} {}", _name, _type, _value)
+                        } else {
+                            format!("---@field {} {}", _name, _type)
+                        }
+                ).collect::<Vec<String>>()
+            }
+            LuarsStatement::Function(_, _, _) => {
+                unreachable!("LuarsStatement::Function should not be called with luacats_fields()")
+            }
+        }
+    }
+    pub fn generate_stub(&self) -> Vec<String> {
+        let mut out: Vec<String> = Vec::new();
+        match self {
+            LuarsStatement::Global(_, _, _) | LuarsStatement::Local(_, _, _) => {
+                out.push(self.luacats_class());
+                out.extend(self.luacats_fields());
+                out.push(self.lua_statement());
+            }
+            LuarsStatement::Function(_, _, _) => {
+                out.extend(self.luacats_params());
+                out.extend(self.luacats_returns());
+                out.push(self.lua_statement());
+            }
+        }
+        out
+    }
 }
 
 impl PartialOrd for LuarsStatement<'_> {
@@ -57,66 +151,6 @@ impl PartialOrd for LuarsStatement<'_> {
 impl Ord for LuarsStatement<'_> {
     fn cmp(&self, other: &Self) -> Ordering {
         self.id().cmp(&other.id())
-    }
-}
-
-impl Display for LuarsStatement<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            LuarsStatement::Global(name, parent, tablekeys) | LuarsStatement::Local(name, parent, tablekeys) => {
-                let fields = &tablekeys.iter().map(
-                    |(_name, _type, _value)|
-                        if _value.to_string() != "" {
-                            format!("---@field {} {} {}", _name, _type, _value)
-                        } else {
-                            format!("---@field {} {}", _name, _type)
-                        }
-                ).collect::<Vec<String>>().join("\n");
-                let local: &str = match self {
-                    LuarsStatement::Local(_, _, _) => "local ",
-                    LuarsStatement::Global(_, _, _) => "",
-                    _ => unreachable!(),
-                };
-                if parent.to_string() == "" && fields.len() == 0 {
-                    write!(f, "---@class {name}\n{local}{name} = {{}}\n", name=name, local=local)
-                } else if parent.to_string() == "" {
-                    write!(f, "---@class {name}\n{fields}\n{local}{name} = {{}}\n", name=name, fields=fields, local=local)
-                } else if fields.len() == 0 {
-                    write!(f, "---@class {name} : {parent}\n{local}{name} = {{}}\n", name=name, parent=parent, local=local)
-                } else {
-                    write!(f, "---@class {name} : {parent}\n{fields}\n{local}{name} = {{}}\n", name=name, parent=parent, fields=fields, local=local)
-                }
-            }
-            LuarsStatement::Function(name, params, returns) => {
-                let returns = &returns.iter().map(
-                    |(_name, _type)|
-                        if _name.to_string() == "" {
-                            format!("---@return {}", _type)
-                        } else {
-                            format!("---@return {_type} {_name}", _type=_type, _name=_name)
-                        }
-                ).collect::<Vec<String>>().join("\n").replace("  ", " ");
-                if params.len() == 0 {
-                    write!(f, "{}\nfunction {}() end\n", returns, name)
-                } else {
-                    let mut params_: Vec<&str> = Vec::new();
-                    let mut params_out: Vec<String> = Vec::new();
-                    for  (k, v) in params.iter() {
-                        let k_noq = k.trim_matches('?');
-                        params_.push(k_noq);
-                        let p = format!("---@param {} {}", k, v);
-                        params_out.push(p);
-                    }
-                    if params_out.len() == 0 {
-                        write!(f, "{}\nfunction {}({}) end\n", returns, name, params_.join(", "))
-                    } else {
-                        write!(f, "{}\n{}\nfunction {}({}) end\n", params_out.join("\n"), returns, name, params_.join(", "))
-                    }
-                }
-
-            }
-            // _ => { println!("{}", self); unreachable!() }
-        }
     }
 }
 
