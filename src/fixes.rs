@@ -29,7 +29,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
         params = fixed.parameters.iter().map(
             |p| (p.clone(), "any".to_string())
         ).collect();
-        eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
+        // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
     } else {
         (fname, params) = params_from_title(title);
@@ -116,7 +116,7 @@ fn clean_parameters(title: &String, params: &Vec<(String, String)>) -> Vec<(Stri
         let p_an = p_name.replace("?", ""); // without "?" at the the end for optional
         if INVALID.contains_key(p_an.as_str()) {
             let fixed_name = INVALID.get(p_an.as_str()).unwrap().to_string();
-            eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
+            // eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
             v.push((fixed_name, lua_type.to_string()));
         } else {
             v.push((p_name.to_string(), lua_type.to_string()));

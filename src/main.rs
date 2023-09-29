@@ -18,7 +18,7 @@ fn main() {
 
     match args.action {
         Action::Annotate => {
-            let stubs = scrape::scrape(response);
+            let stubs = scrape::scrape(response, &statements);
             for stub in stubs {
                 println!("{}", stub.to_lua());
             }

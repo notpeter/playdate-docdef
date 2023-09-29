@@ -4,9 +4,9 @@ use scraper::{Selector, CaseSensitivity};
 use crate::fixes::{clean_text, annotate_function};
 use crate::stub::Stub;
 use crate::fixes::clean_code;
+use crate::luars::LuarsStatement;
 
-
-pub fn scrape(response: String) -> Vec<Stub> {
+pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -43,7 +43,9 @@ pub fn scrape(response: String) -> Vec<Stub> {
 
         let anchor: &str = element.value().attr("id").unwrap_or("");
         let title: String = element.select(&sel_title).next().unwrap().text().collect::<String>();
-        if anchor == "" { eprintln!("WARN: Docs missing anchor for: {}", title); }
+        if anchor == "" {
+            // eprintln!("WARN: Docs missing anchor for: {}", title);
+        }
 
         let mut text: Vec<String> = Vec::new();
         for c in element.select(&sel_content) {
@@ -89,12 +91,14 @@ pub fn scrape(response: String) -> Vec<Stub> {
         }
         if title.contains("  ") { // Functions with multiple
             for t in title.split("  ") {
-                let stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
+                let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
+                stub = stub.apply_types(statements);
                 stubs.push(stub)
             }
         } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") || title.contains("Callback") { //
             // function(), imagetable[n], "p + p", "-v", etc
-            let stub = annotate_function(&anchor.to_string(), &title, &text);
+            let mut stub = annotate_function(&anchor.to_string(), &title, &text);
+            stub = stub.apply_types(statements);
             stubs.push(stub);
         } else {
             // TODO: Add this as a stub!

@@ -46,17 +46,25 @@ impl LuarsStatement<'_> {
         };
         LuarsSortKey { namespace, id, name, i_or_c, sub_id }
     }
+    pub fn func_sig(&self) -> String {
+        match self {
+            LuarsStatement::Function(name, params, _) => {
+                let func_params: Vec<String> = params.iter().map(
+                    |(fname, _)| fname.trim_matches('?').to_string()
+                ).collect::<Vec<String>>();
+                format!("{}({})", name, func_params.join(", "))
+            }
+            _ => {
+                unreachable!("Only LuarsStatement::Function should not be called with func_sig()")
+            }
+        }
+    }
     pub fn lua_statement(&self) -> String {
         // Return a valid lua statement for the class or function.
         match self {
             LuarsStatement::Global(name, _, _) => { format!("{} = {{}}", name) },
             LuarsStatement::Local(name, _, _) => { format!("local {} = {{}}", name) },
-            LuarsStatement::Function(name, params, _) => {
-                let func_params: Vec<String> = params.iter().map(
-                    |(fname, _)| fname.trim_matches('?').to_string()
-                ).collect::<Vec<String>>();
-                format!("function {}({}) end", name, func_params.join(", "))
-            }
+            LuarsStatement::Function(_, _, _) => { format!("function {} end", self.func_sig()) },
         }
     }
     fn luacats_params(&self) -> Vec<String> {

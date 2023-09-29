@@ -12,19 +12,35 @@ pub struct Stub {
 }
 
 impl Stub {
-    pub fn apply_types(mut self, statements: Vec<LuarsStatement>) {
+    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> Stub {
         let func_sig = self.func_signature();
+        let mut found: bool = false;
         for s in statements {
+            //TODO: This is hella inefficient
             match s {
-                LuarsStatement::Function(name, params, returns) => {
-                    if func_sig == name {
+                LuarsStatement::Function(_, _, _) => {},
+                _ => { continue; }
+            }
+            let s_sig = s.func_sig();
+            // eprintln!("INFO: Comparing {} to {}", func_sig, s_sig);
+
+            match s {
+                LuarsStatement::Function(_, params, returns) => {
+                    if func_sig == s_sig {
                         self.params = params.iter().map(|(fname, ftype)| (fname.to_string(), ftype.to_string())).collect();
                         self.returns = returns.iter().map(|(fname, ftype)| (fname.to_string(), ftype.to_string())).collect();
+                        found = true;
                     }
                 },
                 _ => {},
             }
         }
+        if found {
+            // eprintln!("INFO: Found types for {}", func_sig);
+        } else {
+            eprintln!("WARN: Could not find types for {}", func_sig);
+        }
+        self
     }
     pub fn func_signature(&self) -> String {
         let name = self.title.clone();
