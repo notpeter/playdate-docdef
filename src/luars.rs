@@ -16,22 +16,24 @@ pub enum LuarsStatement<'a> {
 
 #[derive(PartialEq, Eq, Hash, PartialOrd, Ord)]
 struct LuarsSortKey<'a> {
-    namespace: &'a str,
-    id: usize,
-    name: &'a str,
-    sub_id: isize,
+    id: usize,              // [1, 2, 3, 4] = [global, local, method, instance method
+    namespace: &'a str,     // namespace: playdate.graphics.image
+    name: &'a str,          // complete name: playdate.graphics.image:draw
+    i_or_c: isize,          // [0, 1] = [class, instance]
+    sub_id: isize,          // number of parameters (longer first)
 }
 
 impl LuarsStatement<'_> {
     fn id(&self) -> LuarsSortKey {
-        let (name, id, sub_id) = match self {
-            LuarsStatement::Local(name, _, _) => (name, 4, 0),
-            LuarsStatement::Global(name, _, _) => (name, 4, 0),
+
+        let (id, name, i_or_c, sub_id) = match self {
+            LuarsStatement::Global(name, _, _) => (1, name, 0, 0),
+            LuarsStatement::Local(name, _, _) => (2, name, 0, 0),
             LuarsStatement::Function(name, params, _) => {
                 if name.contains(":") {
-                    (name, 5, -1 * params.len() as isize) // instance methods
+                    (3, name, 1, -1 * params.len() as isize) // instance methods
                 } else {
-                    (name, 3, -1 * params.len() as isize) // class methods
+                    (3, name, 0, -1 * params.len() as isize) // class methods
                 }
             },
         };
@@ -42,7 +44,7 @@ impl LuarsStatement<'_> {
         } else {
             ("", *name)
         };
-        LuarsSortKey { namespace, id, name, sub_id }
+        LuarsSortKey { namespace, id, name, i_or_c, sub_id }
     }
 }
 
