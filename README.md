@@ -41,6 +41,19 @@ Fun is functions (and parameters, parameter types, returns, return types and opt
 
 See the [LUARS pest.rs PEG Grammar](src/luars.pest) and [Playdate.luars](playdate.luars) for more.
 
+## Contributing
+
+I'm happy to accept corrections/additions to my PlaydateSDK type annotations or
+to the rats nest of novice rust code in this repo.
+
+Before you begin any
+non-trivial work PLEASE open an issue to discuss what you're thinking of doing.
+This project includes both opinionated choices and accidential complexity,
+I would be happy to differentiate by providing context for the former
+and laugh about the latter, via issue comments.
+
+I've wasted a lot of time on this and want to minimize dead-end effort from others.
+
 ## License
 
 Copyright (c) 2023 Peter Tripp
