@@ -4,33 +4,55 @@ mod config;
 mod fixes;
 mod stub;
 mod scrape;
+mod finstub;
 
 use std::fs;
-use crate::args::Action;
+use crate::{args::Action, finstub::FinStub};
 
+fn go_out(fin_stubs: Vec<FinStub>) {
+    println!("---@meta");
+    println!("--- This file contains function stubs for autocompletion. DO NOT include it in your game.");
+    println!("");
+
+    for stub in fin_stubs {
+        println!("{}\n", stub.generate_stub().join("\n"));
+    }
+    println!("--- End of LuaCATS stubs.");
+}
 
 fn main() {
     let (args, response) = crate::args::setup();
 
     let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
     let statements: Vec<luars::LuarsStatement<'_>> = luars::parse_document(&unparsed_file);
-
-
-    println!("---@meta");
-    println!("--- This file contains function stubs for autocompletion. DO NOT include it in your game.");
-    println!("");
+    let mut fin_stubs: Vec<FinStub> = Vec::new();
+    for s in &statements {
+        match s {
+            luars::LuarsStatement::Global(_, _, _) |
+            luars::LuarsStatement::Local(_, _, _) => {
+                fin_stubs.push(FinStub::from_luars(s));
+            },
+            _ => {},
+        }
+    }
     match args.action {
         Action::Annotate => {
             let stubs = scrape::scrape(response, &statements);
             for stub in stubs {
-                println!("{}", stub.to_lua());
+                fin_stubs.push(FinStub::from_stub(&stub));
             }
+            go_out(fin_stubs);
         },
         Action::Stub => {
-            for p in statements {
-                println!("{}\n", p.generate_stub().join("\n"));
+            for s in &statements {
+                match s {
+                    luars::LuarsStatement::Function(_, _, _) => {
+                        fin_stubs.push(FinStub::from_luars(s));
+                    },
+                    _ => {},
+                }
             }
+            go_out(fin_stubs);
         },
     }
-    println!("--- End of LuaCATS stubs.");
 }

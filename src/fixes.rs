@@ -1,4 +1,3 @@
-use indexmap::IndexMap;
 use regex::Regex;
 use lazy_static::lazy_static;
 
@@ -35,7 +34,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
         (fname, params) = params_from_title(title);
     }
 
-    let returns = IndexMap::new();
+    let returns: Vec<(String,String)> = Vec::new();
 
     Stub {
         title: fname,
@@ -77,7 +76,7 @@ pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
             }
         }
     }
-    (fname.to_string(), clean_parameters(&title, &params))
+    (fname.to_string(), clean_parameters(&params))
 }
 
 pub fn clean_text(text: String) -> String {
@@ -110,7 +109,7 @@ pub fn clean_code(text: String) -> Vec<String> {
     lines
 }
 
-fn clean_parameters(title: &String, params: &Vec<(String, String)>) -> Vec<(String, String)> {
+fn clean_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
     let mut v: Vec<(String, String)> = Vec::new();
     for (p_name, lua_type) in params {
         let p_an = p_name.replace("?", ""); // without "?" at the the end for optional

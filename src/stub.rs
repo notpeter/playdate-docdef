@@ -1,13 +1,12 @@
-use indexmap::IndexMap;
 use crate::luars::LuarsStatement;
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Stub {
     pub title: String,
     pub anchor: String,
     pub params: Vec<(String, String)>, // parameter_name=type_name
-    pub returns: IndexMap<String, String>, // return_name=type_name
+    pub returns: Vec<(String, String)>, // return_name=type_name
     pub text: Vec<String>,
 }
 
@@ -48,15 +47,13 @@ impl Stub {
         let param_names : Vec<String> = params.iter().map(|(name, _)| name.clone().replace("?", "")).collect::<Vec<String>>();
         String::from(format!("{}({})", name, param_names.join(", ")))
     }
-    pub fn to_lua(&self) -> String {
-        String::from(format!(
-            "{}--- https://sdk.play.date/Inside%20Playdate.html#{}\n{}{}{}\n",
-            self.text2comments(),
-            self.anchor,
-            self.params2comments(),
-            self.returns2comments(),
-            self.to_stub()
-        ))
+    pub fn text_comments(&self) -> Vec<String> {
+        if self.anchor == "" {
+            Vec::new()
+        } else {
+            let url = format!("---\n--- https://sdk.play.date/Inside%20Playdate.html#{}", self.anchor);
+            vec!(self.text2comments(), url)
+        }
     }
     pub fn to_stub(&self) -> String {
         String::from(format!("function {} end", self.func_signature()))
@@ -78,26 +75,6 @@ impl Stub {
                 in_code = !in_code;
             }
             i = i + 1;
-        }
-        s
-    }
-    fn params2comments(&self) -> String {
-        let mut s = String::new();
-        for (p_name, p_type) in &self.params {
-            if p_name != "..." && p_name != "...?" {
-                s.push_str(&format!("---@param {} {}\n", p_name, p_type));
-            }
-        }
-        s
-    }
-    fn returns2comments(&self) -> String {
-        let mut s = String::new();
-        for (r_name, r_type) in &self.returns {
-            if r_name == "" {
-                s.push_str(&format!("---@return {}\n", r_type));
-            } else {
-                s.push_str(&format!("---@return {} {}\n", r_type, r_name));
-            }
         }
         s
     }
