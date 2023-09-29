@@ -67,7 +67,7 @@ fun playdate.getGMTTime(): DateTime;
 fun playdate.getPowerStatus(): PowerStatus;
 fun playdate.getReduceFlashing(): boolean;
 fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
-fun playdate.getStats(): SystemStats;
+fun playdate.getStats(): table;
 fun playdate.getSystemLanguage(): integer;
 fun playdate.getSystemMenu(): Menu;
 fun playdate.getTime(): DateTime;
@@ -697,8 +697,8 @@ fun playdate.graphics.sprite.getAllSprites(): Sprite[];
 fun playdate.graphics.sprite.getAlwaysRedraw(): boolean;
 fun playdate.graphics.sprite.new(image_or_tilemap?: (Image|TileMap)): Sprite;
 fun playdate.graphics.sprite.performOnAllSprites(f: fun(sprite: Sprite)): nil;
-fun playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment: LineSegment): CollisionInfo[];
-fun playdate.graphics.sprite.querySpriteInfoAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): CollisionInfo[];
+fun playdate.graphics.sprite.querySpriteInfoAlongLine(lineSegment: LineSegment): SpriteCollisionInfo[];
+fun playdate.graphics.sprite.querySpriteInfoAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): SpriteCollisionInfo[];
 fun playdate.graphics.sprite.querySpritesAlongLine(lineSegment: LineSegment): Sprite[];
 fun playdate.graphics.sprite.querySpritesAlongLine(x1: integer, y1: integer, x2: integer, y2: integer): Sprite[];
 fun playdate.graphics.sprite.querySpritesAtPoint(p: Point): Sprite[];
@@ -970,7 +970,7 @@ fun OverDrive:setLimitMod(signal: Signal): nil;
 fun OverDrive:setMix(level: number): nil;
 fun OverDrive:setMixMod(signal: Signal): nil;
 fun OverDrive:setOffset(level: number): nil;
-fun OverDrive:setOffsetMod(signal: Signaly): nil;
+fun OverDrive:setOffsetMod(signal: Signal): nil;
 
 global playdate.sound.ringmod: SoundEffect;
 fun playdate.sound.ringmod.new(): RingMod;
@@ -1324,10 +1324,10 @@ fun table.indexOfElement(table: table, element: any): integer?;
 fun table.shallowcopy(source: table, destination?: table): table;
 
 fun class(name: string): Class;
-fun Class.extends(parentClass: table): nil;
-local Class;
-local Class.super;
-fun Class.super.init(self: any, ...?: any): nil;
+local Class = {
+    extends: fun(parentClass: any): nil,
+    super: table,
+};
 
 fun where(): string;
 fun print(...: any): nil;
@@ -1373,7 +1373,6 @@ local Metadata = {
     launchSoundPath?: string,
     contentWarning?: string,
     contentWarning2?: string,
-    ...: string,
 };
 local ModTime = {
     year: integer,
@@ -1388,7 +1387,7 @@ local PowerStatus = {
     USB: boolean,
     screws: boolean,
 };
-local SoundControlEvent: table = {
+local SoundControlEvent = {
     step: integer,
     value: number,
     interpolate?: boolean,
@@ -1419,9 +1418,4 @@ local SystemInfo = {
     commit: string,
     pdxcompatversion: integer,
     pdxversion: integer,
-};
-local SystemStats = {
-    " kernel": number,
-    " game": number,
-    " audio": number,
 };
