@@ -195,7 +195,7 @@ fun playdate.file.file:read(numberOfBytes: integer): (numberOfBytes: integer, er
 fun playdate.file.file:readline(): string;
 fun playdate.file.file:seek(offset: integer): nil;
 fun playdate.file.file:tell(): integer;
-fun playdate.file.file:write(string: string): (bytes_written: integer, error: string?);
+fun playdate.file.file:write(str: string): (bytes_written: integer, error: string?);
 
 global playdate.frameTimer;
 fun playdate.frameTimer.allTimers(): _FrameTimer[];
@@ -210,8 +210,9 @@ local _FrameTimer: playdate.frameTimer = {
     frame: integer,
     repeats: boolean,
     reverses: boolean,
-    timerEndedArgs: any,
+    timerEndedArgs: any[],
 };
+
 fun playdate.frameTimer:pause(): nil;
 fun playdate.frameTimer:remove(): nil;
 fun playdate.frameTimer:reset(): nil;
@@ -1058,6 +1059,7 @@ fun playdate.sound.lfo:setGlobal(flag: boolean): nil;
 fun playdate.sound.lfo:setPhase(phase: number): nil;
 fun playdate.sound.lfo:setRate(rate: number): nil;
 fun playdate.sound.lfo:setRetrigger(flag: boolean): nil;
+fun playdate.sound.lfo:setStartPhase(phase: number): nil;
 fun playdate.sound.lfo:setType(type: integer): nil;
 
 global playdate.sound.source;
@@ -1231,9 +1233,9 @@ local _SoundTrackNoteIn = {
 
 global playdate.string;
 fun playdate.string.UUID(length: number): string;
-fun playdate.string.trimLeadingWhitespace(string: string): string;
-fun playdate.string.trimTrailingWhitespace(string: string): string;
-fun playdate.string.trimWhitespace(string: string): string;
+fun playdate.string.trimLeadingWhitespace(str: string): string;
+fun playdate.string.trimTrailingWhitespace(str: string): string;
+fun playdate.string.trimWhitespace(str: string): string;
 
 global playdate.timer;
 fun playdate.timer.allTimers(): _Timer[];
@@ -1252,7 +1254,9 @@ local _Timer: playdate.timer = {
     timeLeft: integer,
     repeats: boolean,
     reverses: boolean,
-    timerEndedArgs: any[]
+    timerEndedArgs: any[],
+    timerEndedCallback: function,
+    updateCallback: function,
 };
 fun playdate.timer:pause(): nil;
 fun playdate.timer:remove(): nil;

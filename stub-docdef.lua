@@ -383,7 +383,7 @@ local _Font = {}
 ---@field frame integer
 ---@field repeats boolean
 ---@field reverses boolean
----@field timerEndedArgs any
+---@field timerEndedArgs any[]
 local _FrameTimer = {}
 
 ---@class _GridView : playdate.ui.gridview
@@ -617,6 +617,8 @@ local _TileMap = {}
 ---@field repeats boolean
 ---@field reverses boolean
 ---@field timerEndedArgs any[]
+---@field timerEndedCallback function
+---@field updateCallback function
 local _Timer = {}
 
 ---@class _Track : playdate.sound.track
@@ -1408,10 +1410,10 @@ function playdate.file.file:seek(offset) end
 ---@return integer
 function playdate.file.file:tell() end
 
----@param string string
+---@param str string
 ---@return integer bytes_written
 ---@return string? error
-function playdate.file.file:write(string) end
+function playdate.file.file:write(str) end
 
 ---@return _FrameTimer[]
 function playdate.frameTimer.allTimers() end
@@ -4175,6 +4177,10 @@ function playdate.sound.lfo:setRate(rate) end
 ---@return nil
 function playdate.sound.lfo:setRetrigger(flag) end
 
+---@param phase number
+---@return nil
+function playdate.sound.lfo:setStartPhase(phase) end
+
 ---@param type integer
 ---@return nil
 function playdate.sound.lfo:setType(type) end
@@ -4665,17 +4671,17 @@ function playdate.sound.twopolefilter:setType(type) end
 ---@return string
 function playdate.string.UUID(length) end
 
----@param string string
+---@param str string
 ---@return string
-function playdate.string.trimLeadingWhitespace(string) end
+function playdate.string.trimLeadingWhitespace(str) end
 
----@param string string
+---@param str string
 ---@return string
-function playdate.string.trimTrailingWhitespace(string) end
+function playdate.string.trimTrailingWhitespace(str) end
 
----@param string string
+---@param str string
 ---@return string
-function playdate.string.trimWhitespace(string) end
+function playdate.string.trimWhitespace(str) end
 
 ---@return _Timer[]
 function playdate.timer.allTimers() end
