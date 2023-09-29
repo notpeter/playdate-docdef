@@ -16,6 +16,9 @@ fn main() {
     let statements: Vec<luars::LuarsStatement<'_>> = luars::parse_document(&unparsed_file);
 
 
+    println!("---@meta");
+    println!("--- This file contains function stubs for autocompletion. DO NOT include it in your game.");
+    println!("");
     match args.action {
         Action::Annotate => {
             let stubs = scrape::scrape(response, &statements);
@@ -24,13 +27,10 @@ fn main() {
             }
         },
         Action::Stub => {
-            println!("---@meta");
-            println!("--- This file contains function stubs for autocompletion. DO NOT include it in your game.");
-            println!("");
             for p in statements {
                 println!("{}\n", p.generate_stub().join("\n"));
             }
-            println!("--- End of LuaCATS stubs.");
         },
     }
+    println!("--- End of LuaCATS stubs.");
 }
