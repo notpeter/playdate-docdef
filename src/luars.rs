@@ -18,18 +18,18 @@ struct LuarsSortKey<'a> {
     namespace: &'a str,
     id: usize,
     name: &'a str,
+    sub_id: isize,
 }
 
 impl LuarsStatement<'_> {
-
     fn id(&self) -> LuarsSortKey {
-        let (name, id) = match self {
-            LuarsStatement::Table(name, _, _) => (name, 4),
-            LuarsStatement::Function(name, _, _) => {
+        let (name, id, sub_id) = match self {
+            LuarsStatement::Table(name, _, _) => (name, 4, 0),
+            LuarsStatement::Function(name, params, _) => {
                 if name.contains(":") {
-                    (name, 5) // instance methods
+                    (name, 5, -1 * params.len() as isize) // instance methods
                 } else {
-                    (name, 3) // class methods
+                    (name, 3, -1 * params.len() as isize) // class methods
                 }
             },
         };
@@ -40,7 +40,7 @@ impl LuarsStatement<'_> {
         } else {
             ("", *name)
         };
-        LuarsSortKey { namespace, id, name }
+        LuarsSortKey { namespace, id, name, sub_id }
     }
 }
 
@@ -99,7 +99,11 @@ impl Display for LuarsStatement<'_> {
                         let p = format!("---@param {} {}", k, v);
                         params_out.push(p);
                     }
-                    write!(f, "{}\n{}\nfunction {}({}) end\n", params_out.join("\n"), returns, name, params_.join(", "))
+                    if params_out.len() == 0 {
+                        write!(f, "{}\nfunction {}({}) end\n", returns, name, params_.join(", "))
+                    } else {
+                        write!(f, "{}\n{}\nfunction {}({}) end\n", params_out.join("\n"), returns, name, params_.join(", "))
+                    }
                 }
 
             }

@@ -1324,8 +1324,11 @@ fun table.indexOfElement(table: table, element: any): integer?;
 fun table.shallowcopy(source: table, destination?: table): table;
 
 fun class(name: string): Class;
-tbl Class = {};
 fun Class.extends(parentClass: table): nil;
+tbl Class;
+tbl Class.super;
+fun Class.super.init(self: any, ...?: any): nil;
+
 fun where(): string;
 fun print(...: any): nil;
 fun printTable(table: table): nil;
