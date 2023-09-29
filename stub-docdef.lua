@@ -617,8 +617,6 @@ local _TileMap = {}
 ---@field repeats boolean
 ---@field reverses boolean
 ---@field timerEndedArgs any[]
----@field timerEndedCallback function
----@field updateCallback function
 local _Timer = {}
 
 ---@class _Track : playdate.sound.track
@@ -654,6 +652,22 @@ function sample(name, _function) end
 
 ---@return string
 function where() end
+
+---@param ... any
+---@return nil
+function _FrameTimer:timerEndedCallback(...) end
+
+---@param ... any
+---@return nil
+function _FrameTimer:updateCallback(...) end
+
+---@param ... any
+---@return nil
+function _Timer:timerEndedCallback(...) end
+
+---@param ... any
+---@return nil
+function _Timer:updateCallback(...) end
 
 ---@param str string
 ---@return table
@@ -4570,6 +4584,12 @@ function playdate.sound.synth:setVolume(left, right) end
 ---@return nil
 function playdate.sound.synth:setWaveform(waveform) end
 
+---@param sample _Sample
+---@param samplesize integer
+---@param xsize integer
+---@param ysize? integer
+function playdate.sound.synth:setWavetable(sample, samplesize, xsize, ysize) end
+
 ---@return nil
 function playdate.sound.synth:stop() end
 
@@ -4735,6 +4755,17 @@ function playdate.timer:reset() end
 
 ---@return nil
 function playdate.timer:start() end
+
+---@param xOffset? integer
+---@param yOffset? integer
+---@return nil
+function playdate.ui.crankIndicator:draw(xOffset, yOffset) end
+
+---@return integer x
+---@return integer y
+---@return integer width
+---@return integer height
+function playdate.ui.crankIndicator:getBounds() end
 
 ---@return nil
 function playdate.ui.crankIndicator:start() end

@@ -212,6 +212,8 @@ local _FrameTimer: playdate.frameTimer = {
     reverses: boolean,
     timerEndedArgs: any[],
 };
+fun _FrameTimer:timerEndedCallback(...: any): nil;
+fun _FrameTimer:updateCallback(...: any): nil;
 
 fun playdate.frameTimer:pause(): nil;
 fun playdate.frameTimer:remove(): nil;
@@ -1158,6 +1160,7 @@ fun playdate.sound.synth:setRelease(time: number): nil;
 fun playdate.sound.synth:setSustain(level: number): nil;
 fun playdate.sound.synth:setVolume(left: integer, right?: integer): nil;
 fun playdate.sound.synth:setWaveform(waveform: integer): nil;
+fun playdate.sound.synth:setWavetable(sample: _Sample, samplesize: integer, xsize: integer, ysize?: integer);
 fun playdate.sound.synth:stop(): nil;
 
 global playdate.sound.micinput;
@@ -1255,9 +1258,9 @@ local _Timer: playdate.timer = {
     repeats: boolean,
     reverses: boolean,
     timerEndedArgs: any[],
-    timerEndedCallback: function,
-    updateCallback: function,
 };
+fun _Timer:timerEndedCallback(...: any): nil;
+fun _Timer:updateCallback(...: any): nil;
 fun playdate.timer:pause(): nil;
 fun playdate.timer:remove(): nil;
 fun playdate.timer:reset(): nil;
@@ -1268,6 +1271,8 @@ global playdate.ui;
 global playdate.ui.crankIndicator = {
     clockwise: boolean,
 };
+fun playdate.ui.crankIndicator:draw(xOffset?: integer, yOffset?: integer): nil;
+fun playdate.ui.crankIndicator:getBounds(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.ui.crankIndicator:start(): nil;
 fun playdate.ui.crankIndicator:update(): nil;
 

@@ -41,7 +41,7 @@ fname = "playdate.sound.synth:setADSR"
 parameters = ["attack", "decay", "sustain", "release", "curvature"]
 
 # unicode "…​" instead of "..."
-["m-gridview.setNumberOfRows"]
+["m-ui.gridview.setNumberOfRows"]
 fname = "playdate.ui.gridview:setNumberOfRows"
 parameters = ["..."]
 
@@ -154,27 +154,27 @@ parameters = []
 fname = "playdate.keyboard.textChangedCallback"
 parameters = ["ok"] # boolean
 
-# missing parens ()
+# missing parens () and is instance method only
 ["c-timer.timerEndedCallback"]
-fname = "playdate.timer.timerEndedCallback"
+fname = "_Timer:timerEndedCallback"
 parameters = ["..."]
 
-# missing parens ()
+# missing parens () and is instance method only
 ["c-timer.updateCallback"]
-fname = "playdate.timer.updateCallback"
+fname = "_Timer:updateCallback"
 parameters = ["..."]
 
-# missing parens ()
+# missing parens () and is instance method only
 ["c-frameTimer.timerEndedCallback"]
-fname = "playdate.frameTimer.timerEndedCallback"
+fname = "_FrameTimer:timerEndedCallback"
 parameters = ["..."]
 
-# missing parens ()
+# missing parens () and is instance method only
 ["c-frameTimer.updateCallback"]
-fname = "playdate.frameTimer.updateCallback"
+fname = "_FrameTimer:updateCallback"
 parameters = ["..."]
 
 # instance method not classmethod
-["m-gridview.getSectionHeaderHeight"]
+["m-ui.gridview.getSectionHeaderHeight"]
 fname = "playdate.ui.gridview:getSectionHeaderHeight"
 parameters = []
