@@ -104,7 +104,7 @@ global playdate.datastore;
 fun playdate.datastore.delete(filename?: string): boolean;
 fun playdate.datastore.read(filename?: string): table?;
 fun playdate.datastore.readImage(path: string): _Image?;
-fun playdate.datastore.write(table: table, filename?: string, pretty: boolean): nil;
+fun playdate.datastore.write(table: table, filename?: string, pretty?: boolean): nil;
 fun playdate.datastore.writeImage(image: _Image, path: string): nil;
 
 global playdate.display;

@@ -976,7 +976,7 @@ function playdate.datastore.readImage(path) end
 
 ---@param table table
 ---@param filename? string
----@param pretty boolean
+---@param pretty? boolean
 ---@return nil
 function playdate.datastore.write(table, filename, pretty) end
 
