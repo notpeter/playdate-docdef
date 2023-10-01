@@ -273,7 +273,7 @@ local _Arc: playdate.geometry.arc = {
 fun playdate.geometry.arc:copy(): _Arc;
 fun playdate.geometry.arc:isClockwise(): boolean;
 fun playdate.geometry.arc:length(): number;
-fun playdate.geometry.arc:pointOnArc(distance: integer, extend: boolean): _Point;
+fun playdate.geometry.arc:pointOnArc(distance: integer, extend?: boolean): _Point;
 fun playdate.geometry.arc:setIsClockwise(flag: boolean): nil;
 
 global playdate.geometry.lineSegment;
@@ -446,6 +446,7 @@ fun playdate.graphics.drawCircleInRect(x: integer, y: integer, width: integer, h
 fun playdate.graphics.drawEllipseInRect(rect: _Rect, startAngle?: number, endAngle?: number): nil;
 fun playdate.graphics.drawEllipseInRect(x: integer, y: integer, width: integer, height: integer, startAngle?: number, endAngle?: number): nil;
 fun playdate.graphics.drawLine(x1: integer, y1: integer, x2: integer, y2: integer): nil;
+fun playdate.graphics.drawLine(ls: _LineSegment): nil;
 fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: _Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: _Font, language?: (integer|string)): nil;
@@ -476,7 +477,7 @@ fun playdate.graphics.fillRect(x: integer, y: integer, width: integer, height: i
 fun playdate.graphics.fillRoundRect(r: _Rect, radius: number): nil;
 fun playdate.graphics.fillRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.fillTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
-fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: function): nil;
+fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image: _Image, errorMessage: string)): nil;
 fun playdate.graphics.getBackgroundColor(): integer;
 fun playdate.graphics.getClipRect(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.graphics.getColor(): integer;
@@ -713,7 +714,7 @@ fun playdate.graphics.sprite.removeAll(): nil;
 fun playdate.graphics.sprite.removeSprite(sprite: _Sprite): nil;
 fun playdate.graphics.sprite.removeSprites(spriteArray: _Sprite[]): nil;
 fun playdate.graphics.sprite.setAlwaysRedraw(flag: boolean): nil;
-fun playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback: fun(x: integer, y: integer, width: integer, height: integer): nil): nil;
+fun playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback?: fun(x: integer, y: integer, width: integer, height: integer): nil): nil;
 fun playdate.graphics.sprite.setClipRectsInRange(rect: _Rect, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.setClipRectsInRange(x: integer, y: integer, width: integer, height: integer, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.spriteCount(): integer;
@@ -1271,7 +1272,7 @@ global playdate.ui.crankIndicator = {
     clockwise: boolean,
 };
 fun playdate.ui.crankIndicator:draw(xOffset?: integer, yOffset?: integer): nil;
-fun playdate.ui.crankIndicator:getBounds(): (x: integer, y: integer, width: integer, height: integer);
+fun playdate.ui.crankIndicator:getBounds(xOffset?: integer, yOffset?: integer): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.ui.crankIndicator:start(): nil;
 fun playdate.ui.crankIndicator:update(): nil;
 

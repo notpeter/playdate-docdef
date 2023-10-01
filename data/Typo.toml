@@ -178,3 +178,8 @@ parameters = ["..."]
 ["m-ui.gridview.getSectionHeaderHeight"]
 fname = "playdate.ui.gridview:getSectionHeaderHeight"
 parameters = []
+
+# missing function parameters
+["m-ui.crankIndicator.getBounds"]
+fname = "playdate.ui.crankIndicator:getBounds"
+parameters = ["xOffset", "yOffset"]

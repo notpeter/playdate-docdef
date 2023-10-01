@@ -1626,7 +1626,7 @@ function playdate.geometry.arc:isClockwise() end
 function playdate.geometry.arc:length() end
 
 ---@param distance integer
----@param extend boolean
+---@param extend? boolean
 ---@return _Point
 function playdate.geometry.arc:pointOnArc(distance, extend) end
 
@@ -2129,6 +2129,10 @@ function playdate.graphics.drawEllipseInRect(rect, startAngle, endAngle) end
 ---@return nil
 function playdate.graphics.drawLine(x1, y1, x2, y2) end
 
+---@param ls _LineSegment
+---@return nil
+function playdate.graphics.drawLine(ls) end
+
 ---@param key string
 ---@param x integer
 ---@param y integer
@@ -2351,7 +2355,7 @@ function playdate.graphics.fillTriangle(x1, y1, x2, y2, x3, y3) end
 
 ---@param stringToEncode string
 ---@param desiredEdgeDimension integer
----@param callback function
+---@param callback fun(image: _Image, errorMessage: string)
 ---@return nil
 function playdate.graphics.generateQRCode(stringToEncode, desiredEdgeDimension, callback) end
 
@@ -3126,7 +3130,7 @@ function playdate.graphics.sprite.removeSprites(spriteArray) end
 ---@return nil
 function playdate.graphics.sprite.setAlwaysRedraw(flag) end
 
----@param drawCallback fun(x: integer, y: integer, width: integer, height: integer): nil
+---@param drawCallback? fun(x: integer, y: integer, width: integer, height: integer): nil
 ---@return nil
 function playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback) end
 
@@ -4757,11 +4761,13 @@ function playdate.timer:start() end
 ---@return nil
 function playdate.ui.crankIndicator:draw(xOffset, yOffset) end
 
+---@param xOffset? integer
+---@param yOffset? integer
 ---@return integer x
 ---@return integer y
 ---@return integer width
 ---@return integer height
-function playdate.ui.crankIndicator:getBounds() end
+function playdate.ui.crankIndicator:getBounds(xOffset, yOffset) end
 
 ---@deprecated since 2.1.0-beta1
 ---@return nil
