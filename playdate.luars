@@ -67,7 +67,7 @@ fun playdate.getGMTTime(): _DateTime;
 fun playdate.getPowerStatus(): _PowerStatus;
 fun playdate.getReduceFlashing(): boolean;
 fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
-fun playdate.getStats(): table;
+fun playdate.getStats(): _SystemStats;
 fun playdate.getSystemLanguage(): integer;
 fun playdate.getSystemMenu(): _Menu;
 fun playdate.getTime(): _DateTime;
@@ -1426,4 +1426,9 @@ local _SystemInfo = {
     commit: string,
     pdxcompatversion: integer,
     pdxversion: integer,
+};
+local _SystemStats = {
+    " kernel": number,
+    " game": number,
+    " audio": number
 };

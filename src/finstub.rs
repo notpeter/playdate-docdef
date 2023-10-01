@@ -113,12 +113,19 @@ impl FinStub {
         match self {
             FinStub::Variable(var) => {
                 var.var_attr.iter().map(
-                    |a|
-                        if a.key_value.to_string() != "" {
-                            format!("---@field {} {} {}", a.key_name, a.key_type, a.key_value)
+                    |a| {
+                        let key_name = if a.key_name.starts_with("\"") {
+                            format!("[{}]", a.key_name)
                         } else {
-                            format!("---@field {} {}", a.key_name, a.key_type)
+                            a.key_name.clone()
+                        };
+
+                        if a.key_value.to_string() != "" {
+                            format!("---@field {} {} {}", key_name, a.key_type, a.key_value)
+                        } else {
+                            format!("---@field {} {}", key_name, a.key_type)
                         }
+                    }
                 ).collect::<Vec<String>>()
             }
             FinStub::Stub(_) => {

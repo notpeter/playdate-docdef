@@ -605,6 +605,12 @@ local _Synth = {}
 ---@field pdxversion integer
 local _SystemInfo = {}
 
+---@class _SystemStats
+---@field [" kernel"] number
+---@field [" game"] number
+---@field [" audio"] number
+local _SystemStats = {}
+
 ---@class _TileMap : playdate.graphics.tilemap
 local _TileMap = {}
 
@@ -845,7 +851,7 @@ function playdate.getReduceFlashing() end
 ---@return integer milliseconds
 function playdate.getSecondsSinceEpoch() end
 
----@return table
+---@return _SystemStats
 function playdate.getStats() end
 
 ---@return integer
