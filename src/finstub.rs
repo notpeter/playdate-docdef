@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::luars::LuarsStatement;
-use crate::stub::Stub;
+use crate::stub::{Stub, FunctionType};
 
 pub struct Attribute {
     pub key_name: String,
@@ -50,7 +50,7 @@ impl FinStub {
                 let params: Vec<(String, String)> = fun_params.iter().map(|(fname, ftype)| (fname.to_string(), ftype.to_string())).collect();
                 let returns: Vec<(String, String)> = fun_returns.iter().map(|(fname, ftype)| (fname.to_string(), ftype.to_string())).collect();
                 let text: Vec<String> = Vec::new();
-                FinStub::Stub(Stub { title, anchor, params, returns, text })
+                FinStub::Stub(Stub { lang: FunctionType::Lua, title, anchor, params, returns, text })
             },
         }
     }

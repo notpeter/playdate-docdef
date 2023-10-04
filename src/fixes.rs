@@ -52,6 +52,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>, f_typ
     let returns: Vec<(String,String)> = Vec::new();
 
     Stub {
+        lang: f_type,
         title: fname,
         anchor: anchor.to_string(),
         text: text.clone(),
