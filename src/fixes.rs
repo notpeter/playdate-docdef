@@ -21,9 +21,10 @@ lazy_static! {
     ).unwrap();
     static ref C_FUNC: Regex = Regex::new(// C function signatures: void playdate->system->logToConsole(const char* format, ...)
         &format!(
-            r"^(?P<ret_type>(?:{c_type})) (?P<fname>{fname})\({pstr}\)",
-            c_type=r"(?:(?:void|unsigned int|const char|float|int|size_t|uint16_t|uint32_t|int32_t|[A-Z][A-Za-z]+)\**)",
-            fname=r"(?:[\w_]|(?:->))+",
+            r"^(?P<ret_type>(?:{c_type})) (?P<fname>{fname}|{missing_prefix})\({pstr}\);?",
+            c_type=r"(?:(?:void|unsigned int|int|const char|float|(?:size_|int8|int16|int32|uint8|uint16|uint32)_t|[A-Z][A-Za-z]+)\**)",
+            fname=r"playdate(?:\->[a-zA-Z_][a-zA-Z_0-9]*)+",
+            missing_prefix=r"(?:\(\*[a-zA-Z_][a-zA-Z_]*)\)",
             pstr=r"(?P<params>.*)",
         ).to_string()
     ).unwrap();
@@ -60,7 +61,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>, f_typ
 pub fn c_sig_from_title(title: &String) -> (String, String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
     let caps = match C_FUNC.captures(title) {
-        Some(c) => c, None => { panic!("ERROR: Could not parse C function signature: {}", title); }
+        Some(c) => c, None => { panic!("ERROR: Could not parse C function signature: \n{}\nusing this regex: {}\n", title, C_FUNC.as_str()) }
     };
     let ret_type = caps.name("ret_type").unwrap().as_str();
     let fname = caps.name("fname").unwrap().as_str();
@@ -106,13 +107,13 @@ pub fn params_from_title(title: &String, f_type: FunctionType) -> (String, Vec<(
         FunctionType::Lua => match LUA_FUNC.captures(title) {
             Some(c) => c,
             None => {
-                panic!("ERROR: Could not parse Lua function signature: {}\nwith: {}", title, LUA_FUNC.as_str());
+                panic!("ERROR: Could not parse Lua function signature:\n{}\nwith: {}\n", title, LUA_FUNC.as_str());
             }
         },
         FunctionType::C => match C_FUNC.captures(title) {
             Some(c) => c,
             None => {
-                panic!("ERROR: Could not parse C function signature: {}\nwith: {}", title, C_FUNC.as_str());
+                panic!("ERROR: Could not parse C function signature:\n{}\nwith: {}\n", title, C_FUNC.as_str());
             }
         },
     };
@@ -266,5 +267,19 @@ mod tests {
             ]
         );
         assert_eq!(title, recreate_c_sig(&ret_type, &fname, &params));
+    }
+
+    #[test]
+    fn test_c_struct_func() {
+        let title = "void (*freeSignal)(PDSynthSignal* signal);";
+        let (ret_type, fname, params) = c_sig_from_title(&title.to_string());
+        assert_eq!(ret_type, "void");
+        assert_eq!(fname, "(*freeSignal)");
+        assert_eq!(
+            params,
+            vec![
+                ("PDSynthSignal*".to_string(), "signal".to_string()),
+            ]
+        );
     }
 }
