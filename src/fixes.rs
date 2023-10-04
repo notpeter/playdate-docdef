@@ -13,6 +13,12 @@ lazy_static! {
     static ref LUA_FUNC: Regex = Regex::new(// Lua function signatures: function(a,b,c)
         &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
     ).unwrap();
+    static ref C_FUNC: Regex = Regex::new(// C function signatures: void playdate->system->logToConsole(const char* format, ...)
+        &format!(
+            r"^(?P<ret_type>(?:{name})) (?P<fname>{fname})\({pstr}\)",
+            name=r"[\w_]+", fname=r"(?:[\w_]|(?:->))+", pstr=r"(?P<params>.*)",
+        ).to_string()
+    ).unwrap();
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
@@ -45,11 +51,32 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     }
 }
 
+pub fn c_sig_from_title(title: &String) -> (String, String, Vec<(String, String)>) {
+    let mut params: Vec<(String, String)> = Vec::new();
+    let caps = match C_FUNC.captures(title) {
+        Some(c) => c, None => { panic!("ERROR: Could not parse C function signature: {}", title); }
+    };
+    let ret_type = caps.name("ret_type").unwrap().as_str();
+    let fname = caps.name("fname").unwrap().as_str();
+    let params_str = caps.name("params").unwrap().as_str();
+    if params_str.trim() != "" {
+        for p in params_str.split(",") {
+            let (p_name, p_type) = p.split_once(":").unwrap();
+            params.push((p_name.trim().to_string(), p_type.trim().to_string()));
+        }
+    }
+    (ret_type.to_string(), fname.to_string(), clean_c_parameters(&params))
+}
+
+pub fn clean_c_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
+    params.clone()
+}
+
 // Takes a valid function signature and returns a function name and a vector of parameters.
 pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
     let caps = match LUA_FUNC.captures(title) {
-        Some(c) => c, None => { panic!("ERROR: Could not parse function signature (typo?): {}", title); }
+        Some(c) => c, None => { panic!("ERROR: Could not parse Lua function signature: {}", title); }
     };
 
     let params_str = caps.name("params").unwrap().as_str();
@@ -151,5 +178,25 @@ mod tests {
             ("flip?".to_string(), "any".to_string()),
             ("sourceRect?".to_string(), "any".to_string()),
         ]);
+    }
+
+    #[test]
+    fn test_c_function_simple() {
+        // println!("{}", C_FUNC.as_str());
+        let title = "void playdate->system->removeAllMenuItems()";
+        let caps = C_FUNC.captures(title).unwrap();
+
+        let ret_type = caps.name("ret_type").unwrap().as_str();
+        let fname = caps.name("fname").unwrap().as_str();
+        let params_str = caps.name("params").unwrap().as_str();
+        // let params_str = caps.name("params").unwrap().as_str();
+        assert_eq!(ret_type, "void");
+        assert_eq!(fname, "playdate->system->removeAllMenuItems");
+        assert_eq!(params_str, "");
+
+        let (ret_type, fname, params) = c_sig_from_title(&title.to_string());
+        assert_eq!(ret_type, "void");
+        assert_eq!(fname, "playdate->system->removeAllMenuItems");
+        assert_eq!(params, vec![]);
     }
 }
