@@ -1,7 +1,7 @@
 use regex::Regex;
 use lazy_static::lazy_static;
 
-use crate::config::{TYPO, INVALID};
+use crate::config::{TYPO, INVALID, TYPO_C};
 use crate::stub::Stub;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -21,9 +21,12 @@ lazy_static! {
     ).unwrap();
     static ref C_FUNC: Regex = Regex::new(// C function signatures: void playdate->system->logToConsole(const char* format, ...)
         &format!(
-            r"^(?P<ret_type>(?:{c_type})) (?P<fname>{fname}|{missing_prefix})\({pstr}\);?",
-            c_type=r"(?:(?:void|unsigned int|int|const char|float|(?:size_|int8|int16|int32|uint8|uint16|uint32)_t|[A-Z][A-Za-z]+)\**)",
+            r"^(?P<ret_type>(?:{c_type})) (?P<fname>{fname}|{fname_top_level}|{missing_prefix})\({pstr}\);?",
+            //todo: remove space from char class once playdate->graphics->video->getContext is fixed
+            c_type=r"(?:(?:void|unsigned int|int|enum LuaType|char|const char|float|(?:size_|int8|int16|int32|uint8|uint16|uint32)_t|[A-Z][A-Za-z ]+)\**)",
             fname=r"playdate(?:\->[a-zA-Z_][a-zA-Z_0-9]*)+",
+            fname_top_level=r"[a-zA-Z_][a-zA-Z_0-9]*",
+            //todo: remove when fixed upstream
             missing_prefix=r"(?:\(\*[a-zA-Z_][a-zA-Z_]*)\)",
             pstr=r"(?P<params>.*)",
         ).to_string()
@@ -36,13 +39,18 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>, f_typ
     let params: Vec<(String, String)>;
 
     // Apply overrides
-    if false && TYPO.contains_key(anchor) {
+    if f_type == FunctionType::Lua && TYPO.contains_key(anchor) {
         let fixed = TYPO.get(anchor).unwrap();
         params = fixed.parameters.iter().map(
             |p| (p.clone(), "any".to_string())
         ).collect();
         // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
+    } else if f_type == FunctionType::C && TYPO_C.contains_key(anchor) {
+        let fixed = TYPO_C.get(anchor).unwrap();
+        // eprintln!("WARN: Found C_function override: {} -> {}", anchor, fixed);
+        fname = fixed.fname.clone();
+        params = Vec::new();
     } else {
         (fname, params) = params_from_title(title, f_type);
     }
