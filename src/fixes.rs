@@ -124,3 +124,32 @@ fn clean_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
     }
     v
 }
+
+
+#[cfg(test)]
+mod tests {
+    // use std::fs;
+    use super::*;
+    #[test]
+    fn lua_func() {
+        let title = "playdate.pathfinder.graph.new([nodeCount, [coordinates]])";
+        let caps = LUA_FUNC.captures(title).unwrap();
+        let params_str = caps.name("params").unwrap().as_str();
+        let fname = caps.name("fname").unwrap().as_str();
+        assert_eq!(fname, "playdate.pathfinder.graph.new");
+        assert_eq!(params_str, "[nodeCount, [coordinates]]");
+    }
+
+    #[test]
+    fn test_params_from_title() {
+        let title = "playdate.graphics.image:draw(x, y, [flip, [sourceRect]])";
+        let (fname, params) = params_from_title(&title.to_string());
+        assert_eq!(fname, "playdate.graphics.image:draw");
+        assert_eq!(params, vec![
+            ("x".to_string(), "any".to_string()),
+            ("y".to_string(), "any".to_string()),
+            ("flip?".to_string(), "any".to_string()),
+            ("sourceRect?".to_string(), "any".to_string()),
+        ]);
+    }
+}
