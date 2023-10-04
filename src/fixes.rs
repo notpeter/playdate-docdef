@@ -15,8 +15,10 @@ lazy_static! {
     ).unwrap();
     static ref C_FUNC: Regex = Regex::new(// C function signatures: void playdate->system->logToConsole(const char* format, ...)
         &format!(
-            r"^(?P<ret_type>(?:{name})) (?P<fname>{fname})\({pstr}\)",
-            name=r"[\w_]+", fname=r"(?:[\w_]|(?:->))+", pstr=r"(?P<params>.*)",
+            r"^(?P<ret_type>(?:{c_type})) (?P<fname>{fname})\({pstr}\)",
+            c_type=r"(?:(?:void|const char|float|int|uint16_t|uint32_t|int32_t|[A-Z][A-Za-z]+)\**)",
+            fname=r"(?:[\w_]|(?:->))+",
+            pstr=r"(?P<params>.*)",
         ).to_string()
     ).unwrap();
 }
@@ -58,14 +60,32 @@ pub fn c_sig_from_title(title: &String) -> (String, String, Vec<(String, String)
     };
     let ret_type = caps.name("ret_type").unwrap().as_str();
     let fname = caps.name("fname").unwrap().as_str();
-    let params_str = caps.name("params").unwrap().as_str();
-    if params_str.trim() != "" {
+    let params_str = caps.name("params").unwrap().as_str().trim();
+    if params_str == "void" {
+        params.push(("void".to_string(), "void".to_string()));
+    } else if params_str != "" {
         for p in params_str.split(",") {
-            let (p_name, p_type) = p.split_once(":").unwrap();
+            let (p_name, p_type) = p.rsplit_once(" ").unwrap();
             params.push((p_name.trim().to_string(), p_type.trim().to_string()));
         }
     }
     (ret_type.to_string(), fname.to_string(), clean_c_parameters(&params))
+}
+
+pub fn recreate_c_sig(ret_type: &String, fname: &String, params: &Vec<(String, String)>) -> String {
+    let mut sig = format!("{} {}(", ret_type, fname);
+    if params.len() == 1 && params[0] == ("void".to_string(), "void".to_string()) {
+        sig.push_str("void");
+    } else {
+        sig.push_str(
+            &params.iter().map(
+                |(p_name, p_type)|
+                format!("{} {}", p_name, p_type)
+            ).collect::<Vec<String>>().join(", ")
+        );
+    }
+    sig.push_str(")");
+    sig
 }
 
 pub fn clean_c_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
@@ -182,14 +202,12 @@ mod tests {
 
     #[test]
     fn test_c_function_simple() {
-        // println!("{}", C_FUNC.as_str());
         let title = "void playdate->system->removeAllMenuItems()";
         let caps = C_FUNC.captures(title).unwrap();
 
         let ret_type = caps.name("ret_type").unwrap().as_str();
         let fname = caps.name("fname").unwrap().as_str();
         let params_str = caps.name("params").unwrap().as_str();
-        // let params_str = caps.name("params").unwrap().as_str();
         assert_eq!(ret_type, "void");
         assert_eq!(fname, "playdate->system->removeAllMenuItems");
         assert_eq!(params_str, "");
@@ -198,5 +216,28 @@ mod tests {
         assert_eq!(ret_type, "void");
         assert_eq!(fname, "playdate->system->removeAllMenuItems");
         assert_eq!(params, vec![]);
+
+        let new_sig = recreate_c_sig(&ret_type, &fname, &params);
+        assert_eq!(new_sig, title);
+    }
+
+    #[test]
+    fn test_c_function_complex() {
+        // println!("{}", C_FUNC.as_str());
+        let title = "PDMenuItem* playdate->system->addOptionsMenuItem(const char* title, const char** options, int optionsCount, PDMenuItemCallbackFunction* callback, void* userdata)";
+        let (ret_type, fname, params) = c_sig_from_title(&title.to_string());
+        assert_eq!(ret_type, "PDMenuItem*");
+        assert_eq!(fname, "playdate->system->addOptionsMenuItem");
+        assert_eq!(
+            params,
+            vec![
+                ("const char*".to_string(), "title".to_string()),
+                ("const char**".to_string(), "options".to_string()),
+                ("int".to_string(), "optionsCount".to_string()),
+                ("PDMenuItemCallbackFunction*".to_string(), "callback".to_string()),
+                ("void*".to_string(), "userdata".to_string()),
+            ]
+        );
+        assert_eq!(title, recreate_c_sig(&ret_type, &fname, &params));
     }
 }
