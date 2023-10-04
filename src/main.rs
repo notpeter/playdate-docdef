@@ -7,7 +7,7 @@ mod scrape;
 mod finstub;
 
 use std::{fs, collections::HashSet};
-use crate::{args::Action, finstub::FinStub};
+use crate::{args::Action, finstub::FinStub, fixes::FunctionType};
 
 fn go_out(fin_stubs: Vec<FinStub>) {
     println!("---@meta");
@@ -38,7 +38,7 @@ fn main() {
     }
     match args.action {
         Action::Annotate => {
-            let stubs = scrape::scrape(response, &statements);
+            let stubs = scrape::scrape(response, &statements, FunctionType::Lua);
             for stub in stubs {
                 fin_stubs.push(FinStub::from_stub(&stub));
                 both.insert(stub.func_signature());
@@ -55,6 +55,12 @@ fn main() {
             }
             go_out(fin_stubs);
         },
+        Action::Header => {
+            let stubs = scrape::scrape(response, &statements, FunctionType::C);
+            for stub in stubs {
+                println!("{:#?}", stub);
+            }
+        }
         Action::Stub => {
             for s in &statements {
                 match s {

@@ -1,12 +1,12 @@
 use regex::Regex;
 use scraper::{Selector, CaseSensitivity};
 
-use crate::fixes::{clean_text, annotate_function};
+use crate::fixes::{clean_text, annotate_function, FunctionType};
 use crate::stub::Stub;
 use crate::fixes::clean_code;
 use crate::luars::LuarsStatement;
 
-pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
+pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>, f_type: FunctionType) -> Vec<Stub> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -84,13 +84,13 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
         }
         if title.contains("  ") { // Functions with multiple
             for t in title.split("  ") {
-                let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
+                let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text, f_type);
                 stub = stub.apply_types(statements);
                 stubs.push(stub)
             }
         } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") || title.contains("Callback") { //
             // function(), imagetable[n], "p + p", "-v", etc
-            let mut stub = annotate_function(&anchor.to_string(), &title, &text);
+            let mut stub = annotate_function(&anchor.to_string(), &title, &text, f_type);
             stub = stub.apply_types(statements);
             stubs.push(stub);
         } else {

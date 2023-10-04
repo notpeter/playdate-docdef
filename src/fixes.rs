@@ -4,6 +4,12 @@ use lazy_static::lazy_static;
 use crate::config::{TYPO, INVALID};
 use crate::stub::Stub;
 
+#[derive(Clone, Copy, PartialEq)]
+pub enum FunctionType {
+    Lua,
+    C,
+}
+
 lazy_static! {
     static ref RE_CODE: Regex = Regex::new(r"</?code>").unwrap();
     static ref RE_EM: Regex = Regex::new(r"</?em>").unwrap();
@@ -16,7 +22,7 @@ lazy_static! {
     static ref C_FUNC: Regex = Regex::new(// C function signatures: void playdate->system->logToConsole(const char* format, ...)
         &format!(
             r"^(?P<ret_type>(?:{c_type})) (?P<fname>{fname})\({pstr}\)",
-            c_type=r"(?:(?:void|const char|float|int|uint16_t|uint32_t|int32_t|[A-Z][A-Za-z]+)\**)",
+            c_type=r"(?:(?:void|unsigned int|const char|float|int|size_t|uint16_t|uint32_t|int32_t|[A-Z][A-Za-z]+)\**)",
             fname=r"(?:[\w_]|(?:->))+",
             pstr=r"(?P<params>.*)",
         ).to_string()
@@ -24,14 +30,12 @@ lazy_static! {
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
-pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
+pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>, f_type: FunctionType) -> Stub {
     let fname: String;
     let params: Vec<(String, String)>;
-    // TODO: Fix this. It's a hack to get around borrowing issues.
-    let text = text.clone();
 
     // Apply overrides
-    if TYPO.contains_key(anchor) {
+    if false && TYPO.contains_key(anchor) {
         let fixed = TYPO.get(anchor).unwrap();
         params = fixed.parameters.iter().map(
             |p| (p.clone(), "any".to_string())
@@ -39,7 +43,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
         // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
     } else {
-        (fname, params) = params_from_title(title);
+        (fname, params) = params_from_title(title, f_type);
     }
 
     let returns: Vec<(String,String)> = Vec::new();
@@ -48,8 +52,8 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
         title: fname,
         anchor: anchor.to_string(),
         text: text.clone(),
-        params: params,
-        returns: returns,
+        params,
+        returns,
     }
 }
 
@@ -93,10 +97,24 @@ pub fn clean_c_parameters(params: &Vec<(String, String)>) -> Vec<(String, String
 }
 
 // Takes a valid function signature and returns a function name and a vector of parameters.
-pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
+pub fn params_from_title(title: &String, f_type: FunctionType) -> (String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
-    let caps = match LUA_FUNC.captures(title) {
-        Some(c) => c, None => { panic!("ERROR: Could not parse Lua function signature: {}", title); }
+    let caps: regex::Captures;
+
+
+    let caps = match f_type {
+        FunctionType::Lua => match LUA_FUNC.captures(title) {
+            Some(c) => c,
+            None => {
+                panic!("ERROR: Could not parse Lua function signature: {}\nwith: {}", title, LUA_FUNC.as_str());
+            }
+        },
+        FunctionType::C => match C_FUNC.captures(title) {
+            Some(c) => c,
+            None => {
+                panic!("ERROR: Could not parse C function signature: {}\nwith: {}", title, C_FUNC.as_str());
+            }
+        },
     };
 
     let params_str = caps.name("params").unwrap().as_str();
@@ -190,7 +208,7 @@ mod tests {
     #[test]
     fn test_params_from_title() {
         let title = "playdate.graphics.image:draw(x, y, [flip, [sourceRect]])";
-        let (fname, params) = params_from_title(&title.to_string());
+        let (fname, params) = params_from_title(&title.to_string(), FunctionType::Lua);
         assert_eq!(fname, "playdate.graphics.image:draw");
         assert_eq!(params, vec![
             ("x".to_string(), "any".to_string()),
@@ -212,18 +230,27 @@ mod tests {
         assert_eq!(fname, "playdate->system->removeAllMenuItems");
         assert_eq!(params_str, "");
 
+        let empty_vec: Vec<(String, String)> = Vec::new();
         let (ret_type, fname, params) = c_sig_from_title(&title.to_string());
-        assert_eq!(ret_type, "void");
-        assert_eq!(fname, "playdate->system->removeAllMenuItems");
-        assert_eq!(params, vec![]);
+        assert_eq!(
+            (ret_type.as_str(), fname.as_str(), &params),
+            ("void", "playdate->system->removeAllMenuItems", &empty_vec)
+        );
+        assert_eq!(title, recreate_c_sig(&ret_type, &fname, &params));
 
-        let new_sig = recreate_c_sig(&ret_type, &fname, &params);
-        assert_eq!(new_sig, title);
+        let t2 = "void* playdate->system->realloc(void* ptr, size_t size)";
+        let (ret_type, fname, params) = c_sig_from_title(&t2.to_string());
+        assert_eq!(
+            (ret_type.as_str(), fname.as_str(), &params),
+            ("void*", "playdate->system->realloc", &vec![
+                ("void*".to_string(), "ptr".to_string()),
+                ("size_t".to_string(), "size".to_string()),
+            ])
+        );
     }
 
     #[test]
     fn test_c_function_complex() {
-        // println!("{}", C_FUNC.as_str());
         let title = "PDMenuItem* playdate->system->addOptionsMenuItem(const char* title, const char** options, int optionsCount, PDMenuItemCallbackFunction* callback, void* userdata)";
         let (ret_type, fname, params) = c_sig_from_title(&title.to_string());
         assert_eq!(ret_type, "PDMenuItem*");

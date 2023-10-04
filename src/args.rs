@@ -25,6 +25,7 @@ pub struct Args {
 pub enum Action {
     Stub,
     Annotate,
+    Header,
 }
 
 fn get_sdk_dir() -> PathBuf {
@@ -52,7 +53,11 @@ fn fetch_or_file(args: &Args) -> String {
         }
 
     } else {
-        let filename = args.path.as_ref().unwrap().join("Inside Playdate.html");
+        let html_file = match args.action {
+            Action::Annotate | Action::Stub => "Inside Playdate.html",
+            Action::Header => "Inside Playdate with C.html",
+        };
+        let filename = args.path.as_ref().unwrap().join(html_file);
         eprintln!("Reading from {}", filename.display());
         let mut file = match File::open(filename) {
             Err(why) => panic!("couldn't open file: {}", why),
