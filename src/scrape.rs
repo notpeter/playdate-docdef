@@ -1,8 +1,8 @@
 use regex::Regex;
 use scraper::{Selector, CaseSensitivity};
 
-use crate::fixes::{clean_text, annotate_function, FunctionType};
-use crate::stub::Stub;
+use crate::fixes::{clean_text, annotate_function};
+use crate::stub::{Stub, FunctionType};
 use crate::fixes::clean_code;
 use crate::luars::LuarsStatement;
 

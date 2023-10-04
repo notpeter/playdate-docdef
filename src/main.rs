@@ -7,7 +7,7 @@ mod scrape;
 mod finstub;
 
 use std::{fs, collections::HashSet};
-use crate::{args::Action, finstub::FinStub, fixes::FunctionType};
+use crate::{args::Action, finstub::FinStub, stub::FunctionType};
 
 fn go_out(fin_stubs: Vec<FinStub>) {
     println!("---@meta");
@@ -58,7 +58,7 @@ fn main() {
         Action::Header => {
             let stubs = scrape::scrape(response, &statements, FunctionType::C);
             for stub in stubs {
-                println!("{:#?}", stub);
+                println!("{:?}", stub);
             }
         }
         Action::Stub => {

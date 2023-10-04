@@ -2,13 +2,7 @@ use regex::Regex;
 use lazy_static::lazy_static;
 
 use crate::config::{TYPO, INVALID, TYPO_C};
-use crate::stub::Stub;
-
-#[derive(Clone, Copy, PartialEq)]
-pub enum FunctionType {
-    Lua,
-    C,
-}
+use crate::stub::{Stub, FunctionType};
 
 lazy_static! {
     static ref RE_CODE: Regex = Regex::new(r"</?code>").unwrap();

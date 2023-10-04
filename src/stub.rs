@@ -1,8 +1,15 @@
 use crate::luars::LuarsStatement;
 
+#[derive(Clone, Copy, PartialEq)]
+pub enum FunctionType {
+    Lua,
+    C,
+}
+
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug, Clone)]
 pub struct Stub {
+    // pub lang: String,
     pub title: String,
     pub anchor: String,
     pub params: Vec<(String, String)>, // parameter_name=type_name
