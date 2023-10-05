@@ -46,10 +46,10 @@ Return = {
 OptionalType = { TypeLua ~ Optional? }
 
 UnAssigned = _{
-	Identifier
+    Identifier
 }
 StringAssignment = _{
-	Identifier ~ W
+    Identifier ~ W
     ~ (":" ~ W ~ CaptureType ~ W) ~ W
     ~ "=" ~ W
     ~ QuotedString
@@ -73,7 +73,7 @@ FunctionalParameters = {
 
 TableKey = !{
     ( DotDotDot | QuotedString | LuaIdentifier) ~ Optional?
-	| (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
+    | (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
 }
 DotDotDot = _{ "..." }
 // these optionals and ... are overly friendly
@@ -87,16 +87,22 @@ cParen = _{ ")" }
 
 Optional = _{ "?" }
 Identifier = @{
-    LuaIdentifier ~ ("." ~ LuaIdentifier)*
+    (
+        (LuaIdentifier ~ ("." ~ LuaIdentifier)*)
+        | QuotedString
+    )
 }
 LuaIdentifier = _{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
 IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
 
-CaptureType = @{ TypeLua }
+CaptureType = @{ TypeLua | TypeC}
 TypeLua = _{
     LT
     | "(" ~ W ~ LT ~ W ~ ("|" ~ W ~ LT ~ W)+ ~ ")"
+}
+TypeC = _{
+    QuotedString
 }
 LT = _{
     | ("fun(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ (":" ~ W ~ UnparsedType ~ Optional? ~ W)?)
@@ -104,7 +110,7 @@ LT = _{
     | UnparsedType
 }
 UnparsedType = _{
-	Identifier
+    Identifier
     ~ ("[][][]" | "[][]" | "[]" | ("[" ~ ASCII_DIGIT+ ~ "]" ))?
 }
 
@@ -112,13 +118,6 @@ QuotedString = _{ Quote ~ StringLiteral ~ Quote }
 Quote = _{ "\"" }
 StringLiteral = { QuotedChar* }
 QuotedChar = _{ !"\"" ~ ANY }
-
-
-// TypeLua = @{
-//     (LuaCatsBuiltIn ~ "?")
-//   | (LuaCatsBuiltIn ~ "[]")
-//   | (LuaCatsBuiltIn ~ ("|" ~ LuaCatsBuiltIn)*)
-// }
 
 // LuaCatsBuiltIn = { "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
 // LuaTypes_non_nil = @{ "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }

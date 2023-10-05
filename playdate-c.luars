@@ -1,3 +1,16 @@
+global PlaydateAPI;
+local PlaydateAPI = {
+    system: "const struct playdate_sys*",
+    file: "const struct playdate_file* file",
+    graphics: "const struct playdate_graphics* graphics",
+    sprite: "const struct playdate_sprite* sprite",
+    display: "const struct playdate_display* display",
+    sound: "const struct playdate_sound* sound",
+    lua: "const struct playdate_lua* lua",
+    json: "const struct playdate_json*",
+    scoreboards: "const struct playdate_scoreboards*",
+};
+
 inline LCDMakeRect(x: int, y: int, width: int, height: int): LCDRect;
 local LCDRect: struct = {
     left: int,
