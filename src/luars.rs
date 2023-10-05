@@ -282,6 +282,13 @@ mod tests {
         )
     }
     #[test]
+    fn bad_grammar() {
+        let lua_grammar_file = fs::read_to_string("playdate.luars").expect("cannot read file");
+        let c_grammar_file = fs::read_to_string("playdate-c.luars").expect("cannot read file");
+        assert!(!lua_grammar_file.contains("\t"), "tabs found in playdate.luars");
+        assert!(!c_grammar_file.contains("\t"), "tabs found in playdate-c.luars");
+    }
+    #[test]
     fn playdate_grammar() {
         let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
         let playdate_luars = parse_document(&unparsed_file);

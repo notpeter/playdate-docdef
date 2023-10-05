@@ -1,0 +1,60 @@
+inline LCDMakeRect(x: int, y: int, width: int, height: int): LCDRect;
+local LCDRect: struct = {
+    left: int,
+    right: int,
+    top: int,
+    bottom: int,
+};
+inline LCDRect_translate(r: LCDRect, dx: int, dy: int): LCDRect;
+global LCD_COLUMNS: define = "400";
+global LCD_ROWS: define = "240";
+global LCD_ROWSIZE: define = "52";
+global LCD_SCREEN_RECT: define = "LCDMakeRect(0,0,LCD_COLUMNS,LCD_ROWS)";
+global LCDBitmapDrawMode: enum = {
+    kDrawModeCopy: int = 0,
+    kDrawModeWhiteTransparent: int = 1,
+    kDrawModeBlackTransparent: int = 2,
+    kDrawModeFillWhite: int = 3,
+    kDrawModeFillBlack: int = 4,
+    kDrawModeXOR: int = 5,
+    kDrawModeNXOR: int = 6,
+    kDrawModeInverted: int = 7,
+};
+global LCDBitmapFlip: enum =
+{
+    kBitmapUnflipped: int = 0,
+    kBitmapFlippedX: int = 1,
+    kBitmapFlippedY: int = 2,
+    kBitmapFlippedXY: int = 3,
+};
+global LCDSolidColor: enum = {
+    kColorBlack: int = 0,
+    kColorWhite: int = 1,
+    kColorClear: int = 2,
+    kColorXOR: int =3,
+};
+global LCDLineCapStyle: enum = {
+    kLineCapStyleButt: int = 0,
+    kLineCapStyleSquare: int = 1,
+    kLineCapStyleRound: int = 2,
+};
+global LCDFontLanguage: enum = {
+    kLCDFontLanguageEnglish: int = 0,
+    kLCDFontLanguageJapanese: int = 1,
+    kLCDFontLanguageUnknown: int = 2,
+};
+global PDStringEncoding: enum = {
+    kASCIIEncoding: int = 0,
+    kUTF8Encoding: int = 1,
+    k16BitLEEncodin: int = 2,
+};
+global LCDPattern: uint8_t[16];
+global LCDColor: uintptr_t;
+
+global "LCDMakePattern(r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,ra,rb,rc,rd,re,rf)": define = "(LCDPattern){(r0),(r1),(r2),(r3),(r4),(r5),(r6),(f7),(r8),(r9),(ra),(rb),(rc),(rd),(re),(rf)}";
+global "LCDOpaquePattern(r0,r1,r2,r3,r4,r5,r6,r7)": define = "(LCDPattern){(r0),(r1),(r2),(r3),(r4),(r5),(r6),(r7),0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff}";
+
+global LCDPolygonFillRule: enum = {
+    kPolygonFillNonZero: int = 0,
+    kPolygonFillEvenOdd: int = 1,
+};
