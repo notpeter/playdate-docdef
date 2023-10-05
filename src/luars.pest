@@ -13,15 +13,15 @@ Statement = _{
         | ((Function | Global | Local) ~ ";" ~ W ~ "\n"?)
     )
 }
-Fun_    = _{ "fun " }
+Fun_    = _{ "fun " | "inline "}
 Local_  = _{ "local " }
 Global_ = _{ "global " }
 
 Local = {
-    Local_ ~ Table
+    Local_ ~ ( StringAssignment | Table )
 }
 Global = {
-    Global_ ~ Table
+    Global_ ~ ( StringAssignment | Table )
 }
 Function = {
     Fun_ ~ W
@@ -45,11 +45,19 @@ Return = {
 }
 OptionalType = { TypeLua ~ Optional? }
 
+StringAssignment = _{
+	Identifier ~ W
+    ~ (":" ~ W ~ CaptureType ~ W) ~ W
+    ~ "=" ~ W
+    ~ QuotedString
+}
+
 Table = _{
     Identifier ~ W
     ~ (":" ~ W ~ CaptureType ~ W)?
     ~ ("=" ~ W ~ "{" ~ W ~ TableConstants? ~ W ~ "}" ~ W)?
 }
+
 FunctionName = {
     (Identifier ~ ":" ~ Identifier)
     | Identifier

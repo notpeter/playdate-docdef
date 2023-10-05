@@ -245,12 +245,6 @@ mod tests {
         ]));
     }
     #[test]
-    fn playdate_grammar() {
-        let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
-        let playdate_luars = parse_document(&unparsed_file);
-        assert_eq!(playdate_luars.len(), unparsed_file.matches(";").count());
-    }
-    #[test]
     fn funcs() {
         let document = LuarsParser::parse(Rule::Function, "fun where(): nil;")
             .expect("unsuccessful parse").next().unwrap();
@@ -286,5 +280,18 @@ mod tests {
                 vec![("x", "integer"), ("y", "integer"),]
             ),
         )
+    }
+    #[test]
+    fn playdate_grammar() {
+        let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
+        let playdate_luars = parse_document(&unparsed_file);
+        assert_eq!(playdate_luars.len(), unparsed_file.matches(";").count());
+    }
+    #[test]
+    fn playdate_c_grammar() {
+        let unparsed_file = fs::read_to_string("playdate-c.luars").expect("cannot read file");
+        let playdate_c_luars = parse_document(&unparsed_file);
+        println!("{:?}", playdate_c_luars);
+        assert_eq!(playdate_c_luars.len(), unparsed_file.matches(";").count());
     }
 }
