@@ -1,5 +1,5 @@
 global PlaydateAPI;
-local PlaydateAPI = {
+local PlaydateAPI: struct = {
     system: "const struct playdate_sys*",
     file: "const struct playdate_file* file",
     graphics: "const struct playdate_graphics* graphics",
@@ -10,6 +10,20 @@ local PlaydateAPI = {
     json: "const struct playdate_json*",
     scoreboards: "const struct playdate_scoreboards*",
 };
+
+global PDSystemEvent: enum = {
+    kEventInit = 1,
+    kEventInitLua = 2,
+    kEventLock = 3,
+    kEventUnlock = 4,
+    kEventPause = 5,
+    kEventResume = 6,
+    kEventTerminate = 7,
+    kEventKeyPressed = 8,
+    kEventKeyReleased = 9,
+    kEventLowPower = 10,
+};
+
 
 inline LCDMakeRect(x: int, y: int, width: int, height: int): LCDRect;
 local LCDRect: struct = {
@@ -24,42 +38,42 @@ global LCD_ROWS: define = "240";
 global LCD_ROWSIZE: define = "52";
 global LCD_SCREEN_RECT: define = "LCDMakeRect(0,0,LCD_COLUMNS,LCD_ROWS)";
 global LCDBitmapDrawMode: enum = {
-    kDrawModeCopy: int = 0,
-    kDrawModeWhiteTransparent: int = 1,
-    kDrawModeBlackTransparent: int = 2,
-    kDrawModeFillWhite: int = 3,
-    kDrawModeFillBlack: int = 4,
-    kDrawModeXOR: int = 5,
-    kDrawModeNXOR: int = 6,
-    kDrawModeInverted: int = 7,
+    kDrawModeCopy = 0,
+    kDrawModeWhiteTransparent = 1,
+    kDrawModeBlackTransparent = 2,
+    kDrawModeFillWhite = 3,
+    kDrawModeFillBlack = 4,
+    kDrawModeXOR = 5,
+    kDrawModeNXOR = 6,
+    kDrawModeInverted = 7,
 };
 global LCDBitmapFlip: enum =
 {
-    kBitmapUnflipped: int = 0,
-    kBitmapFlippedX: int = 1,
-    kBitmapFlippedY: int = 2,
-    kBitmapFlippedXY: int = 3,
+    kBitmapUnflipped = 0,
+    kBitmapFlippedX = 1,
+    kBitmapFlippedY = 2,
+    kBitmapFlippedXY = 3,
 };
 global LCDSolidColor: enum = {
-    kColorBlack: int = 0,
-    kColorWhite: int = 1,
-    kColorClear: int = 2,
-    kColorXOR: int =3,
+    kColorBlack = 0,
+    kColorWhite = 1,
+    kColorClear = 2,
+    kColorXOR = 3,
 };
 global LCDLineCapStyle: enum = {
-    kLineCapStyleButt: int = 0,
-    kLineCapStyleSquare: int = 1,
-    kLineCapStyleRound: int = 2,
+    kLineCapStyleButt = 0,
+    kLineCapStyleSquare = 1,
+    kLineCapStyleRound = 2,
 };
 global LCDFontLanguage: enum = {
-    kLCDFontLanguageEnglish: int = 0,
-    kLCDFontLanguageJapanese: int = 1,
-    kLCDFontLanguageUnknown: int = 2,
+    kLCDFontLanguageEnglish = 0,
+    kLCDFontLanguageJapanese = 1,
+    kLCDFontLanguageUnknown = 2,
 };
 global PDStringEncoding: enum = {
-    kASCIIEncoding: int = 0,
-    kUTF8Encoding: int = 1,
-    k16BitLEEncodin: int = 2,
+    kASCIIEncoding = 0,
+    kUTF8Encoding = 1,
+    k16BitLEEncodin = 2,
 };
 global LCDPattern: uint8_t[16];
 global LCDColor: uintptr_t;
@@ -68,6 +82,6 @@ global "LCDMakePattern(r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,ra,rb,rc,rd,re,rf)": define
 global "LCDOpaquePattern(r0,r1,r2,r3,r4,r5,r6,r7)": define = "(LCDPattern){(r0),(r1),(r2),(r3),(r4),(r5),(r6),(r7),0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff}";
 
 global LCDPolygonFillRule: enum = {
-    kPolygonFillNonZero: int = 0,
-    kPolygonFillEvenOdd: int = 1,
+    kPolygonFillNonZero = 0,
+    kPolygonFillEvenOdd = 1,
 };
