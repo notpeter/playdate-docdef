@@ -477,7 +477,7 @@ fun playdate.graphics.fillRect(x: integer, y: integer, width: integer, height: i
 fun playdate.graphics.fillRoundRect(r: _Rect, radius: number): nil;
 fun playdate.graphics.fillRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.fillTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
-fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image: _Image, errorMessage: string)): nil;
+fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image: _Image, errorMessage: string)): _Timer;
 fun playdate.graphics.getBackgroundColor(): integer;
 fun playdate.graphics.getClipRect(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.graphics.getColor(): integer;

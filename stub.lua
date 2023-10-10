@@ -2362,7 +2362,7 @@ function playdate.graphics.fillTriangle(x1, y1, x2, y2, x3, y3) end
 ---@param stringToEncode string
 ---@param desiredEdgeDimension integer
 ---@param callback fun(image: _Image, errorMessage: string)
----@return nil
+---@return _Timer
 function playdate.graphics.generateQRCode(stringToEncode, desiredEdgeDimension, callback) end
 
 ---@return integer
