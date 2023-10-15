@@ -741,11 +741,11 @@ function playdate.apiVersion() end
 ---@return boolean
 function playdate.buttonIsPressed(button) end
 
----@param button integer
+---@param button (integer|string)
 ---@return boolean
 function playdate.buttonJustPressed(button) end
 
----@param button integer
+---@param button (integer|string)
 ---@return boolean
 function playdate.buttonJustReleased(button) end
 

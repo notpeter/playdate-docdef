@@ -35,8 +35,8 @@ fun playdate.GMTTimeFromEpoch(seconds: integer, milliseconds: integer): _DateTim
 fun playdate.accelerometerIsRunning(): boolean;
 fun playdate.apiVersion(): (api_version: integer, runtime_minimum_api_version: integer);
 fun playdate.buttonIsPressed(button: (integer|string)): boolean;
-fun playdate.buttonJustPressed(button: integer): boolean;
-fun playdate.buttonJustReleased(button: integer): boolean;
+fun playdate.buttonJustPressed(button: (integer|string)): boolean;
+fun playdate.buttonJustReleased(button: (integer|string)): boolean;
 fun playdate.clearConsole(): nil;
 fun playdate.crankDocked(): nil;
 fun playdate.crankUndocked(): nil;
