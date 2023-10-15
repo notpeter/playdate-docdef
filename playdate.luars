@@ -34,7 +34,7 @@ fun playdate.BButtonUp(): nil;
 fun playdate.GMTTimeFromEpoch(seconds: integer, milliseconds: integer): _DateTime;
 fun playdate.accelerometerIsRunning(): boolean;
 fun playdate.apiVersion(): (api_version: integer, runtime_minimum_api_version: integer);
-fun playdate.buttonIsPressed(button: integer): boolean;
+fun playdate.buttonIsPressed(button: (integer|string)): boolean;
 fun playdate.buttonJustPressed(button: integer): boolean;
 fun playdate.buttonJustReleased(button: integer): boolean;
 fun playdate.clearConsole(): nil;
@@ -1333,7 +1333,7 @@ fun table.shallowcopy(source: table, destination?: table): table;
 
 fun class(name: string): _Class;
 local _Class = {
-    extends: fun(parentClass: any): nil,
+    extends: fun(parentClass: (any|string)): nil,
     super: table,
 };
 

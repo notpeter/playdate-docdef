@@ -339,7 +339,7 @@ local _Blinker = {}
 local _Channel = {}
 
 ---@class _Class
----@field extends fun(parentClass: any): nil
+---@field extends fun(parentClass: (any|string)): nil
 ---@field super table
 local _Class = {}
 
@@ -737,7 +737,7 @@ function playdate.accelerometerIsRunning() end
 ---@return integer runtime_minimum_api_version
 function playdate.apiVersion() end
 
----@param button integer
+---@param button (integer|string)
 ---@return boolean
 function playdate.buttonIsPressed(button) end
 
