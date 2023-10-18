@@ -426,6 +426,9 @@ global playdate.graphics = {
     kImageFlippedX: integer = 1,
     kImageFlippedY: integer = 2,
     kImageFlippedXY: integer = 3,
+    kLineCapStyleButt: integer = 0,
+    kLineCapStyleSquare: integer = 1,
+    kLineCapStyleRound: integer = 2,
     kPolygonFillNonZero: integer = 0,
     kPolygonFillEvenOdd: integer = 1,
     kStrokeCentered: integer = 0,
@@ -916,6 +919,13 @@ fun playdate.simulator.getURL(url: string): string;
 fun playdate.simulator.writeToFile(image: _Image, path: string): nil;
 
 global playdate.sound = {
+    kFilterLowPass: integer = 0,
+    kFilterHighPass: integer = 1,
+    kFilterBandPass: integer = 2,
+    kFilterNotch: integer = 3,
+    kFilterPEQ: integer = 4,
+    kFilterLowShelf: integer = 5,
+    kFilterHighShelf: integer = 6,
     kFormat8bitMono: integer = 0,
     kFormat8bitStereo: integer = 1,
     kFormat16bitMono: integer = 2,
@@ -993,7 +1003,7 @@ fun playdate.sound.delayline:setMix(level: number): nil;
 fun playdate.sound.delayline:setMixMod(signal: _Signal): nil;
 
 global playdate.sound.twopolefilter: _SoundEffect;
-fun playdate.sound.twopolefilter.new(type: integer): _TwoPoleFilter;
+fun playdate.sound.twopolefilter.new(type: (integer|string)): _TwoPoleFilter;
 local _TwoPoleFilter: playdate.sound.twopolefilter;
 fun playdate.sound.twopolefilter:setFrequency(f: number): nil;
 fun playdate.sound.twopolefilter:setFrequencyMod(signal: _Signal): nil;
@@ -1002,7 +1012,7 @@ fun playdate.sound.twopolefilter:setMix(level: number): nil;
 fun playdate.sound.twopolefilter:setMixMod(signal: _Signal): nil;
 fun playdate.sound.twopolefilter:setResonance(r: _Rect): nil;
 fun playdate.sound.twopolefilter:setResonanceMod(signal: _Signal): nil;
-fun playdate.sound.twopolefilter:setType(type: integer): nil;
+fun playdate.sound.twopolefilter:setType(type: (integer|string)): nil;
 
 global playdate.sound.channel;
 fun playdate.sound.channel.new(): _Channel;
