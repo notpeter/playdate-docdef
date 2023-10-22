@@ -1353,6 +1353,7 @@ global Object = {
 };
 fun Object.baseObject(): table;
 fun Object:isa(Class: table): boolean;
+fun Object:init(...: any);
 fun Object:tableDump(indent?: boolean, _table?: table): nil;
 fun class(ClassName: string, properties?: table, namespace?: table): _NewClass;
 local _Object: Object = {
