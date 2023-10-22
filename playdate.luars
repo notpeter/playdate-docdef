@@ -687,7 +687,7 @@ fun playdate.graphics.nineSlice:drawInRect(x: integer, y: integer, width: intege
 fun playdate.graphics.nineSlice:getMinSize(): (width: integer, height: integer);
 fun playdate.graphics.nineSlice:getSize(): (width: integer, height: integer);
 
-global playdate.graphics.sprite = {
+global playdate.graphics.sprite: _Object = {
     kCollisionTypeSlide: integer = 0,
     kCollisionTypeFreeze: integer = 1,
     kCollisionTypeOverlap: integer = 2,
@@ -1341,9 +1341,21 @@ fun table.getsize(table: table): (arrayCount: integer, hashCount: integer);
 fun table.indexOfElement(table: table, element: any): integer?;
 fun table.shallowcopy(source: table, destination?: table): table;
 
-fun class(name: string): _Class;
-local _Class = {
-    extends: fun(parentClass: (any|string)): nil,
+local _NewClass = {
+    className: string,
+    properties?: table,
+    namespace?: table,
+    extends: fun(Parent?: (table|string)): nil,
+};
+global Object = {
+    class: table,
+    className: string,
+};
+fun Object.baseObject(): table;
+fun Object:isa(Class: table): boolean;
+fun Object:tableDump(indent?: boolean, _table?: table): nil;
+fun class(ClassName: string, properties?: table, namespace?: table): _NewClass;
+local _Object: Object = {
     super: table,
 };
 
