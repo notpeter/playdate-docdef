@@ -618,8 +618,6 @@ global playdate.graphics.image = {
     kDitherTypeAtkinson: integer = 10,
 };
 local _Image: playdate.graphics.image = {
-    x: integer,
-    y: integer,
     width: integer,
     height: integer,
 };
