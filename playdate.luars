@@ -911,9 +911,48 @@ fun playdate.pathfinder.node:removeAllConnections(removeIncoming?: boolean): nil
 fun playdate.pathfinder.node:removeConnection(node: _PathFinderNode, removeReciprocal?: boolean): nil;
 fun playdate.pathfinder.node:setXY(x: integer, y: integer): nil;
 
+local _ServerStatus = {
+    code: string,
+    message: string,
+};
+local _ScoreBoardAddResult = {
+    rank?: integer,
+    player: string,
+    value: integer,
+};
+local _ScoreBoardBoards = {
+    boardId: string,
+    name: string,
+};
+local _ScoreBoardsScoreboardsResult = {
+    lastUpdated: integer,
+    boards: _ScoreBoardBoards[]
+};
+local _ScoreBoardScores = {
+    rank: integer,
+    player: string,
+    value: integer,
+};
+local _ScoreBoardScoresResult = {
+    lastUpdated: integer,
+    scores: _ScoreBoardScores[],
+};
+global playdate.scoreboards;
+fun playdate.scoreboards.addScore(boardName: string, value: integer, callback: fun(status: _ServerStatus, result: _ScoreBoardAddResult): nil): nil;
+fun playdate.scoreboards.getPersonalBest(boardName: string, callback: fun(status?: _ServerStatus, result?: _ScoreBoardAddResult): nil): nil;
+fun playdate.scoreboards.getScoreboards(callback: fun(status: _ServerStatus, result: _ScoreBoardsScoreboardsResult): nil): nil;
+fun playdate.scoreboards.getScores(boardID: string, callback: fun(status: _ServerStatus, result: _ScoreBoardScoresResult): nil): nil;
+
+global playdate.server;
+fun playdate.server.getAvatar(something: any, callback: fun(status: _ServerStatus, result: table): nil): nil;
+fun playdate.server.setAvatar(image: _Image, ...): nil;
+fun playdate.server.uploadFile(something1: string, something2: string, ...): nil;
+fun playdate.server.uploadImage(image: _Image, something: string, ...): nil;
+
 global playdate.simulator;
 fun playdate.simulator.exit(): nil;
 fun playdate.simulator.getURL(url: string): string;
+fun playdate.simulator.openURL(url: string): nil;
 fun playdate.simulator.writeToFile(image: _Image, path: string): nil;
 
 global playdate.sound = {
