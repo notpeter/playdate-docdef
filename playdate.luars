@@ -22,7 +22,7 @@ global playdate = {
     kButtonDown: integer = 8,
     kButtonB: integer = 16,
     kButtonA: integer = 32,
-    metadate: _Metadata,
+    metadata: _Metadata,
     systeminfo: _SystemInfo,
 };
 fun playdate.AButtonDown(): nil;
