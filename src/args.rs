@@ -1,10 +1,10 @@
-use std::{fs::File, io::Read, path::PathBuf, env};
 use clap::{Parser, ValueEnum};
+use std::{env, fs::File, io::Read, path::PathBuf};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
-    #[arg(value_enum, default_value="stub")]
+    #[arg(value_enum, default_value = "stub")]
     pub action: Action,
 
     /// Filename to load from
@@ -17,7 +17,6 @@ pub struct Args {
     /// Verbose logging (-v, -vv, -vvv, etc.)
     #[arg(short, long, action = clap::ArgAction::Count)]
     pub verbose: u8,
-
 }
 
 // CLI Action: Generate Function Stubs or full Lua with annotation comments
@@ -48,9 +47,10 @@ fn fetch_or_file(args: &Args) -> String {
             Ok(r) if r.status().is_success() => {
                 response = r.text().unwrap();
             }
-            _ => { panic!("Error fetching from {}", url); }
+            _ => {
+                panic!("Error fetching from {}", url);
+            }
         }
-
     } else {
         let filename = args.path.as_ref().unwrap().join("Inside Playdate.html");
         eprintln!("Reading from {}", filename.display());

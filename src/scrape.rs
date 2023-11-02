@@ -1,10 +1,10 @@
 use regex::Regex;
-use scraper::{Selector, CaseSensitivity};
+use scraper::{CaseSensitivity, Selector};
 
-use crate::fixes::{clean_text, annotate_function};
-use crate::stub::Stub;
 use crate::fixes::clean_code;
+use crate::fixes::{annotate_function, clean_text};
 use crate::luars::LuarsStatement;
+use crate::stub::Stub;
 
 pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
     let document = scraper::Html::parse_document(&response);
@@ -13,13 +13,23 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
         ",div.sect1>div.sectionbody>div.sect2>div.sect3>div.item",
         ",div.sect1>div.sectionbody>div.sect2>div.sect3>div.sect4>div.item",
         ",div.sect1>div.sectionbody>div.sect2>div.sect3>div.sect4>div.sect5>div.item",
-    )).unwrap();
+    ))
+    .unwrap();
     let sel_title = Selector::parse("div.title").unwrap();
     let sel_content = Selector::parse("div.content").unwrap();
 
     let sel_docs = Selector::parse(
-        vec!("div.paragraph", "div.ulist", "div.admonitionblock", "div.literalblock", "div.listingblock").join(",").as_str()
-    ).unwrap();
+        vec![
+            "div.paragraph",
+            "div.ulist",
+            "div.admonitionblock",
+            "div.literalblock",
+            "div.listingblock",
+        ]
+        .join(",")
+        .as_str(),
+    )
+    .unwrap();
     let sel_docs_text = Selector::parse("p").unwrap();
     let sel_docs_list = Selector::parse("ul>li").unwrap();
     let sel_docs_coderay = Selector::parse("code").unwrap();
@@ -29,14 +39,18 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
 
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
-    let mut stubs : Vec<Stub> = Vec::new();
-
+    let mut stubs: Vec<Stub> = Vec::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
 
         let anchor: &str = element.value().attr("id").unwrap_or("");
-        let title: String = element.select(&sel_title).next().unwrap().text().collect::<String>();
+        let title: String = element
+            .select(&sel_title)
+            .next()
+            .unwrap()
+            .text()
+            .collect::<String>();
         if anchor == "" {
             // eprintln!("WARN: Docs missing anchor for: {}", title);
         }
@@ -82,13 +96,20 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
                 }
             }
         }
-        if title.contains("  ") { // Functions with multiple
+        if title.contains("  ") {
+            // Functions with multiple
             for t in title.split("  ") {
                 let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
                 stub = stub.apply_types(statements);
                 stubs.push(stub)
             }
-        } else if title.contains("(") || title.contains("[") || title.contains(" ") || title.starts_with("-") || title.contains("Callback") { //
+        } else if title.contains("(")
+            || title.contains("[")
+            || title.contains(" ")
+            || title.starts_with("-")
+            || title.contains("Callback")
+        {
+            //
             // function(), imagetable[n], "p + p", "-v", etc
             let mut stub = annotate_function(&anchor.to_string(), &title, &text);
             stub = stub.apply_types(statements);

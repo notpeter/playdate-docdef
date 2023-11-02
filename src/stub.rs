@@ -5,7 +5,7 @@ use crate::luars::LuarsStatement;
 pub struct Stub {
     pub title: String,
     pub anchor: String,
-    pub params: Vec<(String, String)>, // parameter_name=type_name
+    pub params: Vec<(String, String)>,  // parameter_name=type_name
     pub returns: Vec<(String, String)>, // return_name=type_name
     pub text: Vec<String>,
 }
@@ -17,8 +17,10 @@ impl Stub {
         for s in statements {
             //TODO: This is hella inefficient
             match s {
-                LuarsStatement::Function(_, _, _) => {},
-                _ => { continue; }
+                LuarsStatement::Function(_, _, _) => {}
+                _ => {
+                    continue;
+                }
             }
             let s_sig = s.func_sig();
             // eprintln!("INFO: Comparing {} to {}", func_sig, s_sig);
@@ -26,12 +28,18 @@ impl Stub {
             match s {
                 LuarsStatement::Function(_, params, returns) => {
                     if func_sig == s_sig {
-                        self.params = params.iter().map(|(fname, ftype)| (fname.to_string(), ftype.to_string())).collect();
-                        self.returns = returns.iter().map(|(fname, ftype)| (fname.to_string(), ftype.to_string())).collect();
+                        self.params = params
+                            .iter()
+                            .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
+                            .collect();
+                        self.returns = returns
+                            .iter()
+                            .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
+                            .collect();
                         found = true;
                     }
-                },
-                _ => {},
+                }
+                _ => {}
             }
         }
         if found {
@@ -44,7 +52,10 @@ impl Stub {
     pub fn func_signature(&self) -> String {
         let name = self.title.clone();
         let params = self.params.clone();
-        let param_names : Vec<String> = params.iter().map(|(name, _)| name.clone().replace("?", "")).collect::<Vec<String>>();
+        let param_names: Vec<String> = params
+            .iter()
+            .map(|(name, _)| name.clone().replace("?", ""))
+            .collect::<Vec<String>>();
         String::from(format!("{}({})", name, param_names.join(", ")))
     }
     pub fn text_comments(&self) -> Vec<String> {
@@ -77,7 +88,10 @@ impl Stub {
             }
             i = i + 1;
         }
-        s.push(format!("--- https://sdk.play.date/Inside%20Playdate.html#{}", self.anchor));
+        s.push(format!(
+            "--- https://sdk.play.date/Inside%20Playdate.html#{}",
+            self.anchor
+        ));
         s
     }
 }

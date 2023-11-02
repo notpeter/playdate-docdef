@@ -1,7 +1,7 @@
-use regex::Regex;
 use lazy_static::lazy_static;
+use regex::Regex;
 
-use crate::config::{TYPO, INVALID};
+use crate::config::{INVALID, TYPO};
 use crate::stub::Stub;
 
 lazy_static! {
@@ -23,16 +23,18 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
     // Apply overrides
     if TYPO.contains_key(anchor) {
         let fixed = TYPO.get(anchor).unwrap();
-        params = fixed.parameters.iter().map(
-            |p| (p.clone(), "any".to_string())
-        ).collect();
+        params = fixed
+            .parameters
+            .iter()
+            .map(|p| (p.clone(), "any".to_string()))
+            .collect();
         // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
         fname = fixed.fname.clone();
     } else {
         (fname, params) = params_from_title(title);
     }
 
-    let returns: Vec<(String,String)> = Vec::new();
+    let returns: Vec<(String, String)> = Vec::new();
 
     Stub {
         title: fname,
@@ -47,7 +49,13 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
 pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
     let caps = match LUA_FUNC.captures(title) {
-        Some(c) => c, None => { panic!("ERROR: Could not parse function signature (typo?): {}", title); }
+        Some(c) => c,
+        None => {
+            panic!(
+                "ERROR: Could not parse function signature (typo?): {}",
+                title
+            );
+        }
     };
 
     let params_str = caps.name("params").unwrap().as_str();
@@ -63,7 +71,12 @@ pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
             }
             if optional {
                 // strip the brackets
-                param_name = param_name.clone().replace("[", "").replace("]", "").trim().to_string();
+                param_name = param_name
+                    .clone()
+                    .replace("[", "")
+                    .replace("]", "")
+                    .trim()
+                    .to_string();
                 // add the optional ? to param name
                 param_name = format!("{}?", param_name);
             }
@@ -92,8 +105,11 @@ pub fn clean_text(text: String) -> String {
         .trim()
         .to_string();
     let tn = RE_A.replace_all(&t0, "");
-    if HTML_TAG.is_match(&tn) && !&tn.contains("/Data/<bundleid>"){
-        eprintln!("WARN: Extra HTML tag in description text: {}", tn.to_string());
+    if HTML_TAG.is_match(&tn) && !&tn.contains("/Data/<bundleid>") {
+        eprintln!(
+            "WARN: Extra HTML tag in description text: {}",
+            tn.to_string()
+        );
     }
     tn.to_string()
 }
@@ -101,7 +117,8 @@ pub fn clean_text(text: String) -> String {
 pub fn clean_code(text: String) -> Vec<String> {
     let mut lines: Vec<String> = Vec::new();
     for line in text.lines() {
-        if line.trim() != "" { // remove empty lines in middle of code blocks
+        if line.trim() != "" {
+            // remove empty lines in middle of code blocks
             lines.push(line.to_string());
         }
     }
