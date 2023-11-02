@@ -1,4 +1,10 @@
 use crate::luars::LuarsStatement;
+use textwrap;
+
+// Wrap long lines of documentation at this length
+// Note: Function signatures are not wrapped (a couple are >100 chars)
+// Note: This also includes the leading "--- " (4 chars).
+static MAX_LINE_LENGTH: usize = 100 - 4;
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug, Clone)]
@@ -74,13 +80,20 @@ impl Stub {
         let mut in_code = false;
         while i < self.text.len() {
             let line = self.text[i].clone();
-            // Bulleted list and code get fewer newlines. Everything else needs empty lines for proper markdown rendering.
-            if in_code
-            || line.starts_with("```")
-            || (line.starts_with("* ") && i < self.text.len() - 1 && self.text[i + 1].starts_with("* ")) {
+            // Bulleted list and code get fewer newlines.
+            // Everything else needs extra empty lines for proper markdown rendering.
+            let no_break = in_code
+                || line.starts_with("```")
+                || (line.starts_with("* ")
+                    && i < self.text.len() - 1
+                    && self.text[i + 1].starts_with("* "));
+            if no_break {
                 s.push(format!("--- {}", line));
             } else {
-                s.push(format!("--- {}\n---", line));
+                for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
+                    s.push(format!("--- {}", wrapped_line));
+                }
+                s.push("---".to_string());
             }
             // this is hacky as hell
             if line == "```" {
