@@ -19,8 +19,6 @@ lazy_static! {
 pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
     let fname: String;
     let params: Vec<(String, String)>;
-    // TODO: Fix this. It's a hack to get around borrowing issues.
-    let text = text.clone();
 
     // Apply overrides
     if TYPO.contains_key(anchor) {
