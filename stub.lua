@@ -2611,6 +2611,12 @@ function playdate.graphics.setLineCapStyle(style) end
 ---@return nil
 function playdate.graphics.setLineWidth(width) end
 
+---@param image _Image
+---@param x? integer
+---@param y? integer
+---@return nil
+function playdate.graphics.setPattern(image, x, y) end
+
 ---@param pattern integer[]
 ---@return nil
 function playdate.graphics.setPattern(pattern) end
@@ -3036,7 +3042,7 @@ function playdate.graphics.imagetable.new(count, cellsWide, cellSize) end
 function playdate.graphics.imagetable.new(path) end
 
 ---@param n integer
----@return nil
+---@return _Image
 function playdate.graphics.imagetable:__index(n) end
 
 ---@param n integer
