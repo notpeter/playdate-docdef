@@ -102,6 +102,8 @@ pub fn clean_text(text: String) -> String {
         .replace("</strong>", "**")
         .replace("\n", " ")
         .replace("<br>", "\n---\n---")
+        .replace("&gt;", ">")
+        .replace("&lt;", "<")
         .trim()
         .to_string();
     let tn = RE_A.replace_all(&t0, "");

@@ -3227,7 +3227,7 @@ function playdate.graphics.sprite.removeSprites(spriteArray) end
 function playdate.graphics.sprite.setAlwaysRedraw(flag) end
 
 ---@param drawCallback? fun(x: integer, y: integer, width: integer, height: integer): nil
----@return nil
+---@return _Sprite
 function playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback) end
 
 ---@param x integer
