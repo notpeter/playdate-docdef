@@ -480,7 +480,8 @@ fun playdate.graphics.fillRect(x: integer, y: integer, width: integer, height: i
 fun playdate.graphics.fillRoundRect(r: _Rect, radius: number): nil;
 fun playdate.graphics.fillRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.fillTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
-fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image: _Image, errorMessage: string)): _Timer;
+fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image?: _Image, errorMessage?: string)): _Timer;
+fun playdate.graphics.generateQRCodeSync(stringToEncode: string, desiredEdgeDimension: integer): (image?: _Image, errorMessage?: string);
 fun playdate.graphics.getBackgroundColor(): integer;
 fun playdate.graphics.getClipRect(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.graphics.getColor(): integer;
@@ -663,12 +664,12 @@ fun playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: 
 
 global playdate.graphics.imagetable;
 fun playdate.graphics.imagetable.new(count: integer, cellsWide?: integer, cellSize?: integer): _ImageTable;
-fun playdate.graphics.imagetable.new(path: string): _ImageTable;
+fun playdate.graphics.imagetable.new(path: string): (imagetable?: _ImageTable, errorMessage?: string);
 local _ImageTable: playdate.graphics.imagetable;
-fun playdate.graphics.imagetable:__index(n: integer): _Image;
+fun playdate.graphics.imagetable:__index(n: integer): _Image?;
 fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|string)): nil;
-fun playdate.graphics.imagetable:getImage(n: integer): _Image;
-fun playdate.graphics.imagetable:getImage(x: integer, y: integer): _Image;
+fun playdate.graphics.imagetable:getImage(n: integer): _Image?;
+fun playdate.graphics.imagetable:getImage(x: integer, y: integer): _Image?;
 fun playdate.graphics.imagetable:getLength(): integer;
 fun playdate.graphics.imagetable:getSize(): (cellsWide: integer, cellsHigh: integer);
 fun playdate.graphics.imagetable:load(path: string): (success: boolean, error: string?);
@@ -853,6 +854,11 @@ fun playdate.keyboard.width(): nil;
 
 global playdate.math;
 fun playdate.math.lerp(min: number, max: number, t: number): number;
+fun playdate.math.logic.nand(bool1: boolean, bool2: boolean): boolean;
+fun playdate.math.logic.nor(bool1: boolean, bool2: boolean): boolean;
+fun playdate.math.logic.nxor(bool1: boolean, bool2: boolean): boolean;
+fun playdate.math.logic.xor(bool1: boolean, bool2: boolean): boolean;
+
 
 global playdate.menu;
 local _Menu: playdate.menu;
@@ -1309,6 +1315,7 @@ local _Timer: playdate.timer = {
 };
 fun _Timer:timerEndedCallback(...: any): nil;
 fun _Timer:updateCallback(...: any): nil;
+fun _Timer:__tostring(): string;
 fun playdate.timer:pause(): nil;
 fun playdate.timer:remove(): nil;
 fun playdate.timer:reset(): nil;

@@ -741,6 +741,9 @@ function _FrameTimer:timerEndedCallback(...) end
 ---@return nil
 function _FrameTimer:updateCallback(...) end
 
+---@return string
+function _Timer:__tostring() end
+
 ---@param ... any
 ---@return nil
 function _Timer:timerEndedCallback(...) end
@@ -2435,9 +2438,15 @@ function playdate.graphics.fillTriangle(x1, y1, x2, y2, x3, y3) end
 
 ---@param stringToEncode string
 ---@param desiredEdgeDimension integer
----@param callback fun(image: _Image, errorMessage: string)
+---@param callback fun(image?: _Image, errorMessage?: string)
 ---@return _Timer
 function playdate.graphics.generateQRCode(stringToEncode, desiredEdgeDimension, callback) end
+
+---@param stringToEncode string
+---@param desiredEdgeDimension integer
+---@return _Image image?
+---@return string errorMessage?
+function playdate.graphics.generateQRCodeSync(stringToEncode, desiredEdgeDimension) end
 
 ---@return integer
 function playdate.graphics.getBackgroundColor() end
@@ -3038,11 +3047,12 @@ function playdate.graphics.image:vcrPauseFilterImage() end
 function playdate.graphics.imagetable.new(count, cellsWide, cellSize) end
 
 ---@param path string
----@return _ImageTable
+---@return _ImageTable imagetable?
+---@return string errorMessage?
 function playdate.graphics.imagetable.new(path) end
 
 ---@param n integer
----@return _Image
+---@return _Image?
 function playdate.graphics.imagetable:__index(n) end
 
 ---@param n integer
@@ -3054,11 +3064,11 @@ function playdate.graphics.imagetable:drawImage(n, x, y, flip) end
 
 ---@param x integer
 ---@param y integer
----@return _Image
+---@return _Image?
 function playdate.graphics.imagetable:getImage(x, y) end
 
 ---@param n integer
----@return _Image
+---@return _Image?
 function playdate.graphics.imagetable:getImage(n) end
 
 ---@return integer
@@ -3692,6 +3702,26 @@ function playdate.keyboard.width() end
 ---@param t number
 ---@return number
 function playdate.math.lerp(min, max, t) end
+
+---@param bool1 boolean
+---@param bool2 boolean
+---@return boolean
+function playdate.math.logic.nand(bool1, bool2) end
+
+---@param bool1 boolean
+---@param bool2 boolean
+---@return boolean
+function playdate.math.logic.nor(bool1, bool2) end
+
+---@param bool1 boolean
+---@param bool2 boolean
+---@return boolean
+function playdate.math.logic.nxor(bool1, bool2) end
+
+---@param bool1 boolean
+---@param bool2 boolean
+---@return boolean
+function playdate.math.logic.xor(bool1, bool2) end
 
 ---@param title string
 ---@param initialValue? boolean

@@ -160,14 +160,8 @@ impl FinStub {
         // Returns the complete stub for a class or function.
         let notes = HashMap::from([
             // TODO: maybe make this lazy_static (how?)
-            (
-                "playdate.ui.crankIndicator:start()",
-                "---@deprecated since 2.1.0-beta1",
-            ),
-            (
-                "playdate.ui.crankIndicator:update()",
-                "---@deprecated since 2.1.0-beta1",
-            ),
+            ("playdate.ui.crankIndicator:start()", "---@deprecated since 2.1.0-beta1"),
+            ("playdate.ui.crankIndicator:update()", "---@deprecated since 2.1.0-beta1"),
         ]);
         let mut out: Vec<String> = Vec::new();
         match self {
