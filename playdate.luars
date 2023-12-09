@@ -854,6 +854,8 @@ fun playdate.keyboard.width(): nil;
 
 global playdate.math;
 fun playdate.math.lerp(min: number, max: number, t: number): number;
+
+global playdate.math.logic;
 fun playdate.math.logic.nand(bool1: boolean, bool2: boolean): boolean;
 fun playdate.math.logic.nor(bool1: boolean, bool2: boolean): boolean;
 fun playdate.math.logic.nxor(bool1: boolean, bool2: boolean): boolean;
