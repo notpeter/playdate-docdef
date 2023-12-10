@@ -1455,7 +1455,7 @@ function playdate.file.getType(path) end
 ---@return boolean
 function playdate.file.isdir(path) end
 
----@param path string
+---@param path? string
 ---@param showhidden? boolean
 ---@return string[]
 function playdate.file.listFiles(path, showhidden) end
@@ -3500,7 +3500,7 @@ function playdate.graphics.sprite:setImage(image, flip, scale, yscale) end
 function playdate.graphics.sprite:setImageDrawMode(mode) end
 
 ---@param flip (integer|string)
----@param flipCollideRect? integer
+---@param flipCollideRect? boolean
 ---@return nil
 function playdate.graphics.sprite:setImageFlip(flip, flipCollideRect) end
 
@@ -4314,8 +4314,8 @@ function playdate.sound.instrument:playNote(frequency, vel, length, when) end
 ---@return nil
 function playdate.sound.instrument:setTranspose(halfsteps) end
 
----@param left integer
----@param right? integer
+---@param left number
+---@param right? number
 ---@return nil
 function playdate.sound.instrument:setVolume(left, right) end
 
@@ -4570,15 +4570,15 @@ function playdate.sound.sampleplayer:setRateMod(signal) end
 ---@return nil
 function playdate.sound.sampleplayer:setSample(sample) end
 
----@param left integer
----@param right? integer
+---@param left number
+---@param right? number
 ---@return nil
 function playdate.sound.sampleplayer:setVolume(left, right) end
 
 ---@return nil
 function playdate.sound.sampleplayer:stop() end
 
----@param midi_path string
+---@param midi_path? string
 ---@return _Sequence
 function playdate.sound.sequence.new(midi_path) end
 
@@ -4691,7 +4691,7 @@ function playdate.sound.synth:playNote(pitch, volume, length, when) end
 ---@param decay number
 ---@param sustain number
 ---@param release number
----@param curvature number
+---@param curvature? number
 ---@return nil
 function playdate.sound.synth:setADSR(attack, decay, sustain, release, curvature) end
 
@@ -4741,8 +4741,8 @@ function playdate.sound.synth:setRelease(time) end
 ---@return nil
 function playdate.sound.synth:setSustain(level) end
 
----@param left integer
----@param right? integer
+---@param left number
+---@param right? number
 ---@return nil
 function playdate.sound.synth:setVolume(left, right) end
 
@@ -4759,7 +4759,7 @@ function playdate.sound.synth:setWavetable(sample, samplesize, xsize, ysize) end
 ---@return nil
 function playdate.sound.synth:stop() end
 
----@return playdate.sound.track
+---@return _Track
 function playdate.sound.track.new() end
 
 ---@param s _ControlSignal
@@ -4805,7 +4805,7 @@ function playdate.sound.track:getPolyphony() end
 ---@return nil
 function playdate.sound.track:removeNote(step, note) end
 
----@param inst _Instrument
+---@param inst (_Instrument|_Synth)
 ---@return nil
 function playdate.sound.track:setInstrument(inst) end
 
