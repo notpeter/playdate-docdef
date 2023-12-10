@@ -1159,7 +1159,7 @@ fun playdate.sound.fileplayer:stop(): nil;
 global playdate.sound.instrument: _SoundSource;
 fun playdate.sound.instrument.new(synth?: _Synth): _Instrument;
 local _Instrument: playdate.sound.instrument;
-fun playdate.sound.instrument:addVoice(v: _Vector2D, note?: integer, rangeend?: integer, transpose?: integer): nil;
+fun playdate.sound.instrument:addVoice(v: _Synth, note?: integer, rangeend?: integer, transpose?: integer): nil;
 fun playdate.sound.instrument:allNotesOff(): nil;
 fun playdate.sound.instrument:getVolume(): (left_or_mono: number, right: number?);
 fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
