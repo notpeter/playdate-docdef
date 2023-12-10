@@ -4277,7 +4277,7 @@ function playdate.sound.fileplayer:stop() end
 ---@return _Instrument
 function playdate.sound.instrument.new(synth) end
 
----@param v _Vector2D
+---@param v _Synth
 ---@param note? integer
 ---@param rangeend? integer
 ---@param transpose? integer
