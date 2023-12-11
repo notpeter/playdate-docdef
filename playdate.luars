@@ -179,7 +179,7 @@ fun playdate.file.exists(path: string): boolean;
 fun playdate.file.getSize(path: string): integer;
 fun playdate.file.getType(path: string): string;
 fun playdate.file.isdir(path: string): boolean;
-fun playdate.file.listFiles(path: string, showhidden?: boolean): string[];
+fun playdate.file.listFiles(path?: string, showhidden?: boolean): string[];
 fun playdate.file.load(path: string, env?: table): function;
 fun playdate.file.mkdir(path: string): nil;
 fun playdate.file.modtime(path: string): _ModTime;
@@ -786,7 +786,7 @@ fun playdate.graphics.sprite:setGroups(groups: (integer|integer[])): nil;
 fun playdate.graphics.sprite:setIgnoresDrawOffset(flag: boolean): nil;
 fun playdate.graphics.sprite:setImage(image: _Image, flip?: (integer|string), scale?: integer, yscale?: integer): nil;
 fun playdate.graphics.sprite:setImageDrawMode(mode: integer): nil;
-fun playdate.graphics.sprite:setImageFlip(flip: (integer|string), flipCollideRect?: integer): nil;
+fun playdate.graphics.sprite:setImageFlip(flip: (integer|string), flipCollideRect?: boolean): nil;
 fun playdate.graphics.sprite:setOpaque(flag: boolean): nil;
 fun playdate.graphics.sprite:setRedrawsOnImageChange(flag: boolean): nil;
 fun playdate.graphics.sprite:setRotation(angle: number, scale?: integer, yScale?: integer): nil;
@@ -1166,7 +1166,7 @@ fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
 fun playdate.sound.instrument:playMIDINote(note: (number|string), vel?: number, length?: number, when?: number): nil;
 fun playdate.sound.instrument:playNote(frequency: number, vel?: number, length?: number, when?: number): nil;
 fun playdate.sound.instrument:setTranspose(halfsteps: number): nil;
-fun playdate.sound.instrument:setVolume(left: integer, right?: integer): nil;
+fun playdate.sound.instrument:setVolume(left: number, right?: number): nil;
 
 global playdate.sound.sampleplayer: _SoundSource;
 fun playdate.sound.sampleplayer.new(path: string): _SamplePlayer;
@@ -1189,7 +1189,7 @@ fun playdate.sound.sampleplayer:setPlayRange(start: integer, _end: integer): nil
 fun playdate.sound.sampleplayer:setRate(rate: integer): nil;
 fun playdate.sound.sampleplayer:setRateMod(signal: _Signal): nil;
 fun playdate.sound.sampleplayer:setSample(sample: _Sample): nil;
-fun playdate.sound.sampleplayer:setVolume(left: integer, right?: integer): nil;
+fun playdate.sound.sampleplayer:setVolume(left: number, right?: number): nil;
 fun playdate.sound.sampleplayer:stop(): nil;
 
 global playdate.sound.synth: _SoundSource;
@@ -1203,7 +1203,7 @@ fun playdate.sound.synth:isPlaying(): boolean;
 fun playdate.sound.synth:noteOff(): nil;
 fun playdate.sound.synth:playMIDINote(note: (number|string), volume?: number, length?: number, when?: number): boolean;
 fun playdate.sound.synth:playNote(pitch: (number|string), volume?: number, length?: number, when?: number): boolean;
-fun playdate.sound.synth:setADSR(attack: number, decay: number, sustain: number, release: number, curvature: number): nil;
+fun playdate.sound.synth:setADSR(attack: number, decay: number, sustain: number, release: number, curvature?: number): nil;
 fun playdate.sound.synth:setAmplitudeMod(signal: _Signal): nil;
 fun playdate.sound.synth:setAttack(time: number): nil;
 fun playdate.sound.synth:setDecay(time: number): nil;
@@ -1215,7 +1215,7 @@ fun playdate.sound.synth:setParameter(parameter: integer, value: number): nil;
 fun playdate.sound.synth:setParameterMod(parameter: integer, signal: _Signal): nil;
 fun playdate.sound.synth:setRelease(time: number): nil;
 fun playdate.sound.synth:setSustain(level: number): nil;
-fun playdate.sound.synth:setVolume(left: integer, right?: integer): nil;
+fun playdate.sound.synth:setVolume(left: number, right?: number): nil;
 fun playdate.sound.synth:setWaveform(waveform: integer): nil;
 fun playdate.sound.synth:setWavetable(sample: _Sample, samplesize: integer, xsize: integer, ysize?: integer);
 fun playdate.sound.synth:stop(): nil;
@@ -1241,7 +1241,7 @@ fun playdate.sound.sample:playAt(when: number, vol?: number, rightvol?: number, 
 fun playdate.sound.sample:save(filename: string): nil;
 
 global playdate.sound.sequence;
-fun playdate.sound.sequence.new(midi_path: string): _Sequence;
+fun playdate.sound.sequence.new(midi_path?: string): _Sequence;
 local _Sequence: playdate.sound.sequence;
 fun playdate.sound.sequence:addTrack(track?: _Track): nil;
 fun playdate.sound.sequence:allNotesOff(): nil;
@@ -1260,7 +1260,7 @@ fun playdate.sound.sequence:setTrackAtIndex(n: integer, track: _Track): nil;
 fun playdate.sound.sequence:stop(): nil;
 
 global playdate.sound.track;
-fun playdate.sound.track.new(): playdate.sound.track;
+fun playdate.sound.track.new(): _Track;
 local _Track: playdate.sound.track;
 fun playdate.sound.track:addControlSignal(s: _ControlSignal): nil;
 fun playdate.sound.track:addNote(step: integer, note: (string|integer), length: number, velocity?: number): nil;
@@ -1273,7 +1273,7 @@ fun playdate.sound.track:getNotes(step?: integer, endstep?: integer): _SoundTrac
 fun playdate.sound.track:getNotesActive(): integer;
 fun playdate.sound.track:getPolyphony(): integer;
 fun playdate.sound.track:removeNote(step: integer, note: integer): nil;
-fun playdate.sound.track:setInstrument(inst: _Instrument): nil;
+fun playdate.sound.track:setInstrument(inst: (_Instrument|_Synth)): nil;
 fun playdate.sound.track:setMuted(flag: boolean): nil;
 fun playdate.sound.track:setNotes(list: table[]): nil;
 
