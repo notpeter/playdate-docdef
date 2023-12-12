@@ -35,11 +35,6 @@ parameters = ["pattern"]
 fname = "playdate.graphics.setStencilPattern"
 parameters = ["pattern"]
 
-# missing curvature parameter
-["m-sound.synth.setADSR"]
-fname = "playdate.sound.synth:setADSR"
-parameters = ["attack", "decay", "sustain", "release", "curvature"]
-
 # unicode "…​" instead of "..."
 ["m-ui.gridview.setNumberOfRows"]
 fname = "playdate.ui.gridview:setNumberOfRows"

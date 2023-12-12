@@ -4,20 +4,12 @@ use lazy_static::lazy_static;
 use serde::Deserialize;
 
 static TOML_STR_TYPO: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Typo.toml"));
-static TOML_STR_INVALID: &str =
-    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
 lazy_static! {
     pub static ref TYPO: HashMap<String, TypoReplacement> = match toml::from_str(TOML_STR_TYPO) {
         Ok(v) => v,
         Err(e) => {
             panic!("ERROR: Loading Typo.toml failed. {:?}", e)
-        }
-    };
-    pub static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
-        Ok(v) => v,
-        Err(e) => {
-            panic!("ERROR: Loading Invalid.toml failed. {:?}", e);
         }
     };
 }

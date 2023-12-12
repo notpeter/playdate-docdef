@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
-use crate::config::{INVALID, TYPO};
+use crate::config::TYPO;
 use crate::stub::Stub;
 
 lazy_static! {
@@ -87,7 +87,7 @@ pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
             }
         }
     }
-    (fname.to_string(), clean_parameters(&params))
+    (fname.to_string(), params)
 }
 
 pub fn clean_text(text: String) -> String {
@@ -125,19 +125,4 @@ pub fn clean_code(text: String) -> Vec<String> {
         }
     }
     lines
-}
-
-fn clean_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
-    let mut v: Vec<(String, String)> = Vec::new();
-    for (p_name, lua_type) in params {
-        let p_an = p_name.replace("?", ""); // without "?" at the the end for optional
-        if INVALID.contains_key(p_an.as_str()) {
-            let fixed_name = INVALID.get(p_an.as_str()).unwrap().to_string();
-            // eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
-            v.push((fixed_name, lua_type.to_string()));
-        } else {
-            v.push((p_name.to_string(), lua_type.to_string()));
-        }
-    }
-    v
 }
