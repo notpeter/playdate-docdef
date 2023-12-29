@@ -573,7 +573,7 @@ fun playdate.graphics.animator.new(duration: integer, startValue: (number|_Point
 fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFunctions: function[], startTimeOffset?: integer): _Animator;
 local _Animator: playdate.graphics.animator = {
     repeatCount: integer,
-    reverses: integer,
+    reverses: boolean,
     easingAmplitude: number,
     easingPeriod: number,
     s?: number,
@@ -1311,6 +1311,7 @@ local _Timer: playdate.timer = {
     discardOnCompletion: boolean,
     duration: integer,
     timeLeft: integer,
+    paused: boolean,
     repeats: boolean,
     reverses: boolean,
     timerEndedArgs: any[],
