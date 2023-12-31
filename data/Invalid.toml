@@ -1,8 +1,44 @@
 # A simple list of key value replacements for parameter names
-# Hopefully these will be fixed upstream
 
 function = "_function"
 repeat = "_repeat"
 end = "_end"
 string = "str"
 "pretty-print" = "pretty"
+
+# ----------------------------------------------------
+# Hopefully these will get fixed in the upstream docs.
+#
+# -- invalid lua:
+#
+# function
+# playdate.sound.synth:setFinishCallback(function)
+# https://sdk.play.date/inside-playdate/#m-sound.synth.setFinishCallback
+#
+# end
+# playdate.sound.sampleplayer:setPlayRange(start, end)
+# https://sdk.play.date/inside-playdate/#m-sound.sampleplayer.setPlayRange
+#
+# repeat
+# playdate.graphics.perlin(x, y, z, repeat, [octaves, persistence])
+# playdate.graphics.perlinArray(count, x, dx, [y, dy, z, dz, repeat, octaves, persistence])
+# https://sdk.play.date/inside-playdate/#f-graphics.perlin
+#
+# pretty-print
+# playdate.datastore.write(table, [filename], [pretty-print])
+# https://sdk.play.date/inside-playdate/#f-datastore.write
+#
+# -- not invalid, just shadows Lua stdlib:
+#
+# string
+#
+# json.decode(string)
+# https://sdk.play.date/inside-playdate/#f-json.decode
+#
+# playdate.string.trimWhitespace(string)
+# playdate.string.trimLeadingWhitespace(string)
+# playdate.string.trimTrailingWhitespace(string)
+# https://sdk.play.date/inside-playdate/#C-string
+#
+# print(string)
+# https://sdk.play.date/inside-playdate/#f-print
