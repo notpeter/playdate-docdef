@@ -402,7 +402,16 @@ local _Font = {}
 ---@field frame integer
 ---@field repeats boolean
 ---@field reverses boolean
+---@field timerEndedCallback function
 ---@field timerEndedArgs any[]
+---@field updateCallback function
+---@field value number
+---@field startValue number
+---@field endValue number
+---@field easingFunction function
+---@field easingAmplitude number
+---@field easingPeriod number
+---@field reverseEasingFunction function
 local _FrameTimer = {}
 
 ---@class _GridView : playdate.ui.gridview
@@ -683,7 +692,16 @@ local _TileMap = {}
 ---@field paused boolean
 ---@field repeats boolean
 ---@field reverses boolean
+---@field timerEndedCallback function
 ---@field timerEndedArgs any[]
+---@field updateCallback function
+---@field value number
+---@field startValue number
+---@field endValue number
+---@field easingFunction function
+---@field easingAmplitude number
+---@field easingPeriod number
+---@field reverseEasingFunction function
 local _Timer = {}
 
 ---@class _Track : playdate.sound.track
@@ -2938,8 +2956,8 @@ function playdate.graphics.image:drawIgnoringOffset(p, flip) end
 ---@param x integer
 ---@param y integer
 ---@param angle number
----@param scale? integer
----@param yscale? integer
+---@param scale? number
+---@param yscale? number
 ---@return nil
 function playdate.graphics.image:drawRotated(x, y, angle, scale, yscale) end
 
@@ -2963,8 +2981,8 @@ function playdate.graphics.image:drawSampled(x, y, width, height, centerx, cente
 
 ---@param x integer
 ---@param y integer
----@param scale integer
----@param yscale? integer
+---@param scale number
+---@param yscale? number
 ---@return nil
 function playdate.graphics.image:drawScaled(x, y, scale, yscale) end
 
@@ -3014,8 +3032,8 @@ function playdate.graphics.image:load(path) end
 function playdate.graphics.image:removeMask() end
 
 ---@param angle number
----@param scale? integer
----@param yscale? integer
+---@param scale? number
+---@param yscale? number
 ---@return _Image
 function playdate.graphics.image:rotatedImage(angle, scale, yscale) end
 
@@ -3024,8 +3042,8 @@ function playdate.graphics.image:rotatedImage(angle, scale, yscale) end
 ---@return integer
 function playdate.graphics.image:sample(x, y) end
 
----@param scale integer
----@param yscale? integer
+---@param scale number
+---@param yscale? number
 ---@return _Image
 function playdate.graphics.image:scaledImage(scale, yscale) end
 
@@ -3438,8 +3456,8 @@ function playdate.graphics.sprite:setBounds(x, y, width, height) end
 ---@return nil
 function playdate.graphics.sprite:setBounds(rect) end
 
----@param x integer
----@param y integer
+---@param x number
+---@param y number
 ---@return nil
 function playdate.graphics.sprite:setCenter(x, y) end
 
