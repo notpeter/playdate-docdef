@@ -210,7 +210,16 @@ local _FrameTimer: playdate.frameTimer = {
     frame: integer,
     repeats: boolean,
     reverses: boolean,
+    timerEndedCallback: function,
     timerEndedArgs: any[],
+    updateCallback: function,
+    value: number,
+    startValue: number,
+    endValue: number,
+    easingFunction: function,
+    easingAmplitude: number,
+    easingPeriod: number,
+    reverseEasingFunction: function
 };
 fun _FrameTimer:timerEndedCallback(...: any): nil;
 fun _FrameTimer:updateCallback(...: any): nil;
@@ -639,9 +648,9 @@ fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (integer
 fun playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer): nil;
 fun playdate.graphics.image:drawIgnoringOffset(p: _Point, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (integer|string)): nil;
-fun playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: integer, yscale?: integer): nil;
+fun playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: number, yscale?: number): nil;
 fun playdate.graphics.image:drawSampled(x: integer, y: integer, width: integer, height: integer, centerx: number, centery: number, dxx: number, dyx: number, dxy: number, dyy: number, dx: integer, dy: integer, z: integer, tiltAngle: number, tile: boolean): nil;
-fun playdate.graphics.image:drawScaled(x: integer, y: integer, scale: integer, yscale?: integer): nil;
+fun playdate.graphics.image:drawScaled(x: integer, y: integer, scale: number, yscale?: number): nil;
 fun playdate.graphics.image:drawTiled(rect: _Rect, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawTiled(x: integer, y: integer, width: integer, height: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawWithTransform(xform: _AffineTransform, x: integer, y: integer): nil;
@@ -652,9 +661,9 @@ fun playdate.graphics.image:hasMask(): boolean;
 fun playdate.graphics.image:invertedImage(): _Image;
 fun playdate.graphics.image:load(path: string): (success: boolean, error: string?);
 fun playdate.graphics.image:removeMask(): nil;
-fun playdate.graphics.image:rotatedImage(angle: number, scale?: integer, yscale?: integer): _Image;
+fun playdate.graphics.image:rotatedImage(angle: number, scale?: number, yscale?: number): _Image;
 fun playdate.graphics.image:sample(x: integer, y: integer): integer;
-fun playdate.graphics.image:scaledImage(scale: integer, yscale?: integer): _Image;
+fun playdate.graphics.image:scaledImage(scale: number, yscale?: number): _Image;
 fun playdate.graphics.image:setInverted(flag: boolean): nil;
 fun playdate.graphics.image:setMaskImage(maskImage: _Image): nil;
 fun playdate.graphics.image:transformedImage(xform: _AffineTransform): _Image;
@@ -773,7 +782,7 @@ fun playdate.graphics.sprite:resetGroupMask(): nil;
 fun playdate.graphics.sprite:setAnimator(animator: _Animator, moveWithCollisions?: boolean, removeOnCollision?: boolean): nil;
 fun playdate.graphics.sprite:setBounds(rect: _Rect): nil;
 fun playdate.graphics.sprite:setBounds(x: integer, y: integer, width: integer, height: integer): nil;
-fun playdate.graphics.sprite:setCenter(x: integer, y: integer): nil;
+fun playdate.graphics.sprite:setCenter(x: number, y: number): nil;
 fun playdate.graphics.sprite:setClipRect(rect: _Rect): nil;
 fun playdate.graphics.sprite:setClipRect(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.sprite:setCollideRect(rect: _Rect): nil;
@@ -1314,7 +1323,16 @@ local _Timer: playdate.timer = {
     paused: boolean,
     repeats: boolean,
     reverses: boolean,
+    timerEndedCallback: function,
     timerEndedArgs: any[],
+    updateCallback: function,
+    value: number,
+    startValue: number,
+    endValue: number,
+    easingFunction: function,
+    easingAmplitude: number,
+    easingPeriod: number,
+    reverseEasingFunction: function
 };
 fun _Timer:timerEndedCallback(...: any): nil;
 fun _Timer:updateCallback(...: any): nil;
