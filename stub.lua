@@ -399,19 +399,19 @@ local _Font = {}
 ---@field delay integer
 ---@field discardOnCompletion boolean
 ---@field duration integer
+---@field easingAmplitude number
+---@field easingFunction function
+---@field easingPeriod number
+---@field endValue number
 ---@field frame integer
 ---@field repeats boolean
+---@field reverseEasingFunction function
 ---@field reverses boolean
----@field timerEndedCallback function
+---@field startValue number
 ---@field timerEndedArgs any[]
+---@field timerEndedCallback function
 ---@field updateCallback function
 ---@field value number
----@field startValue number
----@field endValue number
----@field easingFunction function
----@field easingAmplitude number
----@field easingPeriod number
----@field reverseEasingFunction function
 local _FrameTimer = {}
 
 ---@class _GridView : playdate.ui.gridview
@@ -688,20 +688,20 @@ local _TileMap = {}
 ---@field delay integer
 ---@field discardOnCompletion boolean
 ---@field duration integer
----@field timeLeft integer
+---@field easingAmplitude number
+---@field easingFunction function
+---@field easingPeriod number
+---@field endValue number
 ---@field paused boolean
 ---@field repeats boolean
+---@field reverseEasingFunction function
 ---@field reverses boolean
----@field timerEndedCallback function
+---@field startValue number
+---@field timeLeft integer
 ---@field timerEndedArgs any[]
+---@field timerEndedCallback function
 ---@field updateCallback function
 ---@field value number
----@field startValue number
----@field endValue number
----@field easingFunction function
----@field easingAmplitude number
----@field easingPeriod number
----@field reverseEasingFunction function
 local _Timer = {}
 
 ---@class _Track : playdate.sound.track
