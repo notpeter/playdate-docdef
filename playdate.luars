@@ -204,21 +204,24 @@ fun playdate.frameTimer.new(duration: integer, startValue?: number, endValue?: n
 fun playdate.frameTimer.performAfterDelay(delay: integer, callback: function, ...: any): nil;
 fun playdate.frameTimer.updateTimers(): nil;
 local _FrameTimer: playdate.frameTimer = {
+    active: boolean,
     delay: integer,
     discardOnCompletion: boolean,
     duration: integer,
-    easingAmplitude: number,
+    easingAmplitude?: number,
     easingFunction: function,
     easingPeriod: number,
     endValue: number,
     frame: integer,
+    framesLeft: integer,
+    paused: boolean,
     repeats: boolean,
-    reverseEasingFunction: function,
+    reverseEasingFunction?: function,
     reverses: boolean,
     startValue: number,
-    timerEndedArgs: any[],
-    timerEndedCallback: function,
-    updateCallback: function,
+    timerEndedArgs?: any[],
+    timerEndedCallback?: function,
+    updateCallback?: function,
     value: number,
 };
 fun _FrameTimer:timerEndedCallback(...: any): nil;
@@ -1315,23 +1318,25 @@ fun playdate.timer.new(duration: integer, startValue?: number, endValue?: number
 fun playdate.timer.performAfterDelay(delay: integer, callback: function, ...: any): nil;
 fun playdate.timer.updateTimers(): nil;
 local _Timer: playdate.timer = {
+    active: boolean,
     currentTime: integer,
     delay: integer,
     discardOnCompletion: boolean,
     duration: integer,
-    easingAmplitude: number,
+    easingAmplitude?: number,
     easingFunction: function,
-    easingPeriod: number,
+    easingPeriod?: number,
     endValue: number,
     paused: boolean,
     repeats: boolean,
-    reverseEasingFunction: function,
+    reverseEasingFunction?: function,
     reverses: boolean,
+    running: boolean,
     startValue: number,
     timeLeft: integer,
-    timerEndedArgs: any[],
-    timerEndedCallback: function,
-    updateCallback: function,
+    timerEndedArgs?: any[],
+    timerEndedCallback?: function,
+    updateCallback?: function,
     value: number,
 };
 fun _Timer:timerEndedCallback(...: any): nil;
@@ -1359,7 +1364,8 @@ local _GridView: playdate.ui.gridview = {
     backgroundImage: (_Image|_NineSlice),
     isScrolling:boolean,
     scrollEasingFunction:fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number,
-    easingAmplitude?: number, easingPeriod?: number,
+    easingAmplitude?: number,
+    easingPeriod?: number,
     changeRowOnColumnWrap: boolean,
     scrollCellsToCenter: boolean,
 };
