@@ -4672,8 +4672,8 @@ function playdate.sound.signal:setOffset(offset) end
 function playdate.sound.signal:setScale(scale) end
 
 ---@param sample _Sample
----@param sustainStart? number
----@param sustainEnd? number
+---@param sustainStart? integer
+---@param sustainEnd? integer
 ---@return _Synth
 function playdate.sound.synth.new(sample, sustainStart, sustainEnd) end
 

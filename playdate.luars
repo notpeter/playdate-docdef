@@ -1205,7 +1205,7 @@ fun playdate.sound.sampleplayer:setVolume(left: number, right?: number): nil;
 fun playdate.sound.sampleplayer:stop(): nil;
 
 global playdate.sound.synth: _SoundSource;
-fun playdate.sound.synth.new(sample: _Sample, sustainStart?: number, sustainEnd?: number): _Synth;
+fun playdate.sound.synth.new(sample: _Sample, sustainStart?: integer, sustainEnd?: integer): _Synth;
 fun playdate.sound.synth.new(waveform?: integer): _Synth;
 local _Synth: playdate.sound.synth;
 fun playdate.sound.synth:copy(): _Synth;
