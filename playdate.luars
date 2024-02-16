@@ -1354,6 +1354,7 @@ global playdate.ui.crankIndicator = {
 };
 fun playdate.ui.crankIndicator:draw(xOffset?: integer, yOffset?: integer): nil;
 fun playdate.ui.crankIndicator:getBounds(xOffset?: integer, yOffset?: integer): (x: integer, y: integer, width: integer, height: integer);
+fun playdate.ui.crankIndicator:resetAnimation(): nil;
 fun playdate.ui.crankIndicator:start(): nil;
 fun playdate.ui.crankIndicator:update(): nil;
 
