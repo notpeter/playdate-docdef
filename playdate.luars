@@ -80,7 +80,9 @@ fun playdate.readAccelerometer(): (x: number, y: number, z: number);
 fun playdate.resetElapsedTime(): nil;
 fun playdate.rightButtonDown(): nil;
 fun playdate.rightButtonUp(): nil;
+fun playdate.serialMessageReceived(msg: string): nil;
 fun playdate.setAutoLockDisabled(disable: boolean): nil;
+fun playdate.setButtonQueueSize(size: integer): nil;
 fun playdate.setCollectsGarbage(flag: boolean): nil;
 fun playdate.setCrankSoundsDisabled(disable: boolean): nil;
 fun playdate.setDebugDrawColor(r: number, g: number, b: number, a: number): nil;
@@ -586,8 +588,8 @@ fun playdate.graphics.animator.new(durations: integer, parts: number[], easingFu
 local _Animator: playdate.graphics.animator = {
     repeatCount: integer,
     reverses: boolean,
-    easingAmplitude: number,
-    easingPeriod: number,
+    easingAmplitude?: number,
+    easingPeriod?: number,
     s?: number,
     a?: number,
     p?: number,
@@ -1009,7 +1011,7 @@ fun playdate.sound.removeEffect(effect: _SoundEffect): nil;
 fun playdate.sound.resetTime(): nil;
 fun playdate.sound.setOutputsActive(headphones: boolean, speaker: boolean): nil;
 fun playdate.sound.getCurrentTime(): number;
-fun playdate.sound.getHeadphoneState(changeCallback?: fun(): nil): (headphone: boolean, mic: boolean?);
+fun playdate.sound.getHeadphoneState(changeCallback?: fun(headphones: boolean, mic:boolean): nil): (headphones: boolean, mic: boolean);
 fun playdate.sound.getSampleRate(): integer;
 
 global playdate.sound.effect;
@@ -1019,17 +1021,17 @@ global playdate.sound.bitcrusher: _SoundEffect;
 fun playdate.sound.bitcrusher.new(): _BitCrusher;
 local _BitCrusher: playdate.sound.bitcrusher;
 fun playdate.sound.bitcrusher:setAmount(amt: number): nil;
-fun playdate.sound.bitcrusher:setAmountMod(signal: _Signal): nil;
+fun playdate.sound.bitcrusher:setAmountMod(signal?: _Signal): nil;
 fun playdate.sound.bitcrusher:setMix(level: number): nil;
-fun playdate.sound.bitcrusher:setMixMod(signal: _Signal): nil;
+fun playdate.sound.bitcrusher:setMixMod(signal?: _Signal): nil;
 fun playdate.sound.bitcrusher:setUndersampling(amt: number): nil;
-fun playdate.sound.bitcrusher:setUndersamplingMod(signal: _Signal): nil;
+fun playdate.sound.bitcrusher:setUndersamplingMod(signal?: _Signal): nil;
 
 global playdate.sound.onepolefilter: _SoundEffect;
 fun playdate.sound.onepolefilter.new(): _OnePoleFilter;
 local _OnePoleFilter: playdate.sound.onepolefilter;
 fun playdate.sound.onepolefilter:setMix(level: number): nil;
-fun playdate.sound.onepolefilter:setMixMod(signal: _Signal): nil;
+fun playdate.sound.onepolefilter:setMixMod(signal?: _Signal): nil;
 fun playdate.sound.onepolefilter:setParameter(p: number): nil;
 fun playdate.sound.onepolefilter:setParameterMod(m: _Signal): nil;
 
@@ -1038,19 +1040,19 @@ fun playdate.sound.overdrive.new(): _OverDrive;
 local _OverDrive: playdate.sound.overdrive;
 fun playdate.sound.overdrive:setGain(level: number): nil;
 fun playdate.sound.overdrive:setLimit(level: number): nil;
-fun playdate.sound.overdrive:setLimitMod(signal: _Signal): nil;
+fun playdate.sound.overdrive:setLimitMod(signal?: _Signal): nil;
 fun playdate.sound.overdrive:setMix(level: number): nil;
-fun playdate.sound.overdrive:setMixMod(signal: _Signal): nil;
+fun playdate.sound.overdrive:setMixMod(signal?: _Signal): nil;
 fun playdate.sound.overdrive:setOffset(level: number): nil;
-fun playdate.sound.overdrive:setOffsetMod(signal: _Signal): nil;
+fun playdate.sound.overdrive:setOffsetMod(signal?: _Signal): nil;
 
 global playdate.sound.ringmod: _SoundEffect;
 fun playdate.sound.ringmod.new(): _RingMod;
 local _RingMod: playdate.sound.ringmod;
 fun playdate.sound.ringmod:setFrequency(f: number): nil;
-fun playdate.sound.ringmod:setFrequencyMod(signal: _Signal): nil;
+fun playdate.sound.ringmod:setFrequencyMod(signal?: _Signal): nil;
 fun playdate.sound.ringmod:setMix(level: number): nil;
-fun playdate.sound.ringmod:setMixMod(signal: _Signal): nil;
+fun playdate.sound.ringmod:setMixMod(signal?: _Signal): nil;
 
 global playdate.sound.delayline: _SoundEffect;
 fun playdate.sound.delayline.new(length: number): _DelayLine;
@@ -1058,18 +1060,18 @@ local _DelayLine: playdate.sound.delayline;
 fun playdate.sound.delayline:addTap(delay: number): _DelayLineTap;
 fun playdate.sound.delayline:setFeedback(level: number): nil;
 fun playdate.sound.delayline:setMix(level: number): nil;
-fun playdate.sound.delayline:setMixMod(signal: _Signal): nil;
+fun playdate.sound.delayline:setMixMod(signal?: _Signal): nil;
 
 global playdate.sound.twopolefilter: _SoundEffect;
 fun playdate.sound.twopolefilter.new(type: (integer|string)): _TwoPoleFilter;
 local _TwoPoleFilter: playdate.sound.twopolefilter;
 fun playdate.sound.twopolefilter:setFrequency(f: number): nil;
-fun playdate.sound.twopolefilter:setFrequencyMod(signal: _Signal): nil;
+fun playdate.sound.twopolefilter:setFrequencyMod(signal?: _Signal): nil;
 fun playdate.sound.twopolefilter:setGain(g: number): nil;
 fun playdate.sound.twopolefilter:setMix(level: number): nil;
-fun playdate.sound.twopolefilter:setMixMod(signal: _Signal): nil;
+fun playdate.sound.twopolefilter:setMixMod(signal?: _Signal): nil;
 fun playdate.sound.twopolefilter:setResonance(r: _Rect): nil;
-fun playdate.sound.twopolefilter:setResonanceMod(signal: _Signal): nil;
+fun playdate.sound.twopolefilter:setResonanceMod(signal?: _Signal): nil;
 fun playdate.sound.twopolefilter:setType(type: (integer|string)): nil;
 
 global playdate.sound.channel;
@@ -1082,9 +1084,9 @@ fun playdate.sound.channel:remove(): nil;
 fun playdate.sound.channel:removeEffect(effect: _SoundEffect): nil;
 fun playdate.sound.channel:removeSource(source: _SoundSource): nil;
 fun playdate.sound.channel:setPan(pan: number): number;
-fun playdate.sound.channel:setPanMod(signal: _Signal): nil;
+fun playdate.sound.channel:setPanMod(signal?: _Signal): nil;
 fun playdate.sound.channel:setVolume(volume: number): nil;
-fun playdate.sound.channel:setVolumeMod(signal: _Signal): nil;
+fun playdate.sound.channel:setVolumeMod(signal?: _Signal): nil;
 
 global playdate.sound.signal;
 local _Signal: playdate.sound.signal;
@@ -1140,7 +1142,7 @@ global playdate.sound.delaylinetap: _SoundSource;
 local _DelayLineTap: playdate.sound.delaylinetap;
 fun playdate.sound.delaylinetap:getVolume(): number;
 fun playdate.sound.delaylinetap:setDelay(time: number): nil;
-fun playdate.sound.delaylinetap:setDelayMod(signal: _Signal): nil;
+fun playdate.sound.delaylinetap:setDelayMod(signal?: _Signal): nil;
 fun playdate.sound.delaylinetap:setFlipChannels(flag: boolean): nil;
 fun playdate.sound.delaylinetap:setVolume(level: number): nil;
 
@@ -1163,7 +1165,7 @@ fun playdate.sound.fileplayer:setLoopCallback(callback: fun(self: _FilePlayer, a
 fun playdate.sound.fileplayer:setLoopRange(start: number, _end: number, loopCallback?: fun(arg?: any): nil, arg?: any): nil;
 fun playdate.sound.fileplayer:setOffset(seconds: number): nil;
 fun playdate.sound.fileplayer:setRate(rate: integer): nil;
-fun playdate.sound.fileplayer:setRateMod(signal: _Signal): nil;
+fun playdate.sound.fileplayer:setRateMod(signal?: _Signal): nil;
 fun playdate.sound.fileplayer:setStopOnUnderrun(flag: boolean): nil;
 fun playdate.sound.fileplayer:setVolume(left: number, right?: number, fadeSeconds?: number, fadeCallback?: fun(self: _FilePlayer, arg?: any), arg?: any): nil;
 fun playdate.sound.fileplayer:stop(): nil;
@@ -1175,8 +1177,8 @@ fun playdate.sound.instrument:addVoice(v: _Synth, note?: integer, rangeend?: int
 fun playdate.sound.instrument:allNotesOff(): nil;
 fun playdate.sound.instrument:getVolume(): (left_or_mono: number, right: number?);
 fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
-fun playdate.sound.instrument:playMIDINote(note: (number|string), vel?: number, length?: number, when?: number): nil;
-fun playdate.sound.instrument:playNote(frequency: number, vel?: number, length?: number, when?: number): nil;
+fun playdate.sound.instrument:playMIDINote(note: number, vel?: number, length?: number, when?: number): nil;
+fun playdate.sound.instrument:playNote(frequency: string, vel?: number, length?: number, when?: number): nil;
 fun playdate.sound.instrument:setTranspose(halfsteps: number): nil;
 fun playdate.sound.instrument:setVolume(left: number, right?: number): nil;
 
@@ -1199,7 +1201,7 @@ fun playdate.sound.sampleplayer:setOffset(seconds: number): nil;
 fun playdate.sound.sampleplayer:setPaused(flag: boolean): nil;
 fun playdate.sound.sampleplayer:setPlayRange(start: integer, _end: integer): nil;
 fun playdate.sound.sampleplayer:setRate(rate: integer): nil;
-fun playdate.sound.sampleplayer:setRateMod(signal: _Signal): nil;
+fun playdate.sound.sampleplayer:setRateMod(signal?: _Signal): nil;
 fun playdate.sound.sampleplayer:setSample(sample: _Sample): nil;
 fun playdate.sound.sampleplayer:setVolume(left: number, right?: number): nil;
 fun playdate.sound.sampleplayer:stop(): nil;
@@ -1216,12 +1218,12 @@ fun playdate.sound.synth:noteOff(): nil;
 fun playdate.sound.synth:playMIDINote(note: (number|string), volume?: number, length?: number, when?: number): boolean;
 fun playdate.sound.synth:playNote(pitch: (number|string), volume?: number, length?: number, when?: number): boolean;
 fun playdate.sound.synth:setADSR(attack: number, decay: number, sustain: number, release: number, curvature?: number): nil;
-fun playdate.sound.synth:setAmplitudeMod(signal: _Signal): nil;
+fun playdate.sound.synth:setAmplitudeMod(signal?: _Signal): nil;
 fun playdate.sound.synth:setAttack(time: number): nil;
 fun playdate.sound.synth:setDecay(time: number): nil;
 fun playdate.sound.synth:setEnvelopeCurvature(amount: number): nil;
 fun playdate.sound.synth:setFinishCallback(_function: function): nil;
-fun playdate.sound.synth:setFrequencyMod(signal: _Signal): nil;
+fun playdate.sound.synth:setFrequencyMod(signal?: _Signal): nil;
 fun playdate.sound.synth:setLegato(flag: boolean): nil;
 fun playdate.sound.synth:setParameter(parameter: integer, value: number): nil;
 fun playdate.sound.synth:setParameterMod(parameter: integer, signal: _Signal): nil;
@@ -1236,13 +1238,14 @@ global playdate.sound.micinput;
 fun playdate.sound.micinput.getLevel(): number;
 fun playdate.sound.micinput.getSource(): string;
 fun playdate.sound.micinput.recordToSample(buffer: _Sample, completionCallback: fun(sample: _Sample): nil): nil;
-fun playdate.sound.micinput.startListening(): nil;
+fun playdate.sound.micinput.startListening(source?: string): (success: boolean, source?:string);
 fun playdate.sound.micinput.stopListening(): nil;
 fun playdate.sound.micinput.stopRecording(): nil;
 
 global playdate.sound.sample;
 fun playdate.sound.sample.new(path: string): _Sample;
 local _Sample: playdate.sound.sample;
+fun playdate.sound.sample:decompress(): (success: boolean, error?: string);
 fun playdate.sound.sample:getFormat(): integer;
 fun playdate.sound.sample:getLength(): (sample_seconds: number, buffer_size_seconds: number);
 fun playdate.sound.sample:getSampleRate(): integer;
@@ -1524,7 +1527,12 @@ local _SystemInfo = {
     pdxversion: integer,
 };
 local _SystemStats = {
-    " kernel": number,
-    " game": number,
-    " audio": number
+    audio: number,
+    game: number,
+    idle: number,
+    kernel: number,
+    serial?: number,
+    trace?: number,
+    wifi?: number,
+    GC?: number,
 };

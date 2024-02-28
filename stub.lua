@@ -329,8 +329,8 @@ local _AnimationLoop = {}
 ---@class _Animator : playdate.graphics.animator
 ---@field repeatCount integer
 ---@field reverses boolean
----@field easingAmplitude number
----@field easingPeriod number
+---@field easingAmplitude? number
+---@field easingPeriod? number
 ---@field s? number
 ---@field a? number
 ---@field p? number
@@ -678,9 +678,14 @@ local _Synth = {}
 local _SystemInfo = {}
 
 ---@class _SystemStats
----@field [" kernel"] number
----@field [" game"] number
----@field [" audio"] number
+---@field audio number
+---@field game number
+---@field idle number
+---@field kernel number
+---@field serial? number
+---@field trace? number
+---@field wifi? number
+---@field GC? number
 local _SystemStats = {}
 
 ---@class _TileMap : playdate.graphics.tilemap
@@ -998,9 +1003,17 @@ function playdate.rightButtonDown() end
 ---@return nil
 function playdate.rightButtonUp() end
 
+---@param msg string
+---@return nil
+function playdate.serialMessageReceived(msg) end
+
 ---@param disable boolean
 ---@return nil
 function playdate.setAutoLockDisabled(disable) end
+
+---@param size integer
+---@return nil
+function playdate.setButtonQueueSize(size) end
 
 ---@param flag boolean
 ---@return nil
@@ -3994,9 +4007,9 @@ function playdate.sound.addEffect(effect) end
 ---@return number
 function playdate.sound.getCurrentTime() end
 
----@param changeCallback? fun(): nil
----@return boolean headphone
----@return boolean? mic
+---@param changeCallback? fun(headphones: boolean, mic:boolean): nil
+---@return boolean headphones
+---@return boolean mic
 function playdate.sound.getHeadphoneState(changeCallback) end
 
 ---@return integer
@@ -4024,7 +4037,7 @@ function playdate.sound.bitcrusher.new() end
 ---@return nil
 function playdate.sound.bitcrusher:setAmount(amt) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.bitcrusher:setAmountMod(signal) end
 
@@ -4032,7 +4045,7 @@ function playdate.sound.bitcrusher:setAmountMod(signal) end
 ---@return nil
 function playdate.sound.bitcrusher:setMix(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.bitcrusher:setMixMod(signal) end
 
@@ -4040,7 +4053,7 @@ function playdate.sound.bitcrusher:setMixMod(signal) end
 ---@return nil
 function playdate.sound.bitcrusher:setUndersampling(amt) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.bitcrusher:setUndersamplingMod(signal) end
 
@@ -4073,7 +4086,7 @@ function playdate.sound.channel:removeSource(source) end
 ---@return number
 function playdate.sound.channel:setPan(pan) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.channel:setPanMod(signal) end
 
@@ -4081,7 +4094,7 @@ function playdate.sound.channel:setPanMod(signal) end
 ---@return nil
 function playdate.sound.channel:setVolume(volume) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.channel:setVolumeMod(signal) end
 
@@ -4124,7 +4137,7 @@ function playdate.sound.delayline:setFeedback(level) end
 ---@return nil
 function playdate.sound.delayline:setMix(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.delayline:setMixMod(signal) end
 
@@ -4135,7 +4148,7 @@ function playdate.sound.delaylinetap:getVolume() end
 ---@return nil
 function playdate.sound.delaylinetap:setDelay(time) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.delaylinetap:setDelayMod(signal) end
 
@@ -4278,7 +4291,7 @@ function playdate.sound.fileplayer:setOffset(seconds) end
 ---@return nil
 function playdate.sound.fileplayer:setRate(rate) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.fileplayer:setRateMod(signal) end
 
@@ -4320,14 +4333,14 @@ function playdate.sound.instrument:getVolume() end
 ---@return nil
 function playdate.sound.instrument:noteOff(note, when) end
 
----@param note (number|string)
+---@param note number
 ---@param vel? number
 ---@param length? number
 ---@param when? number
 ---@return nil
 function playdate.sound.instrument:playMIDINote(note, vel, length, when) end
 
----@param frequency number
+---@param frequency string
 ---@param vel? number
 ---@param length? number
 ---@param when? number
@@ -4400,8 +4413,10 @@ function playdate.sound.micinput.getSource() end
 ---@return nil
 function playdate.sound.micinput.recordToSample(buffer, completionCallback) end
 
----@return nil
-function playdate.sound.micinput.startListening() end
+---@param source? string
+---@return boolean success
+---@return string source?
+function playdate.sound.micinput.startListening(source) end
 
 ---@return nil
 function playdate.sound.micinput.stopListening() end
@@ -4416,7 +4431,7 @@ function playdate.sound.onepolefilter.new() end
 ---@return nil
 function playdate.sound.onepolefilter:setMix(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.onepolefilter:setMixMod(signal) end
 
@@ -4439,7 +4454,7 @@ function playdate.sound.overdrive:setGain(level) end
 ---@return nil
 function playdate.sound.overdrive:setLimit(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.overdrive:setLimitMod(signal) end
 
@@ -4447,7 +4462,7 @@ function playdate.sound.overdrive:setLimitMod(signal) end
 ---@return nil
 function playdate.sound.overdrive:setMix(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.overdrive:setMixMod(signal) end
 
@@ -4455,7 +4470,7 @@ function playdate.sound.overdrive:setMixMod(signal) end
 ---@return nil
 function playdate.sound.overdrive:setOffset(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.overdrive:setOffsetMod(signal) end
 
@@ -4466,7 +4481,7 @@ function playdate.sound.ringmod.new() end
 ---@return nil
 function playdate.sound.ringmod:setFrequency(f) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.ringmod:setFrequencyMod(signal) end
 
@@ -4474,13 +4489,17 @@ function playdate.sound.ringmod:setFrequencyMod(signal) end
 ---@return nil
 function playdate.sound.ringmod:setMix(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.ringmod:setMixMod(signal) end
 
 ---@param path string
 ---@return _Sample
 function playdate.sound.sample.new(path) end
+
+---@return boolean success
+---@return string error?
+function playdate.sound.sample:decompress() end
 
 ---@return integer
 function playdate.sound.sample:getFormat() end
@@ -4586,7 +4605,7 @@ function playdate.sound.sampleplayer:setPlayRange(start, _end) end
 ---@return nil
 function playdate.sound.sampleplayer:setRate(rate) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.sampleplayer:setRateMod(signal) end
 
@@ -4719,7 +4738,7 @@ function playdate.sound.synth:playNote(pitch, volume, length, when) end
 ---@return nil
 function playdate.sound.synth:setADSR(attack, decay, sustain, release, curvature) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.synth:setAmplitudeMod(signal) end
 
@@ -4739,7 +4758,7 @@ function playdate.sound.synth:setEnvelopeCurvature(amount) end
 ---@return nil
 function playdate.sound.synth:setFinishCallback(_function) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.synth:setFrequencyMod(signal) end
 
@@ -4849,7 +4868,7 @@ function playdate.sound.twopolefilter.new(type) end
 ---@return nil
 function playdate.sound.twopolefilter:setFrequency(f) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.twopolefilter:setFrequencyMod(signal) end
 
@@ -4861,7 +4880,7 @@ function playdate.sound.twopolefilter:setGain(g) end
 ---@return nil
 function playdate.sound.twopolefilter:setMix(level) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.twopolefilter:setMixMod(signal) end
 
@@ -4869,7 +4888,7 @@ function playdate.sound.twopolefilter:setMixMod(signal) end
 ---@return nil
 function playdate.sound.twopolefilter:setResonance(r) end
 
----@param signal _Signal
+---@param signal? _Signal
 ---@return nil
 function playdate.sound.twopolefilter:setResonanceMod(signal) end
 
@@ -4954,6 +4973,9 @@ function playdate.ui.crankIndicator:draw(xOffset, yOffset) end
 ---@return integer width
 ---@return integer height
 function playdate.ui.crankIndicator:getBounds(xOffset, yOffset) end
+
+---@return nil
+function playdate.ui.crankIndicator:resetAnimation() end
 
 ---@deprecated since 2.1.0-beta1
 ---@return nil
