@@ -1,5 +1,4 @@
 mod args;
-mod config;
 mod finstub;
 mod fixes;
 mod luars;

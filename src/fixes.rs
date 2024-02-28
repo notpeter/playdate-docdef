@@ -1,10 +1,33 @@
+use crate::stub::Stub;
+use std::{collections::HashMap, fmt};
 use lazy_static::lazy_static;
 use regex::Regex;
+use serde::Deserialize;
 
-use crate::config::{INVALID, TYPO};
-use crate::stub::Stub;
+#[derive(Deserialize)]
+pub struct TypoReplacement {
+    pub fname: String,
+    pub parameters: Vec<String>, // You must include a parameters=[] if there are no params.
+}
+
+impl fmt::Display for TypoReplacement {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}({})", self.fname, self.parameters.join(", "))
+    }
+}
+
+static TOML_STR_TYPO: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Typo.toml"));
+static TOML_STR_INVALID: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
 lazy_static! {
+    static ref TYPO: HashMap<String, TypoReplacement> = match toml::from_str(TOML_STR_TYPO) {
+        Ok(v) => v,
+        Err(e) => { panic!("ERROR: Loading Typo.toml failed. {:?}", e) }
+    };
+    static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
+        Ok(v) => v,
+        Err(e) => { panic!("ERROR: Loading Invalid.toml failed. {:?}", e); }
+    };
     static ref RE_CODE: Regex = Regex::new(r"</?code>").unwrap();
     static ref RE_EM: Regex = Regex::new(r"</?em>").unwrap();
     static ref RE_A: Regex = Regex::new(r"</?a[^>]*>").unwrap();
@@ -133,7 +156,7 @@ fn clean_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
         let p_an = p_name.replace("?", ""); // without "?" at the the end for optional
         if INVALID.contains_key(p_an.as_str()) {
             let fixed_name = INVALID.get(p_an.as_str()).unwrap().to_string();
-            // eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name} (in `{title}`)");
+            // eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name}");
             v.push((fixed_name, lua_type.to_string()));
         } else {
             v.push((p_name.to_string(), lua_type.to_string()));

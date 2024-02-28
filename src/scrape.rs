@@ -96,12 +96,19 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
                 }
             }
         }
+
         if title.contains("  ") {
-            // Functions with multiple
-            for t in title.split("  ") {
-                let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
-                stub = stub.apply_types(statements);
-                stubs.push(stub)
+            // Functions with multiple (e.g. playdate.easingFunctions.*, )
+            if anchor.starts_with("m-") || anchor.starts_with("f-") {
+                for t in title.split("  ") {
+                    let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
+                    stub = stub.apply_types(statements);
+                    stubs.push(stub)
+                }
+            } else {
+                // We don't split multiline variables "v-" because we don't actually handle variables well.
+                // eprintln!("Found multi-line variable {anchor} (unhandled)");
+                continue;
             }
         } else if title.contains("(")
             || title.contains("[")
