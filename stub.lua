@@ -1003,9 +1003,9 @@ function playdate.rightButtonDown() end
 ---@return nil
 function playdate.rightButtonUp() end
 
----@param msg string
+---@param message string
 ---@return nil
-function playdate.serialMessageReceived(msg) end
+function playdate.serialMessageReceived(message) end
 
 ---@param disable boolean
 ---@return nil

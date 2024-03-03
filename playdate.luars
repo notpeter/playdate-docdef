@@ -80,7 +80,7 @@ fun playdate.readAccelerometer(): (x: number, y: number, z: number);
 fun playdate.resetElapsedTime(): nil;
 fun playdate.rightButtonDown(): nil;
 fun playdate.rightButtonUp(): nil;
-fun playdate.serialMessageReceived(msg: string): nil;
+fun playdate.serialMessageReceived(message: string): nil;
 fun playdate.setAutoLockDisabled(disable: boolean): nil;
 fun playdate.setButtonQueueSize(size: integer): nil;
 fun playdate.setCollectsGarbage(flag: boolean): nil;
