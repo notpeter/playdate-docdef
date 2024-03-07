@@ -1513,7 +1513,7 @@ function playdate.file.modtime(path) end
 ---@param path string
 ---@param mode? integer
 ---@return _File? file
----@return string? error
+---@return string? err
 function playdate.file.open(path, mode) end
 
 ---@param path string
@@ -1534,7 +1534,7 @@ function playdate.file.file:flush() end
 
 ---@param numberOfBytes integer
 ---@return integer numberOfBytes
----@return string? error
+---@return string? err
 function playdate.file.file:read(numberOfBytes) end
 
 ---@return string
@@ -1549,7 +1549,7 @@ function playdate.file.file:tell() end
 
 ---@param str string
 ---@return integer bytes_written
----@return string? error
+---@return string? err
 function playdate.file.file:write(str) end
 
 ---@return _FrameTimer[]
@@ -2478,14 +2478,14 @@ function playdate.graphics.fillTriangle(x1, y1, x2, y2, x3, y3) end
 
 ---@param stringToEncode string
 ---@param desiredEdgeDimension integer
----@param callback fun(image?: _Image, errorMessage?: string)
+---@param callback fun(image?: _Image, err?: string)
 ---@return _Timer
 function playdate.graphics.generateQRCode(stringToEncode, desiredEdgeDimension, callback) end
 
 ---@param stringToEncode string
 ---@param desiredEdgeDimension integer
 ---@return _Image image?
----@return string errorMessage?
+---@return string err?
 function playdate.graphics.generateQRCodeSync(stringToEncode, desiredEdgeDimension) end
 
 ---@return integer
@@ -2882,7 +2882,7 @@ function playdate.graphics.image.new(width, height, bgcolor) end
 
 ---@param path string
 ---@return _Image? image
----@return string? error
+---@return string? err
 function playdate.graphics.image.new(path) end
 
 ---@param opaque? boolean
@@ -3043,7 +3043,7 @@ function playdate.graphics.image:invertedImage() end
 
 ---@param path string
 ---@return boolean success
----@return string? error
+---@return string? err
 function playdate.graphics.image:load(path) end
 
 ---@return nil
@@ -3088,7 +3088,7 @@ function playdate.graphics.imagetable.new(count, cellsWide, cellSize) end
 
 ---@param path string
 ---@return _ImageTable imagetable?
----@return string errorMessage?
+---@return string err?
 function playdate.graphics.imagetable.new(path) end
 
 ---@param n integer
@@ -3120,7 +3120,7 @@ function playdate.graphics.imagetable:getSize() end
 
 ---@param path string
 ---@return boolean success
----@return string? error
+---@return string? err
 function playdate.graphics.imagetable:load(path) end
 
 ---@param n integer
@@ -4259,7 +4259,7 @@ function playdate.sound.fileplayer:pause() end
 
 ---@param repeatCount? integer
 ---@return boolean success
----@return string? error
+---@return string? err
 function playdate.sound.fileplayer:play(repeatCount) end
 
 ---@param seconds number
@@ -4498,7 +4498,7 @@ function playdate.sound.ringmod:setMixMod(signal) end
 function playdate.sound.sample.new(path) end
 
 ---@return boolean success
----@return string error?
+---@return string err?
 function playdate.sound.sample:decompress() end
 
 ---@return integer

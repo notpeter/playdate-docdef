@@ -185,7 +185,7 @@ fun playdate.file.listFiles(path?: string, showhidden?: boolean): string[];
 fun playdate.file.load(path: string, env?: table): function;
 fun playdate.file.mkdir(path: string): nil;
 fun playdate.file.modtime(path: string): _ModTime;
-fun playdate.file.open(path: string, mode?: integer): (file: _File?, error: string?);
+fun playdate.file.open(path: string, mode?: integer): (file: _File?, err: string?);
 fun playdate.file.rename(path: string, newPath: string): boolean;
 fun playdate.file.run(path: string, env?: table): nil;
 
@@ -193,11 +193,11 @@ global playdate.file.file;
 local _File: playdate.file.file;
 fun playdate.file.file:close(): nil;
 fun playdate.file.file:flush(): nil;
-fun playdate.file.file:read(numberOfBytes: integer): (numberOfBytes: integer, error: string?);
+fun playdate.file.file:read(numberOfBytes: integer): (numberOfBytes: integer, err: string?);
 fun playdate.file.file:readline(): string;
 fun playdate.file.file:seek(offset: integer): nil;
 fun playdate.file.file:tell(): integer;
-fun playdate.file.file:write(str: string): (bytes_written: integer, error: string?);
+fun playdate.file.file:write(str: string): (bytes_written: integer, err: string?);
 
 global playdate.frameTimer;
 fun playdate.frameTimer.allTimers(): _FrameTimer[];
@@ -494,8 +494,8 @@ fun playdate.graphics.fillRect(x: integer, y: integer, width: integer, height: i
 fun playdate.graphics.fillRoundRect(r: _Rect, radius: number): nil;
 fun playdate.graphics.fillRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.fillTriangle(x1: integer, y1: integer, x2: integer, y2: integer, x3: integer, y3: integer): nil;
-fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image?: _Image, errorMessage?: string)): _Timer;
-fun playdate.graphics.generateQRCodeSync(stringToEncode: string, desiredEdgeDimension: integer): (image?: _Image, errorMessage?: string);
+fun playdate.graphics.generateQRCode(stringToEncode: string, desiredEdgeDimension: integer, callback: fun(image?: _Image, err?: string)): _Timer;
+fun playdate.graphics.generateQRCodeSync(stringToEncode: string, desiredEdgeDimension: integer): (image?: _Image, err?: string);
 fun playdate.graphics.getBackgroundColor(): integer;
 fun playdate.graphics.getClipRect(): (x: integer, y: integer, width: integer, height: integer);
 fun playdate.graphics.getColor(): integer;
@@ -637,7 +637,7 @@ local _Image: playdate.graphics.image = {
     width: integer,
     height: integer,
 };
-fun playdate.graphics.image.new(path: string): (image: _Image?, error: string?);
+fun playdate.graphics.image.new(path: string): (image: _Image?, err: string?);
 fun playdate.graphics.image.new(width: integer, height: integer, bgcolor?: integer): _Image;
 fun playdate.graphics.image:addMask(opaque?: boolean): nil;
 fun playdate.graphics.image:blendWithImage(image: _Image, alpha: number, ditherType: integer): _Image;
@@ -664,7 +664,7 @@ fun playdate.graphics.image:getMaskImage(): _Image;
 fun playdate.graphics.image:getSize(): (width: integer, height: integer);
 fun playdate.graphics.image:hasMask(): boolean;
 fun playdate.graphics.image:invertedImage(): _Image;
-fun playdate.graphics.image:load(path: string): (success: boolean, error: string?);
+fun playdate.graphics.image:load(path: string): (success: boolean, err: string?);
 fun playdate.graphics.image:removeMask(): nil;
 fun playdate.graphics.image:rotatedImage(angle: number, scale?: number, yscale?: number): _Image;
 fun playdate.graphics.image:sample(x: integer, y: integer): integer;
@@ -678,7 +678,7 @@ fun playdate.graphics.imageWithText(text: string, maxWidth: integer, maxHeight: 
 
 global playdate.graphics.imagetable;
 fun playdate.graphics.imagetable.new(count: integer, cellsWide?: integer, cellSize?: integer): _ImageTable;
-fun playdate.graphics.imagetable.new(path: string): (imagetable?: _ImageTable, errorMessage?: string);
+fun playdate.graphics.imagetable.new(path: string): (imagetable?: _ImageTable, err?: string);
 local _ImageTable: playdate.graphics.imagetable;
 fun playdate.graphics.imagetable:__index(n: integer): _Image?;
 fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|string)): nil;
@@ -686,7 +686,7 @@ fun playdate.graphics.imagetable:getImage(n: integer): _Image?;
 fun playdate.graphics.imagetable:getImage(x: integer, y: integer): _Image?;
 fun playdate.graphics.imagetable:getLength(): integer;
 fun playdate.graphics.imagetable:getSize(): (cellsWide: integer, cellsHigh: integer);
-fun playdate.graphics.imagetable:load(path: string): (success: boolean, error: string?);
+fun playdate.graphics.imagetable:load(path: string): (success: boolean, err: string?);
 fun playdate.graphics.imagetable:setImage(n: integer, image: _Image): nil;
 
 global playdate.graphics.nineSlice;
@@ -1158,7 +1158,7 @@ fun playdate.sound.fileplayer:getVolume(): (left_or_mono: number, right: number?
 fun playdate.sound.fileplayer:isPlaying(): boolean;
 fun playdate.sound.fileplayer:load(path: string): nil;
 fun playdate.sound.fileplayer:pause(): nil;
-fun playdate.sound.fileplayer:play(repeatCount?: integer): (success: boolean, error: string?);
+fun playdate.sound.fileplayer:play(repeatCount?: integer): (success: boolean, err: string?);
 fun playdate.sound.fileplayer:setBufferSize(seconds: number): nil;
 fun playdate.sound.fileplayer:setFinishCallback(func: fun(self: _FilePlayer, arg?: any), arg?: any): nil;
 fun playdate.sound.fileplayer:setLoopCallback(callback: fun(self: _FilePlayer, arg?: any), arg?: any): nil;
@@ -1245,7 +1245,7 @@ fun playdate.sound.micinput.stopRecording(): nil;
 global playdate.sound.sample;
 fun playdate.sound.sample.new(path: string): _Sample;
 local _Sample: playdate.sound.sample;
-fun playdate.sound.sample:decompress(): (success: boolean, error?: string);
+fun playdate.sound.sample:decompress(): (success: boolean, err?: string);
 fun playdate.sound.sample:getFormat(): integer;
 fun playdate.sound.sample:getLength(): (sample_seconds: number, buffer_size_seconds: number);
 fun playdate.sound.sample:getSampleRate(): integer;
