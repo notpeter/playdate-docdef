@@ -128,10 +128,14 @@ pub fn clean_text(text: String) -> String {
         .replace("<br>", "\n---\n---")
         .replace("&gt;", ">")
         .replace("&lt;", "<")
+        .replace("<bundleid>", "{bundleid}")
+        .replace("<text>", "{text}")
+        .replace("<message>", "{message}")
         .trim()
         .to_string();
     let tn = RE_A.replace_all(&t0, "");
-    if HTML_TAG.is_match(&tn) && !&tn.contains("/Data/<bundleid>") {
+    // The restuling Markdown should not have HTML tags.
+    if HTML_TAG.is_match(&tn) {
         eprintln!(
             "WARN: Extra HTML tag in description text: {}",
             tn.to_string()
