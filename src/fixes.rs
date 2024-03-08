@@ -1,8 +1,8 @@
 use crate::stub::Stub;
-use std::{collections::HashMap, fmt};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
+use std::{collections::HashMap, fmt};
 
 #[derive(Deserialize)]
 pub struct TypoReplacement {
@@ -17,7 +17,8 @@ impl fmt::Display for TypoReplacement {
 }
 
 static TOML_STR_TYPO: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Typo.toml"));
-static TOML_STR_INVALID: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
+static TOML_STR_INVALID: &str =
+    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
 lazy_static! {
     static ref TYPO: HashMap<String, TypoReplacement> = match toml::from_str(TOML_STR_TYPO) {

@@ -101,7 +101,8 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             // Functions with multiple (e.g. playdate.easingFunctions.*, )
             if anchor.starts_with("m-") || anchor.starts_with("f-") {
                 for t in title.split("  ") {
-                    let mut stub = annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
+                    let mut stub =
+                        annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
                     stub = stub.apply_types(statements);
                     stubs.push(stub)
                 }

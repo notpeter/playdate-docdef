@@ -93,7 +93,7 @@ impl FinStub {
                 .map(|(name, _type)| format!("---@param {} {}", name, _type))
                 .collect::<Vec<String>>(),
             FinStub::Variable(_) => {
-                unreachable!("LuarsStatement::Global and LuarsStatement::Local should not be called with luacats_params()")
+                unreachable!("LuarsStatement::Global and LuarsStatement::Local don't support luacats_params()")
             }
         }
     }
@@ -160,8 +160,14 @@ impl FinStub {
         // Returns the complete stub for a class or function.
         let notes = HashMap::from([
             // TODO: maybe make this lazy_static (how?)
-            ("playdate.ui.crankIndicator:start()", "---@deprecated since 2.1.0-beta1"),
-            ("playdate.ui.crankIndicator:update()", "---@deprecated since 2.1.0-beta1"),
+            (
+                "playdate.ui.crankIndicator:start()",
+                "---@deprecated since 2.1.0-beta1",
+            ),
+            (
+                "playdate.ui.crankIndicator:update()",
+                "---@deprecated since 2.1.0-beta1",
+            ),
         ]);
         let mut out: Vec<String> = Vec::new();
         match self {
