@@ -27,44 +27,56 @@ pub enum Action {
 }
 
 fn get_sdk_dir() -> PathBuf {
-    if env::var_os("PLAYDATE_SDK_PATH") != None {
-        return PathBuf::from(env::var_os("PLAYDATE_SDK_PATH").unwrap());
+    let mut pb = PathBuf::new();
+    match env::var_os("PLAYDATE_SDK_PATH") {
+        Some(p) => pb.push(p),
+        _ => match env::consts::FAMILY {
+            "unix" if env::var_os("HOME").is_some() => {
+                pb.push(env::var("HOME").unwrap());
+                pb.push("Developer");
+                pb.push("PlaydateSDK");
+            }
+            "windows" if env::var_os("USERPROFILE").is_some() => {
+                pb.push(env::var("USERPROFILE").unwrap());
+                pb.push("Documents");
+                pb.push("PlaydateSDK");
+            }
+            _ => panic!(),
+        },
     }
-    let mut path = PathBuf::new();
-    path.push(home::home_dir().unwrap());
-    path.push("Developer");
-    path.push("PlaydateSDK");
-    path
+    pb
 }
 
-fn fetch_or_file(args: &Args) -> String {
+fn fetch_file(path: &PathBuf) -> String {
     let mut response = String::new();
-    if args.url.is_some() {
-        let url = args.url.as_ref().unwrap();
-        eprintln!("Fetching from {}", url);
-        let resp = reqwest::blocking::Client::new().get(url).send();
-        match resp {
-            Ok(r) if r.status().is_success() => {
-                response = r.text().unwrap();
-            }
-            _ => {
-                panic!("Error fetching from {}", url);
-            }
-        }
-    } else {
-        let filename = args.path.as_ref().unwrap().join("Inside Playdate.html");
-        eprintln!("Reading from {}", filename.display());
-        let mut file = match File::open(filename) {
-            Err(why) => panic!("couldn't open file: {}", why),
-            Ok(file) => file,
-        };
-        file.read_to_string(&mut response).unwrap();
-    }
+    let filename = path.join("Inside Playdate.html");
+    eprintln!("Reading from {}", filename.display());
+    let mut file = match File::open(filename) {
+        Err(why) => panic!("couldn't open file: {}", why),
+        Ok(file) => file,
+    };
+    file.read_to_string(&mut response).unwrap();
     response
+}
+
+fn fetch_url(url: String) -> String {
+    let resp = reqwest::blocking::Client::new().get(&url).send();
+    match resp {
+        Ok(r) if r.status().is_success() => r.text().unwrap(),
+        _ => panic!("Error fetching from {}", url),
+    }
 }
 
 pub fn setup() -> (Args, String) {
     let args = Args::parse();
-    let response = fetch_or_file(&args);
+    let response: String;
+    match args.url.clone() {
+        Some(url) => {
+            response = fetch_url(url);
+        }
+        _ => {
+            response = fetch_file(&args.path.clone().unwrap());
+        }
+    }
     (args, response)
 }
