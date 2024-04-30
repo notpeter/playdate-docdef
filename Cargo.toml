@@ -1,23 +1,21 @@
 [package]
 name = "doc_scraper"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
-reqwest = {version = "0.11.18", features = ["blocking"]}
-scraper = "0.17.1"
-regex = "1.9.1"
-clap = { version = "4.3.19", features = ["derive", "string"] }
+reqwest = { version = "0.12.4", features = ["blocking"] }
+scraper = "0.19.0"
+regex = "1.10.4"
+clap = { version = "4.5.4", features = ["derive", "string"] }
 lazy_static = "1.4.0"
 serde = { version = "1.0.181", features = ["derive"] }
-# serde_json = "1.0.104"
 
 # preserve_order uses "IndexMap" instead of "BTreeMap" preserving order after parsing.
-toml = { version = "0.7.6", features = ["preserve_order"] }
-indexmap = { version = "2.0.0", features = ["serde"] }
-pest = "2.7.3"
-pest_derive = "2.7.3"
-textwrap = "0.16.0"
+toml = { version = "0.8.12", features = ["preserve_order"] }
+pest = "2.7.9"
+pest_derive = "2.7.9"
+textwrap = "0.16.1"
