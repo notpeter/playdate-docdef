@@ -102,7 +102,8 @@ impl Stub {
             i = i + 1;
         }
         s.push(format!(
-            "--- https://sdk.play.date/Inside%20Playdate.html#{}",
+            "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
+            self.title.clone(),
             self.anchor
         ));
         s
