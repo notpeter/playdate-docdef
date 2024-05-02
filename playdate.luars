@@ -846,7 +846,7 @@ fun playdate.graphics.video:useScreenContext(): nil;
 
 global playdate.inputHandlers;
 fun playdate.inputHandlers.pop(): nil;
-fun playdate.inputHandlers.push(handler: table, masksPreviousHandlers?: boolean): nil;
+fun playdate.inputHandlers.push(handler: _InputHandler, masksPreviousHandlers?: boolean): nil;
 
 global playdate.keyboard = {
     kCapitalizationNormal: integer = 1,
@@ -1452,21 +1452,21 @@ local _DateTime = {
     millisecond: integer,
 };
 local _InputHandler = {
-    _AButtonDown?: fun(),
-    _AButtonHeld?: fun(),
-    _AButtonUp?: fun(),
-    _BButtonDown?: fun(),
-    _BButtonHeld?: fun(),
-    _BButtonUp?: fun(),
-    downButtonDown?: fun(),
-    downButtonUp?: fun(),
-    leftButtonDown?: fun(),
-    leftButtonUp?: fun(),
-    rightButtonDown?: fun(),
-    rightButtonUp?: fun(),
-    upButtonDown?: fun(),
-    upButtonUp?: fun(),
-    cranked?: fun(change:number, acceleratedChange:number)
+    AButtonDown?: fun(): nil,
+    AButtonHeld?: fun(): nil,
+    AButtonUp?: fun(): nil,
+    BButtonDown?: fun(): nil,
+    BButtonHeld?: fun(): nil,
+    BButtonUp?: fun(): nil,
+    downButtonDown?: fun(): nil,
+    downButtonUp?: fun(): nil,
+    leftButtonDown?: fun(): nil,
+    leftButtonUp?: fun(): nil,
+    rightButtonDown?: fun(): nil,
+    rightButtonUp?: fun(): nil,
+    upButtonDown?: fun(): nil,
+    upButtonUp?: fun(): nil,
+    cranked?: fun(change:number, acceleratedChange:number): nil,
 };
 local _Metadata = {
     name: string,

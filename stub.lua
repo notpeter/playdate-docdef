@@ -437,22 +437,21 @@ local _Image = {}
 local _ImageTable = {}
 
 ---@class _InputHandler
----@field _AButtonDown? fun()
----@field _AButtonHeld? fun()
----@field _AButtonUp? fun()
----@field _BButtonDown? fun()
----@field _BButtonHeld? fun()
----@field _BButtonUp? fun()
----@field downButtonDown? fun()
----@field downButtonUp? fun()
----@field leftButtonDown? fun()
----@field leftButtonUp? fun()
----@field rightButtonDown? fun()
----@field rightButtonUp? fun()
----@field upButtonDown? fun()
----@field upButtonUp? fun()
----@field cranked? fun(change:number, acceleratedChange:number)
-
+---@field AButtonDown? fun(): nil
+---@field AButtonHeld? fun(): nil
+---@field AButtonUp? fun(): nil
+---@field BButtonDown? fun(): nil
+---@field BButtonHeld? fun(): nil
+---@field BButtonUp? fun(): nil
+---@field downButtonDown? fun(): nil
+---@field downButtonUp? fun(): nil
+---@field leftButtonDown? fun(): nil
+---@field leftButtonUp? fun(): nil
+---@field rightButtonDown? fun(): nil
+---@field rightButtonUp? fun(): nil
+---@field upButtonDown? fun(): nil
+---@field upButtonUp? fun(): nil
+---@field cranked? fun(change:number, acceleratedChange:number): nil
 local _InputHandler = {}
 
 ---@class _Instrument : playdate.sound.instrument
@@ -3696,7 +3695,7 @@ function playdate.graphics.video:useScreenContext() end
 ---@return nil
 function playdate.inputHandlers.pop() end
 
----@param handler table
+---@param handler _InputHandler
 ---@param masksPreviousHandlers? boolean
 ---@return nil
 function playdate.inputHandlers.push(handler, masksPreviousHandlers) end
