@@ -5186,8 +5186,8 @@ function playdate.ui.gridview:setSelectedRow(row) end
 ---@return nil
 function playdate.ui.gridview:setSelection(section, row, column) end
 
----@param arrayCount integer
----@param hashCount integer
+---@param arrayCount? integer
+---@param hashCount? integer
 ---@return table
 function table.create(arrayCount, hashCount) end
 

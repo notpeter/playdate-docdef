@@ -1411,7 +1411,7 @@ fun playdate.ui.gridview:setSectionHeaderPadding(left: integer, right: integer, 
 fun playdate.ui.gridview:setSelectedRow(row: integer): nil;
 fun playdate.ui.gridview:setSelection(section: integer, row: integer, column: integer): nil;
 
-fun table.create(arrayCount: integer, hashCount: integer): table;
+fun table.create(arrayCount?: integer, hashCount?: integer): table;
 fun table.deepcopy(source: table): table;
 fun table.getsize(table: table): (arrayCount: integer, hashCount: integer);
 fun table.indexOfElement(table: table, element: any): integer?;
