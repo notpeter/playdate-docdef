@@ -78,6 +78,7 @@ fun playdate.leftButtonDown(): nil;
 fun playdate.leftButtonUp(): nil;
 fun playdate.readAccelerometer(): (x: number, y: number, z: number);
 fun playdate.resetElapsedTime(): nil;
+fun playdate.restart(arg?: string[]): nil;
 fun playdate.rightButtonDown(): nil;
 fun playdate.rightButtonUp(): nil;
 fun playdate.serialMessageReceived(message: string): nil;
@@ -1244,6 +1245,7 @@ fun playdate.sound.micinput.stopRecording(): nil;
 
 global playdate.sound.sample;
 fun playdate.sound.sample.new(path: string): _Sample;
+fun playdate.sound.sample.new(seconds: number, format?: integer): _Sample;
 local _Sample: playdate.sound.sample;
 fun playdate.sound.sample:decompress(): (success: boolean, err?: string);
 fun playdate.sound.sample:getFormat(): integer;

@@ -996,6 +996,10 @@ function playdate.readAccelerometer() end
 ---@return nil
 function playdate.resetElapsedTime() end
 
+---@param arg? string[]
+---@return nil
+function playdate.restart(arg) end
+
 ---@return nil
 function playdate.rightButtonDown() end
 
@@ -4491,6 +4495,11 @@ function playdate.sound.ringmod:setMix(level) end
 ---@param signal? _Signal
 ---@return nil
 function playdate.sound.ringmod:setMixMod(signal) end
+
+---@param seconds number
+---@param format? integer
+---@return _Sample
+function playdate.sound.sample.new(seconds, format) end
 
 ---@param path string
 ---@return _Sample
