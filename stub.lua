@@ -54,6 +54,9 @@ playdate.frameTimer = {}
 playdate.geometry = {}
 
 ---@class playdate.graphics
+---@field kAlignLeft integer 0
+---@field kAlignRight integer 1
+---@field kAlignCenter integer 2
 ---@field kColorBlack integer 0
 ---@field kColorWhite integer 1
 ---@field kColorClear integer 2
@@ -78,6 +81,10 @@ playdate.geometry = {}
 ---@field kStrokeCentered integer 0
 ---@field kStrokeInside integer 1
 ---@field kStrokeOutside integer 2
+---@field kWrapClip integer 0
+---@field kWrapCharacter integer 1
+---@field kWrapWord integer 2
+---@field kWrapTruncateEnd integer 3
 playdate.graphics = {}
 
 ---@class playdate.inputHandlers
@@ -2262,10 +2269,29 @@ function playdate.graphics.drawLine(ls) end
 ---@param key string
 ---@param x integer
 ---@param y integer
+---@param width integer
+---@param height integer
+---@param language? (integer|string)
+---@param leadingAdjustment? integer
+---@param wrapMode? integer
+---@param alignment? integer
+---@return nil
+function playdate.graphics.drawLocalizedText(key, x, y, width, height, language, leadingAdjustment, wrapMode, alignment) end
+
+---@param key string
+---@param x integer
+---@param y integer
 ---@param language? (integer|string)
 ---@param leadingAdjustment? integer
 ---@return nil
 function playdate.graphics.drawLocalizedText(key, x, y, language, leadingAdjustment) end
+
+---@param key string
+---@param rect _Rect
+---@param language? (integer|string)
+---@param leadingAdjustment? integer
+---@return nil
+function playdate.graphics.drawLocalizedText(key, rect, language, leadingAdjustment) end
 
 ---@param text string
 ---@param x integer
@@ -2350,6 +2376,27 @@ function playdate.graphics.drawRoundRect(r, radius) end
 ---@param phaseShift? integer
 ---@return nil
 function playdate.graphics.drawSineWave(startX, startY, endX, endY, startAmplitude, endAmplitude, period, phaseShift) end
+
+---@param text string
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@param fontFamily? table<integer, _Font>
+---@param leadingAdjustment? integer
+---@param wrapMode? integer
+---@param alignment? integer
+---@return nil
+function playdate.graphics.drawText(text, x, y, width, height, fontFamily, leadingAdjustment, wrapMode, alignment) end
+
+---@param text string
+---@param rect _Rect
+---@param fontFamily? table<integer, _Font>
+---@param leadingAdjustment? integer
+---@param wrapMode? integer
+---@param alignment? integer
+---@return nil
+function playdate.graphics.drawText(text, rect, fontFamily, leadingAdjustment, wrapMode, alignment) end
 
 ---@param text string
 ---@param x integer
@@ -2836,6 +2883,25 @@ function playdate.graphics.font.new(path) end
 ---@param fontPaths table<integer, string>
 ---@return _Font[]
 function playdate.graphics.font.newFamily(fontPaths) end
+
+---@param text string
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@param leadingAdjustment? integer
+---@param wrapMode? integer
+---@param alignment? integer
+---@return nil
+function playdate.graphics.font:drawText(text, x, y, width, height, leadingAdjustment, wrapMode, alignment) end
+
+---@param text string
+---@param rect _Rect
+---@param leadingAdjustment? integer
+---@param wrapMode? integer
+---@param alignment? integer
+---@return nil
+function playdate.graphics.font:drawText(text, rect, leadingAdjustment, wrapMode, alignment) end
 
 ---@param text string
 ---@param x integer
@@ -4071,8 +4137,14 @@ function playdate.sound.channel:addEffect(effect) end
 ---@return nil
 function playdate.sound.channel:addSource(source) end
 
+---@return _Signal
+function playdate.sound.channel:getDryLevelSignal() end
+
 ---@return number
 function playdate.sound.channel:getVolume() end
+
+---@return _Signal
+function playdate.sound.channel:getWetLevelSignal() end
 
 ---@return nil
 function playdate.sound.channel:remove() end
@@ -4119,6 +4191,9 @@ function playdate.sound.controlsignal:clearEvents() end
 
 ---@return integer
 function playdate.sound.controlsignal:getControllerType() end
+
+---@return number
+function playdate.sound.controlsignal:getValue() end
 
 ---@param number integer
 ---@return nil
@@ -4169,6 +4244,9 @@ function playdate.sound.delaylinetap:setVolume(level) end
 ---@param release? number
 ---@return _Envelope
 function playdate.sound.envelope.new(attack, decay, sustain, release) end
+
+---@return number
+function playdate.sound.envelope:getValue() end
 
 ---@param attack number
 ---@return nil
@@ -4350,6 +4428,14 @@ function playdate.sound.instrument:playMIDINote(note, vel, length, when) end
 ---@return nil
 function playdate.sound.instrument:playNote(frequency, vel, length, when) end
 
+---@param amount number
+---@return nil
+function playdate.sound.instrument:setPitchBend(amount) end
+
+---@param halfsteps number
+---@return nil
+function playdate.sound.instrument:setPitchBendRange(halfsteps) end
+
 ---@param halfsteps number
 ---@return nil
 function playdate.sound.instrument:setTranspose(halfsteps) end
@@ -4362,6 +4448,9 @@ function playdate.sound.instrument:setVolume(left, right) end
 ---@param type? integer
 ---@return _LFO
 function playdate.sound.lfo.new(type) end
+
+---@return number
+function playdate.sound.lfo:getValue() end
 
 ---@param note1 number
 ---@param ... number
@@ -4690,6 +4779,9 @@ function playdate.sound.sequence:setTrackAtIndex(n, track) end
 ---@return nil
 function playdate.sound.sequence:stop() end
 
+---@return number
+function playdate.sound.signal:getValue() end
+
 ---@param offset number
 ---@return nil
 function playdate.sound.signal:setOffset(offset) end
@@ -4707,6 +4799,9 @@ function playdate.sound.synth.new(sample, sustainStart, sustainEnd) end
 ---@param waveform? integer
 ---@return _Synth
 function playdate.sound.synth.new(waveform) end
+
+---@return nil
+function playdate.sound.synth:clearEnvelope() end
 
 ---@return _Synth
 function playdate.sound.synth:copy() end

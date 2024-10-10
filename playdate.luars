@@ -425,6 +425,9 @@ fun playdate.geometry.vector2D:scaledBy(s: number): _Vector2D;
 fun playdate.geometry.vector2D:unpack(): (x: number, y: number);
 
 global playdate.graphics = {
+    kAlignLeft: integer = 0,
+    kAlignRight: integer = 1,
+    kAlignCenter: integer = 2,
     kColorBlack: integer = 0,
     kColorWhite: integer = 1,
     kColorClear: integer = 2,
@@ -448,7 +451,11 @@ global playdate.graphics = {
     kPolygonFillEvenOdd: integer = 1,
     kStrokeCentered: integer = 0,
     kStrokeInside: integer = 1,
-    kStrokeOutside: integer = 2
+    kStrokeOutside: integer = 2,
+    kWrapClip: integer = 0,
+    kWrapCharacter: integer = 1,
+    kWrapWord: integer = 2,
+    kWrapTruncateEnd: integer = 3,
 };
 fun playdate.graphics.checkAlphaCollision(image1: _Image, x1: integer, y1: integer, flip1: integer, image2: _Image, x2: integer, y2: integer, flip2: integer): boolean;
 fun playdate.graphics.clear(color?: integer): nil;
@@ -466,6 +473,8 @@ fun playdate.graphics.drawEllipseInRect(x: integer, y: integer, width: integer, 
 fun playdate.graphics.drawLine(x1: integer, y1: integer, x2: integer, y2: integer): nil;
 fun playdate.graphics.drawLine(ls: _LineSegment): nil;
 fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
+fun playdate.graphics.drawLocalizedText(key: string, x: integer, y: integer, width: integer, height: integer, language?: (integer|string), leadingAdjustment?: integer, wrapMode?: integer, alignment?: integer): nil;
+fun playdate.graphics.drawLocalizedText(key: string, rect: _Rect, language?: (integer|string), leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawLocalizedTextAligned(text: string, x: integer, y: integer, alignment: integer, language?: (integer|string), leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawLocalizedTextInRect(text: string, rect: _Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: _Font, language?: (integer|string)): nil;
 fun playdate.graphics.drawLocalizedTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font, language?: (integer|string)): nil;
@@ -478,6 +487,8 @@ fun playdate.graphics.drawRoundRect(r: _Rect, radius: number): nil;
 fun playdate.graphics.drawRoundRect(x: integer, y: integer, w: integer, h: integer, radius: number): nil;
 fun playdate.graphics.drawSineWave(startX: integer, startY: integer, endX: integer, endY: integer, startAmplitude: integer, endAmplitude: integer, period: integer, phaseShift?: integer): nil;
 fun playdate.graphics.drawText(text: string, x: integer, y: integer, fontFamily?: table<integer, _Font>, leadingAdjustment?: integer): nil;
+fun playdate.graphics.drawText(text: string, x: integer, y: integer, width: integer, height: integer, fontFamily?: table<integer, _Font>, leadingAdjustment?: integer, wrapMode?: integer, alignment?: integer): nil;
+fun playdate.graphics.drawText(text: string, rect: _Rect, fontFamily?: table<integer, _Font>, leadingAdjustment?: integer, wrapMode?: integer, alignment?: integer): nil;
 fun playdate.graphics.drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer): nil;
 fun playdate.graphics.drawTextInRect(text: string, rect: _Rect, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: _Font): nil;
 fun playdate.graphics.drawTextInRect(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, truncationString?: string, alignment?: integer, font?: playdate.graphics.font): nil;
@@ -612,6 +623,8 @@ fun playdate.graphics.font.new(path: string): _Font;
 fun playdate.graphics.font.newFamily(fontPaths: table<integer, string>): _Font[];
 local _Font: playdate.graphics.font;
 fun playdate.graphics.font:drawText(text: string, x: integer, y: integer, leadingAdjustment?: integer): nil;
+fun playdate.graphics.font:drawText(text: string, x: integer, y: integer, width: integer, height: integer, leadingAdjustment?: integer, wrapMode?: integer, alignment?: integer): nil;
+fun playdate.graphics.font:drawText(text: string, rect: _Rect, leadingAdjustment?: integer, wrapMode?: integer, alignment?: integer): nil;
 fun playdate.graphics.font:drawTextAligned(text: string, x: integer, y: integer, alignment: integer, leadingAdjustment?: integer): nil;
 fun playdate.graphics.font:getGlyph(character: string): _Image;
 fun playdate.graphics.font:getHeight(): integer;
@@ -1080,6 +1093,8 @@ fun playdate.sound.channel.new(): _Channel;
 local _Channel: playdate.sound.channel;
 fun playdate.sound.channel:addEffect(effect: _SoundEffect): nil;
 fun playdate.sound.channel:addSource(source: _SoundSource): nil;
+fun playdate.sound.channel:getDryLevelSignal(): _Signal;
+fun playdate.sound.channel:getWetLevelSignal(): _Signal;
 fun playdate.sound.channel:getVolume(): number;
 fun playdate.sound.channel:remove(): nil;
 fun playdate.sound.channel:removeEffect(effect: _SoundEffect): nil;
@@ -1091,6 +1106,7 @@ fun playdate.sound.channel:setVolumeMod(signal?: _Signal): nil;
 
 global playdate.sound.signal;
 local _Signal: playdate.sound.signal;
+fun playdate.sound.signal:getValue(): number;
 fun playdate.sound.signal:setOffset(offset: number): nil;
 fun playdate.sound.signal:setScale(scale: integer): nil;
 
@@ -1104,10 +1120,12 @@ fun playdate.sound.controlsignal:addEvent(step: integer, value: number, interpol
 fun playdate.sound.controlsignal:clearEvents(): nil;
 fun playdate.sound.controlsignal:getControllerType(): integer;
 fun playdate.sound.controlsignal:setControllerType(number: integer): nil;
+fun playdate.sound.controlsignal:getValue(): number;
 
 global playdate.sound.envelope: _Signal;
 fun playdate.sound.envelope.new(attack?: number, decay?: number, sustain?: number, release?: number): _Envelope;
 local _Envelope: playdate.sound.envelope;
+fun playdate.sound.envelope:getValue(): number;
 fun playdate.sound.envelope:setAttack(attack: number): nil;
 fun playdate.sound.envelope:setCurvature(amount: number): nil;
 fun playdate.sound.envelope:setDecay(decay: number): nil;
@@ -1125,6 +1143,7 @@ fun playdate.sound.envelope:trigger(velocity: number, length?: number): nil;
 global playdate.sound.lfo: _Signal;
 fun playdate.sound.lfo.new(type?: integer): _LFO;
 local _LFO: playdate.sound.lfo;
+fun playdate.sound.lfo:getValue(): number;
 fun playdate.sound.lfo:setArpeggio(note1: number, ...: number): nil;
 fun playdate.sound.lfo:setCenter(center: number): nil;
 fun playdate.sound.lfo:setDelay(holdoff: number, ramp: number): nil;
@@ -1180,6 +1199,8 @@ fun playdate.sound.instrument:getVolume(): (left_or_mono: number, right: number?
 fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
 fun playdate.sound.instrument:playMIDINote(note: number, vel?: number, length?: number, when?: number): nil;
 fun playdate.sound.instrument:playNote(frequency: string, vel?: number, length?: number, when?: number): nil;
+fun playdate.sound.instrument:setPitchBend(amount: number): nil;
+fun playdate.sound.instrument:setPitchBendRange(halfsteps: number): nil;
 fun playdate.sound.instrument:setTranspose(halfsteps: number): nil;
 fun playdate.sound.instrument:setVolume(left: number, right?: number): nil;
 
@@ -1211,6 +1232,7 @@ global playdate.sound.synth: _SoundSource;
 fun playdate.sound.synth.new(sample: _Sample, sustainStart?: integer, sustainEnd?: integer): _Synth;
 fun playdate.sound.synth.new(waveform?: integer): _Synth;
 local _Synth: playdate.sound.synth;
+fun playdate.sound.synth:clearEnvelope(): nil;
 fun playdate.sound.synth:copy(): _Synth;
 fun playdate.sound.synth:getEnvelope(): _Envelope;
 fun playdate.sound.synth:getVolume(): (left_or_mono: number, right: number?);
