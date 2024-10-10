@@ -38,9 +38,12 @@ playdate.display = {}
 playdate.easingFunctions = {}
 
 ---@class playdate.file
+---@field kSeekSet integer 0
+---@field kSeekFromCurrent integer 1
+---@field kSeekFromEnd integer 2
 ---@field kFileRead integer 3
----@field kFileAppend integer 8
 ---@field kFileWrite integer 4
+---@field kFileAppend integer 8
 playdate.file = {}
 
 ---@class playdate.frameTimer
@@ -297,6 +300,9 @@ playdate.sound.sequence = {}
 
 ---@class playdate.sound.signal
 playdate.sound.signal = {}
+
+---@class playdate.sound.signalvalue
+playdate.sound.signalvalue = {}
 
 ---@class playdate.sound.source
 playdate.sound.source = {}
@@ -610,6 +616,9 @@ local _ServerStatus = {}
 ---@class _Signal : playdate.sound.signal
 local _Signal = {}
 
+---@class _SignalValue : playdate.sound.signalvalue
+local _SignalValue = {}
+
 ---@class _Size : playdate.geometry.size
 ---@field width number
 ---@field height number
@@ -681,6 +690,7 @@ local _Synth = {}
 ---@field commit string
 ---@field pdxcompatversion integer
 ---@field pdxversion integer
+---@field sdk string
 local _SystemInfo = {}
 
 ---@class _SystemStats
@@ -4034,6 +4044,10 @@ function playdate.scoreboards.getScoreboards(callback) end
 ---@return nil
 function playdate.scoreboards.getScores(boardID, callback) end
 
+---@param something string
+---@return nil
+function playdate.server.createMovie(something) end
+
 ---@param something any
 ---@param callback fun(status: _ServerStatus, result: table): nil
 ---@return nil
@@ -4789,6 +4803,9 @@ function playdate.sound.signal:setOffset(offset) end
 ---@param scale integer
 ---@return nil
 function playdate.sound.signal:setScale(scale) end
+
+---@return number
+function playdate.sound.signalvalue:getValue() end
 
 ---@param sample _Sample
 ---@param sustainStart? integer

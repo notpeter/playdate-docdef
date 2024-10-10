@@ -5,6 +5,7 @@
     * Re-evaluate Pest Implicit whitepsace: https://pest.rs/book/grammars/syntax.html#implicit-whitespace
     * Switch from "\n" to NEWLINE ("\n" | "\r\n" | "\r")
     * Unicode support (not today satan)
+    * Better handling of accidential `))` end of function
 */
 Document = { Statement* }
 Statement = _{

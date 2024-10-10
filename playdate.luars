@@ -173,9 +173,12 @@ fun playdate.easingFunctions.outQuint(t: number, b: number, c: number, d: number
 fun playdate.easingFunctions.outSine(t: number, b: number, c: number, d: number): number;
 
 global playdate.file = {
+    kSeekSet: integer = 0,
+    kSeekFromCurrent: integer = 1,
+    kSeekFromEnd: integer = 2,
     kFileRead: integer = 3,
-    kFileAppend: integer = 8,
     kFileWrite: integer = 4,
+    kFileAppend: integer = 8,
 };
 fun playdate.file.delete(path: string, recursive?: boolean): boolean;
 fun playdate.file.exists(path: string): boolean;
@@ -981,6 +984,7 @@ fun playdate.scoreboards.getScoreboards(callback: fun(status: _ServerStatus, res
 fun playdate.scoreboards.getScores(boardID: string, callback: fun(status: _ServerStatus, result: _ScoreBoardScoresResult): nil): nil;
 
 global playdate.server;
+fun playdate.server.createMovie(something: string, ...): nil;
 fun playdate.server.getAvatar(something: any, callback: fun(status: _ServerStatus, result: table): nil): nil;
 fun playdate.server.setAvatar(image: _Image, ...): nil;
 fun playdate.server.uploadFile(something1: string, something2: string, ...): nil;
@@ -1109,6 +1113,10 @@ local _Signal: playdate.sound.signal;
 fun playdate.sound.signal:getValue(): number;
 fun playdate.sound.signal:setOffset(offset: number): nil;
 fun playdate.sound.signal:setScale(scale: integer): nil;
+
+global playdate.sound.signalvalue;
+local _SignalValue: playdate.sound.signalvalue;
+fun playdate.sound.signalvalue:getValue(): number;
 
 global playdate.sound.controlsignal: _Signal;
 fun playdate.sound.controlsignal.new(): _ControlSignal;
@@ -1549,6 +1557,7 @@ local _SystemInfo = {
     commit: string,
     pdxcompatversion: integer,
     pdxversion: integer,
+    sdk: string,
 };
 local _SystemStats = {
     audio: number,
