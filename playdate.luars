@@ -199,7 +199,7 @@ fun playdate.file.file:close(): nil;
 fun playdate.file.file:flush(): nil;
 fun playdate.file.file:read(numberOfBytes: integer): (numberOfBytes: integer, err: string?);
 fun playdate.file.file:readline(): string;
-fun playdate.file.file:seek(offset: integer): nil;
+fun playdate.file.file:seek(offset: integer, whence: integer): nil;
 fun playdate.file.file:tell(): integer;
 fun playdate.file.file:write(str: string): (bytes_written: integer, err: string?);
 
@@ -428,9 +428,9 @@ fun playdate.geometry.vector2D:scaledBy(s: number): _Vector2D;
 fun playdate.geometry.vector2D:unpack(): (x: number, y: number);
 
 global playdate.graphics = {
-    kAlignLeft: integer = 0,
-    kAlignRight: integer = 1,
-    kAlignCenter: integer = 2,
+    kAlignLeft: integer = 33554432,
+    kAlignRight: integer = 33554434,
+    kAlignCenter: integer = 33554433,
     kColorBlack: integer = 0,
     kColorWhite: integer = 1,
     kColorClear: integer = 2,
@@ -455,10 +455,9 @@ global playdate.graphics = {
     kStrokeCentered: integer = 0,
     kStrokeInside: integer = 1,
     kStrokeOutside: integer = 2,
-    kWrapClip: integer = 0,
-    kWrapCharacter: integer = 1,
-    kWrapWord: integer = 2,
-    kWrapTruncateEnd: integer = 3,
+    kWrapClip: integer = 16777216,
+    kWrapCharacter: integer = 16777217,
+    kWrapWord: integer = 16777218,
 };
 fun playdate.graphics.checkAlphaCollision(image1: _Image, x1: integer, y1: integer, flip1: integer, image2: _Image, x2: integer, y2: integer, flip2: integer): boolean;
 fun playdate.graphics.clear(color?: integer): nil;
