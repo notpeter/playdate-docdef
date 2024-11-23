@@ -9,20 +9,13 @@
             "request": "launch",
             "name": "Debug executable",
             "cargo": {
-                "args": [
-                    "build",
-                    "--bin=doc_scraper",
-                    "--package=doc_scraper"
-                ],
+                "args": ["build", "--bin=doc_scraper", "--package=doc_scraper"],
                 "filter": {
                     "name": "doc_scraper",
                     "kind": "bin"
                 }
             },
-            "args": [
-                "annotate",
-                // "user_arg2"
-            ],
+            "args": ["annotate"],
             "cwd": "${workspaceFolder}/"
         }
     ]
