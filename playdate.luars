@@ -1027,13 +1027,6 @@ fun playdate.scoreboards.getPersonalBest(boardName: string, callback: fun(status
 fun playdate.scoreboards.getScoreboards(callback: fun(status: _ServerStatus, result: _ScoreBoardsScoreboardsResult): nil): nil;
 fun playdate.scoreboards.getScores(boardID: string, callback: fun(status: _ServerStatus, result: _ScoreBoardScoresResult): nil): nil;
 
-global playdate.server;
-fun playdate.server.createMovie(something: string, ...): nil;
-fun playdate.server.getAvatar(something: any, callback: fun(status: _ServerStatus, result: table): nil): nil;
-fun playdate.server.setAvatar(image: _Image, ...): nil;
-fun playdate.server.uploadFile(something1: string, something2: string, ...): nil;
-fun playdate.server.uploadImage(image: _Image, something: string, ...): nil;
-
 global playdate.simulator;
 fun playdate.simulator.exit(): nil;
 fun playdate.simulator.getURL(url: string): string;
