@@ -105,6 +105,12 @@ playdate.math = {}
 ---@class playdate.menu
 playdate.menu = {}
 
+---@class playdate.network
+---@field kStatusNotConnected integer 0
+---@field kStatusConnected integer 1
+---@field kStatusNotAvailable integer 2
+playdate.network = {}
+
 ---@class playdate.pathfinder
 playdate.pathfinder = {}
 
@@ -239,6 +245,12 @@ playdate.math.logic = {}
 
 ---@class playdate.menu.item
 playdate.menu.item = {}
+
+---@class playdate.network.http
+playdate.network.http = {}
+
+---@class playdate.network.tcp
+playdate.network.tcp = {}
 
 ---@class playdate.pathfinder.graph
 playdate.pathfinder.graph = {}
@@ -509,6 +521,12 @@ local _Metadata = {}
 ---@field minute integer
 ---@field second integer
 local _ModTime = {}
+
+---@class _NetworkHttp : playdate.network.http
+local _NetworkHttp = {}
+
+---@class _NetworkTcp : playdate.network.tcp
+local _NetworkTcp = {}
 
 ---@class _NewClass
 ---@field className string
@@ -3887,6 +3905,144 @@ function playdate.menu.item:setTitle(newTitle) end
 ---@param newValue (integer|boolean|string)
 ---@return nil
 function playdate.menu.item:setValue(newValue) end
+
+---@return integer
+function playdate.network.getStatus() end
+
+---@param server string
+---@param port? integer
+---@param usessl? boolean
+---@param reason? string
+---@return _NetworkHttp?
+function playdate.network.http.new(server, port, usessl, reason) end
+
+---@param server? string
+---@param port? integer
+---@param usessl? boolean
+---@param reason? string
+---@return boolean
+function playdate.network.http.requestAccess(server, port, usessl, reason) end
+
+---@return nil
+function playdate.network.http:close() end
+
+---@param path string
+---@param headers? table<string, string>
+---@return boolean success
+---@return string error?
+function playdate.network.http:get(path, headers) end
+
+---@return integer
+function playdate.network.http:getBytesAvailable() end
+
+---@return string?
+function playdate.network.http:getError() end
+
+---@return integer bytesRead
+---@return integer totalBytes
+function playdate.network.http:getProgress() end
+
+---@return integer
+function playdate.network.http:getResponseStatus() end
+
+---@param path string
+---@param headers? table<string, string>
+---@param data string
+---@return boolean success
+---@return string error?
+function playdate.network.http:post(path, headers, data) end
+
+---@param length integer
+---@return string
+function playdate.network.http:read(length) end
+
+---@param from integer
+---@param to integer
+---@return nil
+function playdate.network.http:setByteRange(from, to) end
+
+---@param seconds integer
+---@return nil
+function playdate.network.http:setConnectTimeout(seconds) end
+
+---@param _function function
+---@return nil
+function playdate.network.http:setConnectionClosedCallback(_function) end
+
+---@param _function function
+---@return nil
+function playdate.network.http:setHeadersReadCallback(_function) end
+
+---@param flag boolean
+---@return nil
+function playdate.network.http:setKeepAlive(flag) end
+
+---@param bytes integer
+---@return nil
+function playdate.network.http:setReadBufferSize(bytes) end
+
+---@param ms integer
+---@return nil
+function playdate.network.http:setReadTimeout(ms) end
+
+---@param _function function
+---@return nil
+function playdate.network.http:setRequestCallback(_function) end
+
+---@param _function function
+---@return nil
+function playdate.network.http:setRequestCompleteCallback(_function) end
+
+---@param server string
+---@param port? integer
+---@param usessl? boolean
+---@param reason? string
+---@return _NetworkTcp?
+function playdate.network.tcp.new(server, port, usessl, reason) end
+
+---@param server? string
+---@param port? integer
+---@param reason? string
+---@return boolean
+function playdate.network.tcp.requestAccess(server, port, reason) end
+
+---@return nil
+function playdate.network.tcp:close() end
+
+---@return integer
+function playdate.network.tcp:getBytesAvailable() end
+
+---@return string?
+function playdate.network.tcp:getError() end
+
+---@param connectCallback fun(connected: boolean, error?: string)
+---@return nil
+function playdate.network.tcp:open(connectCallback) end
+
+---@param length integer
+---@return string
+function playdate.network.tcp:read(length) end
+
+---@param seconds integer
+---@return nil
+function playdate.network.tcp:setConnectTimeout(seconds) end
+
+---@param _function function
+---@return nil
+function playdate.network.tcp:setConnectionClosedCallback(_function) end
+
+---@param bytes integer
+---@return nil
+function playdate.network.tcp:setReadBufferSize(bytes) end
+
+---@param ms integer
+---@return nil
+function playdate.network.tcp:setReadTimeout(ms) end
+
+---@param data string
+---@return boolean success
+---@return string error?
+function playdate.network.tcp:write(data) end
 
 ---@param nodeCount? integer
 ---@param coordinates? integer[][]

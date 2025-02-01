@@ -912,6 +912,51 @@ fun playdate.menu.item:setCallback(callback: function): nil;
 fun playdate.menu.item:setTitle(newTitle: string): nil;
 fun playdate.menu.item:setValue(newValue: (integer|boolean|string)): nil;
 
+global playdate.network = {
+    kStatusNotConnected: integer = 0,
+    kStatusConnected: integer = 1,
+    kStatusNotAvailable: integer = 2,
+};
+fun playdate.network.getStatus(): integer;
+
+global playdate.network.http;
+local _NetworkHttp: playdate.network.http;
+fun playdate.network.http.new(server: string, port?: integer, usessl?: boolean, reason?: string): _NetworkHttp?;
+fun playdate.network.http.requestAccess(server?: string, port?: integer, usessl?: boolean, reason?: string): boolean;
+fun playdate.network.http:close(): nil;
+fun playdate.network.http:get(path: string, headers?: table<string, string>): (success: boolean, error?: string);
+fun playdate.network.http:getBytesAvailable(): integer;
+fun playdate.network.http:getError(): string?;
+fun playdate.network.http:getProgress(): (bytesRead: integer, totalBytes: integer);
+fun playdate.network.http:getResponseStatus(): integer;
+fun playdate.network.http:post(path: string, headers?: table<string, string>, data: string): (success: boolean, error?: string);
+fun playdate.network.http:read(length: integer): string;
+fun playdate.network.http:setByteRange(from: integer, to:integer): nil;
+fun playdate.network.http:setConnectTimeout(seconds: integer): nil;
+fun playdate.network.http:setConnectionClosedCallback(_function: function): nil;
+fun playdate.network.http:setHeadersReadCallback(_function: function): nil;
+fun playdate.network.http:setKeepAlive(flag: boolean): nil;
+fun playdate.network.http:setReadBufferSize(bytes: integer): nil;
+fun playdate.network.http:setReadTimeout(ms: integer): nil;
+fun playdate.network.http:setRequestCallback(_function: function): nil;
+fun playdate.network.http:setRequestCompleteCallback(_function: function): nil;
+
+global playdate.network.tcp;
+local _NetworkTcp: playdate.network.tcp;
+fun playdate.network.tcp.new(server: string, port?: integer, usessl?: boolean, reason?: string): _NetworkTcp?;
+fun playdate.network.tcp.requestAccess(server?: string, port?: integer, reason?: string): boolean;
+fun playdate.network.tcp:close(): nil;
+fun playdate.network.tcp:getBytesAvailable(): integer;
+fun playdate.network.tcp:getError(): string?;
+fun playdate.network.tcp:open(connectCallback: fun(connected: boolean, error?: string)): nil;
+fun playdate.network.tcp:read(length: integer): string;
+fun playdate.network.tcp:setConnectTimeout(seconds: integer): nil;
+fun playdate.network.tcp:setConnectionClosedCallback(_function: function): nil;
+fun playdate.network.tcp:setReadBufferSize(bytes: integer): nil;
+fun playdate.network.tcp:setReadTimeout(ms: integer): nil;
+fun playdate.network.tcp:write(data: string): (success: boolean, error?: string);
+
+
 global playdate.pathfinder;
 
 global playdate.pathfinder.graph;
