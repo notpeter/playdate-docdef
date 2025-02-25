@@ -64,8 +64,8 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
         title: fname,
         anchor: anchor.to_string(),
         text: text.clone(),
-        params: params,
-        returns: returns,
+        params,
+        returns,
     }
 }
 
