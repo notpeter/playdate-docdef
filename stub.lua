@@ -2827,7 +2827,7 @@ function playdate.graphics.animation.blinker:stop() end
 function playdate.graphics.animation.blinker:update() end
 
 ---@param delay? number
----@param imageTable? _ImageTable
+---@param imageTable _ImageTable
 ---@param shouldLoop? boolean
 ---@return _AnimationLoop
 function playdate.graphics.animation.loop.new(delay, imageTable, shouldLoop) end
@@ -3938,6 +3938,9 @@ function playdate.network.http:getError() end
 ---@return integer bytesRead
 ---@return integer totalBytes
 function playdate.network.http:getProgress() end
+
+---@return table<string, string>?
+function playdate.network.http:getResponseHeaders() end
 
 ---@return integer
 function playdate.network.http:getResponseStatus() end

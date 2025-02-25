@@ -558,7 +558,7 @@ fun playdate.graphics.unlockFocus(): nil;
 global playdate.graphics.animation;
 
 global playdate.graphics.animation.loop;
-fun playdate.graphics.animation.loop.new(delay?: number, imageTable?: _ImageTable, shouldLoop?: boolean): _AnimationLoop;
+fun playdate.graphics.animation.loop.new(delay?: number, imageTable: _ImageTable, shouldLoop?: boolean): _AnimationLoop;
 local _AnimationLoop: playdate.graphics.animation.loop = {
     delay: number,
     startFrame: integer,
@@ -927,6 +927,7 @@ fun playdate.network.http:close(): nil;
 fun playdate.network.http:get(path: string, headers?: table<string, string>): (success: boolean, error?: string);
 fun playdate.network.http:getBytesAvailable(): integer;
 fun playdate.network.http:getError(): string?;
+fun playdate.network.http:getResponseHeaders(): table<string, string>?;
 fun playdate.network.http:getProgress(): (bytesRead: integer, totalBytes: integer);
 fun playdate.network.http:getResponseStatus(): integer;
 fun playdate.network.http:post(path: string, headers?: table<string, string>, data: string): (success: boolean, error?: string);
