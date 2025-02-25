@@ -15,12 +15,7 @@ parameters = ["..."]
 ##########################################################
 # Overrides for methods with incorrect signatures/names
 
-# missing extend parameter
-["m-geometry.arc.pointOnArc"]
-fname = "playdate.geometry.arc:pointOnArc"
-parameters = ["distance", "extend"]
-
-# instance method not classmethod
+# dashes in params upper-left-x, upper-left-y
 ["m-graphics.sprite.setBounds"]
 fname = "playdate.graphics.sprite:setBounds"
 parameters = ["x", "y", "width", "height"]
@@ -54,7 +49,7 @@ parameters = ["..."]
 fname = "playdate.graphics.imagetable:__index"
 parameters = ["n"] # integer
 
-# t * t
+# t1 * t2
 ["m-geometry.affineTransform.mul_t"]
 fname = "playdate.geometry.affineTransform:__mul"
 parameters = ["t"] # affineTransform
