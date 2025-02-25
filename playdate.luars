@@ -937,7 +937,7 @@ fun playdate.network.http:setConnectionClosedCallback(_function: function): nil;
 fun playdate.network.http:setHeadersReadCallback(_function: function): nil;
 fun playdate.network.http:setKeepAlive(flag: boolean): nil;
 fun playdate.network.http:setReadBufferSize(bytes: integer): nil;
-fun playdate.network.http:setReadTimeout(ms: integer): nil;
+fun playdate.network.http:setReadTimeout(seconds: number): nil;
 fun playdate.network.http:setRequestCallback(_function: function): nil;
 fun playdate.network.http:setRequestCompleteCallback(_function: function): nil;
 
@@ -953,7 +953,7 @@ fun playdate.network.tcp:read(length: integer): string;
 fun playdate.network.tcp:setConnectTimeout(seconds: integer): nil;
 fun playdate.network.tcp:setConnectionClosedCallback(_function: function): nil;
 fun playdate.network.tcp:setReadBufferSize(bytes: integer): nil;
-fun playdate.network.tcp:setReadTimeout(ms: integer): nil;
+fun playdate.network.tcp:setReadTimeout(seconds: number): nil;
 fun playdate.network.tcp:write(data: string): (success: boolean, error?: string);
 
 

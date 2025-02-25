@@ -3978,9 +3978,9 @@ function playdate.network.http:setKeepAlive(flag) end
 ---@return nil
 function playdate.network.http:setReadBufferSize(bytes) end
 
----@param ms integer
+---@param seconds number
 ---@return nil
-function playdate.network.http:setReadTimeout(ms) end
+function playdate.network.http:setReadTimeout(seconds) end
 
 ---@param _function function
 ---@return nil
@@ -4032,9 +4032,9 @@ function playdate.network.tcp:setConnectionClosedCallback(_function) end
 ---@return nil
 function playdate.network.tcp:setReadBufferSize(bytes) end
 
----@param ms integer
+---@param seconds number
 ---@return nil
-function playdate.network.tcp:setReadTimeout(ms) end
+function playdate.network.tcp:setReadTimeout(seconds) end
 
 ---@param data string
 ---@return boolean success
