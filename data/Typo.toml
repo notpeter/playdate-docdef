@@ -178,3 +178,13 @@ parameters = []
 ["m-ui.crankIndicator.getBounds"]
 fname = "playdate.ui.crankIndicator:getBounds"
 parameters = ["xOffset", "yOffset"]
+
+# Callback type info is inline with functional arguments
+["f-getServerTime"]
+fname = "playdate.getServerTime"
+parameters = ["callback"]
+
+# Fix for `function -> _function` rename
+["f-network.setEnabled"]
+fname = "playdate.network.setEnabled"
+parameters = ["flag", "callback"]

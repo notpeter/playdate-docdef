@@ -67,6 +67,7 @@ fun playdate.getGMTTime(): _DateTime;
 fun playdate.getPowerStatus(): _PowerStatus;
 fun playdate.getReduceFlashing(): boolean;
 fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
+fun playdate.getServerTime(callback: fun(time: string, error?: string));
 fun playdate.getStats(): _SystemStats;
 fun playdate.getSystemLanguage(): integer;
 fun playdate.getSystemMenu(): _Menu;
@@ -97,6 +98,8 @@ fun playdate.start(): nil;
 fun playdate.startAccelerometer(): nil;
 fun playdate.stop(): nil;
 fun playdate.stopAccelerometer(): nil;
+fun playdate.streamEnded(): nil;
+fun playdate.streamStarted(): nil;
 fun playdate.timeFromEpoch(seconds: integer, milliseconds: integer): _DateTime;
 fun playdate.upButtonDown(): nil;
 fun playdate.upButtonUp(): nil;
@@ -853,6 +856,7 @@ global playdate.graphics.video;
 fun playdate.graphics.video.new(path: string): _Video;
 local _Video: playdate.graphics.video;
 fun playdate.graphics.video:getContext(): _Image;
+fun playdate.graphics.video:getCurrentFrame(): integer;
 fun playdate.graphics.video:getFrameCount(): integer;
 fun playdate.graphics.video:getFrameRate(): number;
 fun playdate.graphics.video:getSize(): (x: integer, y: integer);
@@ -918,6 +922,7 @@ global playdate.network = {
     kStatusNotAvailable: integer = 2,
 };
 fun playdate.network.getStatus(): integer;
+fun playdate.network.setEnabled(flag?: boolean, callback?: fun(error?: string));
 
 global playdate.network.http;
 local _NetworkHttp: playdate.network.http;

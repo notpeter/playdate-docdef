@@ -990,6 +990,9 @@ function playdate.getReduceFlashing() end
 ---@return integer milliseconds
 function playdate.getSecondsSinceEpoch() end
 
+---@param callback fun(time: string, error?: string)
+function playdate.getServerTime(callback) end
+
 ---@return _SystemStats
 function playdate.getStats() end
 
@@ -1100,6 +1103,12 @@ function playdate.stop() end
 
 ---@return nil
 function playdate.stopAccelerometer() end
+
+---@return nil
+function playdate.streamEnded() end
+
+---@return nil
+function playdate.streamStarted() end
 
 ---@param seconds integer
 ---@param milliseconds integer
@@ -3767,6 +3776,9 @@ function playdate.graphics.video.new(path) end
 function playdate.graphics.video:getContext() end
 
 ---@return integer
+function playdate.graphics.video:getCurrentFrame() end
+
+---@return integer
 function playdate.graphics.video:getFrameCount() end
 
 ---@return number
@@ -3905,6 +3917,10 @@ function playdate.menu.item:setValue(newValue) end
 
 ---@return integer
 function playdate.network.getStatus() end
+
+---@param flag? boolean
+---@param callback? fun(error?: string)
+function playdate.network.setEnabled(flag, callback) end
 
 ---@param server string
 ---@param port? integer
