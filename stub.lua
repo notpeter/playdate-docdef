@@ -1022,6 +1022,12 @@ function playdate.leftButtonDown() end
 ---@return nil
 function playdate.leftButtonUp() end
 
+---@return nil
+function playdate.mirrorEnded() end
+
+---@return nil
+function playdate.mirrorStarted() end
+
 ---@return number x
 ---@return number y
 ---@return number z
@@ -1103,12 +1109,6 @@ function playdate.stop() end
 
 ---@return nil
 function playdate.stopAccelerometer() end
-
----@return nil
-function playdate.streamEnded() end
-
----@return nil
-function playdate.streamStarted() end
 
 ---@param seconds integer
 ---@param milliseconds integer
