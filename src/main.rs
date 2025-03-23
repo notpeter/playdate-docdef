@@ -50,6 +50,9 @@ fn main() {
                             fin_stubs.push(FinStub::from_luars(s));
                         }
                     }
+                    luars::LuarsStatement::Local(_name, _parent, _) => {
+                        // eprintln!("local {_name} {_parent}")
+                    }
                     _ => {}
                 }
             }

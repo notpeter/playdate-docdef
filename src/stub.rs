@@ -20,19 +20,11 @@ impl StubFn {
     pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> StubFn {
         let func_sig = self.func_signature();
         let mut found: bool = false;
+        //TODO: This is hella inefficient
         for s in statements {
-            //TODO: This is hella inefficient
-            match s {
-                LuarsStatement::Function(_, _, _) => {}
-                _ => {
-                    continue;
-                }
-            }
-            let s_sig = s.func_sig();
-            // eprintln!("INFO: Comparing {} to {}", func_sig, s_sig);
-
             match s {
                 LuarsStatement::Function(_, params, returns) => {
+                    let s_sig = s.func_sig();
                     if func_sig == s_sig {
                         self.params = params
                             .iter()
@@ -45,7 +37,8 @@ impl StubFn {
                         found = true;
                     }
                 }
-                _ => {}
+                LuarsStatement::Global(_, _, _) => continue,
+                LuarsStatement::Local(_, _, _) => continue,
             }
         }
         if found {

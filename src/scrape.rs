@@ -118,14 +118,20 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             || title.starts_with("#")
             || title.contains("Callback")
         {
-            //
             // function(), imagetable[n], "p + p", "-v", etc
             let mut stub = annotate_function(&anchor.to_string(), &title, &text);
             stub = stub.apply_types(statements);
             stubs.push(stub);
+        } else if anchor.starts_with("a-") {
+            // eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
+        } else if anchor.starts_with("v-") {
+            // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
+
+            // let mut stub = annotate_function(&anchor.to_string(), &title, &text);
+            // stub = stub.apply_types(statements);
+            // stubs.push(stub);
         } else {
-            // TODO: Add this as a stub!
-            // eprintln!("VARIABLE: {title}");
+            // eprintln!("UNKNOWN: {anchor} {title}");
         }
 
         // _last_class is context for the next loop. So if the title is missing a name (e.g. "p + p") we can infer it.
