@@ -115,6 +115,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             || title.contains("[")
             || title.contains(" ")
             || title.starts_with("-")
+            || title.starts_with("#")
             || title.contains("Callback")
         {
             //
