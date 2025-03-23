@@ -3198,6 +3198,9 @@ function playdate.graphics.imagetable.new(path) end
 ---@return _Image?
 function playdate.graphics.imagetable:__index(n) end
 
+---@return integer
+function playdate.graphics.imagetable:__len() end
+
 ---@param n integer
 ---@param x integer
 ---@param y integer
