@@ -188,3 +188,8 @@ parameters = ["callback"]
 ["f-network.setEnabled"]
 fname = "playdate.network.setEnabled"
 parameters = ["flag", "callback"]
+
+# Fix for #playdate.graphics.imagetable
+["m-graphics.imagetable.__len"]
+fname = "playdate.graphics.imagetable:__len"
+parameters = []

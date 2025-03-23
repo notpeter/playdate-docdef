@@ -700,6 +700,7 @@ fun playdate.graphics.imagetable.new(count: integer, cellsWide?: integer, cellSi
 fun playdate.graphics.imagetable.new(path: string): (imagetable?: _ImageTable, err?: string);
 local _ImageTable: playdate.graphics.imagetable;
 fun playdate.graphics.imagetable:__index(n: integer): _Image?;
+fun playdate.graphics.imagetable:__len(): integer;
 fun playdate.graphics.imagetable:drawImage(n: integer, x: integer, y: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.imagetable:getImage(n: integer): _Image?;
 fun playdate.graphics.imagetable:getImage(x: integer, y: integer): _Image?;
