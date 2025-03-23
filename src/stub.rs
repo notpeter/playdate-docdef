@@ -109,3 +109,22 @@ impl Stub {
         s
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_basic_stub() {
+        let stub = Stub {
+            title: "test_func".to_string(),
+            anchor: "test_anchor".to_string(),
+            params: vec![("param1".to_string(), "string".to_string())],
+            returns: vec![("ret1".to_string(), "number".to_string())],
+            text: vec!["Test description".to_string()],
+        };
+
+        assert_eq!(stub.func_signature(), "test_func(param1)");
+        assert_eq!(stub.to_stub(), "function test_func(param1) end");
+    }
+}
