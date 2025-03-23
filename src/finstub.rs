@@ -1,5 +1,5 @@
 use crate::luars::LuarsStatement;
-use crate::stub::Stub;
+use crate::stub::StubFn;
 use std::collections::HashMap;
 
 pub struct Attribute {
@@ -16,12 +16,12 @@ pub struct Variable {
 }
 
 pub enum FinStub {
-    Stub(Stub),
+    Stub(StubFn),
     Variable(Variable),
 }
 
 impl FinStub {
-    pub fn from_stub(stub: &Stub) -> FinStub {
+    pub fn from_stub(stub: &StubFn) -> FinStub {
         FinStub::Stub(stub.clone())
     }
     pub fn from_luars(luars: &LuarsStatement) -> FinStub {
@@ -65,7 +65,7 @@ impl FinStub {
                     .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
                     .collect();
                 let text: Vec<String> = Vec::new();
-                FinStub::Stub(Stub {
+                FinStub::Stub(StubFn {
                     title,
                     anchor,
                     params,

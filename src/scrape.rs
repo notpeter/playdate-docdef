@@ -4,9 +4,9 @@ use scraper::{CaseSensitivity, Selector};
 use crate::fixes::clean_code;
 use crate::fixes::{annotate_function, clean_text};
 use crate::luars::LuarsStatement;
-use crate::stub::Stub;
+use crate::stub::StubFn;
 
-pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
+pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<StubFn> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -39,7 +39,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
 
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
-    let mut stubs: Vec<Stub> = Vec::new();
+    let mut stubs: Vec<StubFn> = Vec::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
@@ -115,16 +115,23 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             || title.contains("[")
             || title.contains(" ")
             || title.starts_with("-")
+            || title.starts_with("#")
             || title.contains("Callback")
         {
-            //
             // function(), imagetable[n], "p + p", "-v", etc
             let mut stub = annotate_function(&anchor.to_string(), &title, &text);
             stub = stub.apply_types(statements);
             stubs.push(stub);
+        } else if anchor.starts_with("a-") {
+            // eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
+        } else if anchor.starts_with("v-") {
+            // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
+
+            // let mut stub = annotate_function(&anchor.to_string(), &title, &text);
+            // stub = stub.apply_types(statements);
+            // stubs.push(stub);
         } else {
-            // TODO: Add this as a stub!
-            // eprintln!("VARIABLE: {title}");
+            // eprintln!("UNKNOWN: {anchor} {title}");
         }
 
         // _last_class is context for the next loop. So if the title is missing a name (e.g. "p + p") we can infer it.

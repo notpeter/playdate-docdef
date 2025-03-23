@@ -8,7 +8,7 @@ static MAX_LINE_LENGTH: usize = 100 - 4;
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug, Clone)]
-pub struct Stub {
+pub struct StubFn {
     pub title: String,
     pub anchor: String,
     pub params: Vec<(String, String)>,  // parameter_name=type_name
@@ -16,23 +16,15 @@ pub struct Stub {
     pub text: Vec<String>,
 }
 
-impl Stub {
-    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> Stub {
+impl StubFn {
+    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> StubFn {
         let func_sig = self.func_signature();
         let mut found: bool = false;
+        //TODO: This is hella inefficient
         for s in statements {
-            //TODO: This is hella inefficient
-            match s {
-                LuarsStatement::Function(_, _, _) => {}
-                _ => {
-                    continue;
-                }
-            }
-            let s_sig = s.func_sig();
-            // eprintln!("INFO: Comparing {} to {}", func_sig, s_sig);
-
             match s {
                 LuarsStatement::Function(_, params, returns) => {
+                    let s_sig = s.func_sig();
                     if func_sig == s_sig {
                         self.params = params
                             .iter()
@@ -45,13 +37,14 @@ impl Stub {
                         found = true;
                     }
                 }
-                _ => {}
+                LuarsStatement::Global(_, _, _) => continue,
+                LuarsStatement::Local(_, _, _) => continue,
             }
         }
         if found {
             // eprintln!("INFO: Found types for {}", func_sig);
         } else {
-            eprintln!("WARN: Could not find types for {}", func_sig);
+            eprintln!("WARN: Could not find types for {func_sig} {}", self.anchor);
         }
         self
     }
@@ -75,37 +68,57 @@ impl Stub {
         String::from(format!("function {} end", self.func_signature()))
     }
     fn text2comments(&self) -> Vec<String> {
-        let mut s = Vec::new();
-        let mut i = 0;
-        let mut in_code = false;
-        while i < self.text.len() {
-            let line = self.text[i].clone();
-            // Bulleted list and code get fewer newlines.
-            // Everything else needs extra empty lines for proper markdown rendering.
-            let no_break = in_code
-                || line.starts_with("```")
-                || (line.starts_with("* ")
-                    && i < self.text.len() - 1
-                    && self.text[i + 1].starts_with("* "));
-            if no_break {
-                s.push(format!("--- {}", line));
-            } else {
-                for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
-                    s.push(format!("--- {}", wrapped_line));
-                }
-                s.push("---".to_string());
+        text_to_comments(&self.text, &self.title, &self.anchor)
+    }
+}
+
+pub fn text_to_comments(text: &[String], title: &str, anchor: &str) -> Vec<String> {
+    let mut s = Vec::new();
+    let mut i = 0;
+    let mut in_code = false;
+    while i < text.len() {
+        let line = &text[i];
+        // Bulleted list and code get fewer newlines.
+        // Everything else needs extra empty lines for proper markdown rendering.
+        let no_break = in_code
+            || line.starts_with("```")
+            || (line.starts_with("* ") && i < text.len() - 1 && text[i + 1].starts_with("* "));
+        if no_break {
+            s.push(format!("--- {}", line));
+        } else {
+            for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
+                s.push(format!("--- {}", wrapped_line));
             }
-            // this is hacky as hell
-            if line == "```" {
-                in_code = !in_code;
-            }
-            i = i + 1;
+            s.push("---".to_string());
         }
-        s.push(format!(
-            "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
-            self.title.clone(),
-            self.anchor
-        ));
-        s
+        // this is hacky as hell
+        if line == "```" {
+            in_code = !in_code;
+        }
+        i = i + 1;
+    }
+    s.push(format!(
+        "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
+        title, anchor
+    ));
+    s
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_basic_stub() {
+        let stub = StubFn {
+            title: "test_func".to_string(),
+            anchor: "test_anchor".to_string(),
+            params: vec![("param1".to_string(), "string".to_string())],
+            returns: vec![("ret1".to_string(), "number".to_string())],
+            text: vec!["Test description".to_string()],
+        };
+
+        assert_eq!(stub.func_signature(), "test_func(param1)");
+        assert_eq!(stub.to_stub(), "function test_func(param1) end");
     }
 }

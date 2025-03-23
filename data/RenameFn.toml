@@ -9,7 +9,7 @@
 
 # Print takes a variable number of arguments
 ["f-print"]
-fname = "print"
+name = "print"
 parameters = ["..."]
 
 ##########################################################
@@ -17,27 +17,27 @@ parameters = ["..."]
 
 # dashes in params upper-left-x, upper-left-y
 ["m-graphics.sprite.setBounds"]
-fname = "playdate.graphics.sprite:setBounds"
+name = "playdate.graphics.sprite:setBounds"
 parameters = ["x", "y", "width", "height"]
 
 # playdate.graphics.setStencilPattern -> playdate.graphics.sprite:setStencilPattern
 ["m-graphics.sprite.setStencilPattern_p"]
-fname = "playdate.graphics.sprite:setStencilPattern"
+name = "playdate.graphics.sprite:setStencilPattern"
 parameters = ["pattern"]
 
 # playdate.graphics.setStencilPattern({ row1, row2, row3, row4, row5, row6, row7, row8 })
 ["m-graphics.sprite.setStencilPattern"]
-fname = "playdate.graphics.setStencilPattern"
+name = "playdate.graphics.setStencilPattern"
 parameters = ["pattern"]
 
 # missing curvature parameter
 ["m-sound.synth.setADSR"]
-fname = "playdate.sound.synth:setADSR"
+name = "playdate.sound.synth:setADSR"
 parameters = ["attack", "decay", "sustain", "release", "curvature"]
 
 # unicode "…​" instead of "..."
 ["m-ui.gridview.setNumberOfRows"]
-fname = "playdate.ui.gridview:setNumberOfRows"
+name = "playdate.ui.gridview:setNumberOfRows"
 parameters = ["..."]
 
 ##########################################
@@ -46,145 +46,150 @@ parameters = ["..."]
 
 # playdate.graphics.imagetable[n]
 ["m-graphics.imagetable.__index"]
-fname = "playdate.graphics.imagetable:__index"
+name = "playdate.graphics.imagetable:__index"
 parameters = ["n"] # integer
 
 # t1 * t2
 ["m-geometry.affineTransform.mul_t"]
-fname = "playdate.geometry.affineTransform:__mul"
+name = "playdate.geometry.affineTransform:__mul"
 parameters = ["t"] # affineTransform
 
 # t * v
 ["m-geometry.affineTransform.mul_v"]
-fname = "playdate.geometry.affineTransform:__mul"
+name = "playdate.geometry.affineTransform:__mul"
 parameters = ["v"] # vector2D
 
 # t * p
 ["m-geometry.affineTransform.mul_p"]
-fname = "playdate.geometry.affineTransform:__mul"
+name = "playdate.geometry.affineTransform:__mul"
 parameters = ["p"] # point2D
 
 # p + v
 ["m-geometry.point.add"]
-fname = "playdate.geometry.point:__add"
+name = "playdate.geometry.point:__add"
 parameters = ["v"] # vector2D
 
 # p1 - p2
 ["m-geometry.point.sub"]
-fname = "playdate.geometry.point:__sub"
+name = "playdate.geometry.point:__sub"
 parameters = ["p2"] # point2D
 
 # p * t
 ["m-geometry.point.mul"]
-fname = "playdate.geometry.point:__mul"
+name = "playdate.geometry.point:__mul"
 parameters = ["t"] # affineTransform
 
 # p1 .. p2
 ["m-geometry.point.concat"]
-fname = "playdate.geometry.point:__concat"
+name = "playdate.geometry.point:__concat"
 parameters = ["p2"] # point2D
 
 # p * t
 ["m-geometry.polygon.mul"]
-fname = "playdate.geometry.polygon:__mul"
+name = "playdate.geometry.polygon:__mul"
 parameters = ["t"] # affineTransform
 
 # -v
 ["m-geometry.vector2D.unm"]
-fname = "playdate.geometry.vector2D:__unm"
+name = "playdate.geometry.vector2D:__unm"
 parameters = []
 
 # v1 + v2
 ["m-geometry.vector2D.add"]
-fname = "playdate.geometry.vector2D:__add"
+name = "playdate.geometry.vector2D:__add"
 parameters = ["v2"] # vector2D
 
 # v1 - v2
 ["m-geometry.vector2D.sub"]
-fname = "playdate.geometry.vector2D:__sub"
+name = "playdate.geometry.vector2D:__sub"
 parameters = ["v2"] # vector2D
 
 # v1 * s
 ["m-geometry.vector2D.mul_s"]
-fname = "playdate.geometry.vector2D:__mul"
+name = "playdate.geometry.vector2D:__mul"
 parameters = ["s"] # number
 
 # v1 * v2
 ["m-geometry.vector2D.mul_v"]
-fname = "playdate.geometry.vector2D:__mul"
+name = "playdate.geometry.vector2D:__mul"
 parameters = ["v2"] # vector2D
 
 # v1 * t
 ["m-geometry.vector2D.mul_t"]
-fname = "playdate.geometry.vector2D:__mul"
+name = "playdate.geometry.vector2D:__mul"
 parameters = ["t"] # affineTransform
 
 # v1 / s
 ["m-geometry.vector2D.div"]
-fname = "playdate.geometry.vector2D:__div"
+name = "playdate.geometry.vector2D:__div"
 parameters = ["s"] # number
 
 # missing parens ()
 ["c-keyboard.keyboardDidShowCallback"]
-fname = "playdate.keyboard.keyboardDidShowCallback"
+name = "playdate.keyboard.keyboardDidShowCallback"
 parameters = []
 
 # missing parens ()
 ["c-keyboard.keyboardDidHideCallback"]
-fname = "playdate.keyboard.keyboardDidHideCallback"
+name = "playdate.keyboard.keyboardDidHideCallback"
 parameters = []
 
 # missing parens ()
 ["c-keyboard.keyboardWillHideCallback"]
-fname = "playdate.keyboard.keyboardWillHideCallback"
+name = "playdate.keyboard.keyboardWillHideCallback"
 parameters = []
 
 # missing parens ()
 ["c-keyboard.keyboardAnimatingCallback"]
-fname = "playdate.keyboard.keyboardAnimatingCallback"
+name = "playdate.keyboard.keyboardAnimatingCallback"
 parameters = []
 
 # missing parens ()
 ["c-keyboard.textChangedCallback"]
-fname = "playdate.keyboard.textChangedCallback"
+name = "playdate.keyboard.textChangedCallback"
 parameters = ["ok"] # boolean
 
 # missing parens () and is instance method only
 ["c-timer.timerEndedCallback"]
-fname = "_Timer:timerEndedCallback"
+name = "_Timer:timerEndedCallback"
 parameters = ["..."]
 
 # missing parens () and is instance method only
 ["c-timer.updateCallback"]
-fname = "_Timer:updateCallback"
+name = "_Timer:updateCallback"
 parameters = ["..."]
 
 # missing parens () and is instance method only
 ["c-frameTimer.timerEndedCallback"]
-fname = "_FrameTimer:timerEndedCallback"
+name = "_FrameTimer:timerEndedCallback"
 parameters = ["..."]
 
 # missing parens () and is instance method only
 ["c-frameTimer.updateCallback"]
-fname = "_FrameTimer:updateCallback"
+name = "_FrameTimer:updateCallback"
 parameters = ["..."]
 
 # instance method not classmethod
 ["m-ui.gridview.getSectionHeaderHeight"]
-fname = "playdate.ui.gridview:getSectionHeaderHeight"
+name = "playdate.ui.gridview:getSectionHeaderHeight"
 parameters = []
 
 # missing function parameters
 ["m-ui.crankIndicator.getBounds"]
-fname = "playdate.ui.crankIndicator:getBounds"
+name = "playdate.ui.crankIndicator:getBounds"
 parameters = ["xOffset", "yOffset"]
 
 # Callback type info is inline with functional arguments
 ["f-getServerTime"]
-fname = "playdate.getServerTime"
+name = "playdate.getServerTime"
 parameters = ["callback"]
 
 # Fix for `function -> _function` rename
 ["f-network.setEnabled"]
-fname = "playdate.network.setEnabled"
+name = "playdate.network.setEnabled"
 parameters = ["flag", "callback"]
+
+# Fix for #playdate.graphics.imagetable
+["m-graphics.imagetable.__len"]
+name = "playdate.graphics.imagetable:__len"
+parameters = []

@@ -1,29 +1,30 @@
-use crate::stub::Stub;
+use crate::stub::StubFn;
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
 use std::{collections::HashMap, fmt};
 
 #[derive(Deserialize)]
-pub struct TypoReplacement {
-    pub fname: String,
-    pub parameters: Vec<String>, // You must include a parameters=[] if there are no params.
+pub struct FunctionReplacement {
+    pub name: String,
+    pub parameters: Vec<String>,
 }
 
-impl fmt::Display for TypoReplacement {
+impl fmt::Display for FunctionReplacement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}({})", self.fname, self.parameters.join(", "))
+        write!(f, "{}({})", self.name, self.parameters.join(", "))
     }
 }
 
-static TOML_STR_TYPO: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Typo.toml"));
+static TOML_STR_FUNCTION: &str =
+    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameFn.toml"));
 static TOML_STR_INVALID: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
 lazy_static! {
-    static ref TYPO: HashMap<String, TypoReplacement> = match toml::from_str(TOML_STR_TYPO) {
+    static ref RENAME_FUNCTION: HashMap<String, FunctionReplacement> = match toml::from_str(TOML_STR_FUNCTION) {
         Ok(v) => v,
-        Err(e) => { panic!("ERROR: Loading Typo.toml failed. {:?}", e) }
+        Err(e) => { panic!("ERROR: Loading RenameFn.toml failed. {:?}", e) }
     };
     static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
         Ok(v) => v,
@@ -40,28 +41,28 @@ lazy_static! {
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
-pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
-    let fname: String;
+pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
+    let name: String;
     let params: Vec<(String, String)>;
 
     // Apply overrides
-    if TYPO.contains_key(anchor) {
-        let fixed = TYPO.get(anchor).unwrap();
+    if RENAME_FUNCTION.contains_key(anchor) {
+        let fixed = RENAME_FUNCTION.get(anchor).unwrap();
         params = fixed
             .parameters
             .iter()
             .map(|p| (p.clone(), "any".to_string()))
             .collect();
         // eprintln!("WARN: Found function override: {} -> {}", anchor, fixed);
-        fname = fixed.fname.clone();
+        name = fixed.name.clone();
     } else {
-        (fname, params) = params_from_title(title);
+        (name, params) = params_from_title(title);
     }
 
     let returns: Vec<(String, String)> = Vec::new();
 
-    Stub {
-        title: fname,
+    StubFn {
+        title: name,
         anchor: anchor.to_string(),
         text: text.clone(),
         params,
