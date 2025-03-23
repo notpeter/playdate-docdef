@@ -44,7 +44,7 @@ impl StubFn {
         if found {
             // eprintln!("INFO: Found types for {}", func_sig);
         } else {
-            eprintln!("WARN: Could not find types for {}", func_sig);
+            eprintln!("WARN: Could not find types for {func_sig} {}", self.anchor);
         }
         self
     }
@@ -68,39 +68,40 @@ impl StubFn {
         String::from(format!("function {} end", self.func_signature()))
     }
     fn text2comments(&self) -> Vec<String> {
-        let mut s = Vec::new();
-        let mut i = 0;
-        let mut in_code = false;
-        while i < self.text.len() {
-            let line = self.text[i].clone();
-            // Bulleted list and code get fewer newlines.
-            // Everything else needs extra empty lines for proper markdown rendering.
-            let no_break = in_code
-                || line.starts_with("```")
-                || (line.starts_with("* ")
-                    && i < self.text.len() - 1
-                    && self.text[i + 1].starts_with("* "));
-            if no_break {
-                s.push(format!("--- {}", line));
-            } else {
-                for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
-                    s.push(format!("--- {}", wrapped_line));
-                }
-                s.push("---".to_string());
-            }
-            // this is hacky as hell
-            if line == "```" {
-                in_code = !in_code;
-            }
-            i = i + 1;
-        }
-        s.push(format!(
-            "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
-            self.title.clone(),
-            self.anchor
-        ));
-        s
+        text_to_comments(&self.text, &self.title, &self.anchor)
     }
+}
+
+pub fn text_to_comments(text: &[String], title: &str, anchor: &str) -> Vec<String> {
+    let mut s = Vec::new();
+    let mut i = 0;
+    let mut in_code = false;
+    while i < text.len() {
+        let line = &text[i];
+        // Bulleted list and code get fewer newlines.
+        // Everything else needs extra empty lines for proper markdown rendering.
+        let no_break = in_code
+            || line.starts_with("```")
+            || (line.starts_with("* ") && i < text.len() - 1 && text[i + 1].starts_with("* "));
+        if no_break {
+            s.push(format!("--- {}", line));
+        } else {
+            for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
+                s.push(format!("--- {}", wrapped_line));
+            }
+            s.push("---".to_string());
+        }
+        // this is hacky as hell
+        if line == "```" {
+            in_code = !in_code;
+        }
+        i = i + 1;
+    }
+    s.push(format!(
+        "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
+        title, anchor
+    ));
+    s
 }
 
 #[cfg(test)]

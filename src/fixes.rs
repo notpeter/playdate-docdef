@@ -24,7 +24,7 @@ static TOML_STR_INVALID: &str =
 lazy_static! {
     static ref RENAME_FUNCTION: HashMap<String, FunctionReplacement> = match toml::from_str(TOML_STR_FUNCTION) {
         Ok(v) => v,
-        Err(e) => { panic!("ERROR: Loading Typo.toml failed. {:?}", e) }
+        Err(e) => { panic!("ERROR: Loading RenameFn.toml failed. {:?}", e) }
     };
     static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
         Ok(v) => v,
