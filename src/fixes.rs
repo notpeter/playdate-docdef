@@ -1,4 +1,4 @@
-use crate::stub::Stub;
+use crate::stub::StubFn;
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
@@ -41,7 +41,7 @@ lazy_static! {
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
-pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> Stub {
+pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
     let name: String;
     let params: Vec<(String, String)>;
 
@@ -61,7 +61,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
 
     let returns: Vec<(String, String)> = Vec::new();
 
-    Stub {
+    StubFn {
         title: name,
         anchor: anchor.to_string(),
         text: text.clone(),

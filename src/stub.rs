@@ -8,7 +8,7 @@ static MAX_LINE_LENGTH: usize = 100 - 4;
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug, Clone)]
-pub struct Stub {
+pub struct StubFn {
     pub title: String,
     pub anchor: String,
     pub params: Vec<(String, String)>,  // parameter_name=type_name
@@ -16,8 +16,8 @@ pub struct Stub {
     pub text: Vec<String>,
 }
 
-impl Stub {
-    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> Stub {
+impl StubFn {
+    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> StubFn {
         let func_sig = self.func_signature();
         let mut found: bool = false;
         for s in statements {
@@ -116,7 +116,7 @@ mod tests {
 
     #[test]
     fn test_basic_stub() {
-        let stub = Stub {
+        let stub = StubFn {
             title: "test_func".to_string(),
             anchor: "test_anchor".to_string(),
             params: vec![("param1".to_string(), "string".to_string())],

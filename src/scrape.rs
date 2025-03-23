@@ -4,9 +4,9 @@ use scraper::{CaseSensitivity, Selector};
 use crate::fixes::clean_code;
 use crate::fixes::{annotate_function, clean_text};
 use crate::luars::LuarsStatement;
-use crate::stub::Stub;
+use crate::stub::StubFn;
 
-pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
+pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<StubFn> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -39,7 +39,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
 
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
-    let mut stubs: Vec<Stub> = Vec::new();
+    let mut stubs: Vec<StubFn> = Vec::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
