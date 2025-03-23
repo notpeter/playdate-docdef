@@ -898,13 +898,12 @@ fun playdate.math.logic.xor(bool1: boolean, bool2: boolean): boolean;
 
 
 global playdate.menu;
-local _Menu: playdate.menu;
 fun playdate.menu:addCheckmarkMenuItem(title: string, initialValue?: boolean, callback?: function): nil;
 fun playdate.menu:addMenuItem(title: string, callback: function): nil;
 fun playdate.menu:addOptionsMenuItem(title: string, options: string[], initalValue?: string, callback?: function): nil;
 fun playdate.menu:getMenuItems(): _MenuItem[];
 fun playdate.menu:removeAllMenuItems(): nil;
-fun playdate.menu:removeMenuItem(menuItem: _Menu): nil;
+fun playdate.menu:removeMenuItem(menuItem: _MenuItem): nil;
 
 global playdate.menu.item;
 local _MenuItem: playdate.menu.item = {

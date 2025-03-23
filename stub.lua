@@ -488,9 +488,6 @@ local _LFO = {}
 ---@field y2 integer
 local _LineSegment = {}
 
----@class _Menu : playdate.menu
-local _Menu = {}
-
 ---@class _MenuItem : playdate.menu.item
 ---@field title string
 ---@field value (integer|boolean|string)
@@ -3896,7 +3893,7 @@ function playdate.menu:getMenuItems() end
 ---@return nil
 function playdate.menu:removeAllMenuItems() end
 
----@param menuItem _Menu
+---@param menuItem _MenuItem
 ---@return nil
 function playdate.menu:removeMenuItem(menuItem) end
 
