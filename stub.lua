@@ -996,7 +996,7 @@ function playdate.getStats() end
 ---@return integer
 function playdate.getSystemLanguage() end
 
----@return _Menu
+---@return playdate.menu
 function playdate.getSystemMenu() end
 
 ---@return _DateTime
@@ -1185,8 +1185,8 @@ function playdate.display.getWidth() end
 ---@return nil
 function playdate.display.loadImage(path) end
 
----@param x integer
----@param y integer
+---@param x boolean
+---@param y boolean
 ---@return nil
 function playdate.display.setFlipped(x, y) end
 
@@ -4531,7 +4531,7 @@ function playdate.sound.fileplayer:setLoopRange(start, _end, loopCallback, arg) 
 ---@return nil
 function playdate.sound.fileplayer:setOffset(seconds) end
 
----@param rate integer
+---@param rate number
 ---@return nil
 function playdate.sound.fileplayer:setRate(rate) end
 
@@ -4781,14 +4781,14 @@ function playdate.sound.sample:getSubsample(startOffset, endOffset) end
 function playdate.sound.sample:load(path) end
 
 ---@param repeatCount? integer
----@param rate? integer
+---@param rate? number
 ---@return nil
 function playdate.sound.sample:play(repeatCount, rate) end
 
 ---@param when number
 ---@param vol? number
 ---@param rightvol? number
----@param rate? integer
+---@param rate? number
 ---@return nil
 function playdate.sound.sample:playAt(when, vol, rightvol, rate) end
 
@@ -4827,14 +4827,14 @@ function playdate.sound.sampleplayer:getVolume() end
 function playdate.sound.sampleplayer:isPlaying() end
 
 ---@param repeatCount? integer
----@param rate? integer
+---@param rate? number
 ---@return nil
 function playdate.sound.sampleplayer:play(repeatCount, rate) end
 
 ---@param when number
 ---@param vol? number
 ---@param rightvol? number
----@param rate? integer
+---@param rate? number
 ---@return nil
 function playdate.sound.sampleplayer:playAt(when, vol, rightvol, rate) end
 
@@ -4861,7 +4861,7 @@ function playdate.sound.sampleplayer:setPaused(flag) end
 ---@return nil
 function playdate.sound.sampleplayer:setPlayRange(start, _end) end
 
----@param rate integer
+---@param rate number
 ---@return nil
 function playdate.sound.sampleplayer:setRate(rate) end
 
