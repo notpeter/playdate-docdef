@@ -10,7 +10,10 @@ use luars::{LuarsStatement, parse_document};
 use stub::Stub;
 
 use crate::{args::Action, finstub::FinStub};
-use std::{collections::HashSet, fs};
+use std::{
+    collections::{BTreeMap, HashSet},
+    fs,
+};
 
 fn go_out(fin_stubs: Vec<FinStub>) {
     let header = [
@@ -28,12 +31,15 @@ fn go_out(fin_stubs: Vec<FinStub>) {
     println!("--- End of LuaCATS stubs.");
 }
 
-fn annotated_stubs(playdate_luars: Vec<LuarsStatement<'_>>, docs: String) -> Vec<FinStub> {
+fn annotated_stubs(
+    playdate_luars: BTreeMap<String, LuarsStatement<'_>>,
+    docs: String,
+) -> Vec<FinStub> {
     let mut fin_stubs = Vec::new();
     let scraped_stubs = scrape::scrape(docs, &playdate_luars);
 
     let mut both: HashSet<String> = HashSet::new();
-    for s in &playdate_luars {
+    for s in playdate_luars.values() {
         match s {
             LuarsStatement::Global(_, _, _) | LuarsStatement::Local(_, _, _) => {
                 fin_stubs.push(FinStub::from_luars(s));
@@ -52,7 +58,7 @@ fn annotated_stubs(playdate_luars: Vec<LuarsStatement<'_>>, docs: String) -> Vec
             }
         }
     }
-    for s in &playdate_luars {
+    for s in playdate_luars.values() {
         match s {
             LuarsStatement::Function(_, _, _) => {
                 if !both.contains(s.lua_def().as_str()) {
@@ -66,9 +72,9 @@ fn annotated_stubs(playdate_luars: Vec<LuarsStatement<'_>>, docs: String) -> Vec
 }
 
 /// Outputs just the stubs as defined in the .luars source
-fn just_stubs(statements: Vec<LuarsStatement<'_>>) -> Vec<FinStub> {
+fn just_stubs(statements: BTreeMap<String, LuarsStatement<'_>>) -> Vec<FinStub> {
     let mut fin_stubs = Vec::new();
-    for s in &statements {
+    for s in statements.values() {
         fin_stubs.push(FinStub::from_luars(s));
     }
     fin_stubs

@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use crate::luars::LuarsStatement;
 use textwrap;
 
@@ -39,34 +41,34 @@ impl StubVar {
     pub fn to_stub(&self) -> String {
         format!("local {}", self.title)
     }
-    pub fn annotate(mut self, statements: &Vec<LuarsStatement>) -> Self {
+    pub fn annotate(mut self, statements: &BTreeMap<String, LuarsStatement>) -> Self {
         let our_lua = self.lua_def();
-        let mut found = false;
-        // TODO: Inefficient as hell (n^3)
-        for statement in statements {
+        if let Some(statement) = statements.get(&our_lua) {
             match statement {
                 LuarsStatement::Global(_name, parent, attrs) => {
-                    if our_lua == statement.lua_def() {
-                        self.parent = parent.to_string();
-                        self.attrs = attrs
-                            .iter()
-                            .map(|(aname, atype, avalue)| StubAttr {
-                                name: aname.to_string(),
-                                anchor: String::new(),
-                                _type: atype.to_string(),
-                                value: avalue.to_string(),
-                                text: String::new(),
-                            })
-                            .collect();
-                        found = true;
-                    }
+                    self.parent = parent.to_string();
+                    self.attrs = attrs
+                        .iter()
+                        .map(|(aname, atype, avalue)| StubAttr {
+                            name: aname.to_string(),
+                            anchor: String::new(),
+                            _type: atype.to_string(),
+                            value: avalue.to_string(),
+                            text: String::new(),
+                        })
+                        .collect();
                 }
-                _ => continue,
+                LuarsStatement::Function(_, _, _) => {
+                    eprintln!("eek, found function not global for {our_lua}")
+                }
+                LuarsStatement::Local(_, _, _) => {
+                    eprintln!("eek, found local not global for {our_lua}")
+                }
             }
         }
         // Docs have variable we haven't typed in playdate.luars yet
-        if !found {
-            eprintln!("WARN: Variable {our_lua} untyped {}", self.anchor);
+        else {
+            eprintln!("WARN: Function {our_lua} not found/untyped {}", self.anchor);
         }
         self
     }
@@ -89,11 +91,10 @@ pub struct StubFn {
 }
 
 impl StubFn {
-    pub fn annotate(mut self, statements: &Vec<LuarsStatement>) -> Self {
+    pub fn annotate(mut self, statements: &BTreeMap<String, LuarsStatement>) -> Self {
         let our_lua = self.lua_def();
-        let mut found = false;
         // TODO: This is hella inefficient (N^2; where N=1000+)
-        for statement in statements {
+        if let Some(statement) = statements.get(&our_lua) {
             match statement {
                 LuarsStatement::Function(_name, params, returns) => {
                     // TODO: Calculating .lua every time is also inefficient
@@ -106,17 +107,17 @@ impl StubFn {
                             .iter()
                             .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
                             .collect();
-                        found = true;
-                        break;
                     }
                 }
-                LuarsStatement::Global(_, _, _) => continue,
-                LuarsStatement::Local(_, _, _) => continue,
+                LuarsStatement::Global(_, _, _) => {
+                    eprintln!("eek, found global not function for {our_lua}")
+                }
+                LuarsStatement::Local(_, _, _) => {
+                    eprintln!("eek, found loca not function for {our_lua}")
+                }
             }
-        }
-        // Docs have function we haven't typed in playdate.luars yet
-        if !found {
-            eprintln!("WARN: Function {our_lua} untyped {}", self.anchor);
+        } else {
+            eprintln!("WARN: Function {our_lua} not found/untyped {}", self.anchor);
         }
         self
     }

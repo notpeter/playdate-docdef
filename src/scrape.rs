@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use regex::Regex;
 use scraper::{CaseSensitivity, Selector};
 
@@ -5,7 +7,7 @@ use crate::fixes::{annotate_function, annotate_variable, clean_code, clean_text}
 use crate::luars::LuarsStatement;
 use crate::stub::Stub;
 
-pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
+pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>>) -> Vec<Stub> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",

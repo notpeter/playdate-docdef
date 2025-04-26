@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::{cmp::Ordering, collections::BTreeMap};
 
 use pest::{Parser, iterators::Pair};
 use pest_derive::Parser;
@@ -197,7 +197,7 @@ pub fn parse_function(pair: Pair<Rule>) -> LuarsStatement {
     }
     LuarsStatement::Function(name, params, returns)
 }
-pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
+pub fn parse_document(unparsed_file: &str) -> BTreeMap<String, LuarsStatement> {
     let document = LuarsParser::parse(Rule::Document, &unparsed_file)
         .expect("unsuccessful parse")
         .next()
@@ -219,7 +219,16 @@ pub fn parse_document(unparsed_file: &str) -> Vec<LuarsStatement> {
         statements.push(f);
     }
     statements.sort();
-    statements
+    let mut out = BTreeMap::new();
+    for statement in statements {
+        let key = statement.lua_def();
+        if !out.contains_key(&key) {
+            out.insert(key, statement);
+        } else {
+            eprint!("Duplicate definition of {}", key);
+        }
+    }
+    out
 }
 
 #[cfg(test)]
