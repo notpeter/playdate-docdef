@@ -58,13 +58,10 @@ impl FinStub {
                 let mut var_attr: Vec<Attribute> = Vec::new();
                 for attr in attr_in {
                     let (key_name, key_type, key_value) = attr;
-                    let key_name = key_name.to_string();
-                    let key_type = key_type.to_string();
-                    let key_value = key_value.to_string();
                     var_attr.push(Attribute {
-                        name: key_name,
-                        _type: key_type,
-                        value: key_value,
+                        name: key_name.to_string(),
+                        _type: key_type.to_string(),
+                        value: key_value.to_string(),
                         comment: String::new(),
                     });
                 }
