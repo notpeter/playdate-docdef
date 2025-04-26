@@ -1367,7 +1367,6 @@ fun playdate.sound.track:setInstrument(inst: (_Instrument|_Synth)): nil;
 fun playdate.sound.track:setMuted(flag: boolean): nil;
 fun playdate.sound.track:setNotes(list: table[]): nil;
 
-global playdate.sound.track;
 local _SoundTrackNote = {
     step: integer,
     note: number,
