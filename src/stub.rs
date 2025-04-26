@@ -12,11 +12,26 @@ pub enum Stub {
 }
 
 #[derive(Debug, Clone)]
+pub struct StubAttr {
+    pub name: String,
+    pub anchor: String,
+    pub _type: String,
+    pub value: String,
+    pub text: String,
+}
+
+impl StubAttr {
+    pub fn to_stub(&self) -> String {
+        self.name.clone()
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct StubVar {
     pub title: String,
     pub anchor: String,
     pub parent: String,
-    pub attrs: Vec<(String, String, String)>,
+    pub attrs: Vec<StubAttr>,
     pub _text: Vec<String>,
 }
 
@@ -27,7 +42,7 @@ impl StubVar {
     pub fn annotate(mut self, statements: &Vec<LuarsStatement>) -> Self {
         let our_lua = self.lua_def();
         let mut found = false;
-        // TODO: Inefficient as hell
+        // TODO: Inefficient as hell (n^3)
         for statement in statements {
             match statement {
                 LuarsStatement::Global(_name, parent, attrs) => {
@@ -35,8 +50,12 @@ impl StubVar {
                         self.parent = parent.to_string();
                         self.attrs = attrs
                             .iter()
-                            .map(|(aname, atype, avalue)| {
-                                (aname.to_string(), atype.to_string(), avalue.to_string())
+                            .map(|(aname, atype, avalue)| StubAttr {
+                                name: aname.to_string(),
+                                anchor: String::new(),
+                                _type: atype.to_string(),
+                                value: avalue.to_string(),
+                                text: String::new(),
                             })
                             .collect();
                         found = true;
