@@ -53,15 +53,14 @@ static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-pub fn annotate_variable(anchor: &str, title: &String, text: &Vec<String>) -> StubVar {
-    let name = if RENAME_PROPERTY.contains_key(anchor) {
-        RENAME_PROPERTY.get(anchor).unwrap().name.clone()
-    } else {
-        title.clone()
-    };
+pub fn annotate_variable(anchor: &str, name: &String, text: &Vec<String>) -> StubVar {
+    let title = RENAME_PROPERTY
+        .get(anchor)
+        .map(|prop| prop.name.clone())
+        .unwrap_or_else(|| name.clone());
     StubVar {
         anchor: anchor.to_string(),
-        title: name,
+        title,
         text: text.clone(),
     }
 }

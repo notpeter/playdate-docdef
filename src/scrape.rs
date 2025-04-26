@@ -1,8 +1,7 @@
 use regex::Regex;
 use scraper::{CaseSensitivity, Selector};
 
-use crate::fixes::{annotate_function, clean_text};
-use crate::fixes::{annotate_variable, clean_code};
+use crate::fixes::{annotate_function, annotate_variable, clean_code, clean_text};
 use crate::luars::LuarsStatement;
 use crate::stub::Stub;
 
