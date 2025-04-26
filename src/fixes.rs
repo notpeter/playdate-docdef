@@ -1,8 +1,7 @@
 use crate::stub::StubFn;
-use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
-use std::{collections::HashMap, fmt};
+use std::{collections::HashMap, fmt, sync::LazyLock};
 
 #[derive(Deserialize)]
 pub struct FunctionReplacement {
@@ -21,24 +20,23 @@ static TOML_STR_FUNCTION: &str =
 static TOML_STR_INVALID: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
-lazy_static! {
-    static ref RENAME_FUNCTION: HashMap<String, FunctionReplacement> = match toml::from_str(TOML_STR_FUNCTION) {
-        Ok(v) => v,
-        Err(e) => { panic!("ERROR: Loading RenameFn.toml failed. {:?}", e) }
-    };
-    static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
-        Ok(v) => v,
-        Err(e) => { panic!("ERROR: Loading Invalid.toml failed. {:?}", e); }
-    };
-    static ref RE_CODE: Regex = Regex::new(r"</?code>").unwrap();
-    static ref RE_EM: Regex = Regex::new(r"</?em>").unwrap();
-    static ref RE_A: Regex = Regex::new(r"</?a[^>]*>").unwrap();
-    static ref RE_STRONG: Regex = Regex::new(r"</?strong>").unwrap();
-    static ref HTML_TAG: Regex = Regex::new(r"<[^>]*>").unwrap();
-    static ref LUA_FUNC: Regex = Regex::new(// Lua function signatures: function(a,b,c)
-        &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
-    ).unwrap();
-}
+static RENAME_FUNCTION: LazyLock<HashMap<String, FunctionReplacement>> =
+    LazyLock::new(|| toml::from_str(TOML_STR_FUNCTION).expect("Loading RenameFn.toml failed."));
+static INVALID: LazyLock<HashMap<String, String>> =
+    LazyLock::new(|| toml::from_str(TOML_STR_INVALID).expect("Loading Invalid.toml failed."));
+static RE_A: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
+static HTML_TAG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<[^>]*>").unwrap());
+static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        // Lua function signatures: function(a,b,c)
+        &format!(
+            r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)",
+            id = r"[\w_][\w\d_]*"
+        )
+        .to_string(),
+    )
+    .unwrap()
+});
 
 // Given a function return a stub with overrides, parameter types and return types applied
 pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
