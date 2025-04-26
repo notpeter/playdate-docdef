@@ -1,5 +1,5 @@
 use crate::luars::LuarsStatement;
-use crate::stub::StubFn;
+use crate::stub::{Stub, StubFn, StubVar};
 use std::collections::HashMap;
 
 pub struct Attribute {
@@ -33,13 +33,17 @@ pub struct Variable {
 }
 
 pub enum FinStub {
-    Stub(StubFn),
+    FunctionStub(StubFn),
+    VariableStub(StubVar),
     Variable(Variable),
 }
 
 impl FinStub {
-    pub fn from_stub(stub: &StubFn) -> FinStub {
-        FinStub::Stub(stub.clone())
+    pub fn from_stub(stub: &Stub) -> FinStub {
+        match stub {
+            Stub::Function(fn_stub) => FinStub::FunctionStub(fn_stub.clone()),
+            Stub::Variable(var_stub) => FinStub::VariableStub(var_stub.clone()),
+        }
     }
     pub fn from_luars(luars: &LuarsStatement) -> FinStub {
         let prefix: String = match luars {
@@ -61,7 +65,7 @@ impl FinStub {
                         name: key_name,
                         _type: key_type,
                         value: key_value,
-                        comment: String::from("foo"),
+                        comment: String::new(),
                     });
                 }
                 FinStub::Variable(Variable {
@@ -83,7 +87,7 @@ impl FinStub {
                     .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
                     .collect();
                 let text: Vec<String> = Vec::new();
-                FinStub::Stub(StubFn {
+                FinStub::FunctionStub(StubFn {
                     title,
                     anchor,
                     params,
@@ -99,18 +103,19 @@ impl FinStub {
             FinStub::Variable(var) => {
                 format!("{}{} = {{}}", var.prefix, var.var_name)
             }
-            FinStub::Stub(stub) => stub.to_stub(),
+            FinStub::FunctionStub(stub) => stub.to_stub(),
+            FinStub::VariableStub(stub) => stub.to_stub(),
         }
     }
     fn luacats_params(&self) -> Vec<String> {
         // Returns '---@param name type' for functions
         match self {
-            FinStub::Stub(stub) => stub
+            FinStub::FunctionStub(stub) => stub
                 .params
                 .iter()
                 .map(|(name, _type)| format!("---@param {} {}", name, _type))
                 .collect::<Vec<String>>(),
-            FinStub::Variable(_) => {
+            _ => {
                 unreachable!("LuarsStatement::Global and LuarsStatement::Local don't support luacats_params()")
             }
         }
@@ -118,7 +123,7 @@ impl FinStub {
     fn luacats_returns(&self) -> Vec<String> {
         // Returns '---@return type [name]' for functions
         match self {
-            FinStub::Stub(stub) => stub
+            FinStub::FunctionStub(stub) => stub
                 .returns
                 .iter()
                 .map(|(_name, _type)| {
@@ -129,7 +134,7 @@ impl FinStub {
                     }
                 })
                 .collect::<Vec<String>>(),
-            FinStub::Variable(_) => {
+            _ => {
                 unreachable!("luacats_returns() should not be called with FinStub::Variable")
             }
         }
@@ -144,7 +149,7 @@ impl FinStub {
                     format!("---@class {} : {}", var.var_name, var.var_type)
                 }
             }
-            FinStub::Stub(_) => {
+            _ => {
                 unreachable!("luacats_class() should not be called with FinStub::Stub")
             }
         }
@@ -157,7 +162,7 @@ impl FinStub {
                 .iter()
                 .map(|a| a.to_string())
                 .collect::<Vec<String>>(),
-            FinStub::Stub(_) => {
+            _ => {
                 unreachable!("luacats_fields() should not be called with FinStub::Stub")
             }
         }
@@ -182,7 +187,7 @@ impl FinStub {
                 out.extend(self.luacats_fields());
                 out.push(self.lua_statement());
             }
-            FinStub::Stub(stub) => {
+            FinStub::FunctionStub(stub) => {
                 if notes.contains_key(stub.func_signature().as_str()) {
                     out.push(
                         notes
@@ -196,6 +201,7 @@ impl FinStub {
                 out.extend(self.luacats_returns());
                 out.push(self.lua_statement());
             }
+            FinStub::VariableStub(stub) => out.push(stub.to_stub()),
         }
         out
     }

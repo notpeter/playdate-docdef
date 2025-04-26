@@ -6,8 +6,9 @@ use textwrap;
 // Note: This also includes the leading "--- " (4 chars).
 static MAX_LINE_LENGTH: usize = 100 - 4;
 
-pub trait Stub {
-    fn annotated_stub(&self) -> String;
+pub enum Stub {
+    Variable(StubVar),
+    Function(StubFn),
 }
 
 #[derive(Debug, Clone)]
@@ -17,7 +18,11 @@ pub struct StubVar {
     pub text: Vec<String>,
 }
 
-impl StubVar {}
+impl StubVar {
+    pub fn to_stub(&self) -> String {
+        String::from(format!("local {}", self.title))
+    }
+}
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug, Clone)]

@@ -5,6 +5,8 @@ mod luars;
 mod scrape;
 mod stub;
 
+use stub::Stub;
+
 use crate::{args::Action, finstub::FinStub};
 use std::{collections::HashSet, fs};
 
@@ -41,7 +43,14 @@ fn main() {
             let stubs = scrape::scrape(response, &statements);
             for stub in stubs {
                 fin_stubs.push(FinStub::from_stub(&stub));
-                both.insert(stub.func_signature());
+                match stub {
+                    Stub::Function(stub) => {
+                        both.insert(stub.func_signature());
+                    }
+                    Stub::Variable(stub) => {
+                        both.insert(stub.title);
+                    }
+                }
             }
             for s in &statements {
                 match s {

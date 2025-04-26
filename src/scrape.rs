@@ -4,9 +4,9 @@ use scraper::{CaseSensitivity, Selector};
 use crate::fixes::{annotate_function, clean_text};
 use crate::fixes::{annotate_variable, clean_code};
 use crate::luars::LuarsStatement;
-use crate::stub::StubFn;
+use crate::stub::Stub;
 
-pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<StubFn> {
+pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stub> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -39,7 +39,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
 
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
-    let mut stubs: Vec<StubFn> = Vec::new();
+    let mut stubs: Vec<Stub> = Vec::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
@@ -104,7 +104,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
                     let mut stub =
                         annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
                     stub = stub.apply_types(statements);
-                    stubs.push(stub)
+                    stubs.push(Stub::Function(stub))
                 }
             } else {
                 // We don't split multiline variables "v-" because we don't actually handle variables well.
@@ -121,10 +121,11 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             // function(), imagetable[n], "p + p", "-v", etc
             let mut stub = annotate_function(&anchor.to_string(), &title, &text);
             stub = stub.apply_types(statements);
-            stubs.push(stub);
+            stubs.push(Stub::Function(stub));
         } else if anchor.starts_with("a-") {
             eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
-            dbg!(annotate_variable(anchor, &title, &text));
+            // let stub = annotate_variable(anchor, &title, &text);
+            // stubs.push(Stub::Variable(stub));
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
 
