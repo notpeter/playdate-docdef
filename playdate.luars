@@ -1152,14 +1152,13 @@ fun playdate.sound.channel:setPanMod(signal?: _Signal): nil;
 fun playdate.sound.channel:setVolume(volume: number): nil;
 fun playdate.sound.channel:setVolumeMod(signal?: _Signal): nil;
 
-global playdate.sound.signal;
+global playdate.sound.signal: playdate.sound.signalvalue;
 local _Signal: playdate.sound.signal;
 fun playdate.sound.signal:getValue(): number;
 fun playdate.sound.signal:setOffset(offset: number): nil;
 fun playdate.sound.signal:setScale(scale: integer): nil;
 
 global playdate.sound.signalvalue;
-local _SignalValue: playdate.sound.signalvalue;
 fun playdate.sound.signalvalue:getValue(): number;
 
 global playdate.sound.controlsignal: _Signal;
@@ -1208,7 +1207,7 @@ fun playdate.sound.lfo:setStartPhase(phase: number): nil;
 fun playdate.sound.lfo:setType(type: integer): nil;
 
 global playdate.sound.source;
-local _SoundSource;
+local _SoundSource: playdate.sound.source;
 
 global playdate.sound.delaylinetap: _SoundSource;
 local _DelayLineTap: playdate.sound.delaylinetap;
