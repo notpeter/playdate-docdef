@@ -28,12 +28,12 @@ fn go_out(fin_stubs: Vec<FinStub>) {
     println!("--- End of LuaCATS stubs.");
 }
 
-fn annotated_stubs(statements: Vec<LuarsStatement<'_>>, docs: String) -> Vec<FinStub> {
+fn annotated_stubs(playdate_luars: Vec<LuarsStatement<'_>>, docs: String) -> Vec<FinStub> {
     let mut fin_stubs = Vec::new();
-    let stubs = scrape::scrape(docs, &statements);
+    let scraped_stubs = scrape::scrape(docs, &playdate_luars);
 
     let mut both: HashSet<String> = HashSet::new();
-    for s in &statements {
+    for s in &playdate_luars {
         match s {
             LuarsStatement::Global(_, _, _) | LuarsStatement::Local(_, _, _) => {
                 fin_stubs.push(FinStub::from_luars(s));
@@ -41,7 +41,7 @@ fn annotated_stubs(statements: Vec<LuarsStatement<'_>>, docs: String) -> Vec<Fin
             _ => {}
         }
     }
-    for stub in stubs {
+    for stub in scraped_stubs {
         fin_stubs.push(FinStub::from_stub(&stub));
         match stub {
             Stub::Function(stub) => {
@@ -52,7 +52,7 @@ fn annotated_stubs(statements: Vec<LuarsStatement<'_>>, docs: String) -> Vec<Fin
             }
         }
     }
-    for s in &statements {
+    for s in &playdate_luars {
         match s {
             LuarsStatement::Function(_, _, _) => {
                 if !both.contains(s.func_sig().as_str()) {
@@ -76,15 +76,11 @@ fn just_stubs(statements: Vec<LuarsStatement<'_>>) -> Vec<FinStub> {
 
 fn main() {
     let args = setup();
-
-    let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
-    let statements: Vec<LuarsStatement<'_>> = parse_document(&unparsed_file);
+    let playdate_luars_file = fs::read_to_string("playdate.luars").expect("cannot read file");
+    let playdate_luars = parse_document(&playdate_luars_file);
     let fin_stubs = match args.action {
-        Action::Annotate => {
-            let docs = fetch_docs(args);
-            annotated_stubs(statements, docs)
-        }
-        Action::Stub => just_stubs(statements),
+        Action::Annotate => annotated_stubs(playdate_luars, fetch_docs(args)),
+        Action::Stub => just_stubs(playdate_luars),
     };
     go_out(fin_stubs);
 }
