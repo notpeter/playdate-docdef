@@ -1,8 +1,8 @@
 use regex::Regex;
 use scraper::{CaseSensitivity, Selector};
 
-use crate::fixes::clean_code;
 use crate::fixes::{annotate_function, clean_text};
+use crate::fixes::{annotate_variable, clean_code};
 use crate::luars::LuarsStatement;
 use crate::stub::StubFn;
 
@@ -123,7 +123,8 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             stub = stub.apply_types(statements);
             stubs.push(stub);
         } else if anchor.starts_with("a-") {
-            // eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
+            eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
+            dbg!(annotate_variable(anchor, &title, &text));
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
 

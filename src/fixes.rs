@@ -1,4 +1,4 @@
-use crate::stub::StubFn;
+use crate::stub::{StubFn, StubVar};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
@@ -16,8 +16,21 @@ impl fmt::Display for FunctionReplacement {
     }
 }
 
+#[derive(Deserialize)]
+pub struct VariableReplacement {
+    pub name: String,
+}
+
+impl fmt::Display for VariableReplacement {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+
 static TOML_STR_FUNCTION: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameFn.toml"));
+static TOML_STR_PROPERTY: &str =
+    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameVar.toml"));
 static TOML_STR_INVALID: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
@@ -25,6 +38,10 @@ lazy_static! {
     static ref RENAME_FUNCTION: HashMap<String, FunctionReplacement> = match toml::from_str(TOML_STR_FUNCTION) {
         Ok(v) => v,
         Err(e) => { panic!("ERROR: Loading RenameFn.toml failed. {:?}", e) }
+    };
+    static ref RENAME_PROPERTY: HashMap<String, VariableReplacement> = match toml::from_str(TOML_STR_PROPERTY) {
+        Ok(v) => v,
+        Err(e) => { panic!("ERROR: Loading RenameVar.toml failed. {:?}", e); }
     };
     static ref INVALID: HashMap<String, String> = match toml::from_str(TOML_STR_INVALID) {
         Ok(v) => v,
@@ -38,6 +55,19 @@ lazy_static! {
     static ref LUA_FUNC: Regex = Regex::new(// Lua function signatures: function(a,b,c)
         &format!(r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)", id=r"[\w_][\w\d_]*").to_string()
     ).unwrap();
+}
+
+pub fn annotate_variable(anchor: &str, title: &String, text: &Vec<String>) -> StubVar {
+    let name = if RENAME_PROPERTY.contains_key(anchor) {
+        RENAME_PROPERTY.get(anchor).unwrap().name.clone()
+    } else {
+        title.clone()
+    };
+    StubVar {
+        anchor: anchor.to_string(),
+        title: name,
+        text: text.clone(),
+    }
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied

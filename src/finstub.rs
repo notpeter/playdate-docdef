@@ -6,6 +6,23 @@ pub struct Attribute {
     pub key_name: String,
     pub key_type: String,
     pub key_value: String,
+    pub comment: String,
+}
+
+impl Attribute {
+    pub fn to_string(&self) -> String {
+        let mut line = Vec::new();
+        line.push("---@field");
+        line.push(&self.key_name);
+        line.push(&self.key_type);
+        if !self.key_value.is_empty() {
+            line.push(&self.key_value);
+        }
+        if !self.comment.is_empty() {
+            line.push(&self.comment);
+        }
+        line.join(" ")
+    }
 }
 
 pub struct Variable {
@@ -44,6 +61,7 @@ impl FinStub {
                         key_name,
                         key_type,
                         key_value,
+                        comment: String::from("foo"),
                     });
                 }
                 FinStub::Variable(Variable {
@@ -137,19 +155,7 @@ impl FinStub {
             FinStub::Variable(var) => var
                 .var_attr
                 .iter()
-                .map(|a| {
-                    let key_name = if a.key_name.starts_with("\"") {
-                        format!("[{}]", a.key_name)
-                    } else {
-                        a.key_name.clone()
-                    };
-
-                    if a.key_value.to_string() != "" {
-                        format!("---@field {} {} {}", key_name, a.key_type, a.key_value)
-                    } else {
-                        format!("---@field {} {}", key_name, a.key_type)
-                    }
-                })
+                .map(|a| a.to_string())
                 .collect::<Vec<String>>(),
             FinStub::Stub(_) => {
                 unreachable!("luacats_fields() should not be called with FinStub::Stub")
