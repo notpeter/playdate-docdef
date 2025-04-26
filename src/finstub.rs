@@ -3,9 +3,9 @@ use crate::stub::StubFn;
 use std::collections::HashMap;
 
 pub struct Attribute {
-    pub key_name: String,
-    pub key_type: String,
-    pub key_value: String,
+    pub name: String,
+    pub _type: String,
+    pub value: String, // Some Enums have documented values
     pub comment: String,
 }
 
@@ -13,10 +13,10 @@ impl Attribute {
     pub fn to_string(&self) -> String {
         let mut line = Vec::new();
         line.push("---@field");
-        line.push(&self.key_name);
-        line.push(&self.key_type);
-        if !self.key_value.is_empty() {
-            line.push(&self.key_value);
+        line.push(&self.name);
+        line.push(&self._type);
+        if !self.value.is_empty() {
+            line.push(&self.value);
         }
         if !self.comment.is_empty() {
             line.push(&self.comment);
@@ -58,9 +58,9 @@ impl FinStub {
                     let key_type = key_type.to_string();
                     let key_value = key_value.to_string();
                     var_attr.push(Attribute {
-                        key_name,
-                        key_type,
-                        key_value,
+                        name: key_name,
+                        _type: key_type,
+                        value: key_value,
                         comment: String::from("foo"),
                     });
                 }
