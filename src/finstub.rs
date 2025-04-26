@@ -6,7 +6,6 @@ pub struct Attribute {
     pub name: String,
     pub _type: String,
     pub value: String, // Some Enums have documented values
-    pub comment: String,
 }
 
 impl Attribute {
@@ -18,9 +17,9 @@ impl Attribute {
         if !self.value.is_empty() {
             line.push(&self.value);
         }
-        if !self.comment.is_empty() {
-            line.push(&self.comment);
-        }
+        // if !self.comment.is_empty() {
+        //     line.push(&self.comment);
+        // }
         line.join(" ")
     }
 }
@@ -62,7 +61,6 @@ impl FinStub {
                         name: key_name.to_string(),
                         _type: key_type.to_string(),
                         value: key_value.to_string(),
-                        comment: String::new(),
                     });
                 }
                 FinStub::Variable(Variable {

@@ -6,6 +6,7 @@ mod scrape;
 mod stub;
 
 use args::{fetch_docs, setup};
+use luars::{parse_document, LuarsStatement};
 use stub::Stub;
 
 use crate::{args::Action, finstub::FinStub};
@@ -28,7 +29,7 @@ fn go_out(fin_stubs: Vec<FinStub>) {
 }
 
 fn annotated_stubs(
-    statements: Vec<luars::LuarsStatement<'_>>,
+    statements: Vec<LuarsStatement<'_>>,
     mut fin_stubs: Vec<FinStub>,
     docs: String,
 ) -> Vec<FinStub> {
@@ -36,7 +37,7 @@ fn annotated_stubs(
     let mut both: HashSet<String> = HashSet::new();
     for s in &statements {
         match s {
-            luars::LuarsStatement::Global(_, _, _) | luars::LuarsStatement::Local(_, _, _) => {
+            LuarsStatement::Global(_, _, _) | LuarsStatement::Local(_, _, _) => {
                 fin_stubs.push(FinStub::from_luars(s));
             }
             _ => {}
@@ -55,13 +56,10 @@ fn annotated_stubs(
     }
     for s in &statements {
         match s {
-            luars::LuarsStatement::Function(_, _, _) => {
+            LuarsStatement::Function(_, _, _) => {
                 if !both.contains(s.func_sig().as_str()) {
                     fin_stubs.push(FinStub::from_luars(s));
                 }
-            }
-            luars::LuarsStatement::Local(_name, _parent, _) => {
-                // eprintln!("local {_name}: {_parent}")
             }
             _ => {}
         }
@@ -69,17 +67,10 @@ fn annotated_stubs(
     fin_stubs
 }
 
-fn just_stubs(
-    statements: Vec<luars::LuarsStatement<'_>>,
-    mut fin_stubs: Vec<FinStub>,
-) -> Vec<FinStub> {
+/// Outputs just the stubs as defined in the .luars source
+fn just_stubs(statements: Vec<LuarsStatement<'_>>, mut fin_stubs: Vec<FinStub>) -> Vec<FinStub> {
     for s in &statements {
-        match s {
-            luars::LuarsStatement::Function(_, _, _) => {
-                fin_stubs.push(FinStub::from_luars(s));
-            }
-            _ => {}
-        }
+        fin_stubs.push(FinStub::from_luars(s));
     }
     fin_stubs
 }
@@ -88,7 +79,7 @@ fn main() {
     let args = setup();
 
     let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
-    let statements: Vec<luars::LuarsStatement<'_>> = luars::parse_document(&unparsed_file);
+    let statements: Vec<LuarsStatement<'_>> = parse_document(&unparsed_file);
     let mut fin_stubs: Vec<FinStub> = Vec::new();
     fin_stubs = match args.action {
         Action::Annotate => {
