@@ -13,11 +13,11 @@ use crate::{args::Action, finstub::FinStub};
 use std::{collections::HashSet, fs};
 
 fn go_out(fin_stubs: Vec<FinStub>) {
-    println!("---@meta");
-    println!(
-        "--- This file contains function stubs for autocompletion. DO NOT include it in your game."
-    );
-    println!("");
+    let header = [
+        "---@meta",
+        "--- This file contains function stubs for autocompletion. DO NOT include it in your game.",
+    ];
+    println!("{}\n", header.join("\n"));
 
     for stub in fin_stubs {
         let output = stub.generate_stub();
