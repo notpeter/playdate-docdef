@@ -67,16 +67,14 @@ fn fetch_url(url: String) -> String {
     }
 }
 
-pub fn setup() -> (Args, String) {
-    let args = Args::parse();
-    let response: String;
-    match args.url.clone() {
-        Some(url) => {
-            response = fetch_url(url);
-        }
-        _ => {
-            response = fetch_file(&args.path.clone().unwrap());
-        }
+/// Retrieves the contents of the docs (from file or url)
+pub fn fetch_docs(args: Args) -> String {
+    match args.url {
+        Some(url) => fetch_url(url),
+        _ => fetch_file(&args.path.clone().unwrap()),
     }
-    (args, response)
+}
+
+pub fn setup() -> Args {
+    Args::parse()
 }

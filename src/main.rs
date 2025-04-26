@@ -5,6 +5,7 @@ mod luars;
 mod scrape;
 mod stub;
 
+use args::{fetch_docs, setup, Args};
 use stub::Stub;
 
 use crate::{args::Action, finstub::FinStub};
@@ -23,12 +24,12 @@ fn go_out(fin_stubs: Vec<FinStub>) {
     println!("--- End of LuaCATS stubs.");
 }
 
-fn main() {
-    let (args, response) = crate::args::setup();
-
-    let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
-    let statements: Vec<luars::LuarsStatement<'_>> = luars::parse_document(&unparsed_file);
-    let mut fin_stubs: Vec<FinStub> = Vec::new();
+fn annotated_stubs(
+    statements: Vec<luars::LuarsStatement<'_>>,
+    mut fin_stubs: Vec<FinStub>,
+    docs: String,
+) -> Vec<FinStub> {
+    let stubs = scrape::scrape(docs, &statements);
     let mut both: HashSet<String> = HashSet::new();
     for s in &statements {
         match s {
@@ -38,45 +39,60 @@ fn main() {
             _ => {}
         }
     }
-    match args.action {
-        Action::Annotate => {
-            let stubs = scrape::scrape(response, &statements);
-            for stub in stubs {
-                fin_stubs.push(FinStub::from_stub(&stub));
-                match stub {
-                    Stub::Function(stub) => {
-                        both.insert(stub.func_signature());
-                    }
-                    Stub::Variable(stub) => {
-                        both.insert(stub.title);
-                    }
-                }
+    for stub in stubs {
+        fin_stubs.push(FinStub::from_stub(&stub));
+        match stub {
+            Stub::Function(stub) => {
+                both.insert(stub.func_signature());
             }
-            for s in &statements {
-                match s {
-                    luars::LuarsStatement::Function(_, _, _) => {
-                        if !both.contains(s.func_sig().as_str()) {
-                            fin_stubs.push(FinStub::from_luars(s));
-                        }
-                    }
-                    luars::LuarsStatement::Local(_name, _parent, _) => {
-                        // eprintln!("local {_name} {_parent}")
-                    }
-                    _ => {}
-                }
+            Stub::Variable(stub) => {
+                both.insert(stub.title);
             }
-            go_out(fin_stubs);
-        }
-        Action::Stub => {
-            for s in &statements {
-                match s {
-                    luars::LuarsStatement::Function(_, _, _) => {
-                        fin_stubs.push(FinStub::from_luars(s));
-                    }
-                    _ => {}
-                }
-            }
-            go_out(fin_stubs);
         }
     }
+    for s in &statements {
+        match s {
+            luars::LuarsStatement::Function(_, _, _) => {
+                if !both.contains(s.func_sig().as_str()) {
+                    fin_stubs.push(FinStub::from_luars(s));
+                }
+            }
+            luars::LuarsStatement::Local(_name, _parent, _) => {
+                // eprintln!("local {_name} {_parent}")
+            }
+            _ => {}
+        }
+    }
+    fin_stubs
+}
+
+fn just_stubs(
+    statements: Vec<luars::LuarsStatement<'_>>,
+    mut fin_stubs: Vec<FinStub>,
+) -> Vec<FinStub> {
+    for s in &statements {
+        match s {
+            luars::LuarsStatement::Function(_, _, _) => {
+                fin_stubs.push(FinStub::from_luars(s));
+            }
+            _ => {}
+        }
+    }
+    fin_stubs
+}
+
+fn main() {
+    let args = setup();
+
+    let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
+    let statements: Vec<luars::LuarsStatement<'_>> = luars::parse_document(&unparsed_file);
+    let mut fin_stubs: Vec<FinStub> = Vec::new();
+    fin_stubs = match args.action {
+        Action::Annotate => {
+            let docs = fetch_docs(args);
+            annotated_stubs(statements, fin_stubs, docs)
+        }
+        Action::Stub => just_stubs(statements, fin_stubs),
+    };
+    go_out(fin_stubs);
 }
