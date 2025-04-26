@@ -102,7 +102,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
                 for t in title.split("  ") {
                     let mut stub =
                         annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
-                    stub = stub.apply_types(statements);
+                    stub = stub.annotate(statements);
                     stubs.push(Stub::Function(stub))
                 }
             } else {
@@ -119,11 +119,12 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
         {
             // function(), imagetable[n], "p + p", "-v", etc
             let mut stub = annotate_function(&anchor.to_string(), &title, &text);
-            stub = stub.apply_types(statements);
+            stub = stub.annotate(statements);
             stubs.push(Stub::Function(stub));
         } else if anchor.starts_with("a-") {
             eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
-            let stub = annotate_variable(anchor, &title, &text);
+            let mut stub = annotate_variable(anchor, &title, &text);
+            stub = stub.annotate(statements);
             stubs.push(Stub::Variable(stub));
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);

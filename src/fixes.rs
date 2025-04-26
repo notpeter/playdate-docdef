@@ -61,7 +61,9 @@ pub fn annotate_variable(anchor: &str, name: &String, text: &Vec<String>) -> Stu
     StubVar {
         anchor: anchor.to_string(),
         title,
-        text: text.clone(),
+        _text: text.clone(),
+        parent: "".to_string(),
+        attrs: Vec::new(),
     }
 }
 

@@ -15,12 +15,45 @@ pub enum Stub {
 pub struct StubVar {
     pub title: String,
     pub anchor: String,
-    pub text: Vec<String>,
+    pub parent: String,
+    pub attrs: Vec<(String, String, String)>,
+    pub _text: Vec<String>,
 }
 
 impl StubVar {
     pub fn to_stub(&self) -> String {
         format!("local {}", self.title)
+    }
+    pub fn annotate(mut self, statements: &Vec<LuarsStatement>) -> Self {
+        let our_lua = self.lua_def();
+        let mut found = false;
+        // TODO: Inefficient as hell
+        for statement in statements {
+            match statement {
+                LuarsStatement::Global(_name, parent, attrs) => {
+                    if our_lua == statement.lua_def() {
+                        self.parent = parent.to_string();
+                        self.attrs = attrs
+                            .iter()
+                            .map(|(aname, atype, avalue)| {
+                                (aname.to_string(), atype.to_string(), avalue.to_string())
+                            })
+                            .collect();
+                        found = true;
+                    }
+                }
+                _ => continue,
+            }
+        }
+        // Docs have variable we haven't typed in playdate.luars yet
+        if !found {
+            eprintln!("WARN: Variable {our_lua} untyped {}", self.anchor);
+        }
+        self
+    }
+    /// Lua function signature (no types)
+    pub fn lua_def(&self) -> String {
+        self.title.clone()
     }
 }
 
@@ -29,21 +62,23 @@ impl StubVar {
 pub struct StubFn {
     pub title: String,
     pub anchor: String,
-    pub params: Vec<(String, String)>,  // parameter_name=type_name
-    pub returns: Vec<(String, String)>, // return_name=type_name
+    /// Function Parameters (name, type)
+    pub params: Vec<(String, String)>,
+    /// Return (name, type)
+    pub returns: Vec<(String, String)>,
     pub text: Vec<String>,
 }
 
 impl StubFn {
-    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> StubFn {
-        let func_sig = self.func_signature();
-        let mut found: bool = false;
-        //TODO: This is hella inefficient
-        for s in statements {
-            match s {
-                LuarsStatement::Function(_, params, returns) => {
-                    let s_sig = s.func_sig();
-                    if func_sig == s_sig {
+    pub fn annotate(mut self, statements: &Vec<LuarsStatement>) -> Self {
+        let our_lua = self.lua_def();
+        let mut found = false;
+        // TODO: This is hella inefficient (N^2; where N=1000+)
+        for statement in statements {
+            match statement {
+                LuarsStatement::Function(_name, params, returns) => {
+                    // TODO: Calculating .lua every time is also inefficient
+                    if our_lua == statement.lua_def() {
                         self.params = params
                             .iter()
                             .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
@@ -53,20 +88,22 @@ impl StubFn {
                             .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
                             .collect();
                         found = true;
+                        break;
                     }
                 }
                 LuarsStatement::Global(_, _, _) => continue,
                 LuarsStatement::Local(_, _, _) => continue,
             }
         }
-        if found {
-            // eprintln!("INFO: Found types for {}", func_sig);
-        } else {
-            eprintln!("WARN: Could not find types for {func_sig} {}", self.anchor);
+        // Docs have function we haven't typed in playdate.luars yet
+        if !found {
+            eprintln!("WARN: Function {our_lua} untyped {}", self.anchor);
         }
         self
     }
-    pub fn func_signature(&self) -> String {
+
+    /// Lua function signature (no types)
+    pub fn lua_def(&self) -> String {
         let name = self.title.clone();
         let params = self.params.clone();
         let param_names: Vec<String> = params
@@ -75,6 +112,7 @@ impl StubFn {
             .collect::<Vec<String>>();
         format!("{}({})", name, param_names.join(", "))
     }
+
     pub fn text_comments(&self) -> Vec<String> {
         if self.anchor == "" {
             Vec::new()
@@ -82,9 +120,11 @@ impl StubFn {
             self.text2comments()
         }
     }
+
     pub fn to_stub(&self) -> String {
-        format!("function {} end", self.func_signature())
+        format!("function {} end", self.lua_def())
     }
+
     fn text2comments(&self) -> Vec<String> {
         text_to_comments(&self.text, &self.title, &self.anchor)
     }
@@ -136,7 +176,7 @@ mod tests {
             text: vec!["Test description".to_string()],
         };
 
-        assert_eq!(stub.func_signature(), "test_func(param1)");
+        assert_eq!(stub.lua_def(), "test_func(param1)");
         assert_eq!(stub.to_stub(), "function test_func(param1) end");
     }
 }

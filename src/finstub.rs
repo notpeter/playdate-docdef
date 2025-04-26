@@ -111,7 +111,9 @@ impl FinStub {
                 .map(|(name, _type)| format!("---@param {} {}", name, _type))
                 .collect::<Vec<String>>(),
             _ => {
-                unreachable!("LuarsStatement::Global and LuarsStatement::Local don't support luacats_params()")
+                unreachable!(
+                    "LuarsStatement::Global and LuarsStatement::Local don't support luacats_params()"
+                )
             }
         }
     }
@@ -183,13 +185,8 @@ impl FinStub {
                 out.push(self.lua_statement());
             }
             FinStub::FunctionStub(stub) => {
-                if notes.contains_key(stub.func_signature().as_str()) {
-                    out.push(
-                        notes
-                            .get(stub.func_signature().as_str())
-                            .unwrap()
-                            .to_string(),
-                    );
+                if notes.contains_key(stub.lua_def().as_str()) {
+                    out.push(notes.get(stub.lua_def().as_str()).unwrap().to_string());
                 }
                 out.extend(stub.text_comments());
                 out.extend(self.luacats_params());

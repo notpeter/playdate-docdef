@@ -6,7 +6,7 @@ mod scrape;
 mod stub;
 
 use args::{fetch_docs, setup};
-use luars::{parse_document, LuarsStatement};
+use luars::{LuarsStatement, parse_document};
 use stub::Stub;
 
 use crate::{args::Action, finstub::FinStub};
@@ -45,7 +45,7 @@ fn annotated_stubs(playdate_luars: Vec<LuarsStatement<'_>>, docs: String) -> Vec
         fin_stubs.push(FinStub::from_stub(&stub));
         match stub {
             Stub::Function(stub) => {
-                both.insert(stub.func_signature());
+                both.insert(stub.lua_def());
             }
             Stub::Variable(stub) => {
                 both.insert(stub.title);
@@ -55,7 +55,7 @@ fn annotated_stubs(playdate_luars: Vec<LuarsStatement<'_>>, docs: String) -> Vec
     for s in &playdate_luars {
         match s {
             LuarsStatement::Function(_, _, _) => {
-                if !both.contains(s.func_sig().as_str()) {
+                if !both.contains(s.lua_def().as_str()) {
                     fin_stubs.push(FinStub::from_luars(s));
                 }
             }

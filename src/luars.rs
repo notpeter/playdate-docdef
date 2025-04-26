@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use pest::{iterators::Pair, Parser};
+use pest::{Parser, iterators::Pair};
 use pest_derive::Parser;
 
 #[derive(Parser)]
@@ -9,8 +9,11 @@ pub struct LuarsParser;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LuarsStatement<'a> {
+    /// Global Tables (name, parent, attributes: Vec<(name, type, value))
     Global(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
+    /// Local Tables (name, parent, attributes: Vec<(name, type, value))
     Local(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
+    /// Function (name, parameters: Vec<(pname, ptype)>, returns: Vec<(rname, rtype)>)
     Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
 }
 
@@ -51,17 +54,21 @@ impl LuarsStatement<'_> {
             sub_id,
         }
     }
-    pub fn func_sig(&self) -> String {
+    /// The rough lua code equivalent. Used for hashmap keys and matching
+    pub fn lua_def(&self) -> String {
         match self {
             LuarsStatement::Function(name, params, _) => {
                 let func_params: Vec<String> = params
                     .iter()
                     .map(|(fname, _)| fname.trim_matches('?').to_string())
                     .collect::<Vec<String>>();
-                format!("{}({})", name, func_params.join(", "))
+                format!("{name}({})", func_params.join(", "))
             }
-            _ => {
-                unreachable!("Only LuarsStatement::Function should not be called with func_sig()")
+            LuarsStatement::Local(name, _parent, _attrs) => {
+                format!("local {name} = {{}}")
+            }
+            LuarsStatement::Global(name, _parent, _attrs) => {
+                format!("{name} = {{}}")
             }
         }
     }
