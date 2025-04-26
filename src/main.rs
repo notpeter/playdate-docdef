@@ -5,7 +5,7 @@ mod luars;
 mod scrape;
 mod stub;
 
-use args::{fetch_docs, setup, Args};
+use args::{fetch_docs, setup};
 use stub::Stub;
 
 use crate::{args::Action, finstub::FinStub};
@@ -19,7 +19,10 @@ fn go_out(fin_stubs: Vec<FinStub>) {
     println!("");
 
     for stub in fin_stubs {
-        println!("{}\n", stub.generate_stub().join("\n"));
+        let output = stub.generate_stub();
+        if !output.is_empty() {
+            println!("{}\n", output.join("\n"));
+        }
     }
     println!("--- End of LuaCATS stubs.");
 }
@@ -58,7 +61,7 @@ fn annotated_stubs(
                 }
             }
             luars::LuarsStatement::Local(_name, _parent, _) => {
-                // eprintln!("local {_name} {_parent}")
+                // eprintln!("local {_name}: {_parent}")
             }
             _ => {}
         }

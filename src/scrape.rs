@@ -124,8 +124,8 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             stubs.push(Stub::Function(stub));
         } else if anchor.starts_with("a-") {
             eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
-            // let stub = annotate_variable(anchor, &title, &text);
-            // stubs.push(Stub::Variable(stub));
+            let stub = annotate_variable(anchor, &title, &text);
+            stubs.push(Stub::Variable(stub));
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
 

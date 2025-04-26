@@ -20,7 +20,7 @@ pub struct StubVar {
 
 impl StubVar {
     pub fn to_stub(&self) -> String {
-        String::from(format!("local {}", self.title))
+        format!("local {}", self.title)
     }
 }
 
@@ -73,7 +73,7 @@ impl StubFn {
             .iter()
             .map(|(name, _)| name.clone().replace("?", ""))
             .collect::<Vec<String>>();
-        String::from(format!("{}({})", name, param_names.join(", ")))
+        format!("{}({})", name, param_names.join(", "))
     }
     pub fn text_comments(&self) -> Vec<String> {
         if self.anchor == "" {
@@ -83,7 +83,7 @@ impl StubFn {
         }
     }
     pub fn to_stub(&self) -> String {
-        String::from(format!("function {} end", self.func_signature()))
+        format!("function {} end", self.func_signature())
     }
     fn text2comments(&self) -> Vec<String> {
         text_to_comments(&self.text, &self.title, &self.anchor)

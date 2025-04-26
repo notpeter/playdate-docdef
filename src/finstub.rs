@@ -201,7 +201,9 @@ impl FinStub {
                 out.extend(self.luacats_returns());
                 out.push(self.lua_statement());
             }
-            FinStub::VariableStub(stub) => out.push(stub.to_stub()),
+            FinStub::VariableStub(_stub) => {
+                // out.push(_stub.to_stub())
+            }
         }
         out
     }
