@@ -26,7 +26,6 @@ static INVALID: LazyLock<HashMap<String, String>> =
 
 /// HTML Link tags
 static HTML_A: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
-///
 static HTML_TAG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<[^>]*>").unwrap());
 /// Lua function signature: 'function(a,b,c)'
 static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {

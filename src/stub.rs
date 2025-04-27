@@ -10,7 +10,6 @@ static MAX_LINE_LENGTH: usize = 100 - 4;
 
 pub enum Stub {
     Function(StubFn),
-    // Callback(StubFn),
 }
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
