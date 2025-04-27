@@ -110,7 +110,7 @@ pub fn scrape(
                     stub = stub.annotate(statements);
                     let key = stub.lua_def();
                     if let Some(_val) = stubs.insert(key.clone(), Stub::Function(stub)) {
-                        eprintln!("Duplicate stub {}", key)
+                        eprintln!("Duplicate stub {} (in multi-def)", key)
                     }
                 }
             } else {
@@ -130,7 +130,7 @@ pub fn scrape(
             stub = stub.annotate(statements);
             let key = stub.lua_def();
             if let Some(_val) = stubs.insert(key.clone(), Stub::Function(stub)) {
-                eprintln!("Duplicate stub {}", key)
+                eprintln!("Duplicate stub {} (special chars)", key)
             }
         } else if anchor.starts_with("a-") {
             eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
@@ -142,7 +142,7 @@ pub fn scrape(
             // dbg!(&stub);
             let key = stub.lua_def();
             if let Some(_val) = stubs.insert(key.clone(), Stub::Variable(stub)) {
-                eprintln!("Duplicate stub {}", key)
+                eprintln!("Duplicate stub {} (property)", key)
             }
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
