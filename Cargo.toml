@@ -1,20 +1,20 @@
 [package]
-name = "playdate_docdef"
-version = "0.2.4"
 edition = "2024"
+name = "playdate_docdef"
+version = "0.2.5"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
+clap = { version = "4.5.37", features = ["derive", "string"] }
+regex = "1.11.1"
 reqwest = { version = "0.12.15", features = ["blocking"] }
 scraper = "0.23.1"
-regex = "1.11.1"
-clap = { version = "4.5.37", features = ["derive", "string"] }
 serde = { version = "1.0.219", features = ["derive"] }
 
 # preserve_order uses "IndexMap" instead of "BTreeMap" preserving order after parsing.
-toml = { version = "0.8.21", features = ["preserve_order"] }
 pest = "2.7.9"
 pest_derive = "2.7.9"
 textwrap = "0.16.2"
+toml = { version = "0.8.21", features = ["preserve_order"] }
