@@ -28,7 +28,7 @@ parameters = ["pattern"]
 # playdate.graphics.setStencilPattern({ row1, row2, row3, row4, row5, row6, row7, row8 })
 ["m-graphics.sprite.setStencilPattern"]
 name = "playdate.graphics.sprite:setStencilPattern"
-parameters = ["pattern"]
+parameters = ["row1", "row2", "row3", "row4", "row5", "row6", "row7", "row8"]
 
 # missing curvature parameter
 ["m-sound.synth.setADSR"]

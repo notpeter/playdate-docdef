@@ -829,6 +829,7 @@ fun playdate.graphics.sprite:setSize(width: integer, height: integer): nil;
 fun playdate.graphics.sprite:setStencilImage(stencil: _Image, tile?: boolean): nil;
 fun playdate.graphics.sprite:setStencilPattern(level: any, ditherType?: integer): nil;
 fun playdate.graphics.sprite:setStencilPattern(pattern: integer[]): nil;
+fun playdate.graphics.sprite:setStencilPattern(row1: integer, row2: integer, row3: integer, row4: integer, row5: integer, row6: integer, row7: integer, row8: integer): nil;
 fun playdate.graphics.sprite:setTag(tag: integer): nil;
 fun playdate.graphics.sprite:setTilemap(tilemap: _TileMap): nil;
 fun playdate.graphics.sprite:setUpdatesEnabled(flag: boolean): nil;
