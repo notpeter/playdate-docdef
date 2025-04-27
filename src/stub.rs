@@ -71,7 +71,7 @@ impl StubVar {
         }
         // Docs have variable we haven't typed in playdate.luars yet
         else {
-            eprintln!("WARN: Function {our_lua} not found/untyped {}", self.anchor);
+            eprintln!("WARN: Variable {our_lua} not found/untyped {}", self.anchor);
         }
         self
     }

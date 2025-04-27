@@ -133,7 +133,7 @@ pub fn scrape(
                 // eprintln!("Duplicate stub {} (special chars)", key)
             }
         } else if anchor.starts_with("a-") {
-            // eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
+            eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
             let mut stub = annotate_variable(anchor, &title, &text);
             // eprintln!("before");
             // dbg!(&stub);
