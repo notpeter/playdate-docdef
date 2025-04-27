@@ -39,7 +39,6 @@ fn stubs_with_docs(
     let scraped_stubs = scrape::scrape(docs, &playdate_luars);
 
     let mut processed_funs: HashSet<String> = HashSet::new();
-    let mut processed_vars: HashSet<String> = HashSet::new();
 
     // Process scraped stubs, separating into variables and functions
     for stub in scraped_stubs.values() {
@@ -47,12 +46,6 @@ fn stubs_with_docs(
             Stub::Function(func_stub) => {
                 processed_funs.insert(func_stub.lua_def());
                 functions.push(FinStub::from_stub(&stub));
-            }
-            Stub::Variable(var_stub) => {
-                eprintln!("WARN: Found scraped non-function {}", var_stub.lua_def());
-                processed_vars.insert(var_stub.lua_def());
-                variables.push(FinStub::from_stub(&stub));
-                // dbg!(&var_stub);
             }
         }
     }
@@ -63,9 +56,7 @@ fn stubs_with_docs(
             LuarsStatement::Global(_name, _parent, _attrs)
             | LuarsStatement::Local(_name, _parent, _attrs) => {
                 // eprintln!("{_name}:{_parent}");
-                if !processed_vars.contains(s.lua_def().as_str()) {
-                    variables.push(FinStub::from_luars(s));
-                }
+                variables.push(FinStub::from_luars(s));
             }
             LuarsStatement::Function(_, _, _) => {
                 if !processed_funs.contains(s.lua_def().as_str()) {

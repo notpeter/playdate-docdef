@@ -1,4 +1,4 @@
-use crate::stub::{StubFn, StubVar};
+use crate::stub::StubFn;
 use regex::Regex;
 use serde::Deserialize;
 use std::{collections::HashMap, fmt, sync::LazyLock};
@@ -28,15 +28,11 @@ impl fmt::Display for VariableReplacement {
 
 static TOML_STR_FUNCTION: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameFn.toml"));
-static TOML_STR_PROPERTY: &str =
-    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameVar.toml"));
 static TOML_STR_INVALID: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
 static RENAME_FUNCTION: LazyLock<HashMap<String, FunctionReplacement>> =
     LazyLock::new(|| toml::from_str(TOML_STR_FUNCTION).expect("Loading RenameFn.toml failed."));
-static RENAME_PROPERTY: LazyLock<HashMap<String, VariableReplacement>> =
-    LazyLock::new(|| toml::from_str(TOML_STR_PROPERTY).expect("Loading RenameVar.toml failed."));
 static INVALID: LazyLock<HashMap<String, String>> =
     LazyLock::new(|| toml::from_str(TOML_STR_INVALID).expect("Loading Invalid.toml failed."));
 static RE_A: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
@@ -52,20 +48,6 @@ static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {
     )
     .unwrap()
 });
-
-pub fn apply_variable_types(anchor: &str, name: &String, text: &Vec<String>) -> StubVar {
-    let title = RENAME_PROPERTY
-        .get(anchor)
-        .map(|prop| prop.name.clone())
-        .unwrap_or_else(|| name.clone());
-    eprintln!("apply {title}");
-    StubVar {
-        anchor: anchor.to_string(),
-        title,
-        parent: "".to_string(),
-        _attrs: Vec::new(),
-    }
-}
 
 // Given a function return a stub with overrides, parameter types and return types applied
 pub fn apply_fn_types(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {

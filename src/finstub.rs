@@ -1,5 +1,5 @@
 use crate::luars::LuarsStatement;
-use crate::stub::{Stub, StubFn, StubVar};
+use crate::stub::{Stub, StubFn};
 use std::collections::HashMap;
 
 pub struct Attribute {
@@ -33,7 +33,6 @@ pub struct Variable {
 
 pub enum FinStub {
     FunctionStub(StubFn),
-    VariableStub(StubVar),
     Variable(Variable),
 }
 
@@ -41,7 +40,6 @@ impl FinStub {
     pub fn from_stub(stub: &Stub) -> FinStub {
         match stub {
             Stub::Function(fn_stub) => FinStub::FunctionStub(fn_stub.clone()),
-            Stub::Variable(var_stub) => FinStub::VariableStub(var_stub.clone()),
         }
     }
     pub fn from_luars(luars: &LuarsStatement) -> FinStub {
@@ -99,7 +97,6 @@ impl FinStub {
                 format!("{}{} = {{}}", var.prefix, var.var_name)
             }
             FinStub::FunctionStub(stub) => stub.to_stub(),
-            FinStub::VariableStub(stub) => stub.to_stub(),
         }
     }
     fn luacats_params(&self) -> Vec<String> {
@@ -192,9 +189,6 @@ impl FinStub {
                 out.extend(self.luacats_params());
                 out.extend(self.luacats_returns());
                 out.push(self.lua_statement());
-            }
-            FinStub::VariableStub(_stub) => {
-                // out.push(_stub.to_stub())
             }
         }
         out

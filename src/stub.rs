@@ -9,81 +9,8 @@ use textwrap;
 static MAX_LINE_LENGTH: usize = 100 - 4;
 
 pub enum Stub {
-    Variable(StubVar),
     Function(StubFn),
-}
-
-#[derive(Debug, Clone)]
-pub struct StubAttr {
-    pub name: String,
-    pub anchor: String,
-    pub r#type: String,
-    pub value: String,
-    pub text: Vec<String>,
-}
-
-impl StubAttr {
-    pub fn generate_description(&self) -> Vec<String> {
-        if self.anchor == "" {
-            eprintln!("foo");
-            Vec::new()
-        } else {
-            Vec::new()
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct StubVar {
-    pub title: String,
-    pub anchor: String,
-    pub parent: String,
-    pub _attrs: Vec<StubAttr>,
-}
-
-impl StubVar {
-    pub fn to_stub(&self) -> String {
-        format!("local {}", self.title)
-    }
-    pub fn annotate(mut self, statements: &BTreeMap<String, LuarsStatement>) -> Self {
-        let our_lua = self.lua_def();
-        if let Some(statement) = statements.get(&our_lua) {
-            match statement {
-                LuarsStatement::Global(_name, parent, attrs) => {
-                    self.parent = parent.to_string();
-                    for attr in attrs {
-                        eprintln!("{}.{_name} {}", self.parent, attr.0);
-                    }
-
-                    // self.attrs = attrs
-                    //     .iter()
-                    //     .map(|(aname, atype, avalue)| StubAttr {
-                    //         name: aname.to_string(),
-                    //         anchor: String::new(),
-                    //         _type: atype.to_string(),
-                    //         value: avalue.to_string(),
-                    //         text: String::new(),
-                    //     })
-                    //     .collect();
-                }
-                LuarsStatement::Function(_, _, _) => {
-                    eprintln!("eek, found function not global for {our_lua}")
-                }
-                LuarsStatement::Local(_, _, _) => {
-                    eprintln!("eek, found local not global for {our_lua}")
-                }
-            }
-        }
-        // Docs have variable we haven't typed in playdate.luars yet
-        else {
-            eprintln!("WARN: Variable {our_lua} not found/untyped {}", self.anchor);
-        }
-        self
-    }
-    /// Lua function signature (no types)
-    pub fn lua_def(&self) -> String {
-        self.title.clone()
-    }
+    // Callback(StubFn),
 }
 
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text

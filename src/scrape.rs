@@ -3,9 +3,9 @@ use std::collections::BTreeMap;
 use regex::Regex;
 use scraper::{CaseSensitivity, Selector};
 
-use crate::fixes::{apply_fn_types, apply_variable_types, clean_code, clean_text};
+use crate::fixes::{apply_fn_types, clean_code, clean_text};
 use crate::luars::LuarsStatement;
-use crate::stub::{Stub, StubAttr};
+use crate::stub::Stub;
 
 pub fn scrape(
     response: String,
@@ -44,7 +44,6 @@ pub fn scrape(
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
     let mut stubs: BTreeMap<String, Stub> = BTreeMap::new();
-    let mut var_stubs: Vec<StubAttr> = Vec::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
@@ -135,24 +134,6 @@ pub fn scrape(
             }
         } else if anchor.starts_with("a-") {
             eprintln!("ATTRIBUTE {} {} {:?} ", anchor, title, text);
-            let stub = StubAttr {
-                name: title.to_string(),
-                anchor: anchor.to_string(),
-                text: Vec::new(), //text.to_string(),
-                value: String::new(),
-                r#type: String::new(),
-            };
-            var_stubs.push(stub);
-            // let mut stub = apply_variable_types(anchor, &title, &text);
-            // eprintln!("before");
-            // dbg!(&stub);
-            // stub = stub.annotate(statements);
-            // eprintln!("after");
-            // dbg!(&stub);
-            // let key = stub.lua_def();
-            // if let Some(_val) = stubs.insert(key.clone(), Stub::Variable(stub)) {
-            //     eprintln!("Duplicate stub {} (property)", key)
-            // }
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
 
@@ -167,9 +148,6 @@ pub fn scrape(
         if re_function.is_match(&title) && title.contains(":") {
             _last_class = title.split(":").next().unwrap_or("").to_string();
         }
-    }
-    for var in var_stubs {
-        eprintln!("{:?}", var);
     }
     stubs
 }
