@@ -1,6 +1,5 @@
-use std::collections::BTreeMap;
-
 use crate::luars::LuarsStatement;
+use std::collections::BTreeMap;
 use textwrap;
 
 // Wrap long lines of documentation at this length
@@ -104,7 +103,30 @@ impl StubFn {
         }
     }
 
-    pub fn to_stub(&self) -> String {
+    /// Generatte '---@param name type' for each parameter to the function
+    pub fn luacats_params(&self) -> Vec<String> {
+        self.params
+            .iter()
+            .map(|(name, _type)| format!("---@param {} {}", name, _type))
+            .collect::<Vec<String>>()
+    }
+
+    /// Generate '---@return type [name]' for the function (multiple lines for multival returns)
+    pub fn luacats_returns(&self) -> Vec<String> {
+        self.returns
+            .iter()
+            .map(|(_name, _type)| {
+                if _name.to_string() == "" {
+                    format!("---@return {}", _type)
+                } else {
+                    format!("---@return {_type} {_name}", _type = _type, _name = _name)
+                }
+            })
+            .collect::<Vec<String>>()
+    }
+
+    /// Return a valid lua statement for the function.
+    pub fn lua_statement(&self) -> String {
         format!("function {} end", self.lua_def())
     }
 }
@@ -124,6 +146,6 @@ mod tests {
         };
 
         assert_eq!(stub.lua_def(), "test_func(param1)");
-        assert_eq!(stub.to_stub(), "function test_func(param1) end");
+        assert_eq!(stub.lua_statement(), "function test_func(param1) end");
     }
 }

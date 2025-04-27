@@ -2,38 +2,37 @@ use crate::luars::LuarsStatement;
 use crate::stub::{Stub, StubFn};
 use std::collections::HashMap;
 
-pub struct Attribute {
+pub struct TableContents {
     pub name: String,
-    pub _type: String,
+    pub r#type: String,
     pub value: String, // Some Enums have documented values
 }
 
-impl Attribute {
+impl TableContents {
     pub fn to_string(&self) -> String {
         let mut line = Vec::new();
         line.push("---@field");
         line.push(&self.name);
-        line.push(&self._type);
+        line.push(&self.r#type);
         if !self.value.is_empty() {
             line.push(&self.value);
         }
-        // if !self.comment.is_empty() {
-        //     line.push(&self.comment);
-        // }
         line.join(" ")
     }
 }
 
-pub struct Variable {
+/// Global and Local Variables
+pub struct Table {
     pub prefix: String,
-    pub var_name: String,
-    pub var_type: String,
-    pub var_attr: Vec<Attribute>,
+    pub name: String,
+    pub r#type: String,
+    pub contents: Vec<TableContents>,
 }
 
+/// Final Stubs, ready for outputting
 pub enum FinStub {
     FunctionStub(StubFn),
-    Variable(Variable),
+    VariableStub(Table),
 }
 
 impl FinStub {
@@ -48,24 +47,24 @@ impl FinStub {
             _ => "".to_string(),
         };
         match luars {
-            LuarsStatement::Global(var_name, var_type, attr_in)
-            | LuarsStatement::Local(var_name, var_type, attr_in) => {
-                let var_name = var_name.to_string();
-                let var_type = var_type.to_string();
-                let mut var_attr: Vec<Attribute> = Vec::new();
-                for attr in attr_in {
-                    let (key_name, key_type, key_value) = attr;
-                    var_attr.push(Attribute {
+            LuarsStatement::Global(table_name, table_type, table_contents)
+            | LuarsStatement::Local(table_name, table_type, table_contents) => {
+                let var_name = table_name.to_string();
+                let var_type = table_type.to_string();
+                let mut var_contents: Vec<TableContents> = Vec::new();
+                for tc in table_contents {
+                    let (key_name, key_type, key_value) = tc;
+                    var_contents.push(TableContents {
                         name: key_name.to_string(),
-                        _type: key_type.to_string(),
+                        r#type: key_type.to_string(),
                         value: key_value.to_string(),
                     });
                 }
-                FinStub::Variable(Variable {
+                FinStub::VariableStub(Table {
                     prefix,
-                    var_name,
-                    var_type,
-                    var_attr,
+                    name: var_name,
+                    r#type: var_type,
+                    contents: var_contents,
                 })
             }
             LuarsStatement::Function(fun_name, fun_params, fun_returns) => {
@@ -93,54 +92,20 @@ impl FinStub {
     pub fn lua_statement(&self) -> String {
         // Return a valid lua statement for the class or function.
         match self {
-            FinStub::Variable(var) => {
-                format!("{}{} = {{}}", var.prefix, var.var_name)
+            FinStub::VariableStub(var) => {
+                format!("{}{} = {{}}", var.prefix, var.name)
             }
-            FinStub::FunctionStub(stub) => stub.to_stub(),
-        }
-    }
-    fn luacats_params(&self) -> Vec<String> {
-        // Returns '---@param name type' for functions
-        match self {
-            FinStub::FunctionStub(stub) => stub
-                .params
-                .iter()
-                .map(|(name, _type)| format!("---@param {} {}", name, _type))
-                .collect::<Vec<String>>(),
-            _ => {
-                unreachable!(
-                    "LuarsStatement::Global and LuarsStatement::Local don't support luacats_params()"
-                )
-            }
-        }
-    }
-    fn luacats_returns(&self) -> Vec<String> {
-        // Returns '---@return type [name]' for functions
-        match self {
-            FinStub::FunctionStub(stub) => stub
-                .returns
-                .iter()
-                .map(|(_name, _type)| {
-                    if _name.to_string() == "" {
-                        format!("---@return {}", _type)
-                    } else {
-                        format!("---@return {_type} {_name}", _type = _type, _name = _name)
-                    }
-                })
-                .collect::<Vec<String>>(),
-            _ => {
-                unreachable!("luacats_returns() should not be called with FinStub::Variable")
-            }
+            FinStub::FunctionStub(stub) => stub.lua_statement(),
         }
     }
     fn luacats_class(&self) -> String {
         // Returns '---@class name : parent' for classes
         match self {
-            FinStub::Variable(var) => {
-                if var.var_type.to_string() == "" {
-                    format!("---@class {}", var.var_name)
+            FinStub::VariableStub(var) => {
+                if var.r#type.to_string() == "" {
+                    format!("---@class {}", var.name)
                 } else {
-                    format!("---@class {} : {}", var.var_name, var.var_type)
+                    format!("---@class {} : {}", var.name, var.r#type)
                 }
             }
             _ => {
@@ -151,8 +116,8 @@ impl FinStub {
     fn luacats_fields(&self) -> Vec<String> {
         // Returns '---@field name type [value]' for class/instance attributes
         match self {
-            FinStub::Variable(var) => var
-                .var_attr
+            FinStub::VariableStub(var) => var
+                .contents
                 .iter()
                 .map(|a| a.to_string())
                 .collect::<Vec<String>>(),
@@ -176,7 +141,7 @@ impl FinStub {
         ]);
         let mut out: Vec<String> = Vec::new();
         match self {
-            FinStub::Variable(_) => {
+            FinStub::VariableStub(_) => {
                 out.push(self.luacats_class());
                 out.extend(self.luacats_fields());
                 out.push(self.lua_statement());
@@ -186,9 +151,9 @@ impl FinStub {
                     out.push(notes.get(stub.lua_def().as_str()).unwrap().to_string());
                 }
                 out.extend(stub.generate_description());
-                out.extend(self.luacats_params());
-                out.extend(self.luacats_returns());
-                out.push(self.lua_statement());
+                out.extend(stub.luacats_params());
+                out.extend(stub.luacats_returns());
+                out.push(stub.lua_statement());
             }
         }
         out
