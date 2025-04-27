@@ -1,29 +1,12 @@
 use crate::stub::StubFn;
 use regex::Regex;
 use serde::Deserialize;
-use std::{collections::HashMap, fmt, sync::LazyLock};
+use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Deserialize)]
 pub struct FunctionReplacement {
     pub name: String,
     pub parameters: Vec<String>,
-}
-
-impl fmt::Display for FunctionReplacement {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}({})", self.name, self.parameters.join(", "))
-    }
-}
-
-#[derive(Deserialize)]
-pub struct VariableReplacement {
-    pub name: String,
-}
-
-impl fmt::Display for VariableReplacement {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.name)
-    }
 }
 
 static TOML_STR_FUNCTION: &str =
