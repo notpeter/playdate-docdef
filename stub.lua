@@ -3968,6 +3968,21 @@ function playdate.network.http:post(path, headers, data) end
 ---@return string error?
 function playdate.network.http:post(path, data) end
 
+---@param method string
+---@param path string
+---@param headers? table<string, string>
+---@param data? string
+---@return boolean success
+---@return string error?
+function playdate.network.http:query(method, path, headers, data) end
+
+---@param method string
+---@param path string
+---@param data string
+---@return boolean success
+---@return string error?
+function playdate.network.http:query(method, path, data) end
+
 ---@param length integer
 ---@return string
 function playdate.network.http:read(length) end
