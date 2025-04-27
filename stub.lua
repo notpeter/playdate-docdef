@@ -2198,6 +2198,7 @@ function playdate.graphics.clearClipRect() end
 ---@return nil
 function playdate.graphics.clearStencil() end
 
+---@deprecated since 1.9.0 (maybe earlier)
 ---@return nil
 function playdate.graphics.clearStencilImage() end
 
