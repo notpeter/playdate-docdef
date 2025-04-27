@@ -188,7 +188,7 @@ impl FinStub {
                 if notes.contains_key(stub.lua_def().as_str()) {
                     out.push(notes.get(stub.lua_def().as_str()).unwrap().to_string());
                 }
-                out.extend(stub.text_comments());
+                out.extend(stub.generate_description());
                 out.extend(self.luacats_params());
                 out.extend(self.luacats_returns());
                 out.push(self.lua_statement());

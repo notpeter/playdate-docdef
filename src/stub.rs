@@ -15,17 +15,22 @@ pub enum Stub {
 
 #[derive(Debug, Clone)]
 pub struct StubAttr {
-    pub _name: String,
-    pub _anchor: String,
-    pub _type: String,
-    pub _value: String,
-    pub _text: String,
+    pub name: String,
+    pub anchor: String,
+    pub r#type: String,
+    pub value: String,
+    pub text: Vec<String>,
 }
 
 impl StubAttr {
-    // pub fn to_stub(&self) -> String {
-    //     self.name.clone()
-    // }
+    pub fn generate_description(&self) -> Vec<String> {
+        if self.anchor == "" {
+            eprintln!("foo");
+            Vec::new()
+        } else {
+            Vec::new()
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -34,7 +39,6 @@ pub struct StubVar {
     pub anchor: String,
     pub parent: String,
     pub _attrs: Vec<StubAttr>,
-    pub _text: Vec<String>,
 }
 
 impl StubVar {
@@ -50,6 +54,7 @@ impl StubVar {
                     for attr in attrs {
                         eprintln!("{}.{_name} {}", self.parent, attr.0);
                     }
+
                     // self.attrs = attrs
                     //     .iter()
                     //     .map(|(aname, atype, avalue)| StubAttr {
@@ -134,53 +139,47 @@ impl StubFn {
         format!("{}({})", name, param_names.join(", "))
     }
 
-    pub fn text_comments(&self) -> Vec<String> {
+    pub fn generate_description(&self) -> Vec<String> {
         if self.anchor == "" {
             Vec::new()
         } else {
-            self.text2comments()
+            let mut lines = Vec::new();
+            let mut i = 0;
+            let mut in_code = false;
+            while i < self.text.len() {
+                let line = &self.text[i];
+                // Bulleted list and code get fewer newlines.
+                // Everything else needs extra empty lines for proper markdown rendering.
+                let no_break = in_code
+                    || line.starts_with("```")
+                    || (line.starts_with("* ")
+                        && i < self.text.len() - 1
+                        && self.text[i + 1].starts_with("* "));
+                if no_break {
+                    lines.push(format!("--- {}", line));
+                } else {
+                    for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
+                        lines.push(format!("--- {}", wrapped_line));
+                    }
+                    lines.push("---".to_string());
+                }
+                // this is hacky as hell
+                if line == "```" {
+                    in_code = !in_code;
+                }
+                i = i + 1;
+            }
+            lines.push(format!(
+                "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
+                self.title, self.anchor
+            ));
+            lines
         }
     }
 
     pub fn to_stub(&self) -> String {
         format!("function {} end", self.lua_def())
     }
-
-    fn text2comments(&self) -> Vec<String> {
-        text_to_comments(&self.text, &self.title, &self.anchor)
-    }
-}
-
-pub fn text_to_comments(text: &[String], title: &str, anchor: &str) -> Vec<String> {
-    let mut s = Vec::new();
-    let mut i = 0;
-    let mut in_code = false;
-    while i < text.len() {
-        let line = &text[i];
-        // Bulleted list and code get fewer newlines.
-        // Everything else needs extra empty lines for proper markdown rendering.
-        let no_break = in_code
-            || line.starts_with("```")
-            || (line.starts_with("* ") && i < text.len() - 1 && text[i + 1].starts_with("* "));
-        if no_break {
-            s.push(format!("--- {}", line));
-        } else {
-            for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
-                s.push(format!("--- {}", wrapped_line));
-            }
-            s.push("---".to_string());
-        }
-        // this is hacky as hell
-        if line == "```" {
-            in_code = !in_code;
-        }
-        i = i + 1;
-    }
-    s.push(format!(
-        "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
-        title, anchor
-    ));
-    s
 }
 
 #[cfg(test)]

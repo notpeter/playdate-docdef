@@ -75,7 +75,7 @@ fn stubs_with_docs(
         }
     }
 
-    // Combine variables and functions in the desired order
+    // Variables have to come first because the types are used for function params/returns
     let mut fin_stubs = Vec::new();
     fin_stubs.extend(variables);
     fin_stubs.extend(functions);
