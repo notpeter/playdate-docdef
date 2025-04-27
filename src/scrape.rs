@@ -130,10 +130,10 @@ pub fn scrape(
             stub = stub.annotate(statements);
             let key = stub.lua_def();
             if let Some(_val) = stubs.insert(key.clone(), Stub::Function(stub)) {
-                eprintln!("Duplicate stub {} (special chars)", key)
+                // eprintln!("Duplicate stub {} (special chars)", key)
             }
         } else if anchor.starts_with("a-") {
-            eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
+            // eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
             let mut stub = annotate_variable(anchor, &title, &text);
             // eprintln!("before");
             // dbg!(&stub);

@@ -73,8 +73,7 @@ pub fn apply_fn_types(anchor: &str, title: &String, text: &Vec<String>) -> StubF
     let params: Vec<(String, String)>;
 
     // Apply overrides
-    if RENAME_FUNCTION.contains_key(anchor) {
-        let fixed = RENAME_FUNCTION.get(anchor).unwrap();
+    if let Some(fixed) = RENAME_FUNCTION.get(anchor) {
         params = fixed
             .parameters
             .iter()
