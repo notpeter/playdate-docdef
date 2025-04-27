@@ -54,6 +54,7 @@ impl LuarsStatement<'_> {
             sub_id,
         }
     }
+
     /// The rough lua code equivalent. Used for hashmap keys and matching
     pub fn lua_def(&self) -> String {
         match self {

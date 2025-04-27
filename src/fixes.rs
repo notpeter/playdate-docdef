@@ -10,12 +10,15 @@ pub struct FunctionReplacement {
 }
 
 // TOML Files
+static TOML_STR_NOTES: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Notes.toml"));
 static TOML_STR_FUNCTION: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameFn.toml"));
 static TOML_STR_INVALID: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
 // Static HashMaps from TOML files
+static NOTES: LazyLock<HashMap<String, Vec<String>>> =
+    LazyLock::new(|| toml::from_str(TOML_STR_NOTES).expect("Loading Notes.toml failed."));
 static RENAME_FUNCTION: LazyLock<HashMap<String, FunctionReplacement>> =
     LazyLock::new(|| toml::from_str(TOML_STR_FUNCTION).expect("Loading RenameFn.toml failed."));
 static INVALID: LazyLock<HashMap<String, String>> =
@@ -37,7 +40,16 @@ static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-// Given a function return a stub with overrides, parameter types and return types applied
+/// Given an anchor, return an notes from Notes.toml (hard coded stuff)
+pub fn apply_notes(name: &String) -> Vec<String> {
+    if let Some(note) = NOTES.get(name.as_str()) {
+        note.clone()
+    } else {
+        Vec::new()
+    }
+}
+
+/// Given a function return a stub with overrides, parameter types and return types applied
 pub fn apply_fn_types(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
     let name: String;
     let params: Vec<(String, String)>;

@@ -1,6 +1,5 @@
 use crate::luars::LuarsStatement;
 use crate::stub::{Stub, StubFn, Table, TableContents};
-use std::collections::HashMap;
 
 /// Final Stubs, ready for outputting
 pub enum FinStub {
@@ -64,32 +63,13 @@ impl FinStub {
     }
     pub fn generate_stub(&self) -> Vec<String> {
         // Returns the complete stub for a class or function.
-        let notes = HashMap::from([
-            // TODO: maybe make this lazy_static (how?)
-            (
-                "playdate.ui.crankIndicator:start()",
-                "---@deprecated since 2.1.0-beta1",
-            ),
-            (
-                "playdate.ui.crankIndicator:update()",
-                "---@deprecated since 2.1.0-beta1",
-            ),
-        ]);
         let mut out: Vec<String> = Vec::new();
         match self {
             FinStub::VariableStub(stub) => {
-                out.push(stub.luacats_class());
-                out.extend(stub.luacats_fields());
-                out.push(stub.lua_statement());
+                out.extend(stub.get_luacats());
             }
             FinStub::FunctionStub(stub) => {
-                if notes.contains_key(stub.lua_def().as_str()) {
-                    out.push(notes.get(stub.lua_def().as_str()).unwrap().to_string());
-                }
-                out.extend(stub.generate_description());
-                out.extend(stub.luacats_params());
-                out.extend(stub.luacats_returns());
-                out.push(stub.lua_statement());
+                out.extend(stub.get_luacats());
             }
         }
         out

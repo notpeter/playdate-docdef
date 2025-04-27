@@ -21,7 +21,7 @@ impl AnchorType {
     pub fn new(anchor: &str) -> Self {
         match anchor {
             "lua-sample" => AnchorType::Function,
-            "playdate.metadata" => AnchorType::Variable,
+            "f-metadata" => AnchorType::Variable,
             _ => match anchor.get(0..2).unwrap_or("") {
                 "v-" => AnchorType::Variable,
                 "f-" => AnchorType::Function,
@@ -135,8 +135,7 @@ pub fn scrape(
             }
             AnchorType::Variable => {
                 if title.contains("  ") {
-                    eprintln!("MULTILINE_VARIABLE {} {} {:?} ", anchor, title, text);
-                    continue;
+                    // eprintln!("MULTILINE_VARIABLE {} {} {:?} ", anchor, title, text);
                 }
                 // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
             }

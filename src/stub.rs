@@ -1,3 +1,4 @@
+use crate::fixes::apply_notes;
 use crate::luars::LuarsStatement;
 use std::collections::BTreeMap;
 use textwrap;
@@ -41,15 +42,10 @@ impl StubFn {
                             .collect();
                     }
                 }
-                LuarsStatement::Global(_, _, _) => {
-                    eprintln!("eek, found global not function for {our_lua}")
-                }
-                LuarsStatement::Local(_, _, _) => {
-                    eprintln!("eek, found loca not function for {our_lua}")
-                }
+                _ => eprintln!("eek, found non-function for {our_lua}"),
             }
         } else {
-            eprintln!("WARN: Function {our_lua} not found/untyped {}", self.anchor);
+            eprintln!("WARN: Function {our_lua} not untyped {}", self.anchor);
         }
         self
     }
@@ -65,7 +61,7 @@ impl StubFn {
         format!("{}({})", name, param_names.join(", "))
     }
 
-    pub fn generate_description(&self) -> Vec<String> {
+    fn generate_description(&self) -> Vec<String> {
         if self.anchor == "" {
             Vec::new()
         } else {
@@ -103,8 +99,19 @@ impl StubFn {
         }
     }
 
+    /// Generate complete LuaCATS for function
+    pub fn get_luacats(&self) -> Vec<String> {
+        let mut out = Vec::new();
+        out.extend(apply_notes(&self.lua_def()));
+        out.extend(self.generate_description());
+        out.extend(self.luacats_params());
+        out.extend(self.luacats_returns());
+        out.push(self.lua_statement());
+        out
+    }
+
     /// Generatte '---@param name type' for each parameter to the function
-    pub fn luacats_params(&self) -> Vec<String> {
+    fn luacats_params(&self) -> Vec<String> {
         self.params
             .iter()
             .map(|(name, _type)| format!("---@param {} {}", name, _type))
@@ -112,7 +119,7 @@ impl StubFn {
     }
 
     /// Generate '---@return type [name]' for the function (multiple lines for multival returns)
-    pub fn luacats_returns(&self) -> Vec<String> {
+    fn luacats_returns(&self) -> Vec<String> {
         self.returns
             .iter()
             .map(|(_name, _type)| {
@@ -126,7 +133,7 @@ impl StubFn {
     }
 
     /// Return a valid lua statement for the function.
-    pub fn lua_statement(&self) -> String {
+    fn lua_statement(&self) -> String {
         format!("function {} end", self.lua_def())
     }
 }
@@ -159,7 +166,13 @@ pub struct Table {
 }
 
 impl Table {
-    // pub fn get_luacats() {}
+    pub fn get_luacats(&self) -> Vec<String> {
+        let mut out = Vec::new();
+        out.push(self.luacats_class());
+        out.extend(self.luacats_fields());
+        out.push(self.lua_statement());
+        out
+    }
 
     /// Return a valid lua statement for the class.
     pub fn lua_statement(&self) -> String {
