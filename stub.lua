@@ -3667,6 +3667,17 @@ function playdate.graphics.sprite:setSize(width, height) end
 ---@return nil
 function playdate.graphics.sprite:setStencilImage(stencil, tile) end
 
+---@param row1 integer
+---@param row2 integer
+---@param row3 integer
+---@param row4 integer
+---@param row5 integer
+---@param row6 integer
+---@param row7 integer
+---@param row8 integer
+---@return nil
+function playdate.graphics.sprite:setStencilPattern(row1, row2, row3, row4, row5, row6, row7, row8) end
+
 ---@param level any
 ---@param ditherType? integer
 ---@return nil
