@@ -1,7 +1,7 @@
 use crate::stub::StubFn;
 use regex::Regex;
 use serde::Deserialize;
-use std::{collections::HashMap, fmt, sync::LazyLock};
+use std::{collections::HashMap, sync::LazyLock};
 
 #[derive(Deserialize)]
 pub struct FunctionReplacement {
@@ -9,26 +9,27 @@ pub struct FunctionReplacement {
     pub parameters: Vec<String>,
 }
 
-impl fmt::Display for FunctionReplacement {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}({})", self.name, self.parameters.join(", "))
-    }
-}
-
+// TOML Files
+static TOML_STR_NOTES: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Notes.toml"));
 static TOML_STR_FUNCTION: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/RenameFn.toml"));
 static TOML_STR_INVALID: &str =
     include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/data/Invalid.toml"));
 
+// Static HashMaps from TOML files
+static NOTES: LazyLock<HashMap<String, Vec<String>>> =
+    LazyLock::new(|| toml::from_str(TOML_STR_NOTES).expect("Loading Notes.toml failed."));
 static RENAME_FUNCTION: LazyLock<HashMap<String, FunctionReplacement>> =
     LazyLock::new(|| toml::from_str(TOML_STR_FUNCTION).expect("Loading RenameFn.toml failed."));
 static INVALID: LazyLock<HashMap<String, String>> =
     LazyLock::new(|| toml::from_str(TOML_STR_INVALID).expect("Loading Invalid.toml failed."));
-static RE_A: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
+
+/// HTML Link tags
+static HTML_A: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
 static HTML_TAG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<[^>]*>").unwrap());
+/// Lua function signature: 'function(a,b,c)'
 static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(
-        // Lua function signatures: function(a,b,c)
         &format!(
             r"^(?P<fname>(?:{id}\.)*{id}[:\.]{id}|{id})\((?P<params>.*)\)",
             id = r"[\w_][\w\d_]*"
@@ -38,14 +39,22 @@ static LUA_FUNC: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-// Given a function return a stub with overrides, parameter types and return types applied
-pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
+/// Given an anchor, return an notes from Notes.toml (hard coded stuff)
+pub fn apply_notes(name: &String) -> Vec<String> {
+    if let Some(note) = NOTES.get(name.as_str()) {
+        note.clone()
+    } else {
+        Vec::new()
+    }
+}
+
+/// Given a function return a stub with overrides, parameter types and return types applied
+pub fn apply_fn_types(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
     let name: String;
     let params: Vec<(String, String)>;
 
     // Apply overrides
-    if RENAME_FUNCTION.contains_key(anchor) {
-        let fixed = RENAME_FUNCTION.get(anchor).unwrap();
+    if let Some(fixed) = RENAME_FUNCTION.get(anchor) {
         params = fixed
             .parameters
             .iter()
@@ -69,20 +78,14 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
 }
 
 // Takes a valid function signature and returns a function name and a vector of parameters.
-pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
+fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
-    let caps = match LUA_FUNC.captures(title) {
-        Some(c) => c,
-        None => {
-            panic!(
-                "ERROR: Could not parse function signature (typo?): {}",
-                title
-            );
-        }
-    };
+    let lua_func = LUA_FUNC
+        .captures(title)
+        .expect(format!("ERROR: Could not parse function signature (typo?): {title}").as_str());
 
-    let params_str = caps.name("params").unwrap().as_str();
-    let fname = caps.name("fname").unwrap().as_str();
+    let params_str = lua_func.name("params").unwrap().as_str();
+    let fname = lua_func.name("fname").unwrap().as_str();
     let mut optional = false;
     if params_str.trim() != "" {
         for p in params_str.split(",") {
@@ -132,7 +135,7 @@ pub fn clean_text(text: String) -> String {
         .replace("<message>", "{message}")
         .trim()
         .to_string();
-    let tn = RE_A.replace_all(&t0, "");
+    let tn = HTML_A.replace_all(&t0, "");
     // The restuling Markdown should not have HTML tags.
     if HTML_TAG.is_match(&tn) {
         eprintln!(
@@ -155,16 +158,15 @@ pub fn clean_code(text: String) -> Vec<String> {
 }
 
 fn clean_parameters(params: &Vec<(String, String)>) -> Vec<(String, String)> {
-    let mut v: Vec<(String, String)> = Vec::new();
+    let mut out: Vec<(String, String)> = Vec::new();
     for (p_name, lua_type) in params {
         let p_an = p_name.replace("?", ""); // without "?" at the the end for optional
-        if INVALID.contains_key(p_an.as_str()) {
-            let fixed_name = INVALID.get(p_an.as_str()).unwrap().to_string();
+        if let Some(fixed_name) = INVALID.get(&p_an) {
             // eprintln!("WARN: Fixed invalid parameter: {p_an} -> {fixed_name}");
-            v.push((fixed_name, lua_type.to_string()));
+            out.push((fixed_name.clone(), lua_type.to_string()));
         } else {
-            v.push((p_name.to_string(), lua_type.to_string()));
+            out.push((p_name.to_string(), lua_type.to_string()));
         }
     }
-    v
+    out
 }

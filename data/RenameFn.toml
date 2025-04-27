@@ -15,11 +15,6 @@ parameters = ["..."]
 ##########################################################
 # Overrides for methods with incorrect signatures/names
 
-# dashes in params upper-left-x, upper-left-y
-["m-graphics.sprite.setBounds"]
-name = "playdate.graphics.sprite:setBounds"
-parameters = ["x", "y", "width", "height"]
-
 # playdate.graphics.setStencilPattern -> playdate.graphics.sprite:setStencilPattern
 ["m-graphics.sprite.setStencilPattern_p"]
 name = "playdate.graphics.sprite:setStencilPattern"

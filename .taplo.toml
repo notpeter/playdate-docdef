@@ -1,3 +1,4 @@
 [formatting]
 align_comments = false
+column_width = 100
 reorder_keys = true

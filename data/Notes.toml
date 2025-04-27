@@ -1,0 +1,5 @@
+# These are hard coded notes which to be included in all stubs (annotated and bare)
+
+"playdate.graphics.clearStencilImage()" = ["---@deprecated since 1.9.0 (maybe earlier)"]
+"playdate.ui.crankIndicator:start()" = ["---@deprecated since 2.1.0-beta1"]
+"playdate.ui.crankIndicator:update()" = ["---@deprecated since 2.1.0-beta1"]

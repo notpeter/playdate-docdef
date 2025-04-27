@@ -1,4 +1,6 @@
+use crate::fixes::apply_notes;
 use crate::luars::LuarsStatement;
+use std::collections::BTreeMap;
 use textwrap;
 
 // Wrap long lines of documentation at this length
@@ -6,26 +8,29 @@ use textwrap;
 // Note: This also includes the leading "--- " (4 chars).
 static MAX_LINE_LENGTH: usize = 100 - 4;
 
+pub enum Stub {
+    Function(StubFn),
+}
+
 // Stub Struct containing extracted signature, url anchor, list of parameters and description text
 #[derive(Debug, Clone)]
 pub struct StubFn {
     pub title: String,
     pub anchor: String,
-    pub params: Vec<(String, String)>,  // parameter_name=type_name
-    pub returns: Vec<(String, String)>, // return_name=type_name
+    /// Function Parameters (name, type)
+    pub params: Vec<(String, String)>,
+    /// Return (name, type)
+    pub returns: Vec<(String, String)>,
     pub text: Vec<String>,
 }
 
 impl StubFn {
-    pub fn apply_types(mut self, statements: &Vec<LuarsStatement>) -> StubFn {
-        let func_sig = self.func_signature();
-        let mut found: bool = false;
-        //TODO: This is hella inefficient
-        for s in statements {
-            match s {
-                LuarsStatement::Function(_, params, returns) => {
-                    let s_sig = s.func_sig();
-                    if func_sig == s_sig {
+    pub fn annotate(mut self, statements: &BTreeMap<String, LuarsStatement>) -> Self {
+        let our_lua = self.lua_def();
+        if let Some(statement) = statements.get(&our_lua) {
+            match statement {
+                LuarsStatement::Function(_name, params, returns) => {
+                    if our_lua == statement.lua_def() {
                         self.params = params
                             .iter()
                             .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
@@ -34,74 +39,160 @@ impl StubFn {
                             .iter()
                             .map(|(fname, ftype)| (fname.to_string(), ftype.to_string()))
                             .collect();
-                        found = true;
                     }
                 }
-                LuarsStatement::Global(_, _, _) => continue,
-                LuarsStatement::Local(_, _, _) => continue,
+                _ => eprintln!("eek, found non-function for {our_lua}"),
             }
-        }
-        if found {
-            // eprintln!("INFO: Found types for {}", func_sig);
         } else {
-            eprintln!("WARN: Could not find types for {func_sig} {}", self.anchor);
+            eprintln!("WARN: Function {our_lua} not untyped {}", self.anchor);
         }
         self
     }
-    pub fn func_signature(&self) -> String {
+
+    /// Lua function signature (no types)
+    pub fn lua_def(&self) -> String {
         let name = self.title.clone();
         let params = self.params.clone();
         let param_names: Vec<String> = params
             .iter()
             .map(|(name, _)| name.clone().replace("?", ""))
             .collect::<Vec<String>>();
-        String::from(format!("{}({})", name, param_names.join(", ")))
+        format!("{}({})", name, param_names.join(", "))
     }
-    pub fn text_comments(&self) -> Vec<String> {
+
+    fn generate_description(&self) -> Vec<String> {
         if self.anchor == "" {
             Vec::new()
         } else {
-            self.text2comments()
+            let mut lines = Vec::new();
+            let mut i = 0;
+            let mut in_code = false;
+            while i < self.text.len() {
+                let line = &self.text[i];
+                // Bulleted list and code get fewer newlines.
+                // Everything else needs extra empty lines for proper markdown rendering.
+                let no_break = in_code
+                    || line.starts_with("```")
+                    || (line.starts_with("* ")
+                        && i < self.text.len() - 1
+                        && self.text[i + 1].starts_with("* "));
+                if no_break {
+                    lines.push(format!("--- {}", line));
+                } else {
+                    for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
+                        lines.push(format!("--- {}", wrapped_line));
+                    }
+                    lines.push("---".to_string());
+                }
+                // this is hacky as hell
+                if line == "```" {
+                    in_code = !in_code;
+                }
+                i = i + 1;
+            }
+            lines.push(format!(
+                "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
+                self.title, self.anchor
+            ));
+            lines
         }
     }
-    pub fn to_stub(&self) -> String {
-        String::from(format!("function {} end", self.func_signature()))
+
+    /// Generate complete LuaCATS for function
+    pub fn get_luacats(&self) -> Vec<String> {
+        let mut out = Vec::new();
+        out.extend(apply_notes(&self.lua_def()));
+        out.extend(self.generate_description());
+        out.extend(self.luacats_params());
+        out.extend(self.luacats_returns());
+        out.push(self.lua_statement());
+        out
     }
-    fn text2comments(&self) -> Vec<String> {
-        text_to_comments(&self.text, &self.title, &self.anchor)
+
+    /// Generatte '---@param name type' for each parameter to the function
+    fn luacats_params(&self) -> Vec<String> {
+        self.params
+            .iter()
+            .map(|(name, _type)| format!("---@param {} {}", name, _type))
+            .collect::<Vec<String>>()
+    }
+
+    /// Generate '---@return type [name]' for the function (multiple lines for multival returns)
+    fn luacats_returns(&self) -> Vec<String> {
+        self.returns
+            .iter()
+            .map(|(_name, _type)| {
+                if _name.to_string() == "" {
+                    format!("---@return {}", _type)
+                } else {
+                    format!("---@return {_type} {_name}", _type = _type, _name = _name)
+                }
+            })
+            .collect::<Vec<String>>()
+    }
+
+    /// Return a valid lua statement for the function.
+    fn lua_statement(&self) -> String {
+        format!("function {} end", self.lua_def())
     }
 }
 
-pub fn text_to_comments(text: &[String], title: &str, anchor: &str) -> Vec<String> {
-    let mut s = Vec::new();
-    let mut i = 0;
-    let mut in_code = false;
-    while i < text.len() {
-        let line = &text[i];
-        // Bulleted list and code get fewer newlines.
-        // Everything else needs extra empty lines for proper markdown rendering.
-        let no_break = in_code
-            || line.starts_with("```")
-            || (line.starts_with("* ") && i < text.len() - 1 && text[i + 1].starts_with("* "));
-        if no_break {
-            s.push(format!("--- {}", line));
-        } else {
-            for wrapped_line in textwrap::wrap(line.as_str(), MAX_LINE_LENGTH) {
-                s.push(format!("--- {}", wrapped_line));
-            }
-            s.push("---".to_string());
+pub struct TableContents {
+    pub name: String,
+    pub r#type: String,
+    pub value: String, // Some Enums have documented values
+}
+
+impl TableContents {
+    pub fn to_string(&self) -> String {
+        let mut line = Vec::new();
+        line.push("---@field");
+        line.push(&self.name);
+        line.push(&self.r#type);
+        if !self.value.is_empty() {
+            line.push(&self.value);
         }
-        // this is hacky as hell
-        if line == "```" {
-            in_code = !in_code;
-        }
-        i = i + 1;
+        line.join(" ")
     }
-    s.push(format!(
-        "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
-        title, anchor
-    ));
-    s
+}
+
+/// Global and Local Variables
+pub struct Table {
+    pub prefix: String,
+    pub name: String,
+    pub r#type: String,
+    pub contents: Vec<TableContents>,
+}
+
+impl Table {
+    pub fn get_luacats(&self) -> Vec<String> {
+        let mut out = Vec::new();
+        out.push(self.luacats_class());
+        out.extend(self.luacats_fields());
+        out.push(self.lua_statement());
+        out
+    }
+
+    /// Return a valid lua statement for the class.
+    pub fn lua_statement(&self) -> String {
+        format!("{}{} = {{}}", self.prefix, self.name)
+    }
+    /// Returns '---@field name type [value]' for class/instance attributes
+    pub fn luacats_fields(&self) -> Vec<String> {
+        self.contents
+            .iter()
+            .map(|a| a.to_string())
+            .collect::<Vec<String>>()
+    }
+
+    /// Returns '---@class name : parent' for classes
+    pub fn luacats_class(&self) -> String {
+        if self.r#type.to_string() == "" {
+            format!("---@class {}", self.name)
+        } else {
+            format!("---@class {} : {}", self.name, self.r#type)
+        }
+    }
 }
 
 #[cfg(test)]
@@ -118,7 +209,7 @@ mod tests {
             text: vec!["Test description".to_string()],
         };
 
-        assert_eq!(stub.func_signature(), "test_func(param1)");
-        assert_eq!(stub.to_stub(), "function test_func(param1) end");
+        assert_eq!(stub.lua_def(), "test_func(param1)");
+        assert_eq!(stub.lua_statement(), "function test_func(param1) end");
     }
 }

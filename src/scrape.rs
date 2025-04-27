@@ -1,12 +1,44 @@
+use std::collections::BTreeMap;
+
 use regex::Regex;
 use scraper::{CaseSensitivity, Selector};
 
-use crate::fixes::clean_code;
-use crate::fixes::{annotate_function, clean_text};
+use crate::fixes::{apply_fn_types, clean_code, clean_text};
 use crate::luars::LuarsStatement;
-use crate::stub::StubFn;
+use crate::stub::Stub;
 
-pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<StubFn> {
+enum AnchorType {
+    Function,
+    Method,
+    Table,
+    Callback,
+    Variable,
+    Attribute,
+    Unkown,
+}
+
+impl AnchorType {
+    pub fn new(anchor: &str) -> Self {
+        match anchor {
+            "lua-sample" => AnchorType::Function,
+            "f-metadata" => AnchorType::Variable,
+            _ => match anchor.get(0..2).unwrap_or("") {
+                "v-" => AnchorType::Variable,
+                "f-" => AnchorType::Function,
+                "m-" => AnchorType::Method,
+                "t-" => AnchorType::Table,
+                "c-" => AnchorType::Callback,
+                "a-" => AnchorType::Attribute,
+                _ => AnchorType::Unkown,
+            },
+        }
+    }
+}
+
+pub fn scrape(
+    response: String,
+    statements: &BTreeMap<String, LuarsStatement<'_>>,
+) -> BTreeMap<String, Stub> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -39,7 +71,7 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
 
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
-    let mut stubs: Vec<StubFn> = Vec::new();
+    let mut stubs: BTreeMap<String, Stub> = BTreeMap::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
@@ -97,41 +129,45 @@ pub fn scrape(response: String, statements: &Vec<LuarsStatement<'_>>) -> Vec<Stu
             }
         }
 
-        if title.contains("  ") {
-            // Functions with multiple (e.g. playdate.easingFunctions.*, )
-            if anchor.starts_with("m-") || anchor.starts_with("f-") {
-                for t in title.split("  ") {
-                    let mut stub =
-                        annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
-                    stub = stub.apply_types(statements);
-                    stubs.push(stub)
-                }
-            } else {
-                // We don't split multiline variables "v-" because we don't actually handle variables well.
-                // eprintln!("Found multi-line variable {anchor} (unhandled)");
-                continue;
+        match AnchorType::new(anchor) {
+            AnchorType::Attribute => {
+                // eprintln!("ATTRIBUTE {} {} {:?} ", anchor, title, text);
             }
-        } else if title.contains("(")
-            || title.contains("[")
-            || title.contains(" ")
-            || title.starts_with("-")
-            || title.starts_with("#")
-            || title.contains("Callback")
-        {
-            // function(), imagetable[n], "p + p", "-v", etc
-            let mut stub = annotate_function(&anchor.to_string(), &title, &text);
-            stub = stub.apply_types(statements);
-            stubs.push(stub);
-        } else if anchor.starts_with("a-") {
-            // eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
-        } else if anchor.starts_with("v-") {
-            // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
-
-            // let mut stub = annotate_function(&anchor.to_string(), &title, &text);
-            // stub = stub.apply_types(statements);
-            // stubs.push(stub);
-        } else {
-            // eprintln!("UNKNOWN: {anchor} {title}");
+            AnchorType::Variable => {
+                if title.contains("  ") {
+                    // eprintln!("MULTILINE_VARIABLE {} {} {:?} ", anchor, title, text);
+                }
+                // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
+            }
+            AnchorType::Table
+            | AnchorType::Method
+            | AnchorType::Callback
+            | AnchorType::Function => {
+                // Functions with multiple (e.g. playdate.easingFunctions.*, )
+                if title.contains("  ") {
+                    if !(anchor.starts_with("m-") || anchor.starts_with("f-")) {}
+                    for t in title.split("  ") {
+                        let mut stub =
+                            apply_fn_types(&anchor.to_string(), &t.trim().to_string(), &text);
+                        stub = stub.annotate(statements);
+                        let key = stub.lua_def();
+                        if let Some(_val) = stubs.insert(key.clone(), Stub::Function(stub)) {
+                            eprintln!("Duplicate stub {} (in multi-def)", key)
+                        }
+                    }
+                // Other functions
+                } else {
+                    let stub =
+                        apply_fn_types(&anchor.to_string(), &title, &text).annotate(statements);
+                    let lua_def = stub.lua_def();
+                    if let Some(_val) = stubs.insert(lua_def.clone(), Stub::Function(stub)) {
+                        eprintln!("Duplicate stub {} (function)", lua_def)
+                    }
+                }
+            }
+            _ => {
+                eprintln!("UNKNOWN: {anchor} {title}");
+            }
         }
 
         // _last_class is context for the next loop. So if the title is missing a name (e.g. "p + p") we can infer it.
