@@ -1,0 +1,233 @@
+# This file maps variable names from the Playdate SDK documentation to their LuaCATS equivalents
+# The keys are the desired name in the generated LuaCATS stubs
+# The anchor field contains the "id" attributes from the SDK documentation HTML (usually prefixed with "v-")
+
+
+["_Image"]
+anchor = "C-graphics.image"
+
+["_ImageTable"]
+anchor = "C-graphics.imagetable"
+
+["_File"]
+anchor = "M-file"
+
+["_FrameTimer"]
+anchor = "C-frameTimer"
+
+["_AffineTransform"]
+anchor = "C-geometry.affineTransform"
+
+["_Arc"]
+anchor = "C-geometry.arc"
+
+["_LineSegment"]
+anchor = "C-geometry.lineSegment"
+
+["_Point"]
+anchor = "C-geometry.point"
+
+["_Polygon"]
+anchor = "C-geometry.polygon"
+
+["_Rect"]
+anchor = "C-geometry.rect"
+
+["_Size"]
+anchor = "C-geometry.size"
+
+["_Vector2D"]
+anchor = "C-geometry.vector2D"
+
+["_AnimationLoop"]
+anchor = "C-graphics.animation.loop"
+
+["_Blinker"]
+anchor = "C-graphics.animation.blinker"
+
+["_Animator"]
+anchor = "C-graphics.animation.animator"
+
+["_Font"]
+anchor = "C-graphics.font"
+
+["_NineSlice"]
+anchor = "C-graphics.nineSlice"
+
+["_Sprite"]
+anchor = "C-graphics.sprite"
+
+["_Sprite.x"]
+anchor = "a-graphics.sprite.x"
+
+["_Sprite.y"]
+anchor = "a-graphics.sprite.y"
+
+["_Sprite.width"]
+anchor = "a-graphics.sprite.width"
+
+["_Sprite.height"]
+anchor = "a-graphics.sprite.height"
+
+["_TileMap"]
+anchor = "C-graphics.tilemap"
+
+["_Video"]
+anchor = "C-graphics.video"
+
+["_MenuItem"]
+anchor = "system-menu"
+
+["_NetworkHttp"]
+anchor = "C-network.http"
+
+["_NetworkTcp"]
+anchor = "C-network.tcp"
+
+["playdate.pathfinder"]
+anchor = "M-pathfinder"
+
+["_PathFinderGraph"]
+anchor = "C-pathfinder.graph"
+
+["_PathFinderNode"]
+anchor = "C-playdate.pathfinder.node"
+
+["_SoundEffect"]
+anchor = "C-sound.effect"
+
+["_BitCrusher"]
+anchor = "C-sound.bitcrusher"
+
+["_OnePoleFilter"]
+anchor = "C-sound.onepolefilter"
+
+["_OverDrive"]
+anchor = "C-sound.overdrive"
+
+["_RingMod"]
+anchor = "C-sound.ringmod"
+
+["_DelayLine"]
+anchor = "C-sound.delayline"
+
+["_TwoPoleFilter"]
+anchor = "C-sound.twopolefilter"
+
+["_Channel"]
+anchor = "C-sound.channel"
+
+["_Signal"]
+anchor = "C-sound.signal"
+
+["_ControlSignal"]
+anchor = "C-sound.controlsignal"
+
+["_Envelope"]
+anchor = "C-sound.envelope"
+
+["_LFO"]
+anchor = "C-sound.lfo"
+
+["_SoundSource"]
+anchor = "C-sound.source"
+
+["_DelayLineTap"]
+anchor = "C-sound.delaylinetap"
+
+["_FilePlayer"]
+anchor = "C-sound.fileplayer"
+
+["_Instrument"]
+anchor = "C-sound.instrument"
+
+["_SamplePlayer"]
+anchor = "C-sound.sampleplayer"
+
+["_Synth"]
+anchor = "C-sound.synth"
+
+["_Sample"]
+anchor = "C-sound.sample"
+
+["_Sequence"]
+anchor = "C-sound.sequence"
+
+["_Track"]
+anchor = "C-sound.track"
+
+["_Timer"]
+anchor = "C-timer"
+
+["_GridView"]
+anchor = "C-ui.gridview"
+
+["_InputHandler"]
+anchor = "M-inputHandlers"
+
+["_DateTime"]
+anchor = "f-getTime"
+
+["_ModTime"]
+anchor = "f-file.modtime"
+
+["_Metadata"]
+anchor = "pdxinfo"
+
+# # empty
+# ["_PowerStatus"]
+# anchor = "power"
+
+["_SoundControlEvent"]
+anchor = "C-sound.controlsignal"
+
+["_SpriteCollisionData"]
+anchor = "m-graphics.sprite.moveWithCollisions"
+
+["_SpriteCollisionInfo"]
+anchor = "m-graphics.sprite.moveWithCollisions"
+
+["_SystemStats"]
+anchor = "f-getStats"
+
+# ["f-getTime".items]
+# year = "4-digit year (until 10,000 AD)"
+# month = "month of the year, where 1 is January and 12 is December"
+# day = "day of the month, 1 - 31"
+# weekday = "day of the week, where 1 is Monday and 7 is Sunday"
+# hour = "0 - 23"
+# minute = "0 - 59"
+# second = "0 - 59 (or 60 on a leap second)"
+# millisecond = "0 - 999"
+
+# ["f-file.modtime".items]
+# year = "4-digit year (until 10,000 AD)"
+# month = "month of the year, where 1 is January and 12 is December"
+# day = "day of the month, 1 - 31"
+# weekday = "day of the week, where 1 is Monday and 7 is Sunday"
+# hour = "0 - 23"
+# minute = "0 - 59"
+# second = "0 - 59 (or 60 on a leap second)"
+# millisecond = "0 - 999"
+
+# ["pdxinfo".items]
+# bundleID = "A unique identifier for your game, in reverse DNS notation."
+# version = "A game version number, formatted any way you wish, that is displayed to players. It is not used to compute when updates should occur."
+# buildNumber = "A game version number, formatted any way you wish, that is displayed to players. It is not used to compute when updates should occur.\nFor sideloaded games, buildNumber is required and is used to determine when a newer version is available to download."
+# imagePath = "A directory of images that will be used by the launcher."
+# launchSoundPath = "Optional. Should point to the path of a short audio file to be played as the game launch animation is taking place."
+# contentWarning = "Optional. A content warning that displays when the user launches your game for the first time. The user will have the option of backing out and not launching your game if they choose."
+# contentWarning2 = "Optional. A second content warning that displays on a second screen when the user launches your game for the first time. The user will have the option of backing out and not launching your game if they choose. Note: contentWarning2 will only display if a contentWarning attribute is also specified."
+
+# ["power.items"]
+# charging = "The battery is actively being charged"
+# USB = "There is a powered USB cable connected"
+# screws = "There is 5V being applied to the corner screws (via the dock, for example)"
+
+# https://help.play.date/catalog-developer/scoreboard-api/#lua-api-reference
+# _ServerStatus
+# _ScoreBoardAddResult
+# _ScoreBoardBoards
+# _ScoreBoardsScoreboardsResult
+# _ScoreBoardScores
+# _ScoreBoardScoresResult
