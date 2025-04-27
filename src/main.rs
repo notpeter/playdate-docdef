@@ -10,10 +10,9 @@ use luars::{LuarsStatement, parse_document};
 use stub::Stub;
 
 use crate::{args::Action, finstub::FinStub};
-use std::{
-    collections::{BTreeMap, HashSet},
-    fs,
-};
+use std::collections::{BTreeMap, HashSet};
+
+static PLAYDATE_LUARS: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/playdate.luars"));
 
 fn go_out(fin_stubs: Vec<FinStub>) {
     let header = [
@@ -82,8 +81,7 @@ fn just_stubs(statements: BTreeMap<String, LuarsStatement<'_>>) -> Vec<FinStub> 
 
 fn main() {
     let args = setup();
-    let playdate_luars_file = fs::read_to_string("playdate.luars").expect("cannot read file");
-    let playdate_luars = parse_document(&playdate_luars_file);
+    let playdate_luars = parse_document(&PLAYDATE_LUARS);
     let fin_stubs = match args.action {
         Action::Annotate => annotated_stubs(playdate_luars, fetch_docs(args)),
         Action::Stub => just_stubs(playdate_luars),
