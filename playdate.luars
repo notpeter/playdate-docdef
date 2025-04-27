@@ -937,6 +937,8 @@ fun playdate.network.http:getProgress(): (bytesRead: integer, totalBytes: intege
 fun playdate.network.http:getResponseStatus(): integer;
 fun playdate.network.http:post(path: string, headers?: table<string, string>, data: string): (success: boolean, error?: string);
 fun playdate.network.http:post(path: string, data: string): (success: boolean, error?: string);
+fun playdate.network.http:query(method: string, path: string, headers?: table<string, string>, data?: string): (success: boolean, error?: string);
+fun playdate.network.http:query(method: string, path: string, data: string): (success: boolean, error?: string);
 fun playdate.network.http:read(length: integer): string;
 fun playdate.network.http:setByteRange(from: integer, to:integer): nil;
 fun playdate.network.http:setConnectTimeout(seconds: integer): nil;

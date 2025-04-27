@@ -193,3 +193,8 @@ parameters = ["flag", "callback"]
 ["m-graphics.imagetable.__len"]
 name = "playdate.graphics.imagetable:__len"
 parameters = []
+
+# incorrectly listed as playdate.network.http:post
+["m-network.http.query"]
+name = "playdate.network.http:query"
+parameters = ["method", "path", "headers", "data"]
