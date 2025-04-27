@@ -57,6 +57,18 @@ anchor = "C-graphics.nineSlice"
 ["_Sprite"]
 anchor = "C-graphics.sprite"
 
+["_Sprite.x"]
+anchor = "a-graphics.sprite.x"
+
+["_Sprite.y"]
+anchor = "a-graphics.sprite.y"
+
+["_Sprite.width"]
+anchor = "a-graphics.sprite.width"
+
+["_Sprite.height"]
+anchor = "a-graphics.sprite.height"
+
 ["_TileMap"]
 anchor = "C-graphics.tilemap"
 
@@ -162,8 +174,9 @@ anchor = "f-file.modtime"
 ["_Metadata"]
 anchor = "pdxinfo"
 
-["_PowerStatus"]
-anchor = "power"
+# # empty
+# ["_PowerStatus"]
+# anchor = "power"
 
 ["_SoundControlEvent"]
 anchor = "C-sound.controlsignal"
