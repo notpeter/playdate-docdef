@@ -63,12 +63,12 @@ pub fn annotate_variable(anchor: &str, name: &String, text: &Vec<String>) -> Stu
         title,
         _text: text.clone(),
         parent: "".to_string(),
-        attrs: Vec::new(),
+        _attrs: Vec::new(),
     }
 }
 
 // Given a function return a stub with overrides, parameter types and return types applied
-pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
+pub fn apply_fn_types(anchor: &str, title: &String, text: &Vec<String>) -> StubFn {
     let name: String;
     let params: Vec<(String, String)>;
 
@@ -98,7 +98,7 @@ pub fn annotate_function(anchor: &str, title: &String, text: &Vec<String>) -> St
 }
 
 // Takes a valid function signature and returns a function name and a vector of parameters.
-pub fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
+fn params_from_title(title: &String) -> (String, Vec<(String, String)>) {
     let mut params: Vec<(String, String)> = Vec::new();
     let caps = match LUA_FUNC.captures(title) {
         Some(c) => c,

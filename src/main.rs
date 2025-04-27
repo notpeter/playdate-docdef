@@ -72,10 +72,21 @@ fn annotated_stubs(
 
 /// Outputs just the stubs as defined in the .luars source
 fn just_stubs(statements: BTreeMap<String, LuarsStatement<'_>>) -> Vec<FinStub> {
-    let mut fin_stubs = Vec::new();
-    for s in statements.values() {
-        fin_stubs.push(FinStub::from_luars(s));
+    let mut variables = Vec::new();
+    let mut functions = Vec::new();
+    for statement in statements.values() {
+        match statement {
+            LuarsStatement::Local(_, _, _) | LuarsStatement::Global(_, _, _) => {
+                variables.push(FinStub::from_luars(statement));
+            }
+            LuarsStatement::Function(_, _, _) => {
+                functions.push(FinStub::from_luars(statement));
+            }
+        }
     }
+    let mut fin_stubs = Vec::new();
+    fin_stubs.extend(variables);
+    fin_stubs.extend(functions);
     fin_stubs
 }
 

@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use regex::Regex;
 use scraper::{CaseSensitivity, Selector};
 
-use crate::fixes::{annotate_function, annotate_variable, clean_code, clean_text};
+use crate::fixes::{annotate_variable, apply_fn_types, clean_code, clean_text};
 use crate::luars::LuarsStatement;
 use crate::stub::Stub;
 
@@ -103,7 +103,7 @@ pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>
             if anchor.starts_with("m-") || anchor.starts_with("f-") {
                 for t in title.split("  ") {
                     let mut stub =
-                        annotate_function(&anchor.to_string(), &t.trim().to_string(), &text);
+                        apply_fn_types(&anchor.to_string(), &t.trim().to_string(), &text);
                     stub = stub.annotate(statements);
                     stubs.push(Stub::Function(stub))
                 }
@@ -120,13 +120,17 @@ pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>
             || title.contains("Callback")
         {
             // function(), imagetable[n], "p + p", "-v", etc
-            let mut stub = annotate_function(&anchor.to_string(), &title, &text);
+            let mut stub = apply_fn_types(&anchor.to_string(), &title, &text);
             stub = stub.annotate(statements);
             stubs.push(Stub::Function(stub));
         } else if anchor.starts_with("a-") {
             eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
             let mut stub = annotate_variable(anchor, &title, &text);
+            eprintln!("before");
+            dbg!(&stub);
             stub = stub.annotate(statements);
+            eprintln!("after");
+            dbg!(&stub);
             stubs.push(Stub::Variable(stub));
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);

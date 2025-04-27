@@ -15,17 +15,17 @@ pub enum Stub {
 
 #[derive(Debug, Clone)]
 pub struct StubAttr {
-    pub name: String,
-    pub anchor: String,
+    pub _name: String,
+    pub _anchor: String,
     pub _type: String,
-    pub value: String,
-    pub text: String,
+    pub _value: String,
+    pub _text: String,
 }
 
 impl StubAttr {
-    pub fn to_stub(&self) -> String {
-        self.name.clone()
-    }
+    // pub fn to_stub(&self) -> String {
+    //     self.name.clone()
+    // }
 }
 
 #[derive(Debug, Clone)]
@@ -33,7 +33,7 @@ pub struct StubVar {
     pub title: String,
     pub anchor: String,
     pub parent: String,
-    pub attrs: Vec<StubAttr>,
+    pub _attrs: Vec<StubAttr>,
     pub _text: Vec<String>,
 }
 
@@ -47,16 +47,19 @@ impl StubVar {
             match statement {
                 LuarsStatement::Global(_name, parent, attrs) => {
                     self.parent = parent.to_string();
-                    self.attrs = attrs
-                        .iter()
-                        .map(|(aname, atype, avalue)| StubAttr {
-                            name: aname.to_string(),
-                            anchor: String::new(),
-                            _type: atype.to_string(),
-                            value: avalue.to_string(),
-                            text: String::new(),
-                        })
-                        .collect();
+                    for attr in attrs {
+                        eprintln!("{}.{_name} {}", self.parent, attr.0);
+                    }
+                    // self.attrs = attrs
+                    //     .iter()
+                    //     .map(|(aname, atype, avalue)| StubAttr {
+                    //         name: aname.to_string(),
+                    //         anchor: String::new(),
+                    //         _type: atype.to_string(),
+                    //         value: avalue.to_string(),
+                    //         text: String::new(),
+                    //     })
+                    //     .collect();
                 }
                 LuarsStatement::Function(_, _, _) => {
                     eprintln!("eek, found function not global for {our_lua}")
@@ -93,11 +96,9 @@ pub struct StubFn {
 impl StubFn {
     pub fn annotate(mut self, statements: &BTreeMap<String, LuarsStatement>) -> Self {
         let our_lua = self.lua_def();
-        // TODO: This is hella inefficient (N^2; where N=1000+)
         if let Some(statement) = statements.get(&our_lua) {
             match statement {
                 LuarsStatement::Function(_name, params, returns) => {
-                    // TODO: Calculating .lua every time is also inefficient
                     if our_lua == statement.lua_def() {
                         self.params = params
                             .iter()
