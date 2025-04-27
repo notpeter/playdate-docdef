@@ -7,7 +7,10 @@ use crate::fixes::{annotate_variable, apply_fn_types, clean_code, clean_text};
 use crate::luars::LuarsStatement;
 use crate::stub::Stub;
 
-pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>>) -> Vec<Stub> {
+pub fn scrape(
+    response: String,
+    statements: &BTreeMap<String, LuarsStatement<'_>>,
+) -> BTreeMap<String, Stub> {
     let document = scraper::Html::parse_document(&response);
     let outer = Selector::parse(concat!(
         "div.sect1>div.sectionbody>div.sect2>div.item",
@@ -40,7 +43,7 @@ pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>
 
     let mut _poop = 0;
     let mut _last_class: String = "".to_string();
-    let mut stubs: Vec<Stub> = Vec::new();
+    let mut stubs: BTreeMap<String, Stub> = BTreeMap::new();
 
     for element in document.select(&outer) {
         _poop = _poop + 1;
@@ -105,7 +108,10 @@ pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>
                     let mut stub =
                         apply_fn_types(&anchor.to_string(), &t.trim().to_string(), &text);
                     stub = stub.annotate(statements);
-                    stubs.push(Stub::Function(stub))
+                    let key = stub.lua_def();
+                    if let Some(_val) = stubs.insert(key.clone(), Stub::Function(stub)) {
+                        eprintln!("Duplicate stub {}", key)
+                    }
                 }
             } else {
                 // We don't split multiline variables "v-" because we don't actually handle variables well.
@@ -122,16 +128,22 @@ pub fn scrape(response: String, statements: &BTreeMap<String, LuarsStatement<'_>
             // function(), imagetable[n], "p + p", "-v", etc
             let mut stub = apply_fn_types(&anchor.to_string(), &title, &text);
             stub = stub.annotate(statements);
-            stubs.push(Stub::Function(stub));
+            let key = stub.lua_def();
+            if let Some(_val) = stubs.insert(key.clone(), Stub::Function(stub)) {
+                eprintln!("Duplicate stub {}", key)
+            }
         } else if anchor.starts_with("a-") {
             eprintln!("PROPERTY {} {} {:?} ", anchor, title, text);
             let mut stub = annotate_variable(anchor, &title, &text);
-            eprintln!("before");
-            dbg!(&stub);
+            // eprintln!("before");
+            // dbg!(&stub);
             stub = stub.annotate(statements);
-            eprintln!("after");
-            dbg!(&stub);
-            stubs.push(Stub::Variable(stub));
+            // eprintln!("after");
+            // dbg!(&stub);
+            let key = stub.lua_def();
+            if let Some(_val) = stubs.insert(key.clone(), Stub::Variable(stub)) {
+                eprintln!("Duplicate stub {}", key)
+            }
         } else if anchor.starts_with("v-") {
             // eprintln!("VARIABLE {} {} {:?} ", anchor, title, text);
 
