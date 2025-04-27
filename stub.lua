@@ -5134,7 +5134,7 @@ function playdate.sound.twopolefilter:setMix(level) end
 ---@return nil
 function playdate.sound.twopolefilter:setMixMod(signal) end
 
----@param r _Rect
+---@param r number
 ---@return nil
 function playdate.sound.twopolefilter:setResonance(r) end
 

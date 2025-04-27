@@ -1135,7 +1135,7 @@ fun playdate.sound.twopolefilter:setFrequencyMod(signal?: _Signal): nil;
 fun playdate.sound.twopolefilter:setGain(g: number): nil;
 fun playdate.sound.twopolefilter:setMix(level: number): nil;
 fun playdate.sound.twopolefilter:setMixMod(signal?: _Signal): nil;
-fun playdate.sound.twopolefilter:setResonance(r: _Rect): nil;
+fun playdate.sound.twopolefilter:setResonance(r: number): nil;
 fun playdate.sound.twopolefilter:setResonanceMod(signal?: _Signal): nil;
 fun playdate.sound.twopolefilter:setType(type: (integer|string)): nil;
 
