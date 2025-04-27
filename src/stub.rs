@@ -131,6 +131,58 @@ impl StubFn {
     }
 }
 
+pub struct TableContents {
+    pub name: String,
+    pub r#type: String,
+    pub value: String, // Some Enums have documented values
+}
+
+impl TableContents {
+    pub fn to_string(&self) -> String {
+        let mut line = Vec::new();
+        line.push("---@field");
+        line.push(&self.name);
+        line.push(&self.r#type);
+        if !self.value.is_empty() {
+            line.push(&self.value);
+        }
+        line.join(" ")
+    }
+}
+
+/// Global and Local Variables
+pub struct Table {
+    pub prefix: String,
+    pub name: String,
+    pub r#type: String,
+    pub contents: Vec<TableContents>,
+}
+
+impl Table {
+    // pub fn get_luacats() {}
+
+    /// Return a valid lua statement for the class.
+    pub fn lua_statement(&self) -> String {
+        format!("{}{} = {{}}", self.prefix, self.name)
+    }
+    /// Returns '---@field name type [value]' for class/instance attributes
+    pub fn luacats_fields(&self) -> Vec<String> {
+        self.contents
+            .iter()
+            .map(|a| a.to_string())
+            .collect::<Vec<String>>()
+    }
+
+    /// Returns '---@class name : parent' for classes
+    pub fn luacats_class(&self) -> String {
+        if self.r#type.to_string() == "" {
+            format!("---@class {}", self.name)
+        } else {
+            format!("---@class {} : {}", self.name, self.r#type)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

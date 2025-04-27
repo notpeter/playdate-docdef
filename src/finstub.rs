@@ -1,33 +1,6 @@
 use crate::luars::LuarsStatement;
-use crate::stub::{Stub, StubFn};
+use crate::stub::{Stub, StubFn, Table, TableContents};
 use std::collections::HashMap;
-
-pub struct TableContents {
-    pub name: String,
-    pub r#type: String,
-    pub value: String, // Some Enums have documented values
-}
-
-impl TableContents {
-    pub fn to_string(&self) -> String {
-        let mut line = Vec::new();
-        line.push("---@field");
-        line.push(&self.name);
-        line.push(&self.r#type);
-        if !self.value.is_empty() {
-            line.push(&self.value);
-        }
-        line.join(" ")
-    }
-}
-
-/// Global and Local Variables
-pub struct Table {
-    pub prefix: String,
-    pub name: String,
-    pub r#type: String,
-    pub contents: Vec<TableContents>,
-}
 
 /// Final Stubs, ready for outputting
 pub enum FinStub {
@@ -89,43 +62,6 @@ impl FinStub {
             }
         }
     }
-    pub fn lua_statement(&self) -> String {
-        // Return a valid lua statement for the class or function.
-        match self {
-            FinStub::VariableStub(var) => {
-                format!("{}{} = {{}}", var.prefix, var.name)
-            }
-            FinStub::FunctionStub(stub) => stub.lua_statement(),
-        }
-    }
-    fn luacats_class(&self) -> String {
-        // Returns '---@class name : parent' for classes
-        match self {
-            FinStub::VariableStub(var) => {
-                if var.r#type.to_string() == "" {
-                    format!("---@class {}", var.name)
-                } else {
-                    format!("---@class {} : {}", var.name, var.r#type)
-                }
-            }
-            _ => {
-                unreachable!("luacats_class() should not be called with FinStub::Stub")
-            }
-        }
-    }
-    fn luacats_fields(&self) -> Vec<String> {
-        // Returns '---@field name type [value]' for class/instance attributes
-        match self {
-            FinStub::VariableStub(var) => var
-                .contents
-                .iter()
-                .map(|a| a.to_string())
-                .collect::<Vec<String>>(),
-            _ => {
-                unreachable!("luacats_fields() should not be called with FinStub::Stub")
-            }
-        }
-    }
     pub fn generate_stub(&self) -> Vec<String> {
         // Returns the complete stub for a class or function.
         let notes = HashMap::from([
@@ -141,10 +77,10 @@ impl FinStub {
         ]);
         let mut out: Vec<String> = Vec::new();
         match self {
-            FinStub::VariableStub(_) => {
-                out.push(self.luacats_class());
-                out.extend(self.luacats_fields());
-                out.push(self.lua_statement());
+            FinStub::VariableStub(stub) => {
+                out.push(stub.luacats_class());
+                out.extend(stub.luacats_fields());
+                out.push(stub.lua_statement());
             }
             FinStub::FunctionStub(stub) => {
                 if notes.contains_key(stub.lua_def().as_str()) {
