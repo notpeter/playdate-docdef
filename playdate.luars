@@ -561,7 +561,7 @@ fun playdate.graphics.unlockFocus(): nil;
 global playdate.graphics.animation;
 
 global playdate.graphics.animation.loop;
-fun playdate.graphics.animation.loop.new(delay?: number, imageTable: _ImageTable, shouldLoop?: boolean): _AnimationLoop;
+fun playdate.graphics.animation.loop.new(interval?: number, imageTable: _ImageTable, shouldLoop?: boolean): _AnimationLoop;
 local _AnimationLoop: playdate.graphics.animation.loop = {
     delay: number,
     startFrame: integer,

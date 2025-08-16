@@ -44,7 +44,7 @@ impl StubFn {
                 _ => eprintln!("eek, found non-function for {our_lua}"),
             }
         } else {
-            eprintln!("WARN: Function {our_lua} not untyped {}", self.anchor);
+            eprintln!("WARN: No Luars types for {our_lua} #{}", self.anchor);
         }
         self
     }

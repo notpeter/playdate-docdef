@@ -2102,11 +2102,11 @@ function playdate.graphics.animation.blinker:stop() end
 ---@return nil
 function playdate.graphics.animation.blinker:update() end
 
----@param delay? number
+---@param interval? number
 ---@param imageTable _ImageTable
 ---@param shouldLoop? boolean
 ---@return _AnimationLoop
-function playdate.graphics.animation.loop.new(delay, imageTable, shouldLoop) end
+function playdate.graphics.animation.loop.new(interval, imageTable, shouldLoop) end
 
 ---@param x integer
 ---@param y integer
