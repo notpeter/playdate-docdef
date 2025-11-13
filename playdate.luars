@@ -731,7 +731,7 @@ fun playdate.graphics.sprite.addDirtyRect(x: integer, y: integer, width: integer
 fun playdate.graphics.sprite.addEmptyCollisionSprite(r: _Rect): nil;
 fun playdate.graphics.sprite.addEmptyCollisionSprite(x: integer, y: integer, w: integer, h: integer): nil;
 fun playdate.graphics.sprite.addSprite(sprite: _Sprite): nil;
-fun playdate.graphics.sprite.addWallSprites(tilemap: _TileMap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer): nil;
+fun playdate.graphics.sprite.addWallSprites(tilemap: _TileMap, emptyIDs: integer[], xOffset?: integer, yOffset?: integer): _Sprite[];
 fun playdate.graphics.sprite.allOverlappingSprites(): _Sprite[][];
 fun playdate.graphics.sprite.clearClipRectsInRange(startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.getAllSprites(): _Sprite[];
