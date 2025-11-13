@@ -3137,7 +3137,7 @@ function playdate.graphics.sprite.addSprite(sprite) end
 ---@param emptyIDs integer[]
 ---@param xOffset? integer
 ---@param yOffset? integer
----@return nil
+---@return _Sprite[]
 function playdate.graphics.sprite.addWallSprites(tilemap, emptyIDs, xOffset, yOffset) end
 
 ---@return _Sprite[][]
