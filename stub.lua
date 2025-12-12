@@ -2053,7 +2053,7 @@ function playdate.getReduceFlashing() end
 ---@return integer milliseconds
 function playdate.getSecondsSinceEpoch() end
 
----@param callback fun(time: string, error?: string)
+---@param callback fun(time?: string, error?: string)
 function playdate.getServerTime(callback) end
 
 ---@return _SystemStats
@@ -3714,9 +3714,8 @@ function playdate.keyboard.setCapitalizationBehavior(behavior) end
 ---@return nil
 function playdate.keyboard.show(text) end
 
----@param ok boolean
 ---@return nil
-function playdate.keyboard.textChangedCallback(ok) end
+function playdate.keyboard.textChangedCallback() end
 
 ---@return nil
 function playdate.keyboard.width() end
@@ -4317,6 +4316,14 @@ function playdate.sound.controlsignal:getValue() end
 ---@return nil
 function playdate.sound.controlsignal:setControllerType(number) end
 
+---@param offset number
+---@return nil
+function playdate.sound.controlsignal:setOffset(offset) end
+
+---@param scale number
+---@return nil
+function playdate.sound.controlsignal:setScale(scale) end
+
 ---@param length number
 ---@return _DelayLine
 function playdate.sound.delayline.new(length) end
@@ -4603,6 +4610,10 @@ function playdate.sound.lfo:setDepth(depth) end
 ---@return nil
 function playdate.sound.lfo:setGlobal(flag) end
 
+---@param offset number
+---@return nil
+function playdate.sound.lfo:setOffset(offset) end
+
 ---@param phase number
 ---@return nil
 function playdate.sound.lfo:setPhase(phase) end
@@ -4614,6 +4625,10 @@ function playdate.sound.lfo:setRate(rate) end
 ---@param flag boolean
 ---@return nil
 function playdate.sound.lfo:setRetrigger(flag) end
+
+---@param scale number
+---@return nil
+function playdate.sound.lfo:setScale(scale) end
 
 ---@param phase number
 ---@return nil
@@ -4936,6 +4951,14 @@ function playdate.sound.signal:setScale(scale) end
 
 ---@return number
 function playdate.sound.signalvalue:getValue() end
+
+---@param offset number
+---@return nil
+function playdate.sound.signalvalue:setOffset(offset) end
+
+---@param scale number
+---@return nil
+function playdate.sound.signalvalue:setScale(scale) end
 
 ---@param sample _Sample
 ---@param sustainStart? integer

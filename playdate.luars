@@ -67,7 +67,7 @@ fun playdate.getGMTTime(): _DateTime;
 fun playdate.getPowerStatus(): _PowerStatus;
 fun playdate.getReduceFlashing(): boolean;
 fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
-fun playdate.getServerTime(callback: fun(time: string, error?: string));
+fun playdate.getServerTime(callback: fun(time?: string, error?: string));
 fun playdate.getStats(): _SystemStats;
 fun playdate.getSystemLanguage(): integer;
 fun playdate.getSystemMenu(): playdate.menu;
@@ -885,7 +885,7 @@ fun playdate.keyboard.keyboardWillHideCallback(): nil;
 fun playdate.keyboard.left(): nil;
 fun playdate.keyboard.setCapitalizationBehavior(behavior: integer): nil;
 fun playdate.keyboard.show(text?: string): nil;
-fun playdate.keyboard.textChangedCallback(ok: boolean): nil;
+fun playdate.keyboard.textChangedCallback(): nil;
 fun playdate.keyboard.width(): nil;
 
 global playdate.math;
@@ -1163,6 +1163,8 @@ fun playdate.sound.signal:setScale(scale: integer): nil;
 
 global playdate.sound.signalvalue;
 fun playdate.sound.signalvalue:getValue(): number;
+fun playdate.sound.signalvalue:setScale(scale: number): nil;
+fun playdate.sound.signalvalue:setOffset(offset: number): nil;
 
 global playdate.sound.controlsignal: _Signal;
 fun playdate.sound.controlsignal.new(): _ControlSignal;
@@ -1173,8 +1175,10 @@ fun playdate.sound.controlsignal:addEvent(event: table): nil;
 fun playdate.sound.controlsignal:addEvent(step: integer, value: number, interpolate?: boolean): nil;
 fun playdate.sound.controlsignal:clearEvents(): nil;
 fun playdate.sound.controlsignal:getControllerType(): integer;
-fun playdate.sound.controlsignal:setControllerType(number: integer): nil;
 fun playdate.sound.controlsignal:getValue(): number;
+fun playdate.sound.controlsignal:setControllerType(number: integer): nil;
+fun playdate.sound.controlsignal:setOffset(offset: number): nil;
+fun playdate.sound.controlsignal:setScale(scale: number): nil;
 
 global playdate.sound.envelope: _Signal;
 fun playdate.sound.envelope.new(attack?: number, decay?: number, sustain?: number, release?: number): _Envelope;
@@ -1203,9 +1207,11 @@ fun playdate.sound.lfo:setCenter(center: number): nil;
 fun playdate.sound.lfo:setDelay(holdoff: number, ramp: number): nil;
 fun playdate.sound.lfo:setDepth(depth: number): nil;
 fun playdate.sound.lfo:setGlobal(flag: boolean): nil;
+fun playdate.sound.lfo:setOffset(offset: number): nil;
 fun playdate.sound.lfo:setPhase(phase: number): nil;
 fun playdate.sound.lfo:setRate(rate: number): nil;
 fun playdate.sound.lfo:setRetrigger(flag: boolean): nil;
+fun playdate.sound.lfo:setScale(scale: number): nil;
 fun playdate.sound.lfo:setStartPhase(phase: number): nil;
 fun playdate.sound.lfo:setType(type: integer): nil;
 

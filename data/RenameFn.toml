@@ -27,7 +27,7 @@ parameters = ["row1", "row2", "row3", "row4", "row5", "row6", "row7", "row8"]
 
 # missing curvature parameter
 ["m-sound.synth.setADSR"]
-name = "playdate.sound.synth:setADSR"
+    name = "playdate.sound.synth:setADSR"
 parameters = ["attack", "decay", "sustain", "release", "curvature"]
 
 # unicode "…​" instead of "..."
@@ -142,7 +142,7 @@ parameters = []
 # missing parens ()
 ["c-keyboard.textChangedCallback"]
 name = "playdate.keyboard.textChangedCallback"
-parameters = ["ok"] # boolean
+parameters = []
 
 # missing parens () and is instance method only
 ["c-timer.timerEndedCallback"]
@@ -193,3 +193,23 @@ parameters = []
 ["m-network.http.query"]
 name = "playdate.network.http:query"
 parameters = ["method", "path", "headers", "data"]
+
+# incorrect
+["m-sound.lfo.setCenter"]
+name = "playdate.sound.lfo:setCenter"
+parameters = ["center"]
+
+# playdate.sound.lfo:setDepth is documented as setScale
+["m-sound.lfo.setDepth"]
+name = "playdate.sound.lfo:setDepth"
+parameters = ["depth"]
+
+# playdate.sound.controlsignal:setScale
+["m-sound.controlsignal.setScale"]
+name = "playdate.sound.controlsignal:setScale"
+parameters = ["scale"]
+
+# playdate.sound.controlsignal:setOffset
+["m-sound.controlsignal.setOffset"]
+name = "playdate.sound.controlsignal:setOffset"
+parameters = ["offset"]
