@@ -68,13 +68,14 @@ fn fetch_url(url: String) -> String {
 }
 
 /// Retrieves the contents of the docs (from file or url)
-pub fn fetch_docs(args: Args) -> String {
-    match args.url {
-        Some(url) => fetch_url(url),
-        _ => fetch_file(&args.path.clone().unwrap()),
+pub fn fetch_docs(args: &Args) -> String {
+    match &args.url {
+        Some(url) => fetch_url(url.clone()),
+        None => fetch_file(args.path.as_ref().unwrap()),
     }
 }
 
-pub fn setup() -> Args {
+/// Parse command line arguments
+pub fn parse() -> Args {
     Args::parse()
 }
