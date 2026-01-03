@@ -13,7 +13,7 @@ use nom::{
     bytes::complete::{tag, take_while, take_while1},
     character::complete::{char, multispace1},
     combinator::{all_consuming, map, opt, recognize},
-    multi::{many0, separated_list0, separated_list1},
+    multi::{many0, separated_list0},
     sequence::{delimited, pair, preceded, terminated},
 };
 use std::collections::BTreeMap;
@@ -136,145 +136,105 @@ fn quoted_string(input: &str) -> IResult<&str, &str> {
     ).parse(input)
 }
 
-/// Parse a type expression (can be complex with unions, arrays, functions)
+/// Capture a type expression verbatim (preserves original formatting)
 fn type_expr(input: &str) -> IResult<&str, String> {
+    map(
+        recognize(type_expr_inner),
+        |s: &str| s.to_string(),
+    ).parse(input)
+}
+
+/// Internal type expression parser (result is discarded, we use recognize to capture the string)
+fn type_expr_inner(input: &str) -> IResult<&str, ()> {
     // Handle parenthesized union types: (type1|type2)
     let paren_union = map(
-        delimited(
+        (
             char('('),
-            separated_list1(
-                (ws, char('|'), ws),
-                single_type,
-            ),
+            type_expr_inner,
+            many0((ws, char('|'), ws, type_expr_inner)),
             char(')'),
         ),
-        |types| format!("({})", types.join("|")),
+        |_| (),
     );
 
     // Handle simple type or union without parens
     let simple_or_union = map(
-        separated_list1(
-            (ws, char('|'), ws),
-            single_type,
+        (
+            single_type_inner,
+            many0((ws, char('|'), ws, single_type_inner)),
         ),
-        |types| types.join("|"),
+        |_| (),
     );
 
     alt((paren_union, simple_or_union)).parse(input)
 }
 
-/// Parse a single type (not a union)
-fn single_type(input: &str) -> IResult<&str, String> {
+/// Parse a single type (not a union) - internal, returns ()
+fn single_type_inner(input: &str) -> IResult<&str, ()> {
     alt((
-        function_type,
-        table_generic_type,
-        basic_type,
+        map(function_type_inner, |_| ()),
+        map(table_generic_type_inner, |_| ()),
+        map(basic_type_inner, |_| ()),
     )).parse(input)
 }
 
-/// Parse function type: fun(params): return
-fn function_type(input: &str) -> IResult<&str, String> {
+/// Parse function type: fun(params): return - internal
+fn function_type_inner(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("fun(").parse(input)?;
-    let (input, _) = ws(input)?;
-    let (input, params) = opt(func_params_str).parse(input)?;
-    let (input, _) = ws(input)?;
+    let (input, _) = opt(func_params_inner).parse(input)?;
     let (input, _) = char(')').parse(input)?;
+    // Optional return type
+    let (input, _) = opt((ws, char(':'), ws, type_expr_inner, opt(char('?')))).parse(input)?;
+    Ok((input, ()))
+}
+
+/// Parse function params - internal (just validates, doesn't capture)
+fn func_params_inner(input: &str) -> IResult<&str, ()> {
+    // Parse first param
+    let (input, _) = alt((tag("..."), lua_ident)).parse(input)?;
+    let (input, _) = opt(char('?')).parse(input)?;
     let (input, _) = ws(input)?;
-    let (input, ret) = opt(preceded(
-        (char(':'), ws),
-        map(
-            pair(type_expr, optional_marker),
-            |(t, opt)| if opt { format!("{}?", t) } else { t },
-        ),
-    )).parse(input)?;
-
-    let params_str = params.unwrap_or_default();
-    let result = match ret {
-        Some(r) => format!("fun({}): {}", params_str, r),
-        None => format!("fun({})", params_str),
-    };
-    Ok((input, result))
+    let (input, _) = char(':').parse(input)?;
+    let (input, _) = ws(input)?;
+    let (input, _) = type_expr_inner(input)?;
+    // Parse additional params
+    let (input, _) = many0(|i| {
+        let (i, _) = ws(i)?;
+        let (i, _) = char(',').parse(i)?;
+        let (i, _) = ws(i)?;
+        let (i, _) = alt((tag("..."), lua_ident)).parse(i)?;
+        let (i, _) = opt(char('?')).parse(i)?;
+        let (i, _) = ws(i)?;
+        let (i, _) = char(':').parse(i)?;
+        let (i, _) = ws(i)?;
+        let (i, _) = type_expr_inner(i)?;
+        Ok((i, ()))
+    }).parse(input)?;
+    Ok((input, ()))
 }
 
-/// Parse function params as a string (for embedding in type signatures)
-fn func_params_str(input: &str) -> IResult<&str, String> {
-    map(
-        separated_list1(
-            (ws, char(','), ws),
-            func_param_str,
-        ),
-        |params| params.join(", "),
-    ).parse(input)
-}
-
-fn func_param_str(input: &str) -> IResult<&str, String> {
-    // Handle variadic: ...?: type
-    let variadic = map(
-        (
-            tag("..."),
-            optional_marker,
-            ws,
-            char(':'),
-            ws,
-            type_expr,
-        ),
-        |(_, opt, _, _, _, typ)| {
-            if opt {
-                format!("...?: {}", typ)
-            } else {
-                format!("...: {}", typ)
-            }
-        },
-    );
-
-    // Handle normal: name?: type
-    let normal = map(
-        (
-            lua_ident,
-            optional_marker,
-            ws,
-            char(':'),
-            ws,
-            type_expr,
-        ),
-        |(name, opt, _, _, _, typ)| {
-            if opt {
-                format!("{}?: {}", name, typ)
-            } else {
-                format!("{}: {}", name, typ)
-            }
-        },
-    );
-
-    alt((variadic, normal)).parse(input)
-}
-
-/// Parse table<K, V> type
-fn table_generic_type(input: &str) -> IResult<&str, String> {
+/// Parse table<K, V> type - internal
+fn table_generic_type_inner(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("table<").parse(input)?;
     let (input, _) = ws(input)?;
-    let (input, key) = dotted_ident(input)?;
+    let (input, _) = dotted_ident(input)?;
     let (input, _) = ws(input)?;
     let (input, _) = char(',').parse(input)?;
     let (input, _) = ws(input)?;
-    let (input, val) = type_expr(input)?;
+    let (input, _) = type_expr_inner(input)?;
     let (input, _) = ws(input)?;
     let (input, _) = char('>').parse(input)?;
-    Ok((input, format!("table<{}, {}>", key, val)))
+    Ok((input, ()))
 }
 
-/// Parse a basic type with optional [] array suffix and ? optional marker
-fn basic_type(input: &str) -> IResult<&str, String> {
-    let (input, name) = dotted_ident(input)?;
-    let (input, arrays) = recognize(many0(tag("[]"))).parse(input)?;
-    let (input, optional) = optional_marker(input)?;
-
-    let mut result = format!("{}{}", name, arrays);
-    if optional {
-        result.push('?');
-    }
-    Ok((input, result))
+/// Parse a basic type - internal
+fn basic_type_inner(input: &str) -> IResult<&str, ()> {
+    let (input, _) = dotted_ident(input)?;
+    let (input, _) = many0(tag("[]")).parse(input)?;
+    let (input, _) = opt(char('?')).parse(input)?;
+    Ok((input, ()))
 }
+
 
 /// Parse a function parameter
 fn func_param(input: &str) -> IResult<&str, Param> {
