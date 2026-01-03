@@ -123,7 +123,7 @@ local _FrameTimer = {}
 ---@field needsDisplay boolean
 ---@field backgroundImage (_Image|_NineSlice)
 ---@field isScrolling boolean
----@field scrollEasingFunction fun(t:number, b:number, c:number, d:number, a?:number, p?:number): number
+---@field scrollEasingFunction fun(t: number, b: number, c: number, d: number, a?: number, p?: number): number
 ---@field easingAmplitude? number
 ---@field easingPeriod? number
 ---@field changeRowOnColumnWrap boolean
@@ -153,7 +153,7 @@ local _ImageTable = {}
 ---@field rightButtonUp? fun(): nil
 ---@field upButtonDown? fun(): nil
 ---@field upButtonUp? fun(): nil
----@field cranked? fun(change:number, acceleratedChange:number): nil
+---@field cranked? fun(change: number, acceleratedChange: number): nil
 local _InputHandler = {}
 
 ---@class _Instrument : playdate.sound.instrument
@@ -345,7 +345,7 @@ local _SoundTrackNoteIn = {}
 ---@field width integer
 ---@field height integer
 ---@field collisionResponse? (integer|fun(self: _Sprite, other: _Sprite): integer?)
----@field update? fun():nil
+---@field update? fun(): nil
 local _Sprite = {}
 
 ---@class _SpriteCollisionData
@@ -4519,7 +4519,7 @@ function playdate.sound.fileplayer:stop() end
 ---@return number
 function playdate.sound.getCurrentTime() end
 
----@param changeCallback? fun(headphones: boolean, mic:boolean): nil
+---@param changeCallback? fun(headphones: boolean, mic: boolean): nil
 ---@return boolean headphones
 ---@return boolean mic
 function playdate.sound.getHeadphoneState(changeCallback) end
