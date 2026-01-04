@@ -5,8 +5,8 @@
 //! LuaCATS-compatible stub files for IDE autocompletion.
 
 mod args;
+mod luars;
 mod output;
-mod parser;
 mod scraper;
 
 use args::Action;
@@ -17,9 +17,9 @@ static PLAYDATE_LUARS: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "
 fn main() {
     let args = args::parse();
 
-    // Parse the .luars type definitions using the new nom parser
+    // Parse the .luars type definitions
     let statements =
-        parser::parse_document(PLAYDATE_LUARS).expect("Failed to parse playdate.luars");
+        luars::parse_document(PLAYDATE_LUARS).expect("Failed to parse playdate.luars");
 
     match args.action {
         Action::Stub => {

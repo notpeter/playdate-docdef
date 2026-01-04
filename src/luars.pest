@@ -1,0 +1,124 @@
+// LUARS Grammar for Pest parser
+//
+// This grammar parses the .luars file format which defines Lua API types.
+// Format examples:
+//   global json;
+//   fun json.decode(str: string): table;
+//   global playdate = { argv: string[], isSimulator: boolean };
+//   local Timer: playdate.timer;
+
+Document = { SOI ~ Statement* ~ EOI }
+
+Statement = _{
+    WHITE_LINE
+    | ((Function | Global | Local) ~ ";" ~ W ~ NEWLINE?)
+}
+
+// Keywords
+Fun_    = _{ "fun " }
+Local_  = _{ "local " }
+Global_ = _{ "global " }
+
+// Top-level declarations
+Local = { Local_ ~ Table }
+Global = { Global_ ~ Table }
+
+Function = {
+    Fun_ ~ W
+    ~ FunctionName ~ W
+    ~ "(" ~ W
+    ~ FunctionalParameters? ~ W
+    ~ ")"
+    ~ Return?
+}
+
+// Table declaration: name, optional parent type, optional contents
+Table = _{
+    Identifier ~ W
+    ~ (":" ~ W ~ CaptureType ~ W)?
+    ~ ("=" ~ W ~ "{" ~ W ~ TableConstants? ~ W ~ "}" ~ W)?
+}
+
+TableConstants = {
+    TableField ~ (W ~ "," ~ W ~ TableField)* ~ W ~ ","?
+}
+
+TableField = {
+    FieldName ~ W ~ ":" ~ W ~ CaptureType ~ (W ~ "=" ~ W ~ IntegerValue)?
+}
+
+FieldName = { (QuotedString | DotDotDot | LuaIdentifier) ~ Optional? }
+
+// Function components
+FunctionName = {
+    (Identifier ~ ":" ~ Identifier)  // Method: Class:method
+    | Identifier                      // Function: module.func
+}
+
+FunctionalParameters = {
+    (VariableParameter ~ W ~ ":" ~ W ~ OptionalType)  // Variadic only: ...?: any
+    | (FunctionalParameter ~ (W ~ "," ~ W ~ FunctionalParameter)* ~ (W ~ "," ~ W ~ DotDotDot)? ~ ","?)
+}
+
+FunctionalParameter = _{ ParameterIdentifier ~ W ~ ":" ~ W ~ OptionalType }
+ParameterIdentifier = { (DotDotDot | LuaIdentifier) ~ Optional? }
+VariableParameter = { DotDotDot ~ Optional? }
+
+Return = {
+    ":" ~ W ~ (
+        ("(" ~ W ~ FunctionalParameters? ~ W ~ ")")  // Multiple returns: (a: int, b: str)
+        | OptionalType                                // Single return: type
+    ) ~ Optional?
+}
+
+// Type expressions
+OptionalType = { TypeLua ~ Optional? }
+CaptureType = @{ TypeLua }
+
+TypeLua = _{
+    ParenthesizedUnion
+    | SingleType
+}
+
+ParenthesizedUnion = _{ "(" ~ W ~ SingleType ~ (W ~ "|" ~ W ~ SingleType)+ ~ W ~ ")" }
+
+SingleType = _{
+    FunctionType
+    | TableGeneric
+    | BasicType
+}
+
+FunctionType = _{
+    "fun(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ (W ~ ":" ~ W ~ UnparsedType ~ Optional?)?
+}
+
+TableGeneric = _{
+    "table<" ~ W ~ Identifier ~ W ~ "," ~ W ~ TypeLua ~ W ~ ">"
+}
+
+BasicType = _{ UnparsedType }
+
+UnparsedType = _{
+    Identifier ~ ArraySuffix?
+}
+
+ArraySuffix = _{ "[][][]" | "[][]" | "[]" }
+
+// Identifiers
+Identifier = @{ LuaIdentifier ~ ("." ~ LuaIdentifier)* }
+LuaIdentifier = _{ ("_" | ASCII_ALPHA) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
+
+// Literals
+IntegerValue = @{ "-"? ~ ASCII_DIGIT+ }
+QuotedString = _{ "\"" ~ StringContent ~ "\"" }
+StringContent = @{ QuotedChar* }
+QuotedChar = _{ !"\"" ~ ANY }
+
+// Tokens
+DotDotDot = _{ "..." }
+Optional = _{ "?" }
+
+// Whitespace
+W = _{ (" " | "\t" | NEWLINE)* }
+WHITE_LINE = _{ " "* ~ NEWLINE }
+NEWLINE = _{ "\r\n" | "\n" | "\r" }

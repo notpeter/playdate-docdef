@@ -8,7 +8,7 @@ use scraper::{ElementRef, Html, Selector};
 use std::collections::BTreeMap;
 use std::sync::LazyLock;
 
-use crate::parser::{Param, Statement};
+use crate::luars::{Param, Statement};
 
 /// A scraped function stub with documentation
 #[derive(Debug, Clone)]

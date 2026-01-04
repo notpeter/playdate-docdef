@@ -6,7 +6,7 @@
 use std::collections::{BTreeMap, HashSet};
 use textwrap;
 
-use crate::parser::{Field, Param, Statement};
+use crate::luars::{Field, Param, Statement};
 use crate::scraper::ScrapedFunction;
 
 /// Maximum line length for documentation text (excluding "--- " prefix)
