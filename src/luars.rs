@@ -1,352 +1,368 @@
-use std::{cmp::Ordering, collections::BTreeMap};
+//! LUARS parser using Pest
+//!
+//! This module parses the .luars file format which defines Lua API types.
 
-use pest::{Parser, iterators::Pair};
+use pest::Parser;
 use pest_derive::Parser;
+use std::collections::BTreeMap;
 
 #[derive(Parser)]
 #[grammar = "luars.pest"]
 pub struct LuarsParser;
 
-#[derive(Debug, PartialEq, Eq, Hash)]
-pub enum LuarsStatement<'a> {
-    /// Global Tables (name, parent, attributes: Vec<(name, type, value))
-    Global(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
-    /// Local Tables (name, parent, attributes: Vec<(name, type, value))
-    Local(&'a str, &'a str, Vec<(&'a str, &'a str, &'a str)>),
-    /// Function (name, parameters: Vec<(pname, ptype)>, returns: Vec<(rname, rtype)>)
-    Function(&'a str, Vec<(&'a str, &'a str)>, Vec<(&'a str, &'a str)>),
+/// Parsed statement from a .luars file
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Statement {
+    /// Global table: (name, parent_type, fields)
+    Global(String, String, Vec<Field>),
+    /// Local type alias: (name, parent_type, fields)
+    Local(String, String, Vec<Field>),
+    /// Function: (name, params, returns)
+    Function(String, Vec<Param>, Vec<Param>),
 }
 
-#[derive(PartialEq, Eq, Hash, PartialOrd, Ord)]
-struct LuarsSortKey<'a> {
-    id: usize,          // [1, 2, 3, 4] = [global, local, method, instance method
-    namespace: &'a str, // namespace: playdate.graphics.image
-    name: &'a str,      // complete name: playdate.graphics.image:draw
-    i_or_c: isize,      // [0, 1] = [class, instance]
-    sub_id: isize,      // number of parameters (longer first)
+/// A field in a table definition
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Field {
+    pub name: String,
+    pub typ: String,
+    pub value: String,
 }
 
-impl LuarsStatement<'_> {
-    fn id(&self) -> LuarsSortKey {
-        let (id, name, i_or_c, sub_id) = match self {
-            LuarsStatement::Global(name, _, _) => (1, name, 0, 0),
-            LuarsStatement::Local(name, _, _) => (2, name, 0, 0),
-            LuarsStatement::Function(name, params, _) => {
-                if name.contains(":") {
-                    (3, name, 1, -1 * params.len() as isize) // instance methods
-                } else {
-                    (3, name, 0, -1 * params.len() as isize) // class methods
-                }
-            }
-        };
-        let (namespace, name) = if name.contains(":") {
-            name.split_at(name.rfind(":").unwrap())
-        } else if name.contains(".") {
-            name.split_at(name.rfind(".").unwrap())
-        } else {
-            ("", *name)
-        };
-        LuarsSortKey {
-            namespace,
-            id,
-            name,
-            i_or_c,
-            sub_id,
-        }
-    }
+/// A function parameter or return value
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Param {
+    pub name: String,
+    pub typ: String,
+}
 
-    /// The rough lua code equivalent. Used for hashmap keys and matching
+impl Statement {
+    /// Generate the Lua function signature (used as map key)
     pub fn lua_def(&self) -> String {
         match self {
-            LuarsStatement::Function(name, params, _) => {
-                let func_params: Vec<String> = params
+            Statement::Function(name, params, _) => {
+                let param_names: Vec<&str> = params
                     .iter()
-                    .map(|(fname, _)| fname.trim_matches('?').to_string())
-                    .collect::<Vec<String>>();
-                format!("{name}({})", func_params.join(", "))
+                    .map(|p| p.name.trim_end_matches('?'))
+                    .collect();
+                format!("{}({})", name, param_names.join(", "))
             }
-            LuarsStatement::Local(name, _parent, _attrs) => {
-                format!("local {name} = {{}}")
-            }
-            LuarsStatement::Global(name, _parent, _attrs) => {
-                format!("{name} = {{}}")
+            Statement::Local(name, _, _) => format!("local {} = {{}}", name),
+            Statement::Global(name, _, _) => format!("{} = {{}}", name),
+        }
+    }
+
+    /// Sort key for consistent ordering
+    fn sort_key(&self) -> (usize, String, String, isize, isize) {
+        match self {
+            Statement::Global(name, _, _) => (1, namespace(name), name.clone(), 0, 0),
+            Statement::Local(name, _, _) => (2, namespace(name), name.clone(), 0, 0),
+            Statement::Function(name, params, _) => {
+                let i_or_c = if name.contains(':') { 1 } else { 0 };
+                (3, namespace(name), name.clone(), i_or_c, -(params.len() as isize))
             }
         }
     }
 }
 
-impl PartialOrd for LuarsStatement<'_> {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.id().partial_cmp(&other.id())
+fn namespace(name: &str) -> String {
+    if let Some(pos) = name.rfind(':') {
+        name[..pos].to_string()
+    } else if let Some(pos) = name.rfind('.') {
+        name[..pos].to_string()
+    } else {
+        String::new()
     }
 }
 
-impl Ord for LuarsStatement<'_> {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.id().cmp(&other.id())
-    }
-}
+/// Parse a Global or Local table declaration
+fn parse_table(pair: pest::iterators::Pair<Rule>) -> (String, String, Vec<Field>) {
+    let mut name = String::new();
+    let mut parent = String::new();
+    let mut fields = Vec::new();
 
-pub fn parse_tbl(pair: Pair<Rule>) -> LuarsStatement {
-    let localglobal = match pair.as_rule() {
-        Rule::Global => LuarsStatement::Global,
-        Rule::Local => LuarsStatement::Local,
-        _ => {
-            eprintln!(
-                "Unexpected Rule: {:?}. Was expecting Local or Global.",
-                pair.as_rule()
-            );
-            unreachable!()
+    for inner in pair.into_inner() {
+        match inner.as_rule() {
+            Rule::Identifier => name = inner.as_str().to_string(),
+            Rule::CaptureType => parent = inner.as_str().to_string(),
+            Rule::TableConstants => fields = parse_table_constants(inner),
+            _ => {}
         }
-    };
-    let mut iterator = pair.into_inner();
-    let mut obj_name: &str = "INVALID";
-    let mut obj_type: &str = "";
-    let mut obj_proto: Vec<(&str, &str, &str)> = Vec::new();
-    while iterator.peek().is_some() {
-        let chunk = iterator.next().unwrap();
-        match chunk.as_rule() {
-            Rule::Identifier => {
-                obj_name = chunk.as_str();
+    }
+
+    (name, parent, fields)
+}
+
+/// Parse table fields: { name: type, name2: type2 = value, ... }
+fn parse_table_constants(pair: pest::iterators::Pair<Rule>) -> Vec<Field> {
+    let mut fields = Vec::new();
+
+    for field_pair in pair.into_inner() {
+        if field_pair.as_rule() == Rule::TableField {
+            let mut name = String::new();
+            let mut typ = String::new();
+            let mut value = String::new();
+
+            for inner in field_pair.into_inner() {
+                match inner.as_rule() {
+                    Rule::FieldName => name = inner.as_str().to_string(),
+                    Rule::CaptureType => typ = inner.as_str().to_string(),
+                    Rule::IntegerValue => value = inner.as_str().to_string(),
+                    _ => {}
+                }
             }
-            Rule::CaptureType => {
-                obj_type = chunk.as_str();
-            }
-            Rule::TableConstants => {
-                let mut field = chunk.into_inner();
-                let mut field_name: &str;
-                let mut field_type: &str;
-                let mut field_value: &str;
-                while field.peek().is_some() {
-                    let obj = field.next().unwrap();
-                    if obj.as_rule() == Rule::TableKey {
-                        field_name = obj.as_str();
-                        if field.peek().is_some()
-                            && field.peek().unwrap().as_rule() == Rule::CaptureType
-                        {
-                            field_type = field.next().unwrap().as_str();
-                            if field.peek().is_some()
-                                && field.peek().unwrap().as_rule() == Rule::IntegerValue
-                            {
-                                field_value = field.next().unwrap().as_str();
-                                obj_proto.push((field_name, field_type, field_value));
-                            } else {
-                                obj_proto.push((field_name, field_type, ""));
-                            }
-                        } else {
-                            eprint!("Unexpected parse: {:?} {:#?}", obj.as_rule(), obj);
-                            unreachable!()
-                        }
-                    } else {
-                        eprintln!("Unexpected parse: {:?} {:#?}", obj.as_rule(), obj);
-                        unreachable!()
+
+            fields.push(Field { name, typ, value });
+        }
+    }
+
+    fields
+}
+
+/// Parse function parameters
+fn parse_parameters(pair: pest::iterators::Pair<Rule>) -> Vec<Param> {
+    let mut params = Vec::new();
+
+    let mut inner = pair.into_inner().peekable();
+    while let Some(item) = inner.next() {
+        match item.as_rule() {
+            Rule::ParameterIdentifier | Rule::VariableParameter => {
+                let name = item.as_str().to_string();
+                // Next should be OptionalType
+                if let Some(type_pair) = inner.next() {
+                    if type_pair.as_rule() == Rule::OptionalType {
+                        let typ = type_pair.as_str().to_string();
+                        params.push(Param { name, typ });
                     }
                 }
             }
-            _ => {
-                eprintln!("Rule: {:?}", chunk.as_rule());
-                unreachable!()
-            }
+            _ => {}
         }
     }
-    localglobal(obj_name, obj_type, obj_proto)
+
+    params
 }
 
-pub fn parse_function(pair: Pair<Rule>) -> LuarsStatement {
-    let iterator = pair.into_inner();
-    let mut name: &str = "INVALID";
-    let mut params: Vec<(&str, &str)> = Vec::new();
-    let mut returns: Vec<(&str, &str)> = Vec::new();
-    for chunk in iterator {
-        match chunk.as_rule() {
-            Rule::FunctionName => {
-                name = chunk.as_str();
-            }
+/// Parse function return type(s)
+fn parse_return(pair: pest::iterators::Pair<Rule>) -> Vec<Param> {
+    let mut returns = Vec::new();
+
+    for inner in pair.into_inner() {
+        match inner.as_rule() {
             Rule::FunctionalParameters => {
-                let mut field = chunk.into_inner();
-                while field.peek().is_some() {
-                    let field_name: &str = field.next().unwrap().as_str();
-                    let field_type: &str = field.next().unwrap().as_str();
-                    params.push((field_name, field_type));
-                }
+                // Multiple named returns: (x: int, y: int)
+                returns = parse_parameters(inner);
             }
-            Rule::Return => {
-                let mut field = chunk.into_inner();
-                match field.peek().unwrap().as_rule() {
-                    Rule::OptionalType => {
-                        returns.push(("", field.next().unwrap().as_str()));
-                    }
-                    Rule::FunctionalParameters => {
-                        let mut field = field.next().unwrap().into_inner();
-                        while field.peek().is_some() {
-                            let field_name: &str = field.next().unwrap().as_str();
-                            let field_type: &str = field.next().unwrap().as_str();
-                            returns.push((field_name, field_type));
-                        }
-                    }
-                    _ => {
-                        eprintln!("Rule: {:?}", field.peek());
-                        unreachable!()
-                    }
-                }
+            Rule::OptionalType => {
+                // Single unnamed return
+                returns.push(Param {
+                    name: String::new(),
+                    typ: inner.as_str().to_string(),
+                });
             }
-            _ => {
-                eprintln!("Rule: {:?}", chunk.as_rule());
-                unreachable!()
-            }
+            _ => {}
         }
     }
-    LuarsStatement::Function(name, params, returns)
+
+    returns
 }
-pub fn parse_document(unparsed_file: &str) -> BTreeMap<String, LuarsStatement> {
-    let document = LuarsParser::parse(Rule::Document, &unparsed_file)
-        .expect("unsuccessful parse")
-        .next()
-        .unwrap();
 
-    let mut statements: Vec<LuarsStatement> = Vec::new();
+/// Parse a function declaration
+fn parse_function(pair: pest::iterators::Pair<Rule>) -> Statement {
+    let mut name = String::new();
+    let mut params = Vec::new();
+    let mut returns = Vec::new();
 
-    for line in document.into_inner() {
-        let f = match line.as_rule() {
-            Rule::Global => parse_tbl(line),
-            Rule::Local => parse_tbl(line),
-            Rule::Function => parse_function(line),
-            _ => {
-                eprintln!("Rule: {:?}", line.as_rule());
-                unreachable!()
-            }
-        };
-        //println!("{:?}", f);
-        statements.push(f);
-    }
-    statements.sort();
-    let mut out = BTreeMap::new();
-    for statement in statements {
-        let key = statement.lua_def();
-        if !out.contains_key(&key) {
-            out.insert(key, statement);
-        } else {
-            eprint!("Duplicate definition of {}", key);
+    for inner in pair.into_inner() {
+        match inner.as_rule() {
+            Rule::FunctionName => name = inner.as_str().to_string(),
+            Rule::FunctionalParameters => params = parse_parameters(inner),
+            Rule::Return => returns = parse_return(inner),
+            _ => {}
         }
     }
-    out
+
+    Statement::Function(name, params, returns)
+}
+
+/// Parse a .luars document and return a sorted map of statements
+pub fn parse_document(input: &str) -> Result<BTreeMap<String, Statement>, String> {
+    let pairs = LuarsParser::parse(Rule::Document, input)
+        .map_err(|e| format!("Parse error: {}", e))?;
+
+    let mut statements = Vec::new();
+
+    for pair in pairs {
+        for inner in pair.into_inner() {
+            let stmt = match inner.as_rule() {
+                Rule::Global => {
+                    let (name, parent, fields) = parse_table(inner);
+                    Statement::Global(name, parent, fields)
+                }
+                Rule::Local => {
+                    let (name, parent, fields) = parse_table(inner);
+                    Statement::Local(name, parent, fields)
+                }
+                Rule::Function => parse_function(inner),
+                Rule::EOI => continue,
+                _ => continue,
+            };
+            statements.push(stmt);
+        }
+    }
+
+    // Sort by namespace, type, name for consistent output
+    statements.sort_by(|a, b| a.sort_key().cmp(&b.sort_key()));
+
+    let mut result = BTreeMap::new();
+    for stmt in statements {
+        let key = stmt.lua_def();
+        if !result.contains_key(&key) {
+            result.insert(key, stmt);
+        } else {
+            eprintln!("Duplicate definition: {}", key);
+        }
+    }
+
+    Ok(result)
 }
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
-
-    // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
+
     #[test]
-    fn global_simple() {
-        let document = LuarsParser::parse(Rule::Global, "global json;\n")
-            .expect("unsuccessful parse")
-            .next()
-            .unwrap();
-        assert_eq!(
-            parse_tbl(document),
-            LuarsStatement::Global("json", "", Vec::new())
-        );
+    fn test_simple_global() {
+        let result = parse_document("global json;").unwrap();
+        assert_eq!(result.len(), 1);
+        assert!(result.contains_key("json = {}"));
     }
+
     #[test]
-    fn global_table() {
-        let document = LuarsParser::parse(
-            Rule::Global,
-            "global playdate.sound.twopolefilter: SoundEffect;",
-        )
-        .expect("unsuccessful parse")
-        .next()
-        .unwrap();
-        assert_eq!(
-            parse_tbl(document),
-            LuarsStatement::Global("playdate.sound.twopolefilter", "SoundEffect", Vec::new())
-        );
+    fn test_global_with_parent() {
+        let result = parse_document("global playdate.sound.twopolefilter: SoundEffect;").unwrap();
+        let stmt = result.get("playdate.sound.twopolefilter = {}").unwrap();
+        match stmt {
+            Statement::Global(name, parent, _) => {
+                assert_eq!(name, "playdate.sound.twopolefilter");
+                assert_eq!(parent, "SoundEffect");
+            }
+            _ => panic!("Expected Global"),
+        }
     }
+
     #[test]
-    fn local_type() {
-        let document = LuarsParser::parse(Rule::Local, "local File: playdate.file.file;")
-            .expect("unsuccessful parse")
-            .next()
-            .unwrap();
-        assert_eq!(
-            parse_tbl(document),
-            LuarsStatement::Local("File", "playdate.file.file", Vec::new())
-        );
+    fn test_global_with_contents() {
+        let input = "global playdate = { argv: string[], isSimulator: boolean };";
+        let result = parse_document(input).unwrap();
+        let stmt = result.get("playdate = {}").unwrap();
+        match stmt {
+            Statement::Global(name, _, fields) => {
+                assert_eq!(name, "playdate");
+                assert_eq!(fields.len(), 2);
+                assert_eq!(fields[0].name, "argv");
+                assert_eq!(fields[0].typ, "string[]");
+            }
+            _ => panic!("Expected Global"),
+        }
     }
+
     #[test]
-    fn local_literal() {
-        let document = LuarsParser::parse(
-            Rule::Local,
-            "local Size: playdate.geometry.size = { width: number, height: number, };",
-        )
-        .expect("unsuccessful parse")
-        .next()
-        .unwrap();
-        assert_eq!(
-            parse_tbl(document),
-            LuarsStatement::Local(
-                "Size",
-                "playdate.geometry.size",
-                vec![("width", "number", ""), ("height", "number", ""),]
-            )
-        );
+    fn test_local() {
+        let result = parse_document("local File: playdate.file.file;").unwrap();
+        let stmt = result.get("local File = {}").unwrap();
+        match stmt {
+            Statement::Local(name, parent, _) => {
+                assert_eq!(name, "File");
+                assert_eq!(parent, "playdate.file.file");
+            }
+            _ => panic!("Expected Local"),
+        }
     }
+
     #[test]
-    fn playdate_grammar() {
-        let unparsed_file = fs::read_to_string("playdate.luars").expect("cannot read file");
-        let playdate_luars = parse_document(&unparsed_file);
-        assert_eq!(playdate_luars.len(), unparsed_file.matches(";").count());
+    fn test_simple_function() {
+        let result = parse_document("fun where(): nil;").unwrap();
+        let stmt = result.get("where()").unwrap();
+        match stmt {
+            Statement::Function(name, params, returns) => {
+                assert_eq!(name, "where");
+                assert!(params.is_empty());
+                assert_eq!(returns.len(), 1);
+                assert_eq!(returns[0].typ, "nil");
+            }
+            _ => panic!("Expected Function"),
+        }
     }
+
     #[test]
-    fn funcs() {
-        let document = LuarsParser::parse(Rule::Function, "fun where(): nil;")
-            .expect("unsuccessful parse")
-            .next()
-            .unwrap();
-        assert_eq!(
-            parse_function(document),
-            LuarsStatement::Function("where", Vec::new(), vec![("", "nil"),]),
-        )
+    fn test_function_with_params() {
+        let input = "fun playdate.timer.new(duration: integer, callback: function, ...?: any): Timer;";
+        let result = parse_document(input).unwrap();
+        let stmt = result.get("playdate.timer.new(duration, callback, ...)").unwrap();
+        match stmt {
+            Statement::Function(name, params, returns) => {
+                assert_eq!(name, "playdate.timer.new");
+                assert_eq!(params.len(), 3);
+                assert_eq!(params[0].name, "duration");
+                assert_eq!(params[0].typ, "integer");
+                assert_eq!(params[2].name, "...?");
+                assert_eq!(returns[0].typ, "Timer");
+            }
+            _ => panic!("Expected Function"),
+        }
     }
+
     #[test]
-    fn funcs2() {
-        let document = LuarsParser::parse(
-            Rule::Function,
-            "fun playdate.timer.new(duration: integer, callback: function, ...?: any): Timer;",
-        )
-        .expect("unsuccessful parse")
-        .next()
-        .unwrap();
-        assert_eq!(
-            parse_function(document),
-            LuarsStatement::Function(
-                "playdate.timer.new",
-                vec![
-                    ("duration", "integer"),
-                    ("callback", "function"),
-                    ("...?", "any"),
-                ],
-                vec![("", "Timer"),]
-            ),
-        )
+    fn test_method_with_multi_return() {
+        let input = "fun GridView:getScrollPosition(): (x: integer, y: integer);";
+        let result = parse_document(input).unwrap();
+        let stmt = result.get("GridView:getScrollPosition()").unwrap();
+        match stmt {
+            Statement::Function(name, params, returns) => {
+                assert_eq!(name, "GridView:getScrollPosition");
+                assert!(params.is_empty());
+                assert_eq!(returns.len(), 2);
+                assert_eq!(returns[0].name, "x");
+                assert_eq!(returns[1].name, "y");
+            }
+            _ => panic!("Expected Function"),
+        }
     }
+
     #[test]
-    fn funcs3() {
-        let document = LuarsParser::parse(
-            Rule::Function,
-            "fun GridView:getScrollPosition(): (x: integer, y: integer);",
-        )
-        .expect("bad parse")
-        .next()
-        .unwrap();
-        assert_eq!(
-            parse_function(document),
-            LuarsStatement::Function(
-                "GridView:getScrollPosition",
-                vec![],
-                vec![("x", "integer"), ("y", "integer"),]
-            ),
-        )
+    fn test_union_type() {
+        let input = "fun playdate.buttonIsPressed(button: (integer|string)): boolean;";
+        let result = parse_document(input).unwrap();
+        let stmt = result.get("playdate.buttonIsPressed(button)").unwrap();
+        match stmt {
+            Statement::Function(_, params, _) => {
+                assert_eq!(params[0].typ, "(integer|string)");
+            }
+            _ => panic!("Expected Function"),
+        }
+    }
+
+    #[test]
+    fn test_function_type_param() {
+        let input = "fun playdate.getServerTime(callback: fun(time?: string, error?: string));";
+        let result = parse_document(input).unwrap();
+        let stmt = result.get("playdate.getServerTime(callback)").unwrap();
+        match stmt {
+            Statement::Function(_, params, _) => {
+                assert_eq!(params[0].typ, "fun(time?: string, error?: string)");
+            }
+            _ => panic!("Expected Function"),
+        }
+    }
+
+    #[test]
+    fn test_full_playdate_luars() {
+        let input = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/playdate.luars"));
+        let result = parse_document(input);
+        assert!(result.is_ok(), "Failed to parse: {:?}", result.err());
+        let stmts = result.unwrap();
+        let expected = input.matches(';').count();
+        assert_eq!(stmts.len(), expected, "Expected {} statements", expected);
     }
 }

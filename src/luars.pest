@@ -1,117 +1,124 @@
-/*
-    Maybe do:
-    * Handle tabs and " " (non-breaking space)
-    * Handle comments
-    * Re-evaluate Pest Implicit whitepsace: https://pest.rs/book/grammars/syntax.html#implicit-whitespace
-    * Switch from "\n" to NEWLINE ("\n" | "\r\n" | "\r")
-    * Unicode support (not today satan)
-    * Better handling of accidential `))` end of function
-*/
-Document = { Statement* }
+// LUARS Grammar for Pest parser
+//
+// This grammar parses the .luars file format which defines Lua API types.
+// Format examples:
+//   global json;
+//   fun json.decode(str: string): table;
+//   global playdate = { argv: string[], isSimulator: boolean };
+//   local Timer: playdate.timer;
+
+Document = { SOI ~ Statement* ~ EOI }
+
 Statement = _{
-    (
-        WHITE_LINE
-        | ((Function | Global | Local) ~ ";" ~ W ~ "\n"?)
-    )
+    WHITE_LINE
+    | ((Function | Global | Local) ~ ";" ~ W ~ NEWLINE?)
 }
+
+// Keywords
 Fun_    = _{ "fun " }
 Local_  = _{ "local " }
 Global_ = _{ "global " }
 
-Local = {
-    Local_ ~ Table
-}
-Global = {
-    Global_ ~ Table
-}
+// Top-level declarations
+Local = { Local_ ~ Table }
+Global = { Global_ ~ Table }
+
 Function = {
     Fun_ ~ W
     ~ FunctionName ~ W
-    ~ oParen ~ W
+    ~ "(" ~ W
     ~ FunctionalParameters? ~ W
-    ~ cParen
+    ~ ")"
     ~ Return?
 }
-TableConstants = {
-    TableKey ~ W ~ ":" ~ W ~ CaptureType ~ W ~ ("=" ~ W ~ IntegerValue ~ W)?
-    ~ ("," ~ W ~ TableKey ~ W ~ ":" ~ W ~ CaptureType ~ W ~ ("=" ~ W ~ IntegerValue ~W)?)*
-    ~ W ~ ","?
-}
-Return = {
-    (
-        (":" ~ W ~ OptionalType ~ W)
-        | (":" ~ W ~ oParen ~ W ~ FunctionalParameters? ~ W ~ cParen ~ W)
-    )
-    ~ Optional?
-}
-OptionalType = { TypeLua ~ Optional? }
 
+// Table declaration: name, optional parent type, optional contents
 Table = _{
     Identifier ~ W
     ~ (":" ~ W ~ CaptureType ~ W)?
     ~ ("=" ~ W ~ "{" ~ W ~ TableConstants? ~ W ~ "}" ~ W)?
 }
+
+TableConstants = {
+    TableField ~ (W ~ "," ~ W ~ TableField)* ~ W ~ ","?
+}
+
+TableField = {
+    FieldName ~ W ~ ":" ~ W ~ CaptureType ~ (W ~ "=" ~ W ~ IntegerValue)?
+}
+
+FieldName = { (QuotedString | DotDotDot | LuaIdentifier) ~ Optional? }
+
+// Function components
 FunctionName = {
-    (Identifier ~ ":" ~ Identifier)
-    | Identifier
+    (Identifier ~ ":" ~ Identifier)  // Method: Class:method
+    | Identifier                      // Function: module.func
 }
 
 FunctionalParameters = {
-    (VariableParameter ~ W ~ ":" ~ W ~ OptionalType)
-    | ((FunctionalParameter ~ W ~ ("," ~ W ~ FunctionalParameter)*) ~ ("," ~ W ~ "...")? ~ ","?)
+    (VariableParameter ~ W ~ ":" ~ W ~ OptionalType)  // Variadic only: ...?: any
+    | (FunctionalParameter ~ (W ~ "," ~ W ~ FunctionalParameter)* ~ (W ~ "," ~ W ~ DotDotDot)? ~ ","?)
 }
 
-TableKey = !{
-    ( DotDotDot | QuotedString | LuaIdentifier) ~ Optional?
-	| (LuaIdentifier ~ Optional? ~ W ~ ":" ~ W ~ (TypeLua))
-}
-DotDotDot = _{ "..." }
-// these optionals and ... are overly friendly
-// foo(bar?: integer): (baz:integer?, boop:string?)
-FunctionalParameter  = _{ ParameterIdentifier ~ W ~ ":" ~ W ~ OptionalType}
-ParameterIdentifier = { ("..." | LuaIdentifier) ~ Optional? }
+FunctionalParameter = _{ ParameterIdentifier ~ W ~ ":" ~ W ~ OptionalType }
+ParameterIdentifier = { (DotDotDot | LuaIdentifier) ~ Optional? }
 VariableParameter = { DotDotDot ~ Optional? }
 
-oParen = _{ "(" }
-cParen = _{ ")" }
-
-Optional = _{ "?" }
-Identifier = @{
-    LuaIdentifier ~ ("." ~ LuaIdentifier)*
+Return = {
+    ":" ~ W ~ (
+        ("(" ~ W ~ FunctionalParameters? ~ W ~ ")")  // Multiple returns: (a: int, b: str)
+        | OptionalType                                // Single return: type
+    ) ~ Optional?
 }
-LuaIdentifier = _{ ( "_" | ASCII_ALPHA ) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
 
-IntegerValue = { ("-"? ~ ASCII_DIGIT+) }
-
+// Type expressions
+OptionalType = { TypeLua ~ Optional? }
 CaptureType = @{ TypeLua }
+
 TypeLua = _{
-    LT
-    | "(" ~ W ~ LT ~ W ~ ("|" ~ W ~ LT ~ W)+ ~ ")"
-}
-LT = _{
-    | ("fun(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ W ~ (":" ~ W ~ UnparsedType ~ Optional? ~ W)?)
-    | ("table<" ~ W ~ Identifier ~ W ~ "," ~ W ~ TypeLua ~ W ~ ">" ~ W)
-    | UnparsedType
-}
-UnparsedType = _{
-	Identifier
-    ~ ("[][][]" | "[][]" | "[]")?
+    ParenthesizedUnion
+    | SingleType
 }
 
-QuotedString = _{ Quote ~ StringLiteral ~ Quote }
-Quote = _{ "\"" }
-StringLiteral = { QuotedChar* }
+ParenthesizedUnion = _{ "(" ~ W ~ SingleType ~ (W ~ "|" ~ W ~ SingleType)+ ~ W ~ ")" }
+
+SingleType = _{
+    FunctionType
+    | TableGeneric
+    | BasicType
+}
+
+FunctionType = _{
+    "fun(" ~ W ~ FunctionalParameters? ~ W ~ ")" ~ (W ~ ":" ~ W ~ UnparsedType ~ Optional?)?
+}
+
+TableGeneric = _{
+    "table<" ~ W ~ Identifier ~ W ~ "," ~ W ~ TypeLua ~ W ~ ">"
+}
+
+BasicType = _{ UnparsedType }
+
+UnparsedType = _{
+    Identifier ~ ArraySuffix?
+}
+
+ArraySuffix = _{ "[][][]" | "[][]" | "[]" }
+
+// Identifiers
+Identifier = @{ LuaIdentifier ~ ("." ~ LuaIdentifier)* }
+LuaIdentifier = _{ ("_" | ASCII_ALPHA) ~ ("_" | ASCII_DIGIT | ASCII_ALPHA)* }
+
+// Literals
+IntegerValue = @{ "-"? ~ ASCII_DIGIT+ }
+QuotedString = _{ "\"" ~ StringContent ~ "\"" }
+StringContent = @{ QuotedChar* }
 QuotedChar = _{ !"\"" ~ ANY }
 
+// Tokens
+DotDotDot = _{ "..." }
+Optional = _{ "?" }
 
-// TypeLua = @{
-//     (LuaCatsBuiltIn ~ "?")
-//   | (LuaCatsBuiltIn ~ "[]")
-//   | (LuaCatsBuiltIn ~ ("|" ~ LuaCatsBuiltIn)*)
-// }
-
-// LuaCatsBuiltIn = { "any" | "nil" | "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
-// LuaTypes_non_nil = @{ "boolean" | "string" | "number" | "function" | "table" | "userdata" | "thread" | "integer" | "float" }
-// ConsType = { "boolean" | "string" | "number" | "integer" | "float" }
-W = _{ (" " | "\n" )* }
-WHITE_LINE = _{ " "* ~ "\n" }
+// Whitespace
+W = _{ (" " | "\t" | NEWLINE)* }
+WHITE_LINE = _{ " "* ~ NEWLINE }
+NEWLINE = _{ "\r\n" | "\n" | "\r" }
