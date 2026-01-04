@@ -91,6 +91,12 @@ pub fn generate_function(
     out
 }
 
+/// Check if a line is a list item (including nested/indented lists)
+fn is_list_item(line: &str) -> bool {
+    let trimmed = line.trim_start();
+    trimmed.starts_with("* ")
+}
+
 /// Generate documentation comment lines
 fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
     if anchor.is_empty() {
@@ -102,9 +108,9 @@ fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
 
     for (i, line) in docs.iter().enumerate() {
         // Code blocks and bullet lists get fewer line breaks
-        let is_list_item = line.starts_with("* ");
-        let next_is_list = docs.get(i + 1).map_or(false, |l| l.starts_with("* "));
-        let no_break = in_code || line.starts_with("```") || (is_list_item && next_is_list);
+        let this_is_list = is_list_item(line);
+        let next_is_list = docs.get(i + 1).map_or(false, |l| is_list_item(l));
+        let no_break = in_code || line.starts_with("```") || (this_is_list && next_is_list);
 
         if no_break {
             out.push(format!("--- {}", line));
