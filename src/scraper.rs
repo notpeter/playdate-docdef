@@ -104,24 +104,17 @@ static SEL_ITEM: LazyLock<Selector> = LazyLock::new(|| {
 });
 
 static SEL_TITLE: LazyLock<Selector> = LazyLock::new(|| Selector::parse("div.title").unwrap());
-
 static SEL_CONTENT: LazyLock<Selector> = LazyLock::new(|| Selector::parse("div.content").unwrap());
-
 static SEL_P_TAG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("p").unwrap());
-
 static SEL_CODE_TAG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("code").unwrap());
-
 static SEL_PRE_TAG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("pre").unwrap());
-
 static SEL_ADMONITION: LazyLock<Selector> =
     LazyLock::new(|| Selector::parse("table>tbody>tr>td.content").unwrap());
 
 static RE_FUNC_SIG: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^((?:[\w_][\w\d_]*\.)*[\w_][\w\d_]*[:.:][\w_][\w\d_]*|[\w_][\w\d_]*(?:\.[\w_][\w\d_]*)*)\s*\(([^)]*)\)").unwrap()
 });
-
 static RE_HTML_LINK: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
-
 static RE_EM_TAG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<em[^>]*>").unwrap());
 
 /// Scrape the Playdate SDK documentation HTML
@@ -237,18 +230,14 @@ fn extract_docs(element: &ElementRef) -> Vec<String> {
     let mut docs = Vec::new();
 
     for content in element.select(&SEL_CONTENT) {
-        // Process children in document order
         for child in content.children() {
             if let Some(child_el) = ElementRef::wrap(child) {
                 let classes = child_el.value().attr("class").unwrap_or("");
-
                 if classes.contains("paragraph") {
-                    // Paragraph - extract inner p tag
                     if let Some(p) = child_el.select(&SEL_P_TAG).next() {
                         docs.push(clean_html_text(&p.inner_html()));
                     }
                 } else if classes.contains("ulist") {
-                    // Unordered list - extract list items with nested list support
                     extract_list_items(&child_el, &mut docs, 0);
                 } else if classes.contains("listingblock") {
                     // Code block (with <code> tag)

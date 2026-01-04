@@ -5,9 +5,9 @@
 //! LuaCATS-compatible stub files for IDE autocompletion.
 
 mod args;
-mod doc_scraper;
 mod output;
 mod parser;
+mod scraper;
 
 use args::Action;
 use output::StubOutput;
@@ -18,8 +18,8 @@ fn main() {
     let args = args::parse();
 
     // Parse the .luars type definitions using the new nom parser
-    let statements = parser::parse_document(PLAYDATE_LUARS)
-        .expect("Failed to parse playdate.luars");
+    let statements =
+        parser::parse_document(PLAYDATE_LUARS).expect("Failed to parse playdate.luars");
 
     match args.action {
         Action::Stub => {
@@ -30,7 +30,7 @@ fn main() {
         Action::Annotate => {
             // Scrape documentation and generate annotated stubs
             let html = args::fetch_docs(&args);
-            let scraped = doc_scraper::scrape(&html, &statements);
+            let scraped = scraper::scrape(&html, &statements);
             let output = StubOutput::from_statements_with_docs(&statements, &scraped);
             output.print();
         }

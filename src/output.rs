@@ -6,8 +6,8 @@
 use std::collections::{BTreeMap, HashSet};
 use textwrap;
 
-use crate::parser::{Statement, Param, Field};
-use crate::doc_scraper::ScrapedFunction;
+use crate::parser::{Field, Param, Statement};
+use crate::scraper::ScrapedFunction;
 
 /// Maximum line length for documentation text (excluding "--- " prefix)
 const MAX_LINE_LENGTH: usize = 96;
@@ -34,7 +34,10 @@ pub fn generate_class(name: &str, parent: &str, fields: &[Field], prefix: &str) 
         if field.value.is_empty() {
             out.push(format!("---@field {} {}", field.name, field.typ));
         } else {
-            out.push(format!("---@field {} {} {}", field.name, field.typ, field.value));
+            out.push(format!(
+                "---@field {} {} {}",
+                field.name, field.typ, field.value
+            ));
         }
     }
 
@@ -54,7 +57,10 @@ pub fn generate_function(
     let mut out = Vec::new();
 
     // Apply any notes (deprecations, etc.)
-    let param_names: Vec<&str> = params.iter().map(|p| p.name.trim_end_matches('?')).collect();
+    let param_names: Vec<&str> = params
+        .iter()
+        .map(|p| p.name.trim_end_matches('?'))
+        .collect();
     let lua_def = format!("{}({})", name, param_names.join(", "));
     if let Some(notes) = NOTES.get(&lua_def) {
         out.extend(notes.clone());
@@ -98,7 +104,7 @@ fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
         // Code blocks and bullet lists get fewer line breaks
         let is_list_item = line.starts_with("* ");
         let next_is_list = docs.get(i + 1).map_or(false, |l| l.starts_with("* "));
-        let no_break = in_code || line == "```" || (is_list_item && next_is_list);
+        let no_break = in_code || line.starts_with("```") || (is_list_item && next_is_list);
 
         if no_break {
             out.push(format!("--- {}", line));
@@ -111,7 +117,7 @@ fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
         }
 
         // Track code block state
-        if line == "```" {
+        if line.starts_with("```") {
             in_code = !in_code;
         }
     }
@@ -186,7 +192,8 @@ impl StubOutput {
             processed.insert(key.clone());
 
             // Get types from statements if available
-            let (params, returns) = if let Some(Statement::Function(_, p, r)) = statements.get(&key) {
+            let (params, returns) = if let Some(Statement::Function(_, p, r)) = statements.get(&key)
+            {
                 (p.as_slice(), r.as_slice())
             } else {
                 (func.params.as_slice(), func.returns.as_slice())
@@ -215,7 +222,9 @@ impl StubOutput {
     /// Output to stdout
     pub fn print(&self) {
         println!("---@meta");
-        println!("--- This file contains function stubs for autocompletion. DO NOT include it in your game.");
+        println!(
+            "--- This file contains function stubs for autocompletion. DO NOT include it in your game."
+        );
         println!();
 
         for block in &self.lines {
@@ -255,8 +264,16 @@ mod tests {
     #[test]
     fn test_generate_class() {
         let fields = vec![
-            Field { name: "foo".into(), typ: "string".into(), value: "".into() },
-            Field { name: "bar".into(), typ: "integer".into(), value: "42".into() },
+            Field {
+                name: "foo".into(),
+                typ: "string".into(),
+                value: "".into(),
+            },
+            Field {
+                name: "bar".into(),
+                typ: "integer".into(),
+                value: "42".into(),
+            },
         ];
         let result = generate_class("MyClass", "Parent", &fields, "");
         assert!(result.contains(&"---@class MyClass : Parent".to_string()));
@@ -267,12 +284,19 @@ mod tests {
     #[test]
     fn test_generate_function() {
         let params = vec![
-            Param { name: "a".into(), typ: "string".into() },
-            Param { name: "b?".into(), typ: "integer".into() },
+            Param {
+                name: "a".into(),
+                typ: "string".into(),
+            },
+            Param {
+                name: "b?".into(),
+                typ: "integer".into(),
+            },
         ];
-        let returns = vec![
-            Param { name: "".into(), typ: "boolean".into() },
-        ];
+        let returns = vec![Param {
+            name: "".into(),
+            typ: "boolean".into(),
+        }];
         let result = generate_function("test.func", &params, &returns, None);
         assert!(result.contains(&"---@param a string".to_string()));
         assert!(result.contains(&"---@param b? integer".to_string()));

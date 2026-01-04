@@ -12,7 +12,7 @@ This repository contains the Playdate Lua API specification
 and tools for generating Lua Comment And Type System (LUACats)
 compliant Lua comments for use with the Lua Language Server
 ([sumneko.lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua))
-in VSCode, NeoVIM, etc.
+in VSCode, Zed, NeoVIM, etc.
 
 These tools can optionally integrate the offical
 Playdate Docs into the generated output by scraping the API
