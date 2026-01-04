@@ -6,7 +6,7 @@ tldr: This is an overly complicated tool with the following parts:
 
 1. DSL (domain specific language) for Lua typing information (LUARS)
 2. Manually documented Types for the PlaydateSDK expressed in LUARS (see: [playdate.luars](playdate.luars))
-3. Parser for LUARS using [Nom](https://github.com/rust-bakery/nom) crate (see: [parser.rs](./src/parser.rs))
+3. Grammar/Parser for LUARS using [pest.rs](https://pest.rs) crate (see: [luars.rs](./src/luars.rs))
 4. A web scraper which scrapes the PlaydateSDK HTML documentation using the [scraper](https://crates.io/crates/scraper) crate (see: [scraper.rs](./src/scraper.rs))
 5. Rust which combines the scraped documentation and types and generates LuaLS compatible Type Annotations with documentation and types for the entire SDK.
 
@@ -21,9 +21,9 @@ tldr: This is an overly complicated tool with the following parts:
 1. TOML turned out to overly verbose, fragile and unsearchable for ~1000 functions and ~3500 type definitions (~15K lines).
 1. So I came up with a format for function signatures which only requires one line per function.
 1. I learned PEG and wrote a parser for function signature format I came up with using [pest.rs](https://pest.rs).
-1. Years pass
-1. I had Claude Code rewrite my LUARS parser with Nom and simplify my scraper.
 1. Iterate. Iterate. Iterate.
+1. Years pass
+1. I had Claude Code rewrite my LUARS parser and simplify my scraper.
 
 Now we can do static code analysis, type checking and autocomplete in VSCode and other IDEs
 that support the LuaLS Language Server's LUACATS style type annotation comments.
