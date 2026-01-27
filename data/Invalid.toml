@@ -16,12 +16,16 @@ string = "str"
 # -- invalid lua:
 #
 # function
-# playdate.sound.synth:setFinishCallback(function)
-# https://sdk.play.date/inside-playdate/#m-sound.synth.setFinishCallback
+# - playdate.getServerTime(function(time, error))
+# - playdate.network.http:setConnectionClosedCallback(function)
+# - playdate.network.http:setHeadersReadCallback(function)
+# - playdate.network.http:setRequestCallback(function)
+# - playdate.network.http:setRequestCompleteCallback(function)
+# - playdate.network.tcp:setConnectionClosedCallback(function)
 #
 # end
-# playdate.sound.sampleplayer:setPlayRange(start, end)
-# https://sdk.play.date/inside-playdate/#m-sound.sampleplayer.setPlayRange
+# - playdate.sound.sampleplayer:setPlayRange(start, end)
+# - playdate.sound.envelope:setRateScaling(scaling, [start, end])
 #
 # repeat
 # playdate.graphics.perlin(x, y, z, repeat, [octaves, persistence])

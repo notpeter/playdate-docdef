@@ -4829,7 +4829,7 @@ function playdate.sound.sampleplayer:play(repeatCount, rate) end
 ---@return nil
 function playdate.sound.sampleplayer:playAt(when, vol, rightvol, rate) end
 
----@param func function
+---@param func? function
 ---@param arg? any
 ---@return nil
 function playdate.sound.sampleplayer:setFinishCallback(func, arg) end

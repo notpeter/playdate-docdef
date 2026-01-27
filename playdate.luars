@@ -1277,7 +1277,7 @@ fun playdate.sound.sampleplayer:getVolume(): (left_or_mono: number, right: numbe
 fun playdate.sound.sampleplayer:isPlaying(): boolean;
 fun playdate.sound.sampleplayer:play(repeatCount?: integer, rate?: number): nil;
 fun playdate.sound.sampleplayer:playAt(when: number, vol?: number, rightvol?: number, rate?: number): nil;
-fun playdate.sound.sampleplayer:setFinishCallback(func: function, arg?: any): nil;
+fun playdate.sound.sampleplayer:setFinishCallback(func?: function, arg?: any): nil;
 fun playdate.sound.sampleplayer:setLoopCallback(callback: function, arg?: any): nil;
 fun playdate.sound.sampleplayer:setOffset(seconds: number): nil;
 fun playdate.sound.sampleplayer:setPaused(flag: boolean): nil;
