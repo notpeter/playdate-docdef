@@ -17,6 +17,14 @@ pub struct Args {
     /// Verbose logging (-v, -vv, -vvv, etc.)
     #[arg(short, long, action = clap::ArgAction::Count)]
     pub verbose: u8,
+
+    /// Compact function stubs (---@type + local name)
+    #[arg(long)]
+    pub compact: bool,
+
+    /// Compact output to stdout (non-segmented)
+    #[arg(long)]
+    pub llm: bool,
 }
 
 // CLI Action: Generate Function Stubs or full Lua with annotation comments
@@ -24,6 +32,7 @@ pub struct Args {
 pub enum Action {
     Stub,
     Annotate,
+    Multi,
 }
 
 fn get_sdk_dir() -> PathBuf {
