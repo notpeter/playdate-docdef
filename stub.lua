@@ -4114,7 +4114,7 @@ function playdate.readAccelerometer() end
 ---@return nil
 function playdate.resetElapsedTime() end
 
----@param arg? string[]
+---@param arg? string
 ---@return nil
 function playdate.restart(arg) end
 

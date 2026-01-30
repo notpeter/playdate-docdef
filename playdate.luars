@@ -81,7 +81,7 @@ fun playdate.mirrorEnded(): nil;
 fun playdate.mirrorStarted(): nil;
 fun playdate.readAccelerometer(): (x: number, y: number, z: number);
 fun playdate.resetElapsedTime(): nil;
-fun playdate.restart(arg?: string[]): nil;
+fun playdate.restart(arg?: string): nil;
 fun playdate.rightButtonDown(): nil;
 fun playdate.rightButtonUp(): nil;
 fun playdate.serialMessageReceived(message: string): nil;
