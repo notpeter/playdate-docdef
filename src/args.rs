@@ -33,6 +33,7 @@ pub enum Action {
     Stub,
     Annotate,
     Multi,
+    Md,
 }
 
 fn get_sdk_dir() -> PathBuf {

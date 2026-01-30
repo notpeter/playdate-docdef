@@ -6,11 +6,13 @@
 
 mod args;
 mod luars;
+mod md;
 mod multi;
 mod output;
 mod scraper;
 
 use args::Action;
+use md::write_markdown_docs;
 use multi::MultiStubOutput;
 use output::StubOutput;
 use std::fs;
@@ -43,6 +45,17 @@ fn main() {
             let output =
                 StubOutput::from_statements_with_docs(&statements, &scraped, args.compact, false);
             output.print();
+        }
+        Action::Md => {
+            let html = args::fetch_docs(&args);
+            let scraped = scraper::scrape(&html, &statements);
+            let out_dir = Path::new("playdate-docs");
+            if out_dir.exists() {
+                fs::remove_dir_all(out_dir).expect("Failed to clear playdate-docs/ directory");
+            }
+            fs::create_dir_all(out_dir).expect("Failed to create playdate-docs/ directory");
+            write_markdown_docs(&scraped, &statements, out_dir)
+                .expect("Failed to write markdown docs");
         }
         Action::Multi => {
             let output = MultiStubOutput::from_statements(&statements, args.compact);
