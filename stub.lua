@@ -2018,7 +2018,8 @@ function playdate.getBatteryVoltage() end
 ---@return integer released
 function playdate.getButtonState() end
 
----@return number
+---@return number change
+---@return number acceleratedChange
 function playdate.getCrankChange() end
 
 ---@return number

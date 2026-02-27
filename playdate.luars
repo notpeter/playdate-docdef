@@ -56,7 +56,7 @@ fun playdate.gameWillTerminate(): nil;
 fun playdate.getBatteryPercentage(): integer;
 fun playdate.getBatteryVoltage(): number;
 fun playdate.getButtonState(): (current: integer, pressed: integer, released: integer);
-fun playdate.getCrankChange(): number;
+fun playdate.getCrankChange(): (change: number, acceleratedChange: number);
 fun playdate.getCrankPosition(): number;
 fun playdate.getCrankTicks(ticksPerRevolution: number): number;
 fun playdate.getCurrentTimeMilliseconds(): integer;
