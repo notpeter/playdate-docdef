@@ -18,6 +18,27 @@ static NOTES: std::sync::LazyLock<BTreeMap<String, Vec<String>>> = std::sync::La
     toml::from_str(toml_str).unwrap_or_default()
 });
 
+pub(crate) fn format_stub(lines: &[Vec<String>]) -> String {
+    let mut out = Vec::new();
+    out.push("---@meta".to_string());
+    out.push(
+        "--- This file contains function stubs for autocompletion. DO NOT include it in your game."
+            .to_string(),
+    );
+    out.push(String::new());
+
+    for block in lines {
+        if !block.is_empty() {
+            out.push(block.join("\n"));
+            out.push(String::new());
+        }
+    }
+
+    out.push("--- End of LuaCATS stubs.".to_string());
+    out.push(String::new());
+    out.join("\n")
+}
+
 /// Generate LuaCATS output for a class/table
 pub fn generate_class(name: &str, parent: &str, fields: &[Field], prefix: &str) -> Vec<String> {
     let mut out = Vec::new();
@@ -91,6 +112,100 @@ pub fn generate_function(
     out
 }
 
+pub(crate) fn split_function_name(name: &str) -> (&str, &str) {
+    if let Some(pos) = name.rfind(':') {
+        (&name[..pos], &name[pos + 1..])
+    } else if let Some(pos) = name.rfind('.') {
+        (&name[..pos], &name[pos + 1..])
+    } else {
+        ("", name)
+    }
+}
+
+pub(crate) fn function_type(params: &[Param], returns: &[Param]) -> String {
+    let params_str = params
+        .iter()
+        .map(|p| format!("{}: {}", p.name.trim_end_matches('?'), p.typ))
+        .collect::<Vec<_>>()
+        .join(", ");
+    let returns_str = if returns.is_empty() {
+        "nil".to_string()
+    } else if returns.len() == 1 {
+        returns[0].typ.clone()
+    } else {
+        let types = returns
+            .iter()
+            .map(|r| r.typ.as_str())
+            .collect::<Vec<_>>()
+            .join(", ");
+        format!("({})", types)
+    };
+    format!("fun({}): {}", params_str, returns_str)
+}
+
+pub(crate) fn append_compact_types(
+    entries: &mut Vec<(String, Vec<String>)>,
+    field: &str,
+    typ: String,
+) {
+    if let Some((_, types)) = entries.iter_mut().find(|(name, _)| name == field) {
+        types.push(typ);
+    } else {
+        entries.push((field.to_string(), vec![typ]));
+    }
+}
+
+pub(crate) fn generate_compact_global(
+    name: &str,
+    parent: &str,
+    fields: &[Field],
+    functions: &[(String, Vec<String>)],
+) -> Vec<String> {
+    let mut out = Vec::new();
+
+    if parent.is_empty() {
+        out.push(format!("---@class {}", name));
+    } else {
+        out.push(format!("---@class {} : {}", name, parent));
+    }
+
+    for field in fields {
+        if field.value.is_empty() {
+            out.push(format!("---@field {} {}", field.name, field.typ));
+        } else {
+            out.push(format!(
+                "---@field {} {} {}",
+                field.name, field.typ, field.value
+            ));
+        }
+    }
+
+    let is_playdate = name == "playdate";
+    if functions.is_empty() {
+        if is_playdate {
+            out.push(format!("{} = {} or {{}}", name, name));
+        } else {
+            out.push(format!("{} = {{}}", name));
+        }
+        return out;
+    }
+
+    if is_playdate {
+        out.push(format!("{} = {} or {{", name, name));
+    } else {
+        out.push(format!("{} = {{", name));
+    }
+    for (field, types) in functions {
+        for typ in types {
+            out.push(format!("    ---@type {}", typ));
+        }
+        out.push(format!("    {} = nil,", field));
+    }
+    out.push("}".to_string());
+
+    out
+}
+
 /// Check if a line is a list item (including nested/indented lists)
 fn is_list_item(line: &str) -> bool {
     let trimmed = line.trim_start();
@@ -140,24 +255,80 @@ fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
 /// Full stub generator output
 pub struct StubOutput {
     lines: Vec<Vec<String>>,
+    compact: bool,
+    compact_no_indent: bool,
 }
 
 impl StubOutput {
     /// Create stub output from parsed statements only (no docs)
-    pub fn from_statements(statements: &BTreeMap<String, Statement>) -> Self {
+    pub fn from_statements(
+        statements: &BTreeMap<String, Statement>,
+        compact: bool,
+        compact_no_indent: bool,
+    ) -> Self {
         let mut classes = Vec::new();
         let mut functions = Vec::new();
 
-        for stmt in statements.values() {
-            match stmt {
-                Statement::Global(name, parent, fields) => {
-                    classes.push(generate_class(name, parent, fields, ""));
+        if compact {
+            let mut globals = HashSet::new();
+            let mut functions_by_ns: BTreeMap<String, Vec<(String, Vec<String>)>> = BTreeMap::new();
+            let mut top_level: Vec<(String, Vec<String>)> = Vec::new();
+
+            for stmt in statements.values() {
+                if let Statement::Global(name, _, _) = stmt {
+                    globals.insert(name.clone());
                 }
-                Statement::Local(name, parent, fields) => {
-                    classes.push(generate_class(name, parent, fields, "local "));
+            }
+
+            for stmt in statements.values() {
+                if let Statement::Function(name, params, returns) = stmt {
+                    let (ns, field) = split_function_name(name);
+                    if ns.is_empty() || !globals.contains(ns) {
+                        let typ = function_type(params, returns);
+                        append_compact_types(&mut top_level, name, typ);
+                    } else {
+                        let typ = function_type(params, returns);
+                        let entry = functions_by_ns.entry(ns.to_string()).or_default();
+                        append_compact_types(entry, field, typ);
+                    }
                 }
-                Statement::Function(name, params, returns) => {
-                    functions.push(generate_function(name, params, returns, None));
+            }
+
+            for stmt in statements.values() {
+                match stmt {
+                    Statement::Global(name, parent, fields) => {
+                        let funcs = functions_by_ns
+                            .get(name)
+                            .map(|v| v.as_slice())
+                            .unwrap_or(&[]);
+                        classes.push(generate_compact_global(name, parent, fields, funcs));
+                    }
+                    Statement::Local(name, parent, fields) => {
+                        classes.push(generate_class(name, parent, fields, "local "));
+                    }
+                    Statement::Function(_, _, _) => {}
+                }
+            }
+            for (name, types) in top_level {
+                let mut block = Vec::new();
+                for typ in types {
+                    block.push(format!("---@type {}", typ));
+                }
+                block.push(format!("{} = nil,", name));
+                functions.push(block);
+            }
+        } else {
+            for stmt in statements.values() {
+                match stmt {
+                    Statement::Global(name, parent, fields) => {
+                        classes.push(generate_class(name, parent, fields, ""));
+                    }
+                    Statement::Local(name, parent, fields) => {
+                        classes.push(generate_class(name, parent, fields, "local "));
+                    }
+                    Statement::Function(name, params, returns) => {
+                        functions.push(generate_function(name, params, returns, None));
+                    }
                 }
             }
         }
@@ -167,53 +338,130 @@ impl StubOutput {
         lines.extend(classes);
         lines.extend(functions);
 
-        StubOutput { lines }
+        StubOutput {
+            lines,
+            compact,
+            compact_no_indent,
+        }
     }
 
     /// Create stub output from statements with scraped documentation
     pub fn from_statements_with_docs(
         statements: &BTreeMap<String, Statement>,
         scraped: &BTreeMap<String, ScrapedFunction>,
+        compact: bool,
+        compact_no_indent: bool,
     ) -> Self {
         let mut classes = Vec::new();
         let mut functions = Vec::new();
         let mut processed: HashSet<String> = HashSet::new();
 
-        // First, output all classes/tables from statements
-        for stmt in statements.values() {
-            match stmt {
-                Statement::Global(name, parent, fields) => {
-                    classes.push(generate_class(name, parent, fields, ""));
+        if compact {
+            let mut globals = HashSet::new();
+            let mut functions_by_ns: BTreeMap<String, Vec<(String, Vec<String>)>> = BTreeMap::new();
+            let mut combined_functions = Vec::new();
+            let mut top_level: Vec<(String, Vec<String>)> = Vec::new();
+
+            for stmt in statements.values() {
+                if let Statement::Global(name, _, _) = stmt {
+                    globals.insert(name.clone());
                 }
-                Statement::Local(name, parent, fields) => {
-                    classes.push(generate_class(name, parent, fields, "local "));
-                }
-                _ => {}
             }
-        }
 
-        // Process scraped functions (they have docs)
-        for func in scraped.values() {
-            let key = func.lua_def();
-            processed.insert(key.clone());
+            for func in scraped.values() {
+                let key = func.lua_def();
+                processed.insert(key.clone());
 
-            // Get types from statements if available
-            let (params, returns) = if let Some(Statement::Function(_, p, r)) = statements.get(&key)
-            {
-                (p.as_slice(), r.as_slice())
-            } else {
-                (func.params.as_slice(), func.returns.as_slice())
-            };
+                let (params, returns) =
+                    if let Some(Statement::Function(_, p, r)) = statements.get(&key) {
+                        (p.clone(), r.clone())
+                    } else {
+                        (func.params.clone(), func.returns.clone())
+                    };
+                combined_functions.push((func.name.clone(), params, returns));
+            }
 
-            functions.push(generate_function(&func.name, params, returns, Some(func)));
-        }
+            for stmt in statements.values() {
+                if let Statement::Function(name, params, returns) = stmt {
+                    let key = stmt.lua_def();
+                    if !processed.contains(&key) {
+                        combined_functions.push((name.clone(), params.clone(), returns.clone()));
+                    }
+                }
+            }
 
-        // Add remaining functions from statements (those not in scraped docs)
-        for stmt in statements.values() {
-            if let Statement::Function(name, params, returns) = stmt {
-                let key = stmt.lua_def();
-                if !processed.contains(&key) {
-                    functions.push(generate_function(name, params, returns, None));
+            for (name, params, returns) in combined_functions {
+                let (ns, field) = split_function_name(&name);
+                if ns.is_empty() || !globals.contains(ns) {
+                    let typ = function_type(&params, &returns);
+                    append_compact_types(&mut top_level, &name, typ);
+                } else {
+                    let typ = function_type(&params, &returns);
+                    let entry = functions_by_ns.entry(ns.to_string()).or_default();
+                    append_compact_types(entry, field, typ);
+                }
+            }
+
+            for stmt in statements.values() {
+                match stmt {
+                    Statement::Global(name, parent, fields) => {
+                        let funcs = functions_by_ns
+                            .get(name)
+                            .map(|v| v.as_slice())
+                            .unwrap_or(&[]);
+                        classes.push(generate_compact_global(name, parent, fields, funcs));
+                    }
+                    Statement::Local(name, parent, fields) => {
+                        classes.push(generate_class(name, parent, fields, "local "));
+                    }
+                    _ => {}
+                }
+            }
+            for (name, types) in top_level {
+                let mut block = Vec::new();
+                for typ in types {
+                    block.push(format!("---@type {}", typ));
+                }
+                block.push(format!("{} = nil,", name));
+                functions.push(block);
+            }
+        } else {
+            // First, output all classes/tables from statements
+            for stmt in statements.values() {
+                match stmt {
+                    Statement::Global(name, parent, fields) => {
+                        classes.push(generate_class(name, parent, fields, ""));
+                    }
+                    Statement::Local(name, parent, fields) => {
+                        classes.push(generate_class(name, parent, fields, "local "));
+                    }
+                    _ => {}
+                }
+            }
+
+            // Process scraped functions (they have docs)
+            for func in scraped.values() {
+                let key = func.lua_def();
+                processed.insert(key.clone());
+
+                // Get types from statements if available
+                let (params, returns) =
+                    if let Some(Statement::Function(_, p, r)) = statements.get(&key) {
+                        (p.as_slice(), r.as_slice())
+                    } else {
+                        (func.params.as_slice(), func.returns.as_slice())
+                    };
+
+                functions.push(generate_function(&func.name, params, returns, Some(func)));
+            }
+
+            // Add remaining functions from statements (those not in scraped docs)
+            for stmt in statements.values() {
+                if let Statement::Function(name, params, returns) = stmt {
+                    let key = stmt.lua_def();
+                    if !processed.contains(&key) {
+                        functions.push(generate_function(name, params, returns, None));
+                    }
                 }
             }
         }
@@ -222,45 +470,91 @@ impl StubOutput {
         lines.extend(classes);
         lines.extend(functions);
 
-        StubOutput { lines }
+        StubOutput {
+            lines,
+            compact,
+            compact_no_indent,
+        }
     }
 
     /// Output to stdout
     pub fn print(&self) {
         println!("---@meta");
-        println!(
-            "--- This file contains function stubs for autocompletion. DO NOT include it in your game."
-        );
-        println!();
+        if self.compact && self.compact_no_indent {
+            println!();
+        }
+        if !self.compact {
+            println!(
+                "--- This file contains function stubs for autocompletion. DO NOT include it in your game."
+            );
+            println!();
+        }
 
         for block in &self.lines {
             if !block.is_empty() {
-                println!("{}", block.join("\n"));
+                let rendered = render_block(block, self.compact, self.compact_no_indent);
+                println!("{}", rendered);
                 println!();
             }
         }
 
-        println!("--- End of LuaCATS stubs.");
+        if !self.compact {
+            println!("--- End of LuaCATS stubs.");
+        }
     }
 
     /// Get output as a single string
     #[allow(dead_code)]
     pub fn to_string(&self) -> String {
-        let mut result = String::new();
-        result.push_str("---@meta\n");
-        result.push_str("--- This file contains function stubs for autocompletion. DO NOT include it in your game.\n");
-        result.push('\n');
+        if self.compact {
+            let mut out = Vec::new();
+            out.push("---@meta".to_string());
+            out.push(String::new());
+            out.push(String::new());
+            for block in &self.lines {
+                if !block.is_empty() {
+                    let rendered = render_block(block, self.compact, self.compact_no_indent);
+                    out.push(rendered);
+                    out.push(String::new());
+                }
+            }
+            out.join("\n")
+        } else {
+            format_stub(&self.lines)
+        }
+    }
+}
 
-        for block in &self.lines {
-            if !block.is_empty() {
-                result.push_str(&block.join("\n"));
-                result.push_str("\n\n");
+fn render_block(block: &[String], compact: bool, compact_no_indent: bool) -> String {
+    if !(compact && compact_no_indent) {
+        return block.join("\n");
+    }
+
+    let lines = block
+        .iter()
+        .map(|line| line.strip_prefix("    ").unwrap_or(line).to_string())
+        .collect::<Vec<_>>();
+
+    let mut out = Vec::new();
+    let mut i = 0;
+    while i < lines.len() {
+        let line = &lines[i];
+        if line.starts_with("---@type ") {
+            let next_is_assignment = i + 1 < lines.len() && lines[i + 1].ends_with(" = nil,");
+            let prev_is_type = i > 0 && lines[i - 1].starts_with("---@type ");
+            if next_is_assignment && !prev_is_type {
+                let assignment = &lines[i + 1];
+                let typ = line.trim_start_matches("---@type ").trim();
+                out.push(format!("{} ---@type {}", assignment, typ));
+                i += 2;
+                continue;
             }
         }
-
-        result.push_str("--- End of LuaCATS stubs.\n");
-        result
+        out.push(line.clone());
+        i += 1;
     }
+
+    out.join("\n")
 }
 
 #[cfg(test)]
