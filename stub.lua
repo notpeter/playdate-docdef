@@ -3251,8 +3251,12 @@ function playdate.graphics.sprite.removeSprites(spriteArray) end
 ---@return nil
 function playdate.graphics.sprite.setAlwaysRedraw(flag) end
 
----@param drawCallback? fun(x: integer, y: integer, width: integer, height: integer): nil
----@return _Sprite?
+---@param drawCallback fun(x: integer, y: integer, width: integer, height: integer): nil
+---@return _Sprite
+function playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback) end
+
+---@param drawCallback nil
+---@return nil
 function playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback) end
 
 ---@param rect _Rect
@@ -4974,8 +4978,11 @@ function playdate.sound.sampleplayer:stop() end
 ---@return _Sequence
 function playdate.sound.sequence.new(midi_path) end
 
----@param track? _Track
----@return _Track?
+---@return _Track
+function playdate.sound.sequence:addTrack() end
+
+---@param track _Track
+---@return nil
 function playdate.sound.sequence:addTrack(track) end
 
 ---@return nil

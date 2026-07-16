@@ -216,12 +216,19 @@ pub fn parse_document(input: &str) -> Result<BTreeMap<String, Statement>, String
 
     let mut result = BTreeMap::new();
     for stmt in statements {
-        let key = stmt.lua_def();
-        if !result.contains_key(&key) {
-            result.insert(key, stmt);
-        } else {
-            eprintln!("Duplicate definition: {}", key);
+        let lua_def = stmt.lua_def();
+        let mut key = lua_def.clone();
+        let mut overload = 2;
+
+        // Parameter types are not part of a Lua function definition, so
+        // type-dependent overloads can have the same lua_def. Keep each one
+        // under an internal suffixed key while leaving the first declaration
+        // available through the ordinary definition key.
+        while result.contains_key(&key) {
+            key = format!("{}#{}", lua_def, overload);
+            overload += 1;
         }
+        result.insert(key, stmt);
     }
 
     Ok(result)
@@ -364,5 +371,18 @@ mod tests {
         let stmts = result.unwrap();
         let expected = input.matches(';').count();
         assert_eq!(stmts.len(), expected, "Expected {} statements", expected);
+    }
+
+    #[test]
+    fn test_same_shape_function_overloads_are_preserved() {
+        let input = concat!(
+            "fun example(callback: function): Example;\n",
+            "fun example(callback: nil): nil;\n",
+        );
+        let result = parse_document(input).unwrap();
+
+        assert_eq!(result.len(), 2);
+        assert_eq!(result["example(callback)"].lua_def(), "example(callback)");
+        assert_eq!(result["example(callback)#2"].lua_def(), "example(callback)");
     }
 }

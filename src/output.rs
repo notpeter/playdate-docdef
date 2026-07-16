@@ -178,6 +178,11 @@ impl StubOutput {
         let mut classes = Vec::new();
         let mut functions = Vec::new();
         let mut processed: HashSet<String> = HashSet::new();
+        let mut scraped_name_counts: BTreeMap<&str, usize> = BTreeMap::new();
+
+        for func in scraped.values() {
+            *scraped_name_counts.entry(&func.name).or_default() += 1;
+        }
 
         // First, output all classes/tables from statements
         for stmt in statements.values() {
@@ -195,24 +200,39 @@ impl StubOutput {
         // Process scraped functions (they have docs)
         for func in scraped.values() {
             let key = func.lua_def();
-            processed.insert(key.clone());
+            let mut found_statement = false;
+            let combine_overloads = scraped_name_counts[func.name.as_str()] == 1;
 
-            // Get types from statements if available
-            let (params, returns) = if let Some(Statement::Function(_, p, r)) = statements.get(&key)
-            {
-                (p.as_slice(), r.as_slice())
-            } else {
-                (func.params.as_slice(), func.returns.as_slice())
-            };
+            // A single documented Lua signature can have multiple type-based
+            // declarations or arities. Emit them together, with the docs on
+            // the first. When the docs contain multiple signatures for the
+            // same function, keep matching them by their exact Lua shape.
+            for (statement_key, stmt) in statements {
+                if let Statement::Function(name, params, returns) = stmt {
+                    if stmt.lua_def() != key && !(combine_overloads && name == &func.name) {
+                        continue;
+                    }
+                    let docs = (!found_statement).then_some(func);
+                    functions.push(generate_function(name, params, returns, docs));
+                    processed.insert(statement_key.clone());
+                    found_statement = true;
+                }
+            }
 
-            functions.push(generate_function(&func.name, params, returns, Some(func)));
+            if !found_statement {
+                functions.push(generate_function(
+                    &func.name,
+                    &func.params,
+                    &func.returns,
+                    Some(func),
+                ));
+            }
         }
 
         // Add remaining functions from statements (those not in scraped docs)
-        for stmt in statements.values() {
+        for (key, stmt) in statements {
             if let Statement::Function(name, params, returns) = stmt {
-                let key = stmt.lua_def();
-                if !processed.contains(&key) {
+                if !processed.contains(key) {
                     functions.push(generate_function(name, params, returns, None));
                 }
             }
