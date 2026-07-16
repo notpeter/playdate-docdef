@@ -442,6 +442,8 @@ local _Video = {}
 ---@field kButtonDown integer 8
 ---@field kButtonB integer 16
 ---@field kButtonA integer 32
+---@field kLanguageEnglish integer 0
+---@field kLanguageJapanese integer 1
 ---@field metadata _Metadata
 ---@field systeminfo _SystemInfo
 playdate = {}
@@ -617,6 +619,9 @@ playdate.network = {}
 
 ---@class playdate.network.http
 playdate.network.http = {}
+
+---@class playdate.network.https
+playdate.network.https = {}
 
 ---@class playdate.network.tcp
 playdate.network.tcp = {}
@@ -1295,6 +1300,9 @@ function playdate.epochFromGMTTime(time) end
 ---@return integer seconds
 ---@return integer milliseconds
 function playdate.epochFromTime(time) end
+
+---@return nil
+function playdate.exitToLauncher() end
 
 ---@param path string
 ---@param recursive? boolean
@@ -2044,6 +2052,11 @@ function playdate.getFlipped() end
 ---@return _DateTime
 function playdate.getGMTTime() end
 
+---@param key string
+---@param language (integer|string)
+---@return string
+function playdate.getLocalizedText(key, language) end
+
 ---@return _PowerStatus
 function playdate.getPowerStatus() end
 
@@ -2065,6 +2078,9 @@ function playdate.getSystemLanguage() end
 
 ---@return playdate.menu
 function playdate.getSystemMenu() end
+
+---@return number
+function playdate.getSystemVolume() end
 
 ---@return _DateTime
 function playdate.getTime() end
@@ -2103,11 +2119,11 @@ function playdate.graphics.animation.blinker:stop() end
 ---@return nil
 function playdate.graphics.animation.blinker:update() end
 
----@param interval? number
+---@param delay? number
 ---@param imageTable _ImageTable
 ---@param shouldLoop? boolean
 ---@return _AnimationLoop
-function playdate.graphics.animation.loop.new(interval, imageTable, shouldLoop) end
+function playdate.graphics.animation.loop.new(delay, imageTable, shouldLoop) end
 
 ---@param x integer
 ---@param y integer
@@ -2642,6 +2658,7 @@ function playdate.graphics.getImageDrawMode() end
 ---@return integer
 function playdate.graphics.getLineWidth() end
 
+---@deprecated since 3.1.0
 ---@param key string
 ---@param language? (integer|string)
 ---@return string
@@ -2761,8 +2778,9 @@ function playdate.graphics.image:drawCentered(x, y, flip) end
 ---@param y integer
 ---@param alpha number
 ---@param ditherType integer
+---@param flip? (integer|string)
 ---@return nil
-function playdate.graphics.image:drawFaded(x, y, alpha, ditherType) end
+function playdate.graphics.image:drawFaded(x, y, alpha, ditherType, flip) end
 
 ---@param p _Point
 ---@param flip? (integer|string)
@@ -3073,8 +3091,10 @@ function playdate.graphics.setLineWidth(width) end
 function playdate.graphics.setPattern(image, x, y) end
 
 ---@param pattern integer[]
+---@param x? integer
+---@param y? integer
 ---@return nil
-function playdate.graphics.setPattern(pattern) end
+function playdate.graphics.setPattern(pattern, x, y) end
 
 ---@param rule integer
 ---@return nil
@@ -3232,7 +3252,7 @@ function playdate.graphics.sprite.removeSprites(spriteArray) end
 function playdate.graphics.sprite.setAlwaysRedraw(flag) end
 
 ---@param drawCallback? fun(x: integer, y: integer, width: integer, height: integer): nil
----@return _Sprite
+---@return _Sprite?
 function playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback) end
 
 ---@param rect _Rect
@@ -3381,6 +3401,17 @@ function playdate.graphics.sprite:isVisible() end
 
 ---@return nil
 function playdate.graphics.sprite:markDirty() end
+
+---@param rect _Rect
+---@return nil
+function playdate.graphics.sprite:markDirty(rect) end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@return nil
+function playdate.graphics.sprite:markDirty(x, y, width, height) end
 
 ---@param x integer
 ---@param y integer
@@ -3924,6 +3955,12 @@ function playdate.network.http:setRequestCallback(_function) end
 ---@return nil
 function playdate.network.http:setRequestCompleteCallback(_function) end
 
+---@param server string
+---@param port? integer
+---@param reason? string
+---@return _NetworkHttp?
+function playdate.network.https.new(server, port, reason) end
+
 ---@param flag? boolean
 ---@param callback? fun(error?: string)
 function playdate.network.setEnabled(flag, callback) end
@@ -3949,6 +3986,9 @@ function playdate.network.tcp:getBytesAvailable() end
 
 ---@return string?
 function playdate.network.tcp:getError() end
+
+---@return integer
+function playdate.network.tcp:getSentBytesPending() end
 
 ---@param connectCallback fun(connected: boolean, error?: string)
 ---@return nil
@@ -4236,6 +4276,26 @@ function playdate.sound.bitcrusher:setAmount(amt) end
 ---@return nil
 function playdate.sound.bitcrusher:setAmountMod(signal) end
 
+---@param amt number
+---@return nil
+function playdate.sound.bitcrusher:setDepth(amt) end
+
+---@param signal _Signal
+---@return nil
+function playdate.sound.bitcrusher:setDepthMod(signal) end
+
+---@param amt number
+---@return nil
+function playdate.sound.bitcrusher:setDownsampling(amt) end
+
+---@param signal? _Signal
+---@return nil
+function playdate.sound.bitcrusher:setDownsamplingMod(signal) end
+
+---@param flag? boolean
+---@return nil
+function playdate.sound.bitcrusher:setExponential(flag) end
+
 ---@param level number
 ---@return nil
 function playdate.sound.bitcrusher:setMix(level) end
@@ -4265,6 +4325,9 @@ function playdate.sound.channel:addSource(source) end
 
 ---@return _Signal
 function playdate.sound.channel:getDryLevelSignal() end
+
+---@return _SoundSource
+function playdate.sound.channel:getOutputAsSource() end
 
 ---@return number
 function playdate.sound.channel:getVolume() end
@@ -4502,6 +4565,10 @@ function playdate.sound.fileplayer:setLoopRange(start, _end, loopCallback, arg) 
 ---@return nil
 function playdate.sound.fileplayer:setOffset(seconds) end
 
+---@param paused boolean
+---@return nil
+function playdate.sound.fileplayer:setPaused(paused) end
+
 ---@param rate number
 ---@return nil
 function playdate.sound.fileplayer:setRate(rate) end
@@ -4542,17 +4609,26 @@ function playdate.sound.instrument.new(synth) end
 
 ---@param v _Synth
 ---@param note? integer
----@param rangeend? integer
+---@return nil
+function playdate.sound.instrument:addVoice(v, note) end
+
+---@param v _Synth
+---@param rangeStart? integer
+---@param rangeEnd? integer
 ---@param transpose? integer
 ---@return nil
-function playdate.sound.instrument:addVoice(v, note, rangeend, transpose) end
+function playdate.sound.instrument:addVoice(v, rangeStart, rangeEnd, transpose) end
 
+---@param when? number
 ---@return nil
-function playdate.sound.instrument:allNotesOff() end
+function playdate.sound.instrument:allNotesOff(when) end
 
 ---@return number left_or_mono
 ---@return number? right
 function playdate.sound.instrument:getVolume() end
+
+---@return boolean
+function playdate.sound.instrument:isPlaying() end
 
 ---@param note integer
 ---@param when? number
@@ -4589,6 +4665,10 @@ function playdate.sound.instrument:setTranspose(halfsteps) end
 ---@param right? number
 ---@return nil
 function playdate.sound.instrument:setVolume(left, right) end
+
+---@param when? number
+---@return nil
+function playdate.sound.instrument:stop(when) end
 
 ---@param type? integer
 ---@return _LFO
@@ -4627,6 +4707,10 @@ function playdate.sound.lfo:setOffset(offset) end
 ---@return nil
 function playdate.sound.lfo:setPhase(phase) end
 
+---@param value integer
+---@return nil
+function playdate.sound.lfo:setRandomSeed(value) end
+
 ---@param rate number
 ---@return nil
 function playdate.sound.lfo:setRate(rate) end
@@ -4655,8 +4739,13 @@ function playdate.sound.micinput.getSource() end
 
 ---@param buffer _Sample
 ---@param completionCallback fun(sample: _Sample): nil
+---@param purpose? string
 ---@return nil
-function playdate.sound.micinput.recordToSample(buffer, completionCallback) end
+function playdate.sound.micinput.recordToSample(buffer, completionCallback, purpose) end
+
+---@param reason? string
+---@return boolean
+function playdate.sound.micinput.requestAccess(reason) end
 
 ---@param source? string
 ---@return boolean success
@@ -4939,8 +5028,9 @@ function playdate.sound.sequence:setTempo(stepsPerSecond) end
 ---@return nil
 function playdate.sound.sequence:setTrackAtIndex(n, track) end
 
+---@param when? number
 ---@return nil
-function playdate.sound.sequence:stop() end
+function playdate.sound.sequence:stop(when) end
 
 ---@param headphones boolean
 ---@param speaker boolean

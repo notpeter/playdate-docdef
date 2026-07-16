@@ -213,3 +213,13 @@ parameters = ["scale"]
 ["m-sound.controlsignal.setOffset"]
 name = "playdate.sound.controlsignal:setOffset"
 parameters = ["offset"]
+
+# playdate.sound.sequence:stop([when])
+["m-sound.instrument.stop"]
+name = "playdate.sound.instrument:stop"
+parameters = ["when"]
+
+# playdate.sound.sequence:isPlaying()
+["m-sound.instrument.isPlaying"]
+name = "playdate.sound.instrument:isPlaying"
+parameters = []

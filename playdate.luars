@@ -22,6 +22,8 @@ global playdate = {
     kButtonDown: integer = 8,
     kButtonB: integer = 16,
     kButtonA: integer = 32,
+    kLanguageEnglish: integer = 0,
+    kLanguageJapanese: integer = 1,
     metadata: _Metadata,
     systeminfo: _SystemInfo,
 };
@@ -50,6 +52,7 @@ fun playdate.downButtonUp(): nil;
 fun playdate.drawFPS(x: integer, y: integer): nil;
 fun playdate.epochFromGMTTime(time: _DateTime): (seconds: integer, milliseconds: integer);
 fun playdate.epochFromTime(time: _DateTime): (seconds: integer, milliseconds: integer);
+fun playdate.exitToLauncher(): nil;
 fun playdate.gameWillPause(): nil;
 fun playdate.gameWillResume(): nil;
 fun playdate.gameWillTerminate(): nil;
@@ -64,6 +67,7 @@ fun playdate.getElapsedTime(): number;
 fun playdate.getFPS(): number;
 fun playdate.getFlipped(): boolean;
 fun playdate.getGMTTime(): _DateTime;
+fun playdate.getLocalizedText(key:string, language: (integer|string)): string;
 fun playdate.getPowerStatus(): _PowerStatus;
 fun playdate.getReduceFlashing(): boolean;
 fun playdate.getSecondsSinceEpoch(): (seconds: integer, milliseconds: integer);
@@ -71,6 +75,7 @@ fun playdate.getServerTime(callback: fun(time?: string, error?: string));
 fun playdate.getStats(): _SystemStats;
 fun playdate.getSystemLanguage(): integer;
 fun playdate.getSystemMenu(): playdate.menu;
+fun playdate.getSystemVolume(): number;
 fun playdate.getTime(): _DateTime;
 fun playdate.isCrankDocked(): boolean;
 fun playdate.keyPressed(key: string): nil;
@@ -546,7 +551,7 @@ fun playdate.graphics.setFontTracking(pixels: integer): nil;
 fun playdate.graphics.setImageDrawMode(mode: integer): nil;
 fun playdate.graphics.setLineCapStyle(style: integer): nil;
 fun playdate.graphics.setLineWidth(width: integer): nil;
-fun playdate.graphics.setPattern(pattern: integer[]): nil;
+fun playdate.graphics.setPattern(pattern: integer[], x?: integer, y?: integer): nil;
 fun playdate.graphics.setPattern(image: _Image, x?: integer, y?: integer): nil;
 fun playdate.graphics.setPolygonFillRule(rule: integer): nil;
 fun playdate.graphics.setScreenClipRect(rect: _Rect): nil;
@@ -561,7 +566,7 @@ fun playdate.graphics.unlockFocus(): nil;
 global playdate.graphics.animation;
 
 global playdate.graphics.animation.loop;
-fun playdate.graphics.animation.loop.new(interval?: number, imageTable: _ImageTable, shouldLoop?: boolean): _AnimationLoop;
+fun playdate.graphics.animation.loop.new(delay?: number, imageTable: _ImageTable, shouldLoop?: boolean): _AnimationLoop;
 local _AnimationLoop: playdate.graphics.animation.loop = {
     delay: number,
     startFrame: integer,
@@ -669,7 +674,7 @@ fun playdate.graphics.image:draw(x: integer, y: integer, flip?: (integer|string)
 fun playdate.graphics.image:drawAnchored(x: integer, y: integer, ax: number, ay: number, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawBlurred(x: integer, y: integer, radius: number, numPasses: integer, ditherType: integer, flip?: (integer|string), xPhase?: integer, yPhase?: integer): nil;
 fun playdate.graphics.image:drawCentered(x: integer, y: integer, flip?: (integer|string)): nil;
-fun playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer): nil;
+fun playdate.graphics.image:drawFaded(x: integer, y: integer, alpha: number, ditherType: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawIgnoringOffset(p: _Point, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawIgnoringOffset(x: integer, y: integer, flip?: (integer|string)): nil;
 fun playdate.graphics.image:drawRotated(x: integer, y: integer, angle: number, scale?: number, yscale?: number): nil;
@@ -751,7 +756,7 @@ fun playdate.graphics.sprite.removeAll(): nil;
 fun playdate.graphics.sprite.removeSprite(sprite: _Sprite): nil;
 fun playdate.graphics.sprite.removeSprites(spriteArray: _Sprite[]): nil;
 fun playdate.graphics.sprite.setAlwaysRedraw(flag: boolean): nil;
-fun playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback?: fun(x: integer, y: integer, width: integer, height: integer): nil): _Sprite;
+fun playdate.graphics.sprite.setBackgroundDrawingCallback(drawCallback?: fun(x: integer, y: integer, width: integer, height: integer): nil): _Sprite?;
 fun playdate.graphics.sprite.setClipRectsInRange(rect: _Rect, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.setClipRectsInRange(x: integer, y: integer, width: integer, height: integer, startz: integer, endz: integer): nil;
 fun playdate.graphics.sprite.spriteCount(): integer;
@@ -795,6 +800,8 @@ fun playdate.graphics.sprite:getZIndex(): integer;
 fun playdate.graphics.sprite:isOpaque(): boolean;
 fun playdate.graphics.sprite:isVisible(): boolean;
 fun playdate.graphics.sprite:markDirty(): nil;
+fun playdate.graphics.sprite:markDirty(rect: _Rect): nil;
+fun playdate.graphics.sprite:markDirty(x: integer, y: integer, width: integer, height: integer): nil;
 fun playdate.graphics.sprite:moveBy(x: integer, y: integer): nil;
 fun playdate.graphics.sprite:moveTo(x: integer, y: integer): nil;
 fun playdate.graphics.sprite:moveWithCollisions(goalPoint: _Point): (actualX: integer, actualY: integer, collisions: _SpriteCollisionData, length: integer);
@@ -951,6 +958,9 @@ fun playdate.network.http:setReadTimeout(seconds: number): nil;
 fun playdate.network.http:setRequestCallback(_function: function): nil;
 fun playdate.network.http:setRequestCompleteCallback(_function: function): nil;
 
+global playdate.network.https;
+fun playdate.network.https.new(server: string, port?: integer, reason?: string): _NetworkHttp?;
+
 global playdate.network.tcp;
 local _NetworkTcp: playdate.network.tcp;
 fun playdate.network.tcp.new(server: string, port?: integer, usessl?: boolean, reason?: string): _NetworkTcp?;
@@ -958,6 +968,7 @@ fun playdate.network.tcp.requestAccess(server?: string, port?: integer, reason?:
 fun playdate.network.tcp:close(): nil;
 fun playdate.network.tcp:getBytesAvailable(): integer;
 fun playdate.network.tcp:getError(): string?;
+fun playdate.network.tcp:getSentBytesPending(): integer;
 fun playdate.network.tcp:open(connectCallback: fun(connected: boolean, error?: string)): nil;
 fun playdate.network.tcp:read(length: integer): string;
 fun playdate.network.tcp:setConnectTimeout(seconds: integer): nil;
@@ -1087,8 +1098,13 @@ fun playdate.sound.bitcrusher.new(): _BitCrusher;
 local _BitCrusher: playdate.sound.bitcrusher;
 fun playdate.sound.bitcrusher:setAmount(amt: number): nil;
 fun playdate.sound.bitcrusher:setAmountMod(signal?: _Signal): nil;
+fun playdate.sound.bitcrusher:setDepth(amt: number): nil;
 fun playdate.sound.bitcrusher:setMix(level: number): nil;
 fun playdate.sound.bitcrusher:setMixMod(signal?: _Signal): nil;
+fun playdate.sound.bitcrusher:setDepthMod(signal: _Signal): nil;
+fun playdate.sound.bitcrusher:setDownsampling(amt: number): nil;
+fun playdate.sound.bitcrusher:setDownsamplingMod(signal?: _Signal): nil;
+fun playdate.sound.bitcrusher:setExponential(flag?: boolean): nil;
 fun playdate.sound.bitcrusher:setUndersampling(amt: number): nil;
 fun playdate.sound.bitcrusher:setUndersamplingMod(signal?: _Signal): nil;
 
@@ -1145,6 +1161,7 @@ local _Channel: playdate.sound.channel;
 fun playdate.sound.channel:addEffect(effect: _SoundEffect): nil;
 fun playdate.sound.channel:addSource(source: _SoundSource): nil;
 fun playdate.sound.channel:getDryLevelSignal(): _Signal;
+fun playdate.sound.channel:getOutputAsSource(): _SoundSource;
 fun playdate.sound.channel:getWetLevelSignal(): _Signal;
 fun playdate.sound.channel:getVolume(): number;
 fun playdate.sound.channel:remove(): nil;
@@ -1209,6 +1226,7 @@ fun playdate.sound.lfo:setDepth(depth: number): nil;
 fun playdate.sound.lfo:setGlobal(flag: boolean): nil;
 fun playdate.sound.lfo:setOffset(offset: number): nil;
 fun playdate.sound.lfo:setPhase(phase: number): nil;
+fun playdate.sound.lfo:setRandomSeed(value: integer): nil;
 fun playdate.sound.lfo:setRate(rate: number): nil;
 fun playdate.sound.lfo:setRetrigger(flag: boolean): nil;
 fun playdate.sound.lfo:setScale(scale: number): nil;
@@ -1244,6 +1262,7 @@ fun playdate.sound.fileplayer:setFinishCallback(func: fun(self: _FilePlayer, arg
 fun playdate.sound.fileplayer:setLoopCallback(callback: fun(self: _FilePlayer, arg?: any), arg?: any): nil;
 fun playdate.sound.fileplayer:setLoopRange(start: number, _end: number, loopCallback?: fun(arg?: any): nil, arg?: any): nil;
 fun playdate.sound.fileplayer:setOffset(seconds: number): nil;
+fun playdate.sound.fileplayer:setPaused(paused: boolean): nil;
 fun playdate.sound.fileplayer:setRate(rate: number): nil;
 fun playdate.sound.fileplayer:setRateMod(signal?: _Signal): nil;
 fun playdate.sound.fileplayer:setStopOnUnderrun(flag: boolean): nil;
@@ -1253,9 +1272,11 @@ fun playdate.sound.fileplayer:stop(): nil;
 global playdate.sound.instrument: _SoundSource;
 fun playdate.sound.instrument.new(synth?: _Synth): _Instrument;
 local _Instrument: playdate.sound.instrument;
-fun playdate.sound.instrument:addVoice(v: _Synth, note?: integer, rangeend?: integer, transpose?: integer): nil;
-fun playdate.sound.instrument:allNotesOff(): nil;
+fun playdate.sound.instrument:addVoice(v: _Synth, note?: integer): nil;
+fun playdate.sound.instrument:addVoice(v: _Synth, rangeStart?: integer, rangeEnd?: integer, transpose?: integer): nil;
+fun playdate.sound.instrument:allNotesOff(when?: number): nil;
 fun playdate.sound.instrument:getVolume(): (left_or_mono: number, right: number?);
+fun playdate.sound.instrument:isPlaying(): boolean;
 fun playdate.sound.instrument:noteOff(note: integer, when?: number): nil;
 fun playdate.sound.instrument:playMIDINote(note: number, vel?: number, length?: number, when?: number): nil;
 fun playdate.sound.instrument:playNote(frequency: string, vel?: number, length?: number, when?: number): nil;
@@ -1263,6 +1284,7 @@ fun playdate.sound.instrument:setPitchBend(amount: number): nil;
 fun playdate.sound.instrument:setPitchBendRange(halfsteps: number): nil;
 fun playdate.sound.instrument:setTranspose(halfsteps: number): nil;
 fun playdate.sound.instrument:setVolume(left: number, right?: number): nil;
+fun playdate.sound.instrument:stop(when?: number): nil;
 
 global playdate.sound.sampleplayer: _SoundSource;
 fun playdate.sound.sampleplayer.new(path: string): _SamplePlayer;
@@ -1320,7 +1342,8 @@ fun playdate.sound.synth:stop(): nil;
 global playdate.sound.micinput;
 fun playdate.sound.micinput.getLevel(): number;
 fun playdate.sound.micinput.getSource(): string;
-fun playdate.sound.micinput.recordToSample(buffer: _Sample, completionCallback: fun(sample: _Sample): nil): nil;
+fun playdate.sound.micinput.recordToSample(buffer: _Sample, completionCallback: fun(sample: _Sample): nil, purpose?: string): nil;
+fun playdate.sound.micinput.requestAccess(reason?: string): boolean;
 fun playdate.sound.micinput.startListening(source?: string): (success: boolean, source?:string);
 fun playdate.sound.micinput.stopListening(): nil;
 fun playdate.sound.micinput.stopRecording(): nil;
@@ -1356,7 +1379,7 @@ fun playdate.sound.sequence:setLoops(loopCount: integer): nil;
 fun playdate.sound.sequence:setLoops(startStep: integer, endStep: integer, loopCount?: integer): nil;
 fun playdate.sound.sequence:setTempo(stepsPerSecond: number): nil;
 fun playdate.sound.sequence:setTrackAtIndex(n: integer, track: _Track): nil;
-fun playdate.sound.sequence:stop(): nil;
+fun playdate.sound.sequence:stop(when?: number): nil;
 
 global playdate.sound.track;
 fun playdate.sound.track.new(): _Track;
