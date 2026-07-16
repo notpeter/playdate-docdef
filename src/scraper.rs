@@ -110,6 +110,8 @@ static SEL_CODE_TAG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("code
 static SEL_PRE_TAG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("pre").unwrap());
 static SEL_ADMONITION: LazyLock<Selector> =
     LazyLock::new(|| Selector::parse("table>tbody>tr>td.content").unwrap());
+static SEL_INLINE_SIGNATURE: LazyLock<Selector> =
+    LazyLock::new(|| Selector::parse("p > code > strong").unwrap());
 
 static RE_FUNC_SIG: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^((?:[\w_][\w\d_]*\.)*[\w_][\w\d_]*[:.:][\w_][\w\d_]*|[\w_][\w\d_]*(?:\.[\w_][\w\d_]*)*)\s*\(([^)]*)\)").unwrap()
@@ -142,7 +144,11 @@ pub fn scrape(
         }
 
         let title = extract_title(&element);
-        let docs = extract_docs(&element);
+        let doc_sections = extract_doc_sections(&element);
+        let docs = doc_sections
+            .first()
+            .map(|section| section.1.clone())
+            .unwrap_or_default();
 
         // Handle multi-function definitions (separated by double spaces)
         let titles: Vec<&str> = if title.contains("  ") {
@@ -153,6 +159,19 @@ pub fn scrape(
 
         for title in titles {
             if let Some(mut func) = parse_function_title(anchor, title, &overrides, &invalid_params)
+            {
+                func.docs = docs.clone();
+                func.apply_types(statements);
+                let key = func.lua_def();
+                result.insert(key, func);
+            }
+        }
+
+        // Some items document additional overloads as bold signatures within
+        // the content instead of listing every signature in the item title.
+        for (inline_title, docs) in doc_sections.iter().skip(1) {
+            if let Some(mut func) =
+                parse_function_title(anchor, inline_title, &overrides, &invalid_params)
             {
                 func.docs = docs.clone();
                 func.apply_types(statements);
@@ -226,8 +245,9 @@ fn extract_list_items(list_el: &ElementRef, docs: &mut Vec<String>, depth: usize
 }
 
 /// Extract documentation text from an item element, preserving document order
-fn extract_docs(element: &ElementRef) -> Vec<String> {
-    let mut docs = Vec::new();
+/// and separating overloads introduced by an inline bold function signature.
+fn extract_doc_sections(element: &ElementRef) -> Vec<(String, Vec<String>)> {
+    let mut sections = vec![(String::new(), Vec::new())];
 
     for content in element.select(&SEL_CONTENT) {
         for child in content.children() {
@@ -235,13 +255,22 @@ fn extract_docs(element: &ElementRef) -> Vec<String> {
                 let classes = child_el.value().attr("class").unwrap_or("");
                 if classes.contains("paragraph") {
                     if let Some(p) = child_el.select(&SEL_P_TAG).next() {
-                        docs.push(clean_html_text(&p.inner_html()));
+                        if let Some(signature) = extract_inline_signature(&p) {
+                            sections.push((signature, Vec::new()));
+                        } else {
+                            sections
+                                .last_mut()
+                                .unwrap()
+                                .1
+                                .push(clean_html_text(&p.inner_html()));
+                        }
                     }
                 } else if classes.contains("ulist") {
-                    extract_list_items(&child_el, &mut docs, 0);
+                    extract_list_items(&child_el, &mut sections.last_mut().unwrap().1, 0);
                 } else if classes.contains("listingblock") {
                     // Code block (with <code> tag)
                     for code in child_el.select(&SEL_CODE_TAG) {
+                        let docs = &mut sections.last_mut().unwrap().1;
                         docs.push("```".to_string());
                         for line in code.text().collect::<String>().lines() {
                             if !line.trim().is_empty() {
@@ -253,6 +282,7 @@ fn extract_docs(element: &ElementRef) -> Vec<String> {
                 } else if classes.contains("literalblock") {
                     // Literal block (with <pre> tag)
                     for pre in child_el.select(&SEL_PRE_TAG) {
+                        let docs = &mut sections.last_mut().unwrap().1;
                         docs.push("```".to_string());
                         for line in pre.text().collect::<String>().lines() {
                             if !line.trim().is_empty() {
@@ -266,14 +296,30 @@ fn extract_docs(element: &ElementRef) -> Vec<String> {
                     let prefix = "";
                     // let prefix = if classes.contains("caution") { "CAUTION: " } else { "" };
                     for adm in child_el.select(&SEL_ADMONITION) {
-                        docs.push(format!("{}{}", prefix, clean_html_text(&adm.inner_html())));
+                        sections.last_mut().unwrap().1.push(format!(
+                            "{}{}",
+                            prefix,
+                            clean_html_text(&adm.inner_html())
+                        ));
                     }
                 }
             }
         }
     }
 
-    docs
+    sections
+}
+
+fn extract_inline_signature(paragraph: &ElementRef) -> Option<String> {
+    let signature = paragraph.select(&SEL_INLINE_SIGNATURE).next()?;
+    let signature = signature.text().collect::<String>().trim().to_string();
+    let paragraph_text = paragraph.text().collect::<String>().trim().to_string();
+
+    if signature == paragraph_text && RE_FUNC_SIG.is_match(&signature) {
+        Some(signature)
+    } else {
+        None
+    }
 }
 
 /// Clean HTML text by converting tags to markdown
