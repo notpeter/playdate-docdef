@@ -3744,8 +3744,9 @@ function playdate.keyboard.keyboardDidHideCallback() end
 ---@return nil
 function playdate.keyboard.keyboardDidShowCallback() end
 
+---@param okButtonPressed boolean
 ---@return nil
-function playdate.keyboard.keyboardWillHideCallback() end
+function playdate.keyboard.keyboardWillHideCallback(okButtonPressed) end
 
 ---@return nil
 function playdate.keyboard.left() end

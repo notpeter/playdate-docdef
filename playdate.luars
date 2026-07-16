@@ -889,7 +889,7 @@ fun playdate.keyboard.isVisible(): nil;
 fun playdate.keyboard.keyboardAnimatingCallback(): nil;
 fun playdate.keyboard.keyboardDidHideCallback(): nil;
 fun playdate.keyboard.keyboardDidShowCallback(): nil;
-fun playdate.keyboard.keyboardWillHideCallback(): nil;
+fun playdate.keyboard.keyboardWillHideCallback(okButtonPressed: boolean): nil;
 fun playdate.keyboard.left(): nil;
 fun playdate.keyboard.setCapitalizationBehavior(behavior: integer): nil;
 fun playdate.keyboard.show(text?: string): nil;
