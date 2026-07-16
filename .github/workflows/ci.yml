@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Rust toolchain
         run: |
@@ -30,18 +30,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Rust toolchain
         run: |
           rustup update stable
           rustup default stable
 
-      - name: Generate stub.lua
-        run: cargo run --release > generated_stub.lua
-
-      - name: Compare with committed stub.lua
+      - name: Generate stub.lua and compare with committed version
         run: |
+          cargo run > generated_stub.lua
           if diff -q stub.lua generated_stub.lua > /dev/null; then
             echo "✓ stub.lua matches generated output"
           else
