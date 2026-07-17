@@ -122,6 +122,7 @@ static RE_FUNC_SIG: LazyLock<Regex> = LazyLock::new(|| {
 });
 static RE_HTML_LINK: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"</?a[^>]*>").unwrap());
 static RE_EM_TAG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<em[^>]*>").unwrap());
+static RE_BR_TAG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?i)<br\s*/?>").unwrap());
 
 /// Scrape the Playdate SDK documentation HTML
 pub fn scrape(
@@ -351,7 +352,21 @@ fn extract_title(element: &ElementRef) -> String {
     element
         .select(&SEL_TITLE)
         .next()
-        .map(|e| e.text().collect::<String>())
+        .map(|e| {
+            // A single SDK item can contain multiple signatures separated by
+            // <br>. Preserve that boundary for the multi-function splitter.
+            let inner_html = e.inner_html();
+            RE_BR_TAG
+                .split(&inner_html)
+                .map(|fragment| {
+                    Html::parse_fragment(fragment)
+                        .root_element()
+                        .text()
+                        .collect::<String>()
+                })
+                .collect::<Vec<_>>()
+                .join("  ")
+        })
         .unwrap_or_default()
 }
 
@@ -704,5 +719,45 @@ mod tests {
         assert!(!scraped
             .values()
             .any(|func| func.name == "playdate.scoreboards.cFunction"));
+    }
+
+    #[test]
+    fn test_scrape_br_separated_function_titles() {
+        let html = r#"
+            <div class="sect1">
+              <div class="sectionbody">
+                <div class="sect2">
+                  <div id="m-sound.lfo.setCenter" class="openblock item method">
+                    <div class="title">playdate.sound.lfo:setCenter(center)<br>playdate.sound.lfo:setOffset(center)</div>
+                    <div class="content">
+                      <div class="paragraph"><p>Sets the center value of the LFO.</p></div>
+                    </div>
+                  </div>
+                  <div id="m-sound.lfo.setDepth" class="openblock item method">
+                    <div class="title">playdate.sound.lfo:setDepth(depth)<br>playdate.sound.lfo:setScale(depth)</div>
+                    <div class="content">
+                      <div class="paragraph"><p>Sets the depth of the LFO.</p></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        "#;
+
+        let document = Html::parse_document(html);
+        let item = document.select(&SEL_ITEM).next().unwrap();
+        assert_eq!(
+            extract_title(&item),
+            "playdate.sound.lfo:setCenter(center)  playdate.sound.lfo:setOffset(center)"
+        );
+
+        let scraped = scrape(html, &BTreeMap::new());
+
+        assert!(scraped.contains_key("playdate.sound.lfo:setCenter(center)"));
+        let set_offset = scraped.get("playdate.sound.lfo:setOffset(center)").unwrap();
+        assert_eq!(set_offset.docs, vec!["Sets the center value of the LFO."]);
+        assert!(scraped.contains_key("playdate.sound.lfo:setDepth(depth)"));
+        let set_scale = scraped.get("playdate.sound.lfo:setScale(depth)").unwrap();
+        assert_eq!(set_scale.docs, vec!["Sets the depth of the LFO."]);
     }
 }

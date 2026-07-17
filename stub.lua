@@ -5059,14 +5059,6 @@ function playdate.sound.signal:setScale(scale) end
 ---@return number
 function playdate.sound.signalvalue:getValue() end
 
----@param offset number
----@return nil
-function playdate.sound.signalvalue:setOffset(offset) end
-
----@param scale number
----@return nil
-function playdate.sound.signalvalue:setScale(scale) end
-
 ---@param sample _Sample
 ---@param sustainStart? integer
 ---@param sustainEnd? integer

@@ -194,16 +194,6 @@ parameters = []
 name = "playdate.network.http:query"
 parameters = ["method", "path", "headers", "data"]
 
-# incorrect
-["m-sound.lfo.setCenter"]
-name = "playdate.sound.lfo:setCenter"
-parameters = ["center"]
-
-# playdate.sound.lfo:setDepth is documented as setScale
-["m-sound.lfo.setDepth"]
-name = "playdate.sound.lfo:setDepth"
-parameters = ["depth"]
-
 # playdate.sound.controlsignal:setScale
 ["m-sound.controlsignal.setScale"]
 name = "playdate.sound.controlsignal:setScale"

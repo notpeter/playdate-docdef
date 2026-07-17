@@ -1181,8 +1181,6 @@ fun playdate.sound.signal:setScale(scale: integer): nil;
 
 global playdate.sound.signalvalue;
 fun playdate.sound.signalvalue:getValue(): number;
-fun playdate.sound.signalvalue:setScale(scale: number): nil;
-fun playdate.sound.signalvalue:setOffset(offset: number): nil;
 
 global playdate.sound.controlsignal: _Signal;
 fun playdate.sound.controlsignal.new(): _ControlSignal;
