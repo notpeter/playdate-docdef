@@ -1,6 +1,8 @@
 use clap::{Parser, ValueEnum};
 use std::{env, fs::File, io::Read, path::PathBuf};
 
+const SCOREBOARD_API_URL: &str = "https://help.play.date/catalog-developer/scoreboard-api/";
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
@@ -59,23 +61,50 @@ fn fetch_file(path: &PathBuf) -> String {
     response
 }
 
-fn fetch_url(url: String) -> String {
-    let resp = reqwest::blocking::Client::new().get(&url).send();
+fn fetch_url(url: &str) -> String {
+    eprintln!("Fetching from {}", url);
+    let resp = reqwest::blocking::Client::new().get(url).send();
     match resp {
         Ok(r) if r.status().is_success() => r.text().unwrap(),
         _ => panic!("Error fetching from {}", url),
     }
 }
 
-/// Retrieves the contents of the docs (from file or url)
-pub fn fetch_docs(args: &Args) -> String {
-    match &args.url {
-        Some(url) => fetch_url(url.clone()),
+fn is_scoreboard_api_url(url: &str) -> bool {
+    url.trim_end_matches('/') == SCOREBOARD_API_URL.trim_end_matches('/')
+}
+
+/// Retrieves the primary SDK docs and the Catalog Scoreboard API docs.
+pub fn fetch_docs(args: &Args) -> Vec<String> {
+    let primary = match &args.url {
+        Some(url) => fetch_url(url),
         None => fetch_file(args.path.as_ref().unwrap()),
+    };
+
+    let mut docs = vec![primary];
+    if !args.url.as_deref().is_some_and(is_scoreboard_api_url) {
+        docs.push(fetch_url(SCOREBOARD_API_URL));
     }
+    docs
 }
 
 /// Parse command line arguments
 pub fn parse() -> Args {
     Args::parse()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn scoreboard_url_is_recognized_with_or_without_trailing_slash() {
+        assert!(is_scoreboard_api_url(SCOREBOARD_API_URL));
+        assert!(is_scoreboard_api_url(
+            "https://help.play.date/catalog-developer/scoreboard-api"
+        ));
+        assert!(!is_scoreboard_api_url(
+            "https://sdk.play.date/Inside%20Playdate.html"
+        ));
+    }
 }

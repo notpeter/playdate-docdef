@@ -68,7 +68,12 @@ pub fn generate_function(
 
     // Documentation from scraped HTML
     if let Some(func) = docs {
-        out.extend(generate_docs(&func.docs, &func.anchor, name));
+        out.extend(generate_docs(
+            &func.docs,
+            &func.source_name,
+            &func.source_url,
+            name,
+        ));
     }
 
     // Parameter annotations
@@ -98,8 +103,8 @@ fn is_list_item(line: &str) -> bool {
 }
 
 /// Generate documentation comment lines
-fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
-    if anchor.is_empty() {
+fn generate_docs(docs: &[String], source_name: &str, source_url: &str, title: &str) -> Vec<String> {
+    if source_url.is_empty() {
         return Vec::new();
     }
 
@@ -129,10 +134,7 @@ fn generate_docs(docs: &[String], anchor: &str, title: &str) -> Vec<String> {
     }
 
     // Link to official docs
-    out.push(format!(
-        "--- [Inside Playdate: {}](https://sdk.play.date/Inside%20Playdate.html#{})",
-        title, anchor
-    ));
+    out.push(format!("--- [{}: {}]({})", source_name, title, source_url));
 
     out
 }

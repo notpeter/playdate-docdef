@@ -14,7 +14,8 @@ use crate::luars::{Param, Statement};
 #[derive(Debug, Clone)]
 pub struct ScrapedFunction {
     pub name: String,
-    pub anchor: String,
+    pub source_name: String,
+    pub source_url: String,
     pub params: Vec<Param>,
     pub returns: Vec<Param>,
     pub docs: Vec<String>,
@@ -112,6 +113,9 @@ static SEL_ADMONITION: LazyLock<Selector> =
     LazyLock::new(|| Selector::parse("table>tbody>tr>td.content").unwrap());
 static SEL_INLINE_SIGNATURE: LazyLock<Selector> =
     LazyLock::new(|| Selector::parse("p > code > strong").unwrap());
+static SEL_SCOREBOARD_BODY: LazyLock<Selector> =
+    LazyLock::new(|| Selector::parse("article.postBody").unwrap());
+static SEL_STRONG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("strong").unwrap());
 
 static RE_FUNC_SIG: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^((?:[\w_][\w\d_]*\.)*[\w_][\w\d_]*[:.:][\w_][\w\d_]*|[\w_][\w\d_]*(?:\.[\w_][\w\d_]*)*)\s*\(([^)]*)\)").unwrap()
@@ -128,6 +132,12 @@ pub fn scrape(
     let mut result = BTreeMap::new();
     let overrides = load_overrides();
     let invalid_params = load_invalid_params();
+
+    // The Catalog Scoreboard API lives in the Playdate Help site and uses a
+    // different document structure from the AsciiDoc-generated SDK manual.
+    if document.select(&SEL_SCOREBOARD_BODY).next().is_some() {
+        return scrape_scoreboard_api(&document, statements, &overrides, &invalid_params);
+    }
 
     for element in document.select(&SEL_ITEM) {
         let anchor = element.value().attr("id").unwrap_or("");
@@ -182,6 +192,158 @@ pub fn scrape(
     }
 
     result
+}
+
+/// Scrape the Lua portion of the Catalog Scoreboard API help page.
+fn scrape_scoreboard_api(
+    document: &Html,
+    statements: &BTreeMap<String, Statement>,
+    overrides: &BTreeMap<String, FunctionOverride>,
+    invalid_params: &BTreeMap<String, String>,
+) -> BTreeMap<String, ScrapedFunction> {
+    const SOURCE_URL: &str =
+        "https://help.play.date/catalog-developer/scoreboard-api/#lua-api-reference";
+
+    let mut result = BTreeMap::new();
+    let Some(body) = document.select(&SEL_SCOREBOARD_BODY).next() else {
+        return result;
+    };
+
+    let mut in_lua_reference = false;
+    let mut current: Option<ScrapedFunction> = None;
+
+    for node in body.children() {
+        let Some(element) = ElementRef::wrap(node) else {
+            continue;
+        };
+
+        match element.value().name() {
+            "h2" => {
+                let id = element.value().attr("id").unwrap_or("");
+                if id == "lua-api-reference" {
+                    in_lua_reference = true;
+                    continue;
+                }
+                if in_lua_reference {
+                    break;
+                }
+            }
+            _ if !in_lua_reference => continue,
+            "p" if element
+                .value()
+                .attr("class")
+                .is_some_and(|class| class.split_whitespace().any(|c| c == "code_function")) =>
+            {
+                insert_scraped_function(&mut result, current.take());
+
+                let title = element
+                    .select(&SEL_STRONG)
+                    .next()
+                    .map(|strong| strong.text().collect::<String>())
+                    .unwrap_or_else(|| element.text().collect::<String>());
+
+                if let Some(mut func) =
+                    parse_function_title("lua-api-reference", &title, overrides, invalid_params)
+                {
+                    // Ignore C declarations if the page structure changes and
+                    // they appear before another section heading.
+                    if func.name.starts_with("playdate.scoreboards.") {
+                        func.source_name = "Scoreboard API".to_string();
+                        func.source_url = SOURCE_URL.to_string();
+                        func.apply_types(statements);
+                        current = Some(func);
+                    }
+                }
+            }
+            "p" => {
+                if let Some(func) = &mut current {
+                    let text = clean_html_text(&element.inner_html());
+                    if !text.is_empty() {
+                        func.docs.push(text);
+                    }
+                }
+            }
+            "div"
+                if element
+                    .value()
+                    .attr("class")
+                    .is_some_and(|class| class.split_whitespace().any(|c| c == "highlight")) =>
+            {
+                if let Some(func) = &mut current {
+                    append_code_block(&element, &mut func.docs);
+                }
+            }
+            "ul" => {
+                if let Some(func) = &mut current {
+                    extract_ul_items(&element, &mut func.docs, 0);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    insert_scraped_function(&mut result, current);
+    result
+}
+
+fn insert_scraped_function(
+    result: &mut BTreeMap<String, ScrapedFunction>,
+    func: Option<ScrapedFunction>,
+) {
+    if let Some(func) = func {
+        result.insert(func.lua_def(), func);
+    }
+}
+
+fn append_code_block(element: &ElementRef, docs: &mut Vec<String>) {
+    for pre in element.select(&SEL_PRE_TAG) {
+        docs.push("```".to_string());
+        docs.extend(
+            pre.text()
+                .collect::<String>()
+                .lines()
+                .filter(|line| !line.trim().is_empty())
+                .map(str::to_string),
+        );
+        docs.push("```".to_string());
+    }
+}
+
+fn extract_ul_items(ul: &ElementRef, docs: &mut Vec<String>, depth: usize) {
+    let indent = "  ".repeat(depth);
+
+    for node in ul.children() {
+        let Some(li) = ElementRef::wrap(node) else {
+            continue;
+        };
+        if li.value().name() != "li" {
+            continue;
+        }
+
+        let mut text = String::new();
+        for child in li.children() {
+            if let Some(child_el) = ElementRef::wrap(child) {
+                if child_el.value().name() == "ul" {
+                    continue;
+                }
+                text.push_str(&child_el.text().collect::<String>());
+            } else if let Some(child_text) = child.value().as_text() {
+                text.push_str(child_text);
+            }
+        }
+        let text = text.trim();
+        if !text.is_empty() {
+            docs.push(format!("{}* {}", indent, text));
+        }
+
+        for nested in li
+            .children()
+            .filter_map(ElementRef::wrap)
+            .filter(|child| child.value().name() == "ul")
+        {
+            extract_ul_items(&nested, docs, depth + 1);
+        }
+    }
 }
 
 /// Extract the title text from an item element
@@ -366,7 +528,8 @@ fn parse_function_title(
             .collect();
         return Some(ScrapedFunction {
             name: override_.name.clone(),
-            anchor: anchor.to_string(),
+            source_name: "Inside Playdate".to_string(),
+            source_url: format!("https://sdk.play.date/Inside%20Playdate.html#{}", anchor),
             params,
             returns: Vec::new(),
             docs: Vec::new(),
@@ -422,7 +585,8 @@ fn parse_function_title(
 
     Some(ScrapedFunction {
         name,
-        anchor: anchor.to_string(),
+        source_name: "Inside Playdate".to_string(),
+        source_url: format!("https://sdk.play.date/Inside%20Playdate.html#{}", anchor),
         params,
         returns: Vec::new(),
         docs: Vec::new(),
@@ -493,5 +657,52 @@ mod tests {
             parse_function_title("m-test", "Sprite:draw(x, y)", &overrides, &invalid).unwrap();
         assert_eq!(func.name, "Sprite:draw");
         assert_eq!(func.params.len(), 2);
+    }
+
+    #[test]
+    fn test_scrape_scoreboard_api() {
+        let html = r#"
+            <article class="postBody">
+              <h2 id="lua-api-reference">Lua API reference</h2>
+              <p>This introduction is not specific to a function.</p>
+              <p class="code_function"><strong>playdate.scoreboards.getScores(boardID, callback)</strong></p>
+              <p>Gets the top scores.</p>
+              <div class="highlight"><pre><code><span>scores = {}</span></code></pre></div>
+              <ul>
+                <li><em>boardID</em>: ID of the board.</li>
+                <li><em>callback</em>: Callback to invoke.</li>
+              </ul>
+              <p class="code_function"><strong>playdate.scoreboards.addScore(boardID, value, callback)</strong></p>
+              <p>Adds a score.</p>
+              <h2 id="c-api-reference">C API reference</h2>
+              <p class="code_function"><strong>playdate.scoreboards.cFunction(callback)</strong></p>
+            </article>
+        "#;
+
+        let scraped = scrape(html, &BTreeMap::new());
+
+        assert_eq!(scraped.len(), 2);
+        let get_scores = scraped
+            .get("playdate.scoreboards.getScores(boardID, callback)")
+            .unwrap();
+        assert_eq!(get_scores.source_name, "Scoreboard API");
+        assert_eq!(
+            get_scores.source_url,
+            "https://help.play.date/catalog-developer/scoreboard-api/#lua-api-reference"
+        );
+        assert_eq!(
+            get_scores.docs,
+            vec![
+                "Gets the top scores.",
+                "```",
+                "scores = {}",
+                "```",
+                "* boardID: ID of the board.",
+                "* callback: Callback to invoke.",
+            ]
+        );
+        assert!(!scraped
+            .values()
+            .any(|func| func.name == "playdate.scoreboards.cFunction"));
     }
 }

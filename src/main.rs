@@ -29,8 +29,10 @@ fn main() {
         }
         Action::Annotate => {
             // Scrape documentation and generate annotated stubs
-            let html = args::fetch_docs(&args);
-            let scraped = scraper::scrape(&html, &statements);
+            let mut scraped = std::collections::BTreeMap::new();
+            for html in args::fetch_docs(&args) {
+                scraped.extend(scraper::scrape(&html, &statements));
+            }
             let output = StubOutput::from_statements_with_docs(&statements, &scraped);
             output.print();
         }

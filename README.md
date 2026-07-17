@@ -25,7 +25,11 @@ to generate a [fully annotated stub.lua](https://github.com/notpeter/playdate-lu
 If you have Playdate type annotation changes/addition just edit [Playdate.luars](playdate.luars)
 and then run `cargo run > stub.lua` to see the changes reflected.
 
-For the complete set of annotations: `cargo run -- annotate > stub_annotated.lua`
+For the complete set of annotations, including the Catalog Scoreboard API docs:
+
+```sh
+cargo run -- annotate > stub_annotated.lua
+```
 
 See: [DESIGN.md](DESIGN.md) for more.
 
